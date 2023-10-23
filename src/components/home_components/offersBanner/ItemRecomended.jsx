@@ -1,7 +1,7 @@
 const ItemRecomended = (props) => {
     return (
         <div class=" bg-white rounded-xl border border-1 border-gray-200 cursor-pointer" onClick={console.log("")}>
-            <img src={props.oferta.Foto} alt="Imagen de ejemplo" class="h-44 w-full object-cover rounded-t-xl" />
+            <img src={props.oferta.Foto} class="h-44 w-full object-cover rounded-t-xl" />
             <div class="p-4">
                 <h2 class="text-greenTitle font-bold text-center text-base h-9 flex items-center justify-center leading-4">{props.oferta.Establecimiento}</h2>
                 <div class="flex items-center justify-center">
