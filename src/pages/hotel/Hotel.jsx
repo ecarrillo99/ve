@@ -11,6 +11,9 @@ import HotelSearch from "../../components/hotel_components/hotelSearch/HotelSear
 import HotelBanner from "../../components/hotel_components/hotelComponents/HotelBanner";
 import HotelGallery from "../../components/hotel_components/hotelComponents/HotelGallery";
 import HotelAdress from "../../components/hotel_components/hotelComponents/HotelAdress";
+import HotelDetails from "../../components/hotel_components/hotelComponents/HotelDetails";
+import HotelContacts from "../../components/hotel_components/hotelComponents/HotelContacts";
+import HotelReservation from "../../components/hotel_components/hotelComponents/HotelReservation";
 
 
 
@@ -87,6 +90,15 @@ const Hotel = () => {
             <HotelBanner/>
             <HotelGallery/>
           </div>
+        </div>
+      </div>
+      <div className="flex mx-auto max-w-6xl py-0 sm:px-6 lg:px-8">
+        <div className="w-9/12">
+        <HotelDetails/>
+        </div>
+        <div className="w-3/12">
+        <HotelContacts/>
+        <HotelReservation/>
         </div>
       </div>
       <Footer />

@@ -46,7 +46,6 @@ const HotelsBanner = () => {
           "delay": 3000,
           "disableOnInteraction": false}}
         pagination={{ clickable: true }}
-        onSlideChange={() => console.log('slide change')}
         onSwiper={(swiper) => console.log(swiper)}
         speed={1500} 
         style={{

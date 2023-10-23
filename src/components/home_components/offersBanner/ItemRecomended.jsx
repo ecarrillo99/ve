@@ -1,6 +1,6 @@
 const ItemRecomended = () => {
     return (
-        <div class=" bg-white rounded-xl border border-1 border-gray-200">
+        <div class=" bg-white rounded-xl border border-1 border-gray-200 cursor-pointer" onClick={console.log("")}>
             <img src="https://media-cdn.tripadvisor.com/media/photo-s/1d/58/37/0f/caption.jpg" alt="Imagen de ejemplo" class="h-44 w-full object-cover rounded-t-xl" />
             <div class="p-4">
                 <h2 class="text-greenTitle font-bold text-center text-lg">Villa Ana María</h2>
