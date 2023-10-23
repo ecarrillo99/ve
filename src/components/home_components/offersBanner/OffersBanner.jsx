@@ -1,16 +1,17 @@
 import "./featured.css";
 import "react-multi-carousel/lib/styles.css";
 import ItemRecomended from "./ItemRecomended";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Scrollbar, A11y, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
+import { getRemoteOfertas } from "../../../controllers/establecimiento/establecimientoController";
 
 
 const OffersBanner = () => {
-
   const responsive = {
     superLargeDesktop: {
       // the naming can be any, depends on you.
@@ -32,6 +33,30 @@ const OffersBanner = () => {
     },
   };
 
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        getRemoteOfertas()
+          .then((result)=>{
+            if(result){
+              console.log(result)
+              setData(result);
+            }
+          })
+        
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+
+
+  console.log(data)
 
   return (
     <div className="pt-5">
@@ -72,7 +97,6 @@ const OffersBanner = () => {
           "disableOnInteraction": false
         }}
         pagination={{ clickable: true }}
-        onSwiper={(swiper) => console.log(swiper)}
         speed={1500}
         style={{
           "--swiper-pagination-color": "#96c121",
@@ -100,16 +124,15 @@ const OffersBanner = () => {
         }}
         className="pb-10 px-10"
       >
-        <SwiperSlide><ItemRecomended /></SwiperSlide>
-        <SwiperSlide><ItemRecomended /></SwiperSlide>
-        <SwiperSlide><ItemRecomended /></SwiperSlide>
-        <SwiperSlide><ItemRecomended /></SwiperSlide>
-        <SwiperSlide><ItemRecomended /></SwiperSlide>
-        <SwiperSlide><ItemRecomended /></SwiperSlide>
-        <SwiperSlide><ItemRecomended /></SwiperSlide>
-        <SwiperSlide><ItemRecomended /></SwiperSlide>
-        <SwiperSlide><ItemRecomended /></SwiperSlide>
-        <SwiperSlide><ItemRecomended /></SwiperSlide>
+        { data!=null?(
+          data.map((oferta)=>(
+            <SwiperSlide><ItemRecomended oferta={oferta}/></SwiperSlide>
+          ))
+        ):(
+          <div>Cargando...</div>
+        )
+        
+        }
       </Swiper>
     </div>
   );

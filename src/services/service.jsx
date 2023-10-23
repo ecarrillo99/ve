@@ -16,7 +16,6 @@ class GenericService {
     }
 
     async post(url, params) {
-      console.log("res" +JSON.stringify(params));
       var headers={
         "Autorization": "bearer " +Config.DEVELOPER_TOKEN
       }

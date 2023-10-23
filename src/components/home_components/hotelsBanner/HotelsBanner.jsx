@@ -46,7 +46,6 @@ const HotelsBanner = () => {
           "delay": 3000,
           "disableOnInteraction": false}}
         pagination={{ clickable: true }}
-        onSwiper={(swiper) => console.log(swiper)}
         speed={1500} 
         style={{
           "--swiper-pagination-color": "#96c121",
