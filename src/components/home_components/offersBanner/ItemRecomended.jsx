@@ -5,7 +5,7 @@ const ItemRecomended = (props) => {
     const navigate=useNavigate()
     
     const HandleClickItem = () => {
-        navigate("/hotels/"+props.oferta.IdOferta,);
+        navigate("/hotel/"+props.oferta.IdOferta,);
     };
 
     return (

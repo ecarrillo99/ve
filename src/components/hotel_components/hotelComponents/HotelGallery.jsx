@@ -47,7 +47,6 @@ const HotelGallery = (props) => {
                 <motion.div initial="exit" animate="enter" exit="exit" variants={imageVariants} key={currentImage}>
                     <img
                         src={props.oferta.Establecimiento.Galeria[currentImage].Valor}
-                        alt="main-image"
                         className="rounded-md h-gallery w-full object-cover"
                     />
                 </motion.div>
