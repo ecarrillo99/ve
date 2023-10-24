@@ -1,6 +1,18 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
 const ItemRecomended = (props) => {
+    const navigate=useNavigate()
+    
+    const HandleClickItem = () => {
+        navigate("/hotels/"+props.oferta.IdOferta,);
+    };
+
     return (
-        <div class=" bg-white rounded-xl border border-1 border-gray-200 cursor-pointer" onClick={console.log("")}>
+        <div class=" bg-white rounded-xl border border-1 border-gray-200 cursor-pointer"
+            onClick={
+                HandleClickItem
+            }>
             <img src={props.oferta.Foto} class="h-44 w-full object-cover rounded-t-xl" />
             <div class="p-4">
                 <h2 class="text-greenTitle font-bold text-center text-base h-9 flex items-center justify-center leading-4">{props.oferta.Establecimiento}</h2>
@@ -19,13 +31,13 @@ const ItemRecomended = (props) => {
                         <h2 class="text-right text-greenVE-500 font-bold text-4xl pr-1">${props.oferta.Precio}/</h2>
                     </div>
                     <div class="col-span-1 pl-1">
-                        <h2 class="text-xs text-greenVE-500"> {props.oferta.Dias+" dias, "+props.oferta.Noches+" noches"}</h2>
+                        <h2 class="text-xs text-greenVE-500"> {props.oferta.Dias + " dias, " + props.oferta.Noches + " noches"}</h2>
                         <h2 class="text-xs text-greenVE-500">
                             {
-                                props.oferta.Ninos==null?(
+                                props.oferta.Ninos == null ? (
                                     props.oferta.Adultos + " adulto(s)"
-                                ):(
-                                    props.oferta.Adultos + " adulto(s), "+props.oferta.Ninos + " niño(s)"
+                                ) : (
+                                    props.oferta.Adultos + " adulto(s), " + props.oferta.Ninos + " niño(s)"
                                 )
                             }
                         </h2>

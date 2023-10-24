@@ -7,19 +7,10 @@ import { Navigation, Pagination, Scrollbar, A11y, Autoplay } from 'swiper/module
 
 
 
-const HotelGallery = () => {
+const HotelGallery = (props) => {
 
     const [currentImage, setCurrentImage] = useState(0);
-    const productImages = [
-        "https://i.ytimg.com/vi/zuDlrFwsfIQ/maxresdefault.jpg",
-        "https://media-cdn.tripadvisor.com/media/photo-s/1d/65/cb/87/caption.jpg",
-        "https://images.trvl-media.com/lodging/25000000/24270000/24268000/24267946/a46ec013.jpg?impolicy=resizecrop&rw=500&ra=fit",
-        "https://media-cdn.tripadvisor.com/media/photo-s/0d/cb/58/41/fb-img-1480387450949.jpg",
-        "https://media-cdn.tripadvisor.com/media/photo-s/0d/cb/58/41/fb-img-1480387450949.jpg",
-        "https://media-cdn.tripadvisor.com/media/photo-s/0d/cb/58/41/fb-img-1480387450949.jpg",
-        "https://media-cdn.tripadvisor.com/media/photo-s/0d/cb/58/41/fb-img-1480387450949.jpg",
 
-    ];
     const imageVariants = {
         exit: { opacity: 0, y: 20, scale: 0.98, transition: { duration: 0.4 } },
         enter: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4 } },
@@ -40,13 +31,12 @@ const HotelGallery = () => {
                       speed={1000}
                     >
                     
-                    {productImages.map((img, index) => (
+                    {props.oferta.Establecimiento.Galeria.map((img, index) => (
                         <SwiperSlide>
                             <img
                                 key={index}
-                                src={img}
+                                src={img.Valor}
                                 onClick={() => setCurrentImage(index)}
-                                alt="thumbnail-image"
                                 className="rounded-md cursor-pointer h-24 w-full object-cover"
                             />
                         </SwiperSlide>
@@ -56,7 +46,7 @@ const HotelGallery = () => {
             <div className='w-10/12'>
                 <motion.div initial="exit" animate="enter" exit="exit" variants={imageVariants} key={currentImage}>
                     <img
-                        src={productImages[currentImage]}
+                        src={props.oferta.Establecimiento.Galeria[currentImage].Valor}
                         alt="main-image"
                         className="rounded-md h-gallery w-full object-cover"
                     />

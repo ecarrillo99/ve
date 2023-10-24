@@ -7,10 +7,10 @@ import { DefaultToken } from "./controllers/web/webController";
 function App() {
   DefaultToken("192.168.0.1")
   return (
-    <Router >
+    <Router>
        <Routes>
         <Route path="/" element={<Home/>}/>
-        <Route path="/hotelss" element={<Search/>}/>
+        <Route path="/hotels" element={<Search/>}/>
         <Route path="/hotels/:id" element={<Hotel/>}/>
       </Routes>
     </Router>

@@ -55,9 +55,6 @@ const OffersBanner = () => {
   }, []);
 
 
-
-  console.log(data)
-
   return (
     <div className="pt-5">
       <h1 className="font-bold text-2xl text-greenTitle text-center pb-3">NUESTRAS OFERTAS</h1>

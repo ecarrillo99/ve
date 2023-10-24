@@ -1,8 +1,19 @@
-const HotelDetails = () => {
+const HotelDetails = (props) => {
     return (
         <div className=" flex flex-col">
             <label className="font-semibold text-xl text-gray-600">Detalle de la oferta</label>
-            <div className="flex gap-2">
+            {
+                 props.oferta.Detalle.map((item) => (
+                    <div className="flex flex-col mt-3">
+                        <label className="font-semibold text-gray-500">{item.Titulo}: </label>
+                        {item.Valor.split("-").map((item)=>(
+                            <p className="ml-5">{item}</p>
+                        ))}
+                    </div>
+                    
+                ))
+            }
+            {/*<div className="flex gap-2">
                 <label className="font-semibold text-gray-500">Acomodación: </label>
             </div>
             <div className="flex gap-10 ml-5">
@@ -187,7 +198,7 @@ const HotelDetails = () => {
                     </g>
                 </svg>
                 <p>Terraza de descanzo</p>
-            </div>
+        </div>*/}
         </div>
     )
 }
