@@ -1,6 +1,7 @@
 import WebService from "../../services/web/WebService";
 
 export const DefaultToken = async function (deviceid){
+
     var token=false
     var params={
         "udid":deviceid
@@ -18,7 +19,7 @@ export const DefaultToken = async function (deviceid){
                     "permisos": datos['data']['permisos'],
                     "identificador": datos['identificador'],
                 };     
-                sessionStorage.setItem('datos', JSON.stringify(datos));    
+                localStorage.setItem('datos', JSON.stringify(datos));    
             }
             token=true
             return token;

@@ -1,16 +1,39 @@
+import { useEffect, useState } from 'react';
+import Icons from '../../../global/icons';
+
+const icons = new Icons()
+
 const HotelDetails = (props) => {
+
     return (
-        <div className=" flex flex-col">
-            <label className="font-semibold text-xl text-gray-600">Detalle de la oferta</label>
+        <div className=" flex flex-col mb-10">
+            <label className="font-semibold text-xl text-gray-900">Detalle de la oferta</label>
             {
-                 props.oferta.Detalle.map((item) => (
-                    <div className="flex flex-col mt-3">
-                        <label className="font-semibold text-gray-500">{item.Titulo}: </label>
-                        {item.Valor.split("-").map((item)=>(
-                            <p className="ml-5">{item}</p>
-                        ))}
+                props.oferta.Detalle.map((item) => (
+                    <div className="flex flex-col mt-3 pr-10">
+                        <hr class="border-spacing-y-0.5 mb-1.5"></hr>
+                        <label className="font-semibold text-gray-700 mb-2 ">{item.Titulo}: </label>
+                        {
+                            item.Titulo != "Detalle" ?
+                                (
+                                    <div className="grid grid-cols-2 gap-1 ">
+                                        {item.Valor.split(" - ").map((itemServices) => (
+                                            <div className='flex gap-2 ml-5 '>
+                                                <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find(clave => itemServices.includes(clave))] }} class='' />
+                                                <p dangerouslySetInnerHTML={{ __html: itemServices }} className='text-sm my-0.5 text-justify'></p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) :
+                                (
+                                    <div className='flex gap-2 ml-5'>
+                                        <p dangerouslySetInnerHTML={{ __html: item.Valor }} className='text-sm my-0.5 text-justify'></p>
+                                    </div>
+                                )
+                        }
+
                     </div>
-                    
+
                 ))
             }
             {/*<div className="flex gap-2">

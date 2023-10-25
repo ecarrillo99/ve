@@ -9,6 +9,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
 import { getRemoteOfertas } from "../../../controllers/establecimiento/establecimientoController";
+import ItemRecomendedSkeleton from "./ItemRecomendedSkeleton";
 
 
 const OffersBanner = () => {
@@ -35,17 +36,22 @@ const OffersBanner = () => {
 
   const [data, setData] = useState(null);
 
+
   useEffect(() => {
+    
     async function fetchData() {
+      
       try {
         getRemoteOfertas()
-          .then((result)=>{
-            if(result){
+          .then( (result) => {
+            if (result) {
+              console.log("Hola")
               console.log(result)
-              setData(result);
+               setData(result);
             }
           })
-        
+          .catch((error)=>{console.log(error)})
+
       } catch (error) {
         console.error("Error:", error);
       }
@@ -121,14 +127,18 @@ const OffersBanner = () => {
         }}
         className="pb-10 px-10"
       >
-        { data!=null?(
-          data.map((oferta)=>(
-            <SwiperSlide><ItemRecomended oferta={oferta}/></SwiperSlide>
+        {data ? (
+          data.map((oferta) => (
+            <SwiperSlide><ItemRecomended oferta={oferta} /></SwiperSlide>
           ))
-        ):(
-          <div>Cargando...</div>
+        ) : (
+          <div>
+            <SwiperSlide><ItemRecomendedSkeleton/></SwiperSlide>
+            <SwiperSlide><ItemRecomendedSkeleton/></SwiperSlide>
+            <SwiperSlide><ItemRecomendedSkeleton/></SwiperSlide>
+            <SwiperSlide><ItemRecomendedSkeleton/></SwiperSlide>
+          </div>
         )
-        
         }
       </Swiper>
     </div>

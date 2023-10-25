@@ -7,25 +7,21 @@ import EstablecimientoService from "../../services/establecimiento/Establecimien
 import { DefaultToken } from "../web/webController";
 
 export const getRemoteOfertas = async function () {
-    var bd = JSON.parse(sessionStorage.getItem('datos'))
+    
+    var bd = JSON.parse(localStorage.getItem('datos'))
     if (bd == null) {
-        try {
-            DefaultToken("192.168.0.1")
-                .then((result) => {
-                    if (result) {
-                        console.log("Token generado ahora")
-                        return _getRemoteOfertas();
-                    }
-                })
-
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    }else{
-        console.log("Token ya generado anteriormente")
-        return _getRemoteOfertas();
+        
+      return DefaultToken("192.168.0.1")
+        .then((result) => {
+          if (result) {
+            return _getRemoteOfertas();
+          }
+        });
+    } else {
+      return  _getRemoteOfertas()
     }
-}
+  }
+
 
 
 export const getDetalleOferta = async function (idOferta) {
@@ -36,7 +32,7 @@ export const getDetalleOferta = async function (idOferta) {
     const listEstablecimientoGaleria = [];
     try {
         const establecimientoService = new EstablecimientoService;
-        var bd = JSON.parse(sessionStorage.getItem('datos'))
+        var bd = JSON.parse(localStorage.getItem('datos'))
         //console.log("Datos: "+JSON.stringify(datos))
         var params = {
             "token": bd['token'],
@@ -147,17 +143,20 @@ export const getDetalleOferta = async function (idOferta) {
     }
 }
 
-const _getRemoteOfertas = async function () {
+const _getRemoteOfertas= async function(){
+    
     const listadoOfertas = [];
     
     try {
         const establecimientoService = new EstablecimientoService;
-        var bd = JSON.parse(sessionStorage.getItem('datos'))
+        var bd = JSON.parse(localStorage.getItem('datos'))
         //console.log("Datos: "+JSON.stringify(datos))
         var params = {
             "token": bd['token']
         }
+        
         const res = await establecimientoService.getOfertasPublicidad(params);
+        console.log(res)
         if (res.estado && res.codigo == 0) {   // falso
             if (Object.values(res).length > 0) {
                 var establecimientos = res['data']['establecimientos']
@@ -185,4 +184,49 @@ const _getRemoteOfertas = async function () {
     } catch (e) {
         console.log(e)
     }
+}
+
+
+const _getRemoteOfertas2= async function(){
+
+    return new Promise((resolve, reject)=>{
+        const listadoOfertas = [];
+    
+    try {
+        const establecimientoService = new EstablecimientoService;
+        var bd = JSON.parse(localStorage.getItem('datos'))
+        //console.log("Datos: "+JSON.stringify(datos))
+        var params = {
+            "token": bd['token']
+        }
+        const res =  establecimientoService.getOfertasPublicidad(params);
+        if (res.estado && res.codigo == 0) {   // falso
+            if (Object.values(res).length > 0) {
+                var establecimientos = res['data']['establecimientos']
+                var ofertas = res['data']['ofertas']
+                var url = res['data']['url']['oferta']
+                for (const oferta of ofertas) {
+                    const ofertaInicio = new OfertaInicio(
+                        oferta['id'],
+                        url + oferta['foto'],
+                        oferta['final'],
+                        oferta['ciudad'],
+                        establecimientos[oferta['id_establecimiento']]['titulo'],
+                        oferta['tituloOferta'],
+                        oferta['noches'],
+                        oferta['dias'],
+                        oferta['adultos'],
+                        oferta['ninos'],
+                    )
+                    listadoOfertas.push(ofertaInicio)
+                }
+                resolve( listadoOfertas)
+            }
+        }
+    } catch (e) {
+        console.log(e)
+    }
+    })
+
+    
 }

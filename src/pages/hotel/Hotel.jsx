@@ -58,9 +58,9 @@ const Hotel = () => {
         <div className="w-9/12">
         <HotelDetails oferta={data}/>
         </div>
-        <div className="w-3/12">
-        <HotelContacts/>
+        <div className="flex flex-col gap-4 w-3/12">
         <HotelReservation/>
+        <HotelContacts/>
         </div>
       </div>
       <Footer />
