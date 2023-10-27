@@ -1,30 +1,114 @@
 import Config from "../../global/config";
 import Detalle from "../../models/Detalle";
 import Establecimiento from "../../models/Establecimiento";
+import Filtro from "../../models/Filtro";
 import Oferta from "../../models/Oferta";
 import OfertaInicio from "../../models/OfertaInicio";
+import Sugerencia from "../../models/Sugerencia";
 import EstablecimientoService from "../../services/establecimiento/EstablecimientoService";
 import { DefaultToken } from "../web/webController";
 
 export const getRemoteOfertas = async function () {
-    
+
     var bd = JSON.parse(localStorage.getItem('datos'))
     if (bd == null) {
-        
-      return DefaultToken("192.168.0.1")
-        .then((result) => {
-          if (result) {
-            return _getRemoteOfertas();
-          }
-        });
+
+        return DefaultToken()
+            .then((result) => {
+                if (result) {
+                    return _getRemoteOfertas();
+                }
+            });
     } else {
-      return  _getRemoteOfertas()
+        return _getRemoteOfertas()
     }
-  }
-
-
+}
 
 export const getDetalleOferta = async function (idOferta) {
+    var bd = JSON.parse(localStorage.getItem('datos'))
+    if (bd == null) {
+        return DefaultToken()
+            .then((result) => {
+                if (result) {
+                    return _getDetalleOferta(idOferta);
+                }
+            });
+    } else {
+        return _getDetalleOferta(idOferta)
+    }
+}
+
+export const getEstablacimientoDestino = async function (termino) {
+    var bd = JSON.parse(localStorage.getItem('datos'))
+    if (bd == null) {
+        return DefaultToken()
+            .then((result) => {
+                if (result) {
+                    return _getEstablecimientoDestino(termino);
+                }
+            });
+    } else {
+        return _getEstablecimientoDestino(termino)
+    }
+}
+
+export const getResultadoFiltro = async function (filtro) {
+    var bd = JSON.parse(localStorage.getItem('datos'))
+    if (bd == null) {
+        return DefaultToken()
+            .then((result) => {
+                if (result) {
+                    return _getResultadoFiltro(filtro);
+                }
+            });
+    } else {
+        return _getResultadoFiltro(filtro)
+    }
+}
+
+const _getRemoteOfertas = async function () {
+
+    const listadoOfertas = [];
+
+    try {
+        const establecimientoService = new EstablecimientoService;
+        var bd = JSON.parse(localStorage.getItem('datos'))
+        //console.log("Datos: "+JSON.stringify(datos))
+        var params = {
+            "token": bd['token']
+        }
+
+        const res = await establecimientoService.getOfertasPublicidad(params);
+        if (res.estado && res.codigo == 0) {   // falso
+            if (Object.values(res).length > 0) {
+                var establecimientos = res['data']['establecimientos']
+                var ofertas = res['data']['ofertas']
+                var url = res['data']['url']['oferta']
+                for (const oferta of ofertas) {
+                    const ofertaInicio = new OfertaInicio(
+                        oferta['id'],
+                        url + oferta['foto'],
+                        oferta['final'],
+                        oferta['ciudad'],
+                        establecimientos[oferta['id_establecimiento']]['titulo'],
+                        oferta['tituloOferta'],
+                        oferta['noches'],
+                        oferta['dias'],
+                        oferta['adultos'],
+                        oferta['ninos'],
+                    )
+                    listadoOfertas.push(ofertaInicio)
+                }
+                return listadoOfertas
+            }
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+
+const _getDetalleOferta = async function (idOferta) {
     const oferta = new Oferta;
     const listOfertaDetalle = [];
     const listEstablecimientoServicios = [];
@@ -40,6 +124,7 @@ export const getDetalleOferta = async function (idOferta) {
             "id_oferta": idOferta
         }
         const res = await establecimientoService.getDetalleOferta(params);
+        console.log(res)
         if (res.estado && res.codigo == 0) {   // falso
             if (Object.values(res).length > 0) {
                 var url = res['data']['url']['oferta']
@@ -56,12 +141,15 @@ export const getDetalleOferta = async function (idOferta) {
                 var _telefonoReservas = res['data']['configApp']['contacto_reserva']['telefono']['contacto']
                 var _celularReservas = res['data']['configApp']['contacto_reserva']['telefono_reservas']['contacto']
 
-                for (const servicioEstablecimiento of _serviciosEstablecimiento) {
-                    const servicioEstablecimientoTemp = new Detalle(
-                        servicioEstablecimiento['nombre'],
-                        servicioEstablecimiento['valor']
-                    )
-                    listEstablecimientoServicios.push(servicioEstablecimientoTemp)
+                
+                if(_serviciosEstablecimiento!=null){
+                    for (const servicioEstablecimiento of _serviciosEstablecimiento) {
+                        const servicioEstablecimientoTemp = new Detalle(
+                            servicioEstablecimiento['nombre'],
+                            servicioEstablecimiento['valor']
+                        )
+                        listEstablecimientoServicios.push(servicioEstablecimientoTemp)
+                    }
                 }
 
                 for (const contactoEstablecimiento of _contactosEstablecimiento) {
@@ -143,39 +231,114 @@ export const getDetalleOferta = async function (idOferta) {
     }
 }
 
-const _getRemoteOfertas= async function(){
-    
-    const listadoOfertas = [];
-    
+const _getEstablecimientoDestino =async function(termino){
+    const listadoSugerencias = [];
+
     try {
         const establecimientoService = new EstablecimientoService;
         var bd = JSON.parse(localStorage.getItem('datos'))
         //console.log("Datos: "+JSON.stringify(datos))
         var params = {
-            "token": bd['token']
+            "token": bd['token'],
+            "termino":termino
         }
-        
-        const res = await establecimientoService.getOfertasPublicidad(params);
-        console.log(res)
+
+        const res = await establecimientoService.getEstablecimientoDestino(params);
         if (res.estado && res.codigo == 0) {   // falso
             if (Object.values(res).length > 0) {
-                var establecimientos = res['data']['establecimientos']
-                var ofertas = res['data']['ofertas']
-                var url = res['data']['url']['oferta']
-                for (const oferta of ofertas) {
-                    const ofertaInicio = new OfertaInicio(
-                        oferta['id'],
-                        url + oferta['foto'],
-                        oferta['final'],
-                        oferta['ciudad'],
-                        establecimientos[oferta['id_establecimiento']]['titulo'],
-                        oferta['tituloOferta'],
-                        oferta['noches'],
-                        oferta['dias'],
-                        oferta['adultos'],
-                        oferta['ninos'],
+                var sugerencias = res['data']['sugerencias']
+                for (const sugerencia of sugerencias) {
+                    const sugerenciaBusqueda = new Sugerencia(
+                        sugerencia['id'],
+                        sugerencia['titulo'],
+                        sugerencia['tipo']
                     )
-                    listadoOfertas.push(ofertaInicio)
+                    listadoSugerencias.push(sugerenciaBusqueda)
+                }
+                return listadoSugerencias
+            }
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+const _getResultadoFiltro =async function(filtro){
+    const listadoOfertas = [];
+
+    try {
+        const establecimientoService = new EstablecimientoService;
+        var bd = JSON.parse(localStorage.getItem('datos'))
+        //console.log("Datos: "+JSON.stringify(datos))
+        var params = {
+            "token": bd['token'],
+            "id":filtro.IdDestino,
+            "tipo":filtro.TipoDestino,
+        }
+        
+        filtro.IdBeneficios&&(params.beneficios=filtro.IdBeneficios); 
+        filtro.IdServicios&&(params.idservicios=filtro.IdServicios);
+        filtro.Personas&&(params.personas=filtro.Personas); 
+        filtro.Tiempo&&(params.tiempo=filtro.Tiempo); 
+        filtro.Precio&&(params.precio=filtro.Precio); 
+        filtro.Habitaciones&&(params.habitaciones=filtro.Habitaciones); 
+        filtro.Ordenar&&(params.ordenar=filtro.Ordenar); 
+
+        const res = await establecimientoService.filtro(params);
+        
+        if (res.estado && res.codigo == 0) {   // falso
+            if (Object.values(res).length > 0) {
+                var establecimientos = res['data']['demo']
+                var beneficios=res['data']['beneficios']
+                var url = res['data']['url']['oferta']
+                //var ofertas = res['data']['ofertas']
+                //var url = res['data']['url']['oferta']
+                for (const establecimientoTmp of establecimientos) {
+                    const establecimiento = new Establecimiento()
+                    establecimiento.Titulo=establecimientoTmp['titulo']
+                    establecimiento.Ciudad=establecimientoTmp['ciudad']
+                    establecimiento.Pais=establecimientoTmp['pais']
+                    establecimiento.IdPais=establecimientoTmp['idPais']
+                    establecimiento.IdCiudad=establecimientoTmp['idCiudad']
+                    establecimiento.EdadNino=establecimientoTmp['edad_nino']
+                    establecimiento.Catalogacion=establecimientoTmp['catalogacion']
+                    establecimiento.Longitud=establecimientoTmp['longitud']
+                    establecimiento.Latitud=establecimientoTmp['latitud']
+                    establecimiento.Logo=establecimientoTmp['logo']
+                    establecimiento.Direccion=establecimientoTmp['direccion']
+
+                    const ofertas =establecimientoTmp['ofertas']
+                    for(const ofertaTmp of ofertas){
+                        const oferta = new Oferta()
+                        oferta.Id=ofertaTmp['id']
+                        oferta.IdLugar=ofertaTmp['id_lugar']
+                        oferta.EstadoBusqueda=ofertaTmp['estadoBusqueda']
+                        oferta.IdOferta=ofertaTmp['id_oferta']
+                        oferta.Habitaciones=ofertaTmp['habitaciones']
+                        oferta.IdEstablecimiento=ofertaTmp['id_establecimiento']
+                        oferta.AplicaEn=ofertaTmp['aplicaen']
+                        oferta.TituloOferta=ofertaTmp['tituloOferta']
+                        oferta.Ninos=ofertaTmp['ninos']
+                        oferta.Adultos=ofertaTmp['adultos']
+                        oferta.Dias=ofertaTmp['dias']
+                        oferta.Noches=ofertaTmp['noches']
+                        oferta.Ganga=ofertaTmp['ganga']
+                        oferta.Rack=ofertaTmp['rack']
+                        oferta.Final=ofertaTmp['final']
+                        oferta.Ahorro=ofertaTmp['ahorro']
+                        oferta.Ciudad=ofertaTmp['ciudad']
+                        oferta.Provincia=ofertaTmp['provincia']
+                        oferta.Favorito=ofertaTmp['fav']
+                        oferta.FotoPrincipal=url+ofertaTmp['foto']
+                        oferta.EstiloBeneficio=ofertaTmp['estiloBeneficio']
+                        oferta.IdBeneficio=ofertaTmp['idBeneficio']
+                        oferta.ColorBeneficio=ofertaTmp['colorBeneficio']
+                        oferta.Localidad=ofertaTmp['localidad']
+                        oferta.Incluye=ofertaTmp['incluye']
+                        oferta.Beneficio=beneficios[ofertaTmp['idBeneficio']]['nombre']
+                        oferta.Establecimiento=establecimiento
+                        listadoOfertas.push(oferta)
+                    }
                 }
                 console.log(listadoOfertas)
                 return listadoOfertas
@@ -184,49 +347,4 @@ const _getRemoteOfertas= async function(){
     } catch (e) {
         console.log(e)
     }
-}
-
-
-const _getRemoteOfertas2= async function(){
-
-    return new Promise((resolve, reject)=>{
-        const listadoOfertas = [];
-    
-    try {
-        const establecimientoService = new EstablecimientoService;
-        var bd = JSON.parse(localStorage.getItem('datos'))
-        //console.log("Datos: "+JSON.stringify(datos))
-        var params = {
-            "token": bd['token']
-        }
-        const res =  establecimientoService.getOfertasPublicidad(params);
-        if (res.estado && res.codigo == 0) {   // falso
-            if (Object.values(res).length > 0) {
-                var establecimientos = res['data']['establecimientos']
-                var ofertas = res['data']['ofertas']
-                var url = res['data']['url']['oferta']
-                for (const oferta of ofertas) {
-                    const ofertaInicio = new OfertaInicio(
-                        oferta['id'],
-                        url + oferta['foto'],
-                        oferta['final'],
-                        oferta['ciudad'],
-                        establecimientos[oferta['id_establecimiento']]['titulo'],
-                        oferta['tituloOferta'],
-                        oferta['noches'],
-                        oferta['dias'],
-                        oferta['adultos'],
-                        oferta['ninos'],
-                    )
-                    listadoOfertas.push(ofertaInicio)
-                }
-                resolve( listadoOfertas)
-            }
-        }
-    } catch (e) {
-        console.log(e)
-    }
-    })
-
-    
 }

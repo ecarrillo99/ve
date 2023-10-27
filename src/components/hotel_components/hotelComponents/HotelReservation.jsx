@@ -5,7 +5,9 @@ import { es } from 'react-date-range/dist/locale/';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 
-const HotelReservation = () => {
+const HotelReservation = (props) => {
+
+    const {pFinal, pAhorro, nHabitaciones, nAdultos, nNinos, nNoches}=props
     const handleClickAway = () => {
         if (openDate) {
             setOpenDate(false)
@@ -19,14 +21,14 @@ const HotelReservation = () => {
     const [date, setDate] = useState([
         {
             startDate: new Date(),
-            endDate: new Date(),
+            endDate: new Date().setDate(new Date().getDate()+parseInt(nNoches?(nNoches):(0))),
             key: "selection",
         },
     ]);
     const [options, setOptions] = useState({
-        adult: 1,
-        children: 0,
-        room: 1,
+        adult: parseInt(nAdultos),
+        children: parseInt(nNinos==null?0:nNinos),
+        room: parseInt(nHabitaciones),
     });
     const handleOption = (name, operation) => {
         setOptions((prev) => {
@@ -39,12 +41,12 @@ const HotelReservation = () => {
 
     return (
         <div className="border mt-3 p-2 flex flex-col rounded-md bg-greenVE-300 ">
-            <label className="font-bold text-xl">Precio Final: $169</label>
-            <label className="font-bold text-greenVE-700">Ahorro $30</label>
+            <label className="font-bold text-xl">Precio Final: ${pFinal}</label>
+            <label className="font-bold text-greenVE-700">Ahorro ${pAhorro}</label>
             <label className="font-medium mt-2 text-sm">Fecha de entrada y salida</label>
             <span
                 onClick={() => setOpenDate(!openDate)}
-                className="flex items-center justify-center bg-white text-sm mt-1 h-7 border"
+                className="flex items-center justify-center bg-white text-sm mt-1 h-7 border "
             >{`${format(date[0].startDate, "yyyy/MM/dd")} al ${format(
                 date[0].endDate,
                 "yyyy/MM/dd"
@@ -63,7 +65,7 @@ const HotelReservation = () => {
                 </ClickAwayListener>
             )}
             <label className="font-medium mt-2 text-sm ">Personas y habitaciones</label>
-            <span className="flex items-center justify-center bg-white  text-sm h-7 z-50 mb-1 border"
+            <span className="flex items-center justify-center bg-white  text-sm h-7 z-30 mb-1 border"
                         onClick={() => setOpenOptions(!openOptions)}
                     >{`${options.adult} Adulto(s) · ${options.children} Niño(s) · ${options.room} Hab.`}</span>
                     {openOptions && (

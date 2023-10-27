@@ -1,46 +1,76 @@
 import {
   faBed,
   faCalendarDays,
+  faMapLocation,
+  faMapLocationDot,
+  faMapMarked,
+  faMapMarker,
+  faMapMarkerAlt,
+  faMapPin,
   faPerson,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./header.css";
 import { DateRange } from "react-date-range";
 import { useState } from "react";
-import {es} from 'react-date-range/dist/locale/';
+import { es } from 'react-date-range/dist/locale/';
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { ClickAwayListener } from "@material-ui/core";
+import { getEstablacimientoDestino } from "../../../controllers/establecimiento/establecimientoController";
 
-const SearchBar = ({ type }) => {
+const SearchBar = (props) => {
+  const {Place, Dates, Options}=props
   const handleClickAway = () => {
-    if(openDate){
+    if (openDate) {
       setOpenDate(false)
     }
-    if(openOptions){
+    if (openOptions) {
       setOpenOptions(false)
     }
-	};
-  const [destination, setDestination] = useState("");
+    if (suggestion) {
+      setSuggestion(null)
+    }
+  };
+  const [destination, setDestination] = useState(
+      Place!=null
+      ?(Place)
+      :({
+        Titulo: "",
+        Tipo: "",
+        Id: "",
+      })
+  );
   const [openDate, setOpenDate] = useState(false);
-  const [date, setDate] = useState([
-    {
-      startDate: new Date(),
-      endDate: new Date(),
-      key: "selection",
-    },
-  ]);
+  const [date, setDate] = useState(
+    Dates!=null
+    ?(Dates)
+    :(
+      [{
+        startDate: new Date(),
+        endDate: new Date().setDate(new Date().getDate() + 1),
+        key: "selection",
+      }]
+    )
+    ,
+  );
   const [openOptions, setOpenOptions] = useState(false);
-  const [options, setOptions] = useState({
-    adult: 1,
-    children: 0,
-    room: 1,
-  });
+  const [options, setOptions] = useState(
+    Options!=null
+    ?(Options)
+    :({
+      adult: 1,
+      children: 0,
+      room: 1,
+    })
+    );
 
   const navigate = useNavigate();
 
+  const [openSearch, setOpenSearch] = useState(false);
+  const [suggestion, setSuggestion] = useState(null);
   const handleOption = (name, operation) => {
     setOptions((prev) => {
       return {
@@ -51,14 +81,35 @@ const SearchBar = ({ type }) => {
   };
 
   const handleSearch = () => {
-    navigate("/hotels", { state: { destination, date, options } });
+    navigate("/busqueda", { state: { destination, date, options } });
+  };
+
+
+  const fetchData = (value) => {
+    getEstablacimientoDestino(value).then((res) => {
+      if (res) {
+        console.log(res)
+        setSuggestion(res)
+      }
+    })
+  }
+
+  let timeout = null
+  const handleChange = (value) => {
+    setDestination({Titulo:value})
+    clearTimeout(null)
+    timeout = setTimeout(() => {
+      if (value != "") {
+        fetchData(value);
+      } else {
+        setSuggestion(null)
+      }
+    }, 1000)
   };
 
   return (
     <div className="bg-white">
-      {type !== "list" && (
         <>
-
           <div className="bottom-[0px] bg-greenVE-500 relative rounded-md w-full">
             <div className="grid lg:grid-cols-12 md:grid-cols-12 grid-flow-row">
               <div className=" col-span-3 max-sm:col-span-1  bg-white flex items-center justify-center m-0.5 rounded-md pl-4">
@@ -67,21 +118,44 @@ const SearchBar = ({ type }) => {
                   type="text"
                   placeholder=" ¿A dónde vas?"
                   className="w-full max-w-full overflow-hidden placeholder-gray-600 mr-4"
-                  onChange={(e) => setDestination(e.target.value)}
+                  onChange={(e) => handleChange(e.target.value)}
+                  onClick={() => setOpenSearch(true)}
+                  value={destination.Titulo.charAt(0).toUpperCase() + destination.Titulo.slice(1)}
                 />
+                {suggestion && (
+                  <ClickAwayListener onClickAway={handleClickAway}>
+                    <div className="absolute top-12 max-h-40 w-64 bg-white z-50 shadow-md p-2 overflow-y-auto border">
+                      {
+                        suggestion ? (
+                          suggestion.map((item, key) => (
+                            <div className="flex items-center p-1 border-b cursor-pointer" onClick={()=>(setDestination(item), setSuggestion(null))}>
+                              {item.Tipo == "destino" ? (<FontAwesomeIcon icon={faMapMarkerAlt} className="pr-2 w-4 text-gray-500" />)
+                                : (<FontAwesomeIcon icon={faBed} className="pr-2 w-4 text-gray-500" />)}
+                              <p key={key} className="text-sm" >
+                                {item.Titulo.charAt(0).toUpperCase() + item.Titulo.slice(1)}
+                              </p>
+                              
+                            </div>
+
+                          ))
+                        ) : (<p></p>)
+                      }
+                    </div>
+                  </ClickAwayListener>
+                )}
               </div>
               <div className="col-span-3 max-sm:col-span-1 bg-white flex items-center justify-center m-0.5 rounded-md">
                 <FontAwesomeIcon icon={faCalendarDays} className="text-gray-500 pr-2" />
                 <span
                   onClick={() => setOpenDate(!openDate)}
                   className="placeholder-gray-600"
-                >{`${format(date[0].startDate, "MM/dd/yyyy")} al ${format(
+                >{`${format(date[0].startDate, "dd/MM/yyyy")} al ${format(
                   date[0].endDate,
-                  "MM/dd/yyyy"
+                  "dd/MM/yyyy"
                 )}`}</span>
                 {openDate && (
                   <ClickAwayListener onClickAway={handleClickAway}>
-                      <DateRange
+                    <DateRange
                       editableDateInputs={true}
                       onChange={(item) => setDate([item.selection])}
                       moveRangeOnFirstSelection={false}
@@ -102,70 +176,70 @@ const SearchBar = ({ type }) => {
                 {openOptions && (
                   <ClickAwayListener onClickAway={handleClickAway}>
                     <div className="options">
-                    <div className="optionItem">
-                      <span className="optionText">Adultos</span>
-                      <div className="optionCounter">
-                        <button
-                          disabled={options.adult <= 1}
-                          className="optionCounterButton"
-                          onClick={() => handleOption("adult", "d")}
-                        >
-                          -
-                        </button>
-                        <span className="optionCounterNumber">
-                          {options.adult}
-                        </span>
-                        <button
-                          className="optionCounterButton"
-                          onClick={() => handleOption("adult", "i")}
-                        >
-                          +
-                        </button>
+                      <div className="optionItem">
+                        <span className="optionText">Adultos</span>
+                        <div className="optionCounter">
+                          <button
+                            disabled={options.adult <= 1}
+                            className="optionCounterButton"
+                            onClick={() => handleOption("adult", "d")}
+                          >
+                            -
+                          </button>
+                          <span className="optionCounterNumber">
+                            {options.adult}
+                          </span>
+                          <button
+                            className="optionCounterButton"
+                            onClick={() => handleOption("adult", "i")}
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                      <div className="optionItem">
+                        <span className="optionText">Niños</span>
+                        <div className="optionCounter">
+                          <button
+                            disabled={options.children <= 0}
+                            className="optionCounterButton"
+                            onClick={() => handleOption("children", "d")}
+                          >
+                            -
+                          </button>
+                          <span className="optionCounterNumber">
+                            {options.children}
+                          </span>
+                          <button
+                            className="optionCounterButton"
+                            onClick={() => handleOption("children", "i")}
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                      <div className="optionItem">
+                        <span className="optionText">Habitaciones</span>
+                        <div className="optionCounter">
+                          <button
+                            disabled={options.room <= 1}
+                            className="optionCounterButton"
+                            onClick={() => handleOption("room", "d")}
+                          >
+                            -
+                          </button>
+                          <span className="optionCounterNumber">
+                            {options.room}
+                          </span>
+                          <button
+                            className="optionCounterButton"
+                            onClick={() => handleOption("room", "i")}
+                          >
+                            +
+                          </button>
+                        </div>
                       </div>
                     </div>
-                    <div className="optionItem">
-                      <span className="optionText">Niños</span>
-                      <div className="optionCounter">
-                        <button
-                          disabled={options.children <= 0}
-                          className="optionCounterButton"
-                          onClick={() => handleOption("children", "d")}
-                        >
-                          -
-                        </button>
-                        <span className="optionCounterNumber">
-                          {options.children}
-                        </span>
-                        <button
-                          className="optionCounterButton"
-                          onClick={() => handleOption("children", "i")}
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                    <div className="optionItem">
-                      <span className="optionText">Habitaciones</span>
-                      <div className="optionCounter">
-                        <button
-                          disabled={options.room <= 1}
-                          className="optionCounterButton"
-                          onClick={() => handleOption("room", "d")}
-                        >
-                          -
-                        </button>
-                        <span className="optionCounterNumber">
-                          {options.room}
-                        </span>
-                        <button
-                          className="optionCounterButton"
-                          onClick={() => handleOption("room", "i")}
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                  </div>
                   </ClickAwayListener>
                 )}
               </div>
@@ -177,7 +251,6 @@ const SearchBar = ({ type }) => {
             </div>
           </div>
         </>
-      )}
     </div>
   );
 };

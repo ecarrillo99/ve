@@ -56,10 +56,16 @@ const Hotel = () => {
       </div>
       <div className="flex mx-auto max-w-6xl py-0 sm:px-6 lg:px-8">
         <div className="w-9/12">
-        <HotelDetails oferta={data}/>
+        <HotelDetails oferta={data.Detalle}/>
         </div>
         <div className="flex flex-col gap-4 w-3/12">
-        <HotelReservation/>
+        <HotelReservation 
+          pFinal={data.Final} 
+          pAhorro={data.Ahorro} 
+          nHabitaciones={data.Habitaciones}
+          nAdultos={data.Adultos} 
+          nNinos={data.Ninos}
+          nNoches={data.Noches}/>
         <HotelContacts/>
         </div>
       </div>

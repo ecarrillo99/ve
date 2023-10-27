@@ -9,7 +9,7 @@ const HotelDetails = (props) => {
         <div className=" flex flex-col mb-10">
             <label className="font-semibold text-xl text-gray-900">Detalle de la oferta</label>
             {
-                props.oferta.Detalle.map((item) => (
+                props.oferta.map((item) => (
                     <div className="flex flex-col mt-3 pr-10">
                         <hr class="border-spacing-y-0.5 mb-1.5"></hr>
                         <label className="font-semibold text-gray-700 mb-2 ">{item.Titulo}: </label>

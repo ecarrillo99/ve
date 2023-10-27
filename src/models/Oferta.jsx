@@ -33,7 +33,8 @@ class Oferta{
         Telefono,
         Celular,
         Email,
-        Web
+        Web,
+        Beneficio
     ){
         this.Id=Id;
         this.IdLugar=IdLugar;
@@ -69,6 +70,7 @@ class Oferta{
         this.Celular=Celular;
         this.Email=Email;
         this.Web=Web;
+        this.Beneficio=Beneficio
     }
 }
 

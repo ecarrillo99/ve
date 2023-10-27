@@ -1,25 +1,57 @@
 import "./list.css";
 import Navbar from "../../components/global_components/navbar/Navbar";
 import { useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { DateRange } from "react-date-range";
 import SearchItem from "../../components/searchItem/SearchItem";
 import SearchBar from "../../components/global_components/searchBar/searchBar";
 import Slider from "react-slider";
 import Footer from "../../components/global_components/footer/Footer";
+import { getResultadoFiltro } from "../../controllers/establecimiento/establecimientoController";
+import Filtro from "../../models/Filtro";
+import SearchItemSkeleton from "../../components/searchItem/SearchItemSkeleton";
 
 const Search = () => {
   const location = useLocation();
+  const [destination, setDestination] = useState(location.state.destination);
+  const [options, setOptions] = useState(location.state.options);
+  const [date, setDate] = useState(location.state.date);
   const minPrice = 20;
   const maxPrice = 1000;
   const [prices, setPrices] = useState([minPrice, maxPrice])
+  const [data, setData] = useState(null)
+
+  const filtro = new Filtro()
+
+  filtro.IdDestino = destination.Id
+  filtro.TipoDestino = destination.Tipo
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        getResultadoFiltro(filtro)
+          .then((result) => {
+            if (result) {
+              setData(result)
+            }
+          })
+
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+
+    fetchData();
+  }, []);
 
   return (
     <div >
       <Navbar />
       <div className="mx-auto max-w-6xl py-6 sm:px-6 lg:px-8">
-        <SearchBar />
+        <SearchBar
+          Place={destination}
+          Dates={date}
+          Options={options} />
       </div>
 
       <div className="flex mx-auto max-w-6xl py-6 sm:px-6 lg:px-8">
@@ -174,8 +206,22 @@ const Search = () => {
           </div>
         </div>
         <div className="w-9/12">
-          <SearchItem />
-          <SearchItem />
+          {data
+            ? (
+              data.map((item)=>(
+                <SearchItem 
+                  Oferta={item}
+                  Establecimiento={item.Establecimiento}
+                />
+              ))
+            )
+            : (<div>
+               <SearchItemSkeleton/>
+               <SearchItemSkeleton/>
+               <SearchItemSkeleton/>
+               <SearchItemSkeleton/>
+            </div>)
+          }
         </div>
       </div>
       <Footer />

@@ -45,8 +45,6 @@ const OffersBanner = () => {
         getRemoteOfertas()
           .then( (result) => {
             if (result) {
-              console.log("Hola")
-              console.log(result)
                setData(result);
             }
           })
