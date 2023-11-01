@@ -6,7 +6,7 @@ const AppBanner = () => {
                 <div class="flex items-center justify-center">
                     <div>
                         <h2 className=" text-4xl text-white font-semibold">Más de 500 ofertas hoteleras.</h2>
-                        <h4 className="items-center text-xl text-white font-semibold">Descárgate la aplicación y haz tu prueva gratuita.</h4>
+                        <h4 className="items-center text-xl text-white font-semibold">Descárgate la aplicación y haz tu prueba gratuita.</h4>
                         <h4 className="items-center text-xl text-white font-semibold">¡Realiza tu Primera reserva hoy!</h4>
                         <img src="/img/qr_app.png" style={{width: "150px", height: "auto"}} class="mx-auto border-8 border-white mt-7"/>
                         <div className="grid grid-cols-2 pt-7">

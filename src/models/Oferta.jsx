@@ -19,6 +19,7 @@ class Oferta{
         Rack,
         Final,
         Ahorro,
+        PorcentajeAhorro,
         Ciudad,
         Provincia,
         Favorito,
@@ -55,6 +56,7 @@ class Oferta{
         this.Rack=Rack;
         this.Final=Final;
         this.Ahorro=Ahorro;
+        this.PorcentajeAhorro=PorcentajeAhorro;
         this.Ciudad=Ciudad;
         this.Provincia=Provincia;
         this.Favorito=Favorito;

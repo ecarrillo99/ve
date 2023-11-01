@@ -4,6 +4,7 @@ import Establecimiento from "../../models/Establecimiento";
 import Filtro from "../../models/Filtro";
 import Oferta from "../../models/Oferta";
 import OfertaInicio from "../../models/OfertaInicio";
+import ResultadoBusqueda from "../../models/ResultadoBusqueda";
 import Sugerencia from "../../models/Sugerencia";
 import EstablecimientoService from "../../services/establecimiento/EstablecimientoService";
 import { DefaultToken } from "../web/webController";
@@ -213,6 +214,7 @@ const _getDetalleOferta = async function (idOferta) {
                 oferta.Rack = _oferta['rack']
                 oferta.Final = _oferta['final']
                 oferta.Ahorro = _oferta['ahorro']
+                oferta.PorcentajeAhorro= Math.round(100-(parseInt(oferta.Final)*100)/parseInt(oferta.Rack))
                 oferta.Ciudad = _oferta['ciudad']
                 oferta.Provincia = _oferta['provincia']
                 oferta.Favorito = _oferta['fav']
@@ -265,6 +267,11 @@ const _getEstablecimientoDestino =async function(termino){
 
 const _getResultadoFiltro =async function(filtro){
     const listadoOfertas = [];
+    const listadoCatalogaciones=[];
+    const listadoLocaciones=[];
+    const listadoServicios=[];
+    const listadoOrdenes=[];
+    const listadoBeneficios=[];
 
     try {
         const establecimientoService = new EstablecimientoService;
@@ -275,7 +282,9 @@ const _getResultadoFiltro =async function(filtro){
             "id":filtro.IdDestino,
             "tipo":filtro.TipoDestino,
         }
-        
+        filtro.IdDestino&&(params.id=filtro.IdDestino); 
+        filtro.TipoDestino&&(params.tipo=filtro.TipoDestino);
+        filtro.txtBusqueda&&(params.txtBusqueda=filtro.txtBusqueda);
         filtro.IdBeneficios&&(params.beneficios=filtro.IdBeneficios); 
         filtro.IdServicios&&(params.idservicios=filtro.IdServicios);
         filtro.Personas&&(params.personas=filtro.Personas); 
@@ -283,13 +292,22 @@ const _getResultadoFiltro =async function(filtro){
         filtro.Precio&&(params.precio=filtro.Precio); 
         filtro.Habitaciones&&(params.habitaciones=filtro.Habitaciones); 
         filtro.Ordenar&&(params.ordenar=filtro.Ordenar); 
+        filtro.Fechas&&(params.fechas=filtro.Fechas); 
+        filtro.Pax&&(params.pax=filtro.Pax); 
 
         const res = await establecimientoService.filtro(params);
         
         if (res.estado && res.codigo == 0) {   // falso
             if (Object.values(res).length > 0) {
+                console.log(res)
                 var establecimientos = res['data']['demo']
                 var beneficios=res['data']['beneficios']
+                var catalogaciones=res['data']['filtro']['catalogacion']
+                var locaciones=res['data']['filtro']['locacion']
+                var precioMin=res['data']['filtro']['precios'][0]['MinPrecio']
+                var precioMax=res['data']['filtro']['precios'][0]['MaxPrecio']
+                var servicios=res['data']['filtro']['servicios']
+                var ordenes=res['data']['opcionesOrden']
                 var url = res['data']['url']['oferta']
                 //var ofertas = res['data']['ofertas']
                 //var url = res['data']['url']['oferta']
@@ -326,6 +344,7 @@ const _getResultadoFiltro =async function(filtro){
                         oferta.Rack=ofertaTmp['rack']
                         oferta.Final=ofertaTmp['final']
                         oferta.Ahorro=ofertaTmp['ahorro']
+                        oferta.PorcentajeAhorro= Math.round(100-(parseInt(oferta.Final)*100)/parseInt(oferta.Rack))
                         oferta.Ciudad=ofertaTmp['ciudad']
                         oferta.Provincia=ofertaTmp['provincia']
                         oferta.Favorito=ofertaTmp['fav']
@@ -340,8 +359,61 @@ const _getResultadoFiltro =async function(filtro){
                         listadoOfertas.push(oferta)
                     }
                 }
-                console.log(listadoOfertas)
-                return listadoOfertas
+
+                for (const catalogacionTmp of catalogaciones){
+                    const catalogacion = new Detalle()
+                    catalogacion.Titulo=catalogacionTmp['nombre']
+                    catalogacion.Valor=catalogacionTmp['catalogacion']
+                    listadoCatalogaciones.push(catalogacion)
+                }
+
+                for (const locacionKey in locaciones){
+                    const locacionValue=locaciones[locacionKey]
+                    const locacion = new Detalle()
+                    locacion.Titulo=locacionValue['nombre']
+                    locacion.Valor=locacionKey
+                    locacion.Icono=locacionValue['color']
+                    listadoLocaciones.push(locacion)
+                }
+
+                for (const servicioKey in servicios){
+                    const servicioValue=servicios[servicioKey]
+                    const servicio = new Detalle()
+                    servicio.Titulo=servicioValue['nombre']
+                    servicio.Valor=servicioKey
+                    servicio.Icono=servicioValue['estilo']
+                    listadoServicios.push(servicio)
+                }
+
+                for (const ordenKey in ordenes){
+                    const ordenValue=ordenes[ordenKey]
+                    const orden = new Detalle()
+                    orden.Titulo=ordenValue['name']
+                    orden.Valor=ordenKey
+                    orden.Icono=ordenValue['text']
+                    listadoOrdenes.push(orden)
+                }
+
+                for (const beneficioKey in beneficios){
+                    const beneficioValue=beneficios[beneficioKey]
+                    const orden = new Detalle()
+                    orden.Titulo=beneficioValue['nombre']
+                    orden.Valor=beneficioKey
+                    orden.Icono=beneficioValue['color']
+                    listadoBeneficios.push(orden)
+                }
+
+                const resultadoBusqueda = new ResultadoBusqueda(
+                    listadoOfertas,
+                    precioMin,
+                    precioMax,
+                    listadoCatalogaciones,
+                    listadoLocaciones,
+                    listadoServicios,
+                    listadoOrdenes,
+                    listadoBeneficios
+                )
+                return resultadoBusqueda
             }
         }
     } catch (e) {

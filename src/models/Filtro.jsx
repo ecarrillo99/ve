@@ -8,7 +8,10 @@ class Filtro {
         Tiempo,
         Precio,
         Habitaciones,
-        Ordenar
+        Ordenar,
+        Pax,
+        Fechas,
+        txtBusqueda,
     ){
         this.IdDestino=IdDestino;
         this.TipoDestino=TipoDestino;
@@ -19,6 +22,9 @@ class Filtro {
         this.Precio=Precio;
         this.Habitaciones=Habitaciones;
         this.Ordenar=Ordenar;
+        this.Pax=Pax;
+        this.Fechas=Fechas;
+        this.txtBusqueda=txtBusqueda;
     }
 }
 

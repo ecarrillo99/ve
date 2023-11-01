@@ -88,6 +88,7 @@
   height: 5px;
   border-radius: 10px;
   background-color: #B1B1B1;
+  z-index: 2;
 }
 
 .slider .thumb {

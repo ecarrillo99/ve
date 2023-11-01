@@ -105,7 +105,7 @@ const SearchItem = (props) => {
             <div className="w-full flex justify-end items-end">
               <div>
                 <p class=" text-greenVE-600 font-bold  text-4xl text-center" >${Oferta.Final}</p>
-                <p class=" text-red-500  text-sm text-center" >Ahorra {Math.round(100-(parseInt(Oferta.Final)*100)/parseInt(Oferta.Rack))}%</p>
+                <p class=" text-red-500  text-sm text-center" >Ahorra {Oferta.PorcentajeAhorro}%</p>
                 <button className="bg-greenVE-500 text-white px-2 py-1 rounded-xl text-sm" onClick={HandleClickItem}>Ver Oferta</button>
               </div>
             </div>

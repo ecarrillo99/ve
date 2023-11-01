@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 function App() {
   
   return (
-    (<Router>
+    (<Router  >
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/busqueda/" element={<Search />} />
