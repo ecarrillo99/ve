@@ -1,12 +1,7 @@
 import {
   faBed,
   faCalendarDays,
-  faMapLocation,
-  faMapLocationDot,
-  faMapMarked,
-  faMapMarker,
   faMapMarkerAlt,
-  faMapPin,
   faPerson,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,12 +13,13 @@ import { es } from 'react-date-range/dist/locale/';
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { format } from "date-fns";
-import { useNavigate } from "react-router-dom";
+import {  useNavigate, useSearchParams } from "react-router-dom";
 import { ClickAwayListener } from "@material-ui/core";
 import { getEstablacimientoDestino } from "../../../controllers/establecimiento/establecimientoController";
 
 const SearchBar = (props) => {
-  const { Place, Dates, Options } = props
+  const { Place, Dates, Options, NewPage } = props
+  const [params, setParams]=useSearchParams();
   const handleClickAway = () => {
     if (openDate) {
       setOpenDate(false)
@@ -58,6 +54,9 @@ const SearchBar = (props) => {
     ,
   );
   const [openOptions, setOpenOptions] = useState(false);
+
+  
+
   const [options, setOptions] = useState(
     Options != null
       ? (Options)
@@ -119,7 +118,9 @@ const SearchBar = (props) => {
   };
 
   const handleSearch = () => {
-    navigate("/busqueda", { state: { destination, date, options } });
+    const path=`/busqueda/?destino=${encodeURIComponent(JSON.stringify(destination))}&fechas=${encodeURIComponent(JSON.stringify(date))}&opciones=${encodeURIComponent(JSON.stringify(options))}`
+    navigate(path)
+    window.location.reload();
   };
 
 
@@ -144,17 +145,17 @@ const SearchBar = (props) => {
     }, 1000)
   };
 
-  
-
-
+  const handleChangeDate=(value)=>{
+    setDate(value)
+  }
 
   return (
-    <div className="bg-white">
+    <div>
       <>
-        <div className="bottom-[0px] bg-greenVE-500 relative rounded-md w-full">
+        <div className="bottom-[0px] bg-greenVE-600 relative rounded-2xl w-full">
           <div className="grid lg:grid-cols-12 md:grid-cols-12 grid-flow-row">
-            <div className=" col-span-3 max-sm:col-span-1  bg-white flex items-center justify-center m-0.5 rounded-md pl-4">
-              <FontAwesomeIcon icon={faBed} className="pr-2 text-gray-500" />
+            <div className=" col-span-3 max-sm:col-span-1  bg-white flex items-center justify-center m-0.5 rounded-l-2xl rounded-r-md pl-4">
+              <FontAwesomeIcon icon={faBed} className="pr-2 text-gray-400" />
               <input
                 type="text"
                 placeholder=" ¿A dónde vas?"
@@ -186,7 +187,7 @@ const SearchBar = (props) => {
               )}
             </div>
             <div className="col-span-3 max-sm:col-span-1 bg-white flex items-center justify-center m-0.5 rounded-md">
-              <FontAwesomeIcon icon={faCalendarDays} className="text-gray-500 pr-2" />
+              <FontAwesomeIcon icon={faCalendarDays} className="text-gray-400 pr-2" />
               <span
                 onClick={() => setOpenDate(!openDate)}
                 className="placeholder-gray-600"
@@ -198,7 +199,7 @@ const SearchBar = (props) => {
                 <ClickAwayListener onClickAway={handleClickAway}>
                   <DateRange
                     editableDateInputs={true}
-                    onChange={(item) => setDate([item.selection])}
+                    onChange={(item) => handleChangeDate([item.selection?item.selection:item['Invalid Date']])}
                     moveRangeOnFirstSelection={false}
                     ranges={date}
                     locale={es}
@@ -212,7 +213,7 @@ const SearchBar = (props) => {
               )}
             </div>
             <div className="col-span-4 max-sm:col-span-1 bg-white flex items-center justify-center m-0.5 rounded-md">
-              <FontAwesomeIcon icon={faPerson} className="text-gray-500 pr-2" />
+              <FontAwesomeIcon icon={faPerson} className="text-gray-400 pr-2" />
               <span
                 onClick={() => setOpenOptions(!openOptions)}
                 className="placeholder-gray-600"
@@ -312,7 +313,7 @@ const SearchBar = (props) => {
                 </ClickAwayListener>
               )}
             </div>
-            <div className="col-span-2 max-sm:col-span-1 bg-greenVE-500 flex items-center justify-center rounded-md m-0.5">
+            <div className="col-span-2 max-sm:col-span-1 bg-greenVE-500 flex items-center justify-center rounded-l-md rounded-r-2xl m-0.5">
               <button className="bg-greenVE-500 h-10 text-white" onClick={handleSearch}>
                 Buscar
               </button>

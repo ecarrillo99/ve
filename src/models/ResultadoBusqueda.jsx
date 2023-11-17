@@ -1,6 +1,6 @@
 class ResultadoBusqueda{
     constructor(
-        Ofertas,
+        Establecimientos,
         PrecioMinimo,
         PrecioMaximo,
         Catalogaciones,
@@ -9,7 +9,7 @@ class ResultadoBusqueda{
         Ordenes,
         Beneficios,
     ){
-        this.Ofertas=Ofertas;
+        this.Establecimientos=Establecimientos;
         this.PrecioMinimo=PrecioMinimo;
         this.PrecioMaximo=PrecioMaximo;
         this.Catalogacionesta=Catalogaciones;

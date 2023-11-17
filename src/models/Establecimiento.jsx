@@ -1,5 +1,6 @@
 class Establecimiento{
     constructor(
+        IdEstablecimiento,
         Titulo,
         Ciudad,
         Pais,
@@ -10,11 +11,25 @@ class Establecimiento{
         Longitud,
         Latitud,
         Logo,
+        Foto,
         Direccion,
         Servicios,
+        Incluye,
+        NoIncluye,
+        Restricciones,
+        SistemaServicios,
         Contactos,
-        Galeria
+        ContactosCentral,
+        Galeria,
+        Descripcion,
+        PrecioSinImpuestos,
+        PrecioConImpuestos,
+        Impuestos,
+        Rack,
+        Ofertas,
+        Recomendados,
     ){
+        this.Establecimiento=IdEstablecimiento
         this.Titulo=Titulo
         this.Ciudad=Ciudad
         this.Pais=Pais
@@ -25,10 +40,23 @@ class Establecimiento{
         this.Longitud=Longitud
         this.Latitud=Latitud
         this.Logo=Logo
+        this.Foto=Foto
         this.Direccion=Direccion
         this.Servicios=Servicios
+        this.Incluye=Incluye
+        this.NoIncluye=NoIncluye
+        this.Restricciones=Restricciones
+        this.SistemaServicios=SistemaServicios
         this.Contactos=Contactos
+        this.ContactosCentral=ContactosCentral
         this.Galeria=Galeria
+        this.Descripcion=Descripcion
+        this.PrecioSinImpuestos=PrecioSinImpuestos
+        this.PrecioConImpuestos=PrecioConImpuestos
+        this.Impuestos=Impuestos
+        this.Rack=Rack
+        this.Ofertas=Ofertas
+        this.Recomendados=Recomendados
     }
 }
 

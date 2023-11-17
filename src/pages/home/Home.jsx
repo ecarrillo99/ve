@@ -11,15 +11,13 @@ import SearchBar from "../../components/global_components/searchBar/searchBar";
 const Home = () => {
   return (
     <main>
-      <Navbar />
-      <div className="mx-auto max-w-6xl py-6 sm:px-6 lg:px-8">
-        <SearchBar />
-        <OffersBanner />
-        <HotelsBanner />
-      </div>
+      <Navbar/>
       <MainBanner/>
-      <AboutBanner/>
-      <AppBanner/>
+      <div className="mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 -m-12">
+        <SearchBar/>
+        <OffersBanner/>
+        <HotelsBanner/>
+      </div>
       <Footer/>
     </main>
   )

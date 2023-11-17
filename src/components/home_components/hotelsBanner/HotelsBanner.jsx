@@ -11,36 +11,13 @@ import 'swiper/css/autoplay';
 
 const HotelsBanner = () => {
 
-  const responsive = {
-    superLargeDesktop: {
-      // the naming can be any, depends on you.
-      breakpoint: { max: 4000, min: 1024 },
-      items: 3,
-      slidesToSlide: 1,
-    },
-    desktop: {
-      breakpoint: { max: 1024, min: 800 },
-      items: 2,
-    },
-    tablet: {
-      breakpoint: { max: 800, min: 464 },
-      items: 1,
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-    },
-  };
-
-
   return (
-    <div className="pt-20">
-      <h1 className="font-bold text-2xl text-greenTitle text-center pb-5">NUESTRAS ALIADOS</h1>
-      
+    <div className="pb-10">
+      <h1 className="font-bold text-2xl text-greenTitle pb-5">NUESTRAS ALIADOS</h1>
       <Swiper
         modules={[Navigation, Pagination, Scrollbar, A11y, Autoplay]}
-        spaceBetween={50}
-        slidesPerView={5}
+        spaceBetween={10}
+        slidesPerView={8}
         navigation
         autoplay={{
           "delay": 3000,
@@ -67,8 +44,8 @@ const HotelsBanner = () => {
             spaceBetween: 40,
           },
           1024: {
-            slidesPerView: 5,
-            spaceBetween: 50,
+            slidesPerView: 8,
+            spaceBetween: 10,
           },
         }}
         className="pb-10 px-10"

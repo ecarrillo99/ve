@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "./searchItem.css";
 import { useNavigate } from "react-router-dom";
 
@@ -5,23 +6,26 @@ import { useNavigate } from "react-router-dom";
 
 const SearchItem = (props) => {
   const navigate = useNavigate();
-  const { Oferta, Establecimiento } = props
+  const {options, date, destination, Establecimiento } = props
+  const [noches, setNoches]=useState(Math.ceil(Math.abs(new Date(date[0].endDate)) - new Date(date[0].startDate))/ (1000 * 60 * 60 * 24));
   const HandleClickItem = () => {
-    navigate("/hotel/" + Oferta.Id,);
-  };
-
+    navigate("/hotel/" + Establecimiento.IdEstablecimiento, { state: {Establecimiento, destination, date, options} });
+    
+  }
 
   return (
     <div className="flex border border-gray-200 border-1 h-60 mb-3 rounded-md shadow-md ">
       <div class="w-4/12">
-        <img src={Oferta.FotoPrincipal} class="w-full h-full object-cover rounded-l-md" />
+        <label className="absolute bg-greenVE-500 text-white text-xs p-1 mt-4 font-semibold rounded-r-lg ">Desayuno incluido</label>
+        <img src={Establecimiento.Foto} class="w-full h-full object-cover rounded-l-md" />
+        
       </div>
       <div class="w-8/12 pl-5 flex items-center">
         <div className="w-full pr-5">
           <div className="flex justify-between my-1">
             <h2 className="text-greenVE-600 font-semibold">{Establecimiento.Titulo}</h2>
             <div className="flex items-center">
-              <h2 className={"text-white rounded-full px-3 py-1 text-xs"} style={{backgroundColor:Oferta.ColorBeneficio}}>{Oferta.Beneficio}</h2>
+              <h2 className={"text-white rounded-full px-3 py-1 text-xs"} style={{backgroundColor:Establecimiento.ColorBeneficio}}>{Establecimiento.Beneficio}</h2>
             </div>
           </div>
           <div className="flex content-between my-1">
@@ -36,11 +40,20 @@ const SearchItem = (props) => {
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
               <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
             </svg>
-            <p class=" text-blueLight text-xs my-1" >{Oferta.Ciudad}, {Establecimiento.Pais}</p>
+            <p class=" text-blueLight text-xs my-1" >{Establecimiento.Ciudad}, {Establecimiento.Pais}</p>
           </div>
-          <div>
-            <h2 className="text-block font-semibold">{Oferta.TituloOferta}</h2>
-          </div>
+          {
+            Establecimiento.Recomendados.map((item)=>(
+              <div className="leading-3 mb-2 flex">
+                <div className="w-7">
+                  <label className="text-xxs font-bold bg-gray-200 p-0.5 mr-1.5 rounded-md">{item.NumOfertas} x </label>
+                </div>
+                <div>
+                  <label className="text-xxs font-medium">{item.TituloOferta}</label>
+                </div>
+              </div>
+            ))
+          }
           <div className="flex pt- items-center">
             <div className="w-3/4">
               <div className="flex items-center my-1">
@@ -48,10 +61,10 @@ const SearchItem = (props) => {
                   <g fill="#00a3ff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" ><g transform="scale(5.33333,5.33333)">
                     <path d="M23.97656,3.97852c-0.82766,0.01293 -1.48844,0.69381 -1.47656,1.52148v3c-0.00765,0.54095 0.27656,1.04412 0.74381,1.31683c0.46725,0.27271 1.04514,0.27271 1.51238,0c0.46725,-0.27271 0.75146,-0.77588 0.74381,-1.31683v-3c0.00582,-0.40562 -0.15288,-0.7963 -0.43991,-1.08296c-0.28703,-0.28666 -0.67792,-0.44486 -1.08353,-0.43852zM10.90234,9.4043c-0.61065,0.00015 -1.16026,0.37042 -1.38978,0.93629c-0.22952,0.56587 -0.09314,1.21439 0.34486,1.63988l2.12109,2.12109c0.58626,0.58626 1.53678,0.58626 2.12305,0c0.58626,-0.58626 0.58626,-1.53678 0,-2.12305l-2.12109,-2.12109c-0.28328,-0.29067 -0.67225,-0.45415 -1.07812,-0.45312zM37.05078,9.4043c-0.38956,0.01135 -0.75941,0.17386 -1.03125,0.45313l-2.12109,2.12109c-0.58626,0.58626 -0.58626,1.53678 0,2.12305c0.58626,0.58626 1.53678,0.58626 2.12305,0l2.12109,-2.12109c0.44468,-0.43137 0.57845,-1.09172 0.33671,-1.66214c-0.24175,-0.57042 -0.80928,-0.93356 -1.4285,-0.91403zM24,13c-6.05737,0 -11,4.94264 -11,11c0,6.05736 4.94263,11 11,11c6.05737,0 11,-4.94264 11,-11c0,-6.05736 -4.94263,-11 -11,-11zM24,16c4.43605,0 8,3.56395 8,8c0,4.43605 -3.56395,8 -8,8c-4.43605,0 -8,-3.56395 -8,-8c0,-4.43605 3.56395,-8 8,-8zM5.5,22.5c-0.54095,-0.00765 -1.04412,0.27656 -1.31683,0.74381c-0.27271,0.46725 -0.27271,1.04514 0,1.51238c0.27271,0.46725 0.77588,0.75146 1.31683,0.74381h3c0.54095,0.00765 1.04412,-0.27656 1.31683,-0.74381c0.27271,-0.46725 0.27271,-1.04514 0,-1.51238c-0.27271,-0.46725 -0.77588,-0.75146 -1.31683,-0.74381zM39.5,22.5c-0.54095,-0.00765 -1.04412,0.27656 -1.31683,0.74381c-0.27271,0.46725 -0.27271,1.04514 0,1.51238c0.27271,0.46725 0.77588,0.75146 1.31683,0.74381h3c0.54095,0.00765 1.04412,-0.27656 1.31683,-0.74381c0.27271,-0.46725 0.27271,-1.04514 0,-1.51238c-0.27271,-0.46725 -0.77588,-0.75146 -1.31683,-0.74381zM13.00977,33.44531c-0.38956,0.01135 -0.75941,0.17386 -1.03125,0.45313l-2.12109,2.12109c-0.37938,0.37922 -0.5276,0.93205 -0.3888,1.45019c0.1388,0.51814 0.54351,0.92286 1.06165,1.06165c0.51814,0.1388 1.07097,-0.00942 1.45019,-0.3888l2.12109,-2.12109c0.44468,-0.43137 0.57845,-1.09172 0.33671,-1.66214c-0.24175,-0.57042 -0.80928,-0.93356 -1.4285,-0.91403zM34.94336,33.44531c-0.61064,0.00015 -1.16026,0.37042 -1.38978,0.93629c-0.22952,0.56587 -0.09314,1.21439 0.34486,1.63988l2.12109,2.12109c0.58626,0.58626 1.53678,0.58626 2.12305,0c0.58626,-0.58626 0.58626,-1.53678 0,-2.12305l-2.12109,-2.12109c-0.28328,-0.29067 -0.67225,-0.45415 -1.07812,-0.45313zM23.97656,37.97852c-0.82766,0.01293 -1.48843,0.69381 -1.47656,1.52148v3c-0.00765,0.54095 0.27656,1.04412 0.74381,1.31683c0.46725,0.27271 1.04514,0.27271 1.51238,0c0.46725,-0.27271 0.75146,-0.77588 0.74381,-1.31683v-3c0.00582,-0.40562 -0.15288,-0.7963 -0.43991,-1.08296c-0.28703,-0.28666 -0.67792,-0.44486 -1.08353,-0.43852z"></path></g></g>
                 </svg>
-                <p class=" text-black text-xs pl-1" >{Oferta.Dias} día(s)</p>
+                <p class=" text-black text-xs pl-1" >{noches+1} día(s)</p>
               </div>
               {
-                Oferta.Noches ? (
+                noches ? (
                   <div className="flex items-center my-1">
 
                     <svg fill="none" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blueLight">
@@ -59,15 +72,10 @@ const SearchItem = (props) => {
                       <path d="M16.3074 10.9122C16.3717 10.733 16.6283 10.733 16.6926 10.9122L16.8684 11.4022C16.889 11.4596 16.9347 11.5047 16.9928 11.525L17.4889 11.6987C17.6704 11.7622 17.6704 12.0156 17.4889 12.0791L16.9928 12.2527C16.9347 12.2731 16.889 12.3182 16.8684 12.3756L16.6926 12.8656C16.6283 13.0448 16.3717 13.0448 16.3074 12.8656L16.1316 12.3756C16.111 12.3182 16.0653 12.2731 16.0072 12.2527L15.5111 12.0791C15.3296 12.0156 15.3296 11.7622 15.5111 11.6987L16.0072 11.525C16.0653 11.5047 16.111 11.4596 16.1316 11.4022L16.3074 10.9122Z" fill="#00A3FF" />
                       <path d="M17.7693 3.29184C17.9089 2.90272 18.4661 2.90272 18.6057 3.29184L19.0842 4.62551C19.1288 4.75006 19.2281 4.84805 19.3542 4.89219L20.7045 5.36475C21.0985 5.50263 21.0985 6.05293 20.7045 6.19081L19.3542 6.66337C19.2281 6.7075 19.1288 6.80549 19.0842 6.93005L18.6057 8.26372C18.4661 8.65284 17.9089 8.65284 17.7693 8.26372L17.2908 6.93005C17.2462 6.80549 17.1469 6.7075 17.0208 6.66337L15.6705 6.19081C15.2765 6.05293 15.2765 5.50263 15.6705 5.36475L17.0208 4.89219C17.1469 4.84805 17.2462 4.75006 17.2908 4.62551L17.7693 3.29184Z" fill="#00A3FF" />
                       <path clip-rule="evenodd" d="M10.2717 5.62789C10.4243 5.89494 10.3984 6.22811 10.2063 6.46836C9.4004 7.47646 8.92323 8.73845 8.92323 10.1084C8.92323 13.3758 11.6552 16.0609 15.0709 16.0609C16.009 16.0609 16.8957 15.8579 17.6886 15.496C17.9672 15.3689 18.2952 15.4239 18.5171 15.635C18.7389 15.8462 18.8101 16.1711 18.6968 16.4556C17.4607 19.562 14.3662 21.75 10.7598 21.75C6.08042 21.75 2.25 18.0585 2.25 13.4597C2.25 9.27676 5.421 5.84281 9.51439 5.25758C9.81888 5.21404 10.1191 5.36084 10.2717 5.62789ZM8.02561 7.20477C5.50445 8.23972 3.75 10.6606 3.75 13.4597C3.75 17.1897 6.86798 20.25 10.7598 20.25C13.101 20.25 15.1668 19.1398 16.4381 17.4421C15.9942 17.5202 15.5372 17.5609 15.0709 17.5609C10.8676 17.5609 7.42323 14.2445 7.42323 10.1084C7.42323 9.07816 7.63804 8.09677 8.02561 7.20477Z" fill="#00A3FF" fill-rule="evenodd" /></svg>
-                    <p class=" text-black text-xs pl-1" >{Oferta.Noches} noche(s)</p>
+                    <p class=" text-black text-xs pl-1" >{noches} noche(s)</p>
                   </div>
                 ) : (<></>)
               }
-
-              <div className="flex items-center my-1">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" role="presentation" focusable="false" class="w-5 h-5 text-blueLight"><path d="M2 31a1 1 0 0 1-1-1 9 9 0 0 1 17.95-1H21c.74 0 1.43-.27 1.97-.74A2.99 2.99 0 0 0 24 26.2L24 26V14H13v6h-2v-7a1 1 0 0 1 .88-1H25a1 1 0 0 1 1 .88V15h4a1 1 0 0 1 1 .88V25a1 1 0 0 1-.88 1H26a4.99 4.99 0 0 1-1.71 3.77 4.98 4.98 0 0 1-3.03 1.22L21 31zm3.85-6.64a7 7 0 0 0-2.7 4.16l-.05.3-.03.18h4.1zM10 23c-.82 0-1.61.14-2.35.4l1.6 5.6h1.5l1.6-5.6a6.97 6.97 0 0 0-1.86-.38l-.25-.02zm4.15 1.36L12.82 29h4.1l-.02-.18a7 7 0 0 0-2.75-4.46zM29 17h-3v7h3zM20 1c0 2.06-.48 3.34-1.77 5.42l-.75 1.19C16.6 9 16.2 9.9 16.06 11h-2.02c.15-1.61.71-2.84 1.91-4.73l.57-.88c1.11-1.79 1.47-2.78 1.47-4.4zm5 0c0 2.06-.48 3.34-1.77 5.42l-.75 1.19C21.6 9 21.2 9.9 21.06 11h-2.02c.15-1.61.71-2.84 1.91-4.73l.57-.88c1.11-1.79 1.47-2.78 1.47-4.4z" fill="#00A3FF" ></path></svg>
-                <p class=" text-black  text-xs pl-1" >Incluye desayuno</p>
-              </div>
             </div>
 
             <div className="pl-4 w-3/4">
@@ -78,19 +86,19 @@ const SearchItem = (props) => {
                     </path>
                   </g></g>
                 </svg>
-                <p class=" text-black text-xs pl-1" >{Oferta.Adultos} adulto(s)</p>
+                <p class=" text-black text-xs pl-1" >{options.adult} adulto(s)</p>
               </div>
               {
-                Oferta.Ninos != null
+                Establecimiento.Ninos != null
                   ? (<div className="flex items-center my-1">
                     <svg fill="#00a3ff" class="w-5 h-5 text-blueLight" aria-hidden="true" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink"><path d="M20.14 15.83A9.09 9.09 0 0 1 12 21a8.88 8.88 0 0 1-5.96-2.28 8.98 8.98 0 0 1-2.17-2.89A4.05 4.05 0 0 1 1 12c0-1.75 1.2-3.34 2.87-3.83A9.07 9.07 0 0 1 12 3a9.1 9.1 0 0 1 8.13 5.17A4.06 4.06 0 0 1 23 12c0 1.75-1.2 3.33-2.86 3.83zm-5.64-4.08c-.68 0-1.25-.57-1.25-1.25s.57-1.25 1.25-1.25 1.25.57 1.25 1.25-.57 1.25-1.25 1.25zm-5 0c-.68 0-1.25-.57-1.25-1.25s.57-1.25 1.25-1.25 1.25.57 1.25 1.25-.57 1.25-1.25 1.25zM19 14a2 2 0 0 0 2-2 2 2 0 0 0-2-2c-.1 0-.19.02-.29.03A7.1 7.1 0 0 0 12 5a7.08 7.08 0 0 0-6.71 5.03C5.19 10.02 5.1 10 5 10a2 2 0 0 0-2 2c0 1.1.9 2 2 2 .1 0 .19-.02.29-.03A7.1 7.1 0 0 0 12 19c3.08 0 5.84-2.1 6.71-5.03.1.01.19.03.29.03zM7.5 14h9a4.9 4.9 0 0 1-4.5 3 4.9 4.9 0 0 1-4.5-3z"></path>
                     </svg>
-                    <p class=" text-black text-xs pl-1" >{Oferta.Ninos} niño(s)</p>
+                    <p class=" text-black text-xs pl-1" >{options.children} niño(s)</p>
                   </div>)
                   : (<></>)
               }
 
-              <div className="flex items-center">
+              {/*<div className="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tax" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" className="w-5 h-5 text-blueLight">
                   <path stroke="none" d="M0 0h24v24H0z" />
                   <line x1="9" y1="14" x2="15" y2="8" />
@@ -99,18 +107,18 @@ const SearchItem = (props) => {
                   <path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2" />
                 </svg>
                 <p class=" text-black  text-xs pl-1" >Incluye impuestos</p>
-              </div>
-            </div>
-
-            <div className="w-full flex justify-end items-end">
-              <div>
-                <p class=" text-greenVE-600 font-bold  text-4xl text-center" >${Oferta.Final}</p>
-                <p class=" text-red-500  text-sm text-center" >Ahorra {Oferta.PorcentajeAhorro}%</p>
-                <button className="bg-greenVE-500 text-white px-2 py-1 rounded-xl text-sm" onClick={HandleClickItem}>Ver Oferta</button>
-              </div>
+            </div>*/}
             </div>
           </div>
+          
         </div>
+        <div className="m-2">
+              <div className="flex flex-col items-center ">
+                <p class=" text-greenVE-600 font-bold  text-3xl text-center" >${Math.round(parseFloat(Establecimiento.PrecioSinImpuestos))}</p>
+                <p class=" text-gray-600  text-xxs text-center " >+ {Math.round(parseFloat(Establecimiento.Impuestos))} de impuestos</p>
+                <button className="bg-greenVE-500 text-white px-2 py-1 rounded-xl text-xs" onClick={HandleClickItem}>Ver Disponibilidad</button>
+              </div>
+            </div>
       </div>
     </div>
   );

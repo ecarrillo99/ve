@@ -5,11 +5,11 @@ const AppBanner = () => {
                 <div ></div>
                 <div class="flex items-center justify-center">
                     <div>
-                        <h2 className=" text-4xl text-white font-semibold">Más de 500 ofertas hoteleras.</h2>
-                        <h4 className="items-center text-xl text-white font-semibold">Descárgate la aplicación y haz tu prueba gratuita.</h4>
-                        <h4 className="items-center text-xl text-white font-semibold">¡Realiza tu Primera reserva hoy!</h4>
-                        <img src="/img/qr_app.png" style={{width: "150px", height: "auto"}} class="mx-auto border-8 border-white mt-7"/>
-                        <div className="grid grid-cols-2 pt-7">
+                        <h2 className=" text-3xl text-white font-semibold">Más de 500 ofertas hoteleras.</h2>
+                        <h4 className="items-center text-base text-white font-semibold">Descárgate la aplicación y haz tu prueba gratuita.</h4>
+                        <h4 className="items-center text-base text-white font-semibold">¡Realiza tu Primera reserva hoy!</h4>
+                        <img src="/img/qr_app.png" style={{width: "150px", height: "auto"}} class="mx-auto border-8 border-white mt-3"/>
+                        <div className="grid grid-cols-2 pb-5 pt-2">
                             <div className="flex items-center justify-end mr-1">
                                 <a target="_blank" href="https://apps.apple.com/ec/app/visitaecuador-com/id1385161516">
                                     <img src="/img/astore.png" style={{width: "150px", height: "auto"}} />

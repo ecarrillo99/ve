@@ -3,11 +3,12 @@ import { format } from "date-fns";
 import { DateRange } from "react-date-range";
 import { es } from 'react-date-range/dist/locale/';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import HotelContacts from "./HotelContacts";
 
 
 const HotelReservation = (props) => {
 
-    const {pFinal, pAhorro, nHabitaciones, nAdultos, nNinos, nNoches}=props
+    const {pFinal, pAhorro, nHabitaciones, nAdultos, nNinos, nNoches, establecimiento, whatsapp, email, telefonos}=props
     const handleClickAway = () => {
         if (openDate) {
             setOpenDate(false)
@@ -38,7 +39,7 @@ const HotelReservation = (props) => {
             };
         });
     };
-
+    
     return (
         <div className="border mt-3 p-2 flex flex-col rounded-md bg-greenVE-300 ">
             <label className="font-bold text-xl">Precio Final: ${pFinal}</label>
@@ -138,6 +139,9 @@ const HotelReservation = (props) => {
                         </ClickAwayListener>
                     )}
                      <button className="bg-greenVE-600 w-full py-1 text-white mt-2">Pre-Reservar</button>
+                     <HotelContacts 
+                        Contactos={establecimiento.Contactos}
+                     ></HotelContacts>
         </div>
     )
 }

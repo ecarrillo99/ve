@@ -33,13 +33,17 @@ module.exports = {
         footerTextColor: '#636363'
       },
       fontSize: {
-        'xxs': '0.5rem', 
+        'xxxs': '0.5rem', 
+        'xxs': '0.6rem', 
       },
       margin: {
         '100': '27rem', // Define una clase para un margen superior de 20px
       },
       height:{
         'gallery':'25.9rem',
+      },
+      width:{
+        '1.5/12':'calc(100% / 12 * 1.5)'
       }
     },
   },

@@ -8,14 +8,14 @@ const containerStyle = {
 
 
 const HotelAdress = (props) => {
-
+    const {Establecimiento}=props;
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: "AIzaSyA6HUJy-ywbROEmCSK-Nx4-smVRLRVyR84"
       });
-
+    console.log(props)
     const center = {
-        lat: props.oferta.Establecimiento.Latitud,
-        lng: props.oferta.Establecimiento.Longitud
+        lat: Establecimiento.Latitud,
+        lng: Establecimiento.Longitud
     };
 
 
@@ -24,7 +24,7 @@ const HotelAdress = (props) => {
     return (
         <div className="border mt-4 px-3 pt-1 pb-3 rounded-lg border-gray-300">
             <label className="text-xl font-medium text-center">Dirección</label>
-            <p className="text-sm">{props.oferta.Establecimiento.Direccion}</p>
+            <p className="text-sm">{Establecimiento.Direccion}</p>
             {isLoaded && center.lat != null ? (<GoogleMap
                 mapContainerStyle={containerStyle}
                 center={center}
@@ -35,7 +35,7 @@ const HotelAdress = (props) => {
                 <MarkerF position={center} >
                     <InfoWindowF position={center}>
                         <div>
-                            <p className="text-xs">{props.oferta.Establecimiento.Titulo}</p>
+                            <p className="text-xs">{Establecimiento.Titulo}</p>
                         </div>
                     </InfoWindowF>
                 </MarkerF>

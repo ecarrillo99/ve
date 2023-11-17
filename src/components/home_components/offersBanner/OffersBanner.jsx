@@ -13,26 +13,7 @@ import ItemRecomendedSkeleton from "./ItemRecomendedSkeleton";
 
 
 const OffersBanner = () => {
-  const responsive = {
-    superLargeDesktop: {
-      // the naming can be any, depends on you.
-      breakpoint: { max: 4000, min: 1024 },
-      items: 3,
-      slidesToSlide: 1,
-    },
-    desktop: {
-      breakpoint: { max: 1024, min: 800 },
-      items: 2,
-    },
-    tablet: {
-      breakpoint: { max: 800, min: 464 },
-      items: 1,
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-    },
-  };
+
 
   const [data, setData] = useState(null);
 
@@ -61,7 +42,7 @@ const OffersBanner = () => {
 
   return (
     <div className="pt-5">
-      <h1 className="font-bold text-2xl text-greenTitle text-center pb-3">NUESTRAS OFERTAS</h1>
+      <h1 className="font-bold text-2xl text-greenTitle pb-3">NUESTRAS OFERTAS</h1>
       <div className="grid lg:grid-cols-8 sm:grid-cols-4 xs:grid-cols-2 md:grid-cols-4 grid-flow-row pb-3 max-sm:grid-cols-2">
         <button className="col-span-1 bg-nacionalesColor h-10 text-white rounded-lg m-1 text-sm" onClick={null}>
           Nacionales
@@ -90,8 +71,8 @@ const OffersBanner = () => {
       </div>
       <Swiper
         modules={[Navigation, Pagination, Scrollbar, A11y, Autoplay]}
-        spaceBetween={50}
-        slidesPerView={3}
+        spaceBetween={10}
+        slidesPerView={4}
         navigation
         autoplay={{
           "delay": 3000,
@@ -119,8 +100,8 @@ const OffersBanner = () => {
             spaceBetween: 40,
           },
           1024: {
-            slidesPerView: 3,
-            spaceBetween: 50,
+            slidesPerView: 4,
+            spaceBetween: 10,
           },
         }}
         className="pb-10 px-10"

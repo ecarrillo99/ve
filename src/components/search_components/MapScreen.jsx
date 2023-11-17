@@ -5,39 +5,30 @@ import {
     MarkerF,
     useLoadScript,
 } from "@react-google-maps/api";
+import { useNavigate } from "react-router-dom";
 
-const markers = [
-    {
-        id: 1,
-        name: "Qobustan",
-        position: { lat: -3.074127, lng: -79.069786 },
-    },
-    {
-        id: 2,
-        name: "Sumqayit",
-        position: { lat: -2.920186, lng: -79.01461 },
-    },
-    {
-        id: 3,
-        name: "Baku",
-        position: { lat: -2.889973, lng: -79.031883 },
-    }
-];
 
-const MapScreen = ({ isOpen, onClose, data }) => {
-    console.log(data[0].Establecimiento)
+const MapScreen = ({ isOpen, onClose, data, destination, date, options }) => {
+    const navigate = useNavigate();
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: "AIzaSyA6HUJy-ywbROEmCSK-Nx4-smVRLRVyR84",
     });
 
     const [activeMarker, setActiveMarker] = useState(null);
+    const [center, setCenter]=useState({ lat: data[0].Latitud, lng: data[0].Longitud })
 
-    const handleActiveMarker = (marker) => {
+    const handleActiveMarker = (marker, latitud, longitud) => {
         if (marker === activeMarker) {
             return;
         }
         setActiveMarker(marker);
+        setCenter({ lat: latitud, lng: longitud })
+        console.log(center)
     };
+
+    const HandleClickItem = (est) => {
+      navigate("/hotel/" + est.IdEstablecimiento, { state: {est, destination, date, options} });
+    }
 
     if (!isOpen) return null;
 
@@ -67,25 +58,26 @@ const MapScreen = ({ isOpen, onClose, data }) => {
                             <div>
                                 {isLoaded ? (
                                     <GoogleMap
-                                        center={{ lat: data[0].Establecimiento.Latitud, lng: data[0].Establecimiento.Longitud }}
-                                        zoom={10}
+                                        center={center}
+                                        zoom={12}
                                         onClick={() => setActiveMarker(null)}
                                         mapContainerStyle={{ width: "100%", height: "75vh", borderRadius: "1%" }}
                                     >
                                         {data.map((item) => (
                                             <MarkerF
-                                                key={item.Establecimiento.Titulo}
-                                                position={{lat:item.Establecimiento.Latitud, lng:item.Establecimiento.Longitud}}
-                                                onClick={() => handleActiveMarker(item.Establecimiento.Titulo)}
-                                            // icon={{
-                                            //   url:"https://t4.ftcdn.net/jpg/02/85/33/21/360_F_285332150_qyJdRevcRDaqVluZrUp8ee4H2KezU9CA.jpg",
-                                            //   scaledSize: { width: 50, height: 50 }
-                                            // }}
+                                                key={item.IdEstablecimiento}
+                                                position={{lat:item.Latitud, lng:item.Longitud}}
+                                                onClick={() => handleActiveMarker(item.IdEstablecimiento, item.Latitud, item.Longitud)}
                                             >
-                                                {activeMarker === item.Establecimiento.Titulo? (
+                                                {activeMarker === item.IdEstablecimiento? (
                                                     <InfoWindowF onCloseClick={() => setActiveMarker(null)}>
                                                         <div>
-                                                            <p>{item.Establecimiento.Titulo}</p>
+                                                            <p className="font-bold" >{item.Titulo}</p>
+                                                            <button className="font-bold" onClick={()=>console.log("pulsado")}>Boton</button>
+                                                            <div className="flex gap-1 justify-center items-center">
+                                                              <label className="font-semibold">Desde:</label>
+                                                              <p>${item.PrecioSinImpuestos}</p>
+                                                            </div>
                                                         </div>
                                                     </InfoWindowF>
                                                 ) : null}

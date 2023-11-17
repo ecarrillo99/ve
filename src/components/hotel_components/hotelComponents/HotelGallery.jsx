@@ -8,7 +8,7 @@ import { Navigation, Pagination, Scrollbar, A11y, Autoplay } from 'swiper/module
 
 
 const HotelGallery = (props) => {
-
+    const {Galeria}=props
     const [currentImage, setCurrentImage] = useState(0);
 
     const imageVariants = {
@@ -31,7 +31,7 @@ const HotelGallery = (props) => {
                       speed={1000}
                     >
                     
-                    {props.oferta.Establecimiento.Galeria.map((img, index) => (
+                    {Galeria.map((img, index) => (
                         <SwiperSlide>
                             <img
                                 key={index}
@@ -46,7 +46,7 @@ const HotelGallery = (props) => {
             <div className='w-10/12'>
                 <motion.div initial="exit" animate="enter" exit="exit" variants={imageVariants} key={currentImage}>
                     <img
-                        src={props.oferta.Establecimiento.Galeria[currentImage].Valor}
+                        src={Galeria[currentImage].Valor}
                         className="rounded-md h-gallery w-full object-cover"
                     />
                 </motion.div>

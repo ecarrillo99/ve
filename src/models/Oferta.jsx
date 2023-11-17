@@ -19,6 +19,8 @@ class Oferta{
         Rack,
         Final,
         Ahorro,
+        FinalSinImpuestos,
+        Impuestos,
         PorcentajeAhorro,
         Ciudad,
         Provincia,
@@ -29,13 +31,17 @@ class Oferta{
         ColorBeneficio,
         Localidad,
         Incluye,
-        Establecimiento,
         Whatsapp,
         Telefono,
         Celular,
         Email,
         Web,
-        Beneficio
+        Beneficio,
+        NumOfertas,
+        SistemaServicios,
+        Restricciones,
+        NoIncluye,
+        Acomodacion,
     ){
         this.Id=Id;
         this.IdLugar=IdLugar;
@@ -56,6 +62,8 @@ class Oferta{
         this.Rack=Rack;
         this.Final=Final;
         this.Ahorro=Ahorro;
+        this.FinalSinImpuestos=FinalSinImpuestos;
+        this.Impuestos=Impuestos;
         this.PorcentajeAhorro=PorcentajeAhorro;
         this.Ciudad=Ciudad;
         this.Provincia=Provincia;
@@ -66,13 +74,17 @@ class Oferta{
         this.ColorBeneficio=ColorBeneficio;
         this.Localidad=Localidad;
         this.Incluye=Incluye;
-        this.Establecimiento=Establecimiento;
         this.Whatsapp=Whatsapp;
         this.Telefono=Telefono;
         this.Celular=Celular;
         this.Email=Email;
         this.Web=Web;
-        this.Beneficio=Beneficio
+        this.Beneficio=Beneficio;
+        this.NumOfertas=NumOfertas;
+        this.SistemaServicios=SistemaServicios;
+        this.Restricciones=Restricciones;
+        this.NoIncluye=NoIncluye;
+        this.Acomodacion=Acomodacion;
     }
 }
 

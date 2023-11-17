@@ -15,18 +15,26 @@ import MapScreen from "../../components/search_components/MapScreen";
 
 const Search = () => {
   const location = useLocation();
-  const [destination, setDestination] = useState(location.state.destination);
-  const [options, setOptions] = useState(location.state.options);
-  const [date, setDate] = useState(location.state.date);
+  const searchParams = new URLSearchParams(location.search);
+  const [destination, setDestination] = useState(JSON.parse(decodeURIComponent(searchParams.get('destino'))));
+  const [options, setOptions] = useState(JSON.parse(decodeURIComponent(searchParams.get('opciones'))));
+  const fechas=JSON.parse(decodeURIComponent(searchParams.get('fechas')))
+  const dateTmp=[{
+    startDate:new Date(fechas[0].startDate),
+    endDate:new Date(fechas[0].endDate),
+    key:new Date(fechas.key)
+  }]
+  const [date, setDate] = useState(dateTmp);
   const [minPrice, setMinPrice] = useState(10)
   const [maxPrice, setMaxPrice] = useState(1000)
   const [prices, setPrices] = useState([minPrice, maxPrice])
   const [data, setData] = useState(null)
   const [dataFinal, setDataFinal] = useState(null)
-  const [filtroNombre, setFiltroNombre] = useState("Defecto")
+  const [filtroNombre, setFiltroNombre] = useState("Estrellas (Mayor a menor)")
   const [services, setServices] = useState([])
   const [openFilters, setOpenFilters] = useState(false);
   const filtro = new Filtro()
+
 
   filtro.IdDestino = destination.Id
   filtro.TipoDestino = destination.Tipo
@@ -45,11 +53,12 @@ const Search = () => {
       getResultadoFiltro(filtro)
         .then((result) => {
           if (result) {
+            result.Establecimientos.sort((a,b)=>b.Catalogacion-a.Catalogacion)
             setDataFinal(result)
             setData(result)
-            setMinPrice(parseInt(result.PrecioMinimo))
-            setMaxPrice(parseInt(result.PrecioMaximo))
-            setPrices([parseInt(result.PrecioMinimo), parseInt(result.PrecioMaximo)])
+            setMinPrice(parseFloat(result.PrecioMinimo))
+            setMaxPrice(parseFloat(result.PrecioMaximo))
+            setPrices([parseFloat(result.PrecioMinimo), parseFloat(result.PrecioMaximo)])
           }
         })
     } catch (error) {
@@ -63,62 +72,67 @@ const Search = () => {
 
   useEffect(() => {
   if (dataFinal) {
-    const ofertasTmp = dataFinal.Ofertas;
-    const ofertasFiltradas = ofertasTmp.filter(oferta => {
-      return oferta.Final >= prices[0] && oferta.Final <= prices[1];
+    const ofertasTmp = dataFinal.Establecimientos;
+    const ofertasFiltradas = ofertasTmp.filter(establecimiento => {
+      return establecimiento.PrecioSinImpuestos >= prices[0] && establecimiento.PrecioSinImpuestos <= prices[1];
     });
 
     // Clona el objeto data para evitar modificar dataFinal
     const dataClone = { ...data };
-    dataClone.Ofertas = ofertasFiltradas;
+    dataClone.Establecimientos = ofertasFiltradas;
     setData(dataClone)
-
-    console.log(dataClone);
-    console.log(dataFinal);
   }
 }, [prices]);
 
   const handleFilterChange=(id)=>{
     setOpenFilters(!openFilters)
+    if(id==0){
+      setFiltroNombre("Estrellas (Mayor a menor)")
+      data.Establecimientos.sort((a,b)=>b.Catalogacion-a.Catalogacion)
+    }
     if(id==1){
-      setFiltroNombre("Precio Final (Menor a mayor)")
-      data.Ofertas.sort((a,b)=>a.Final-b.Final)
+      setFiltroNombre("Estrellas (Menor a mayor)")
+      data.Establecimientos.sort((a,b)=>a.Catalogacion-b.Catalogacion)
     }
     if(id==2){
-      setFiltroNombre("Precio Final (Mayor a menor)")
-      data.Ofertas.sort((a,b)=>b.Final-a.Final)
+      setFiltroNombre("Precio (Menor a mayor)")
+      data.Establecimientos.sort((a,b)=>a.PrecioSinImpuestos-b.PrecioSinImpuestos)
     }
     if(id==3){
-      setFiltroNombre("Ahorro (Menor a mayor)")
-      console.log(data.Ofertas.sort((a,b)=>a.PorcentajeAhorro-b.PorcentajeAhorro))
+      setFiltroNombre("Precio (Mayor a menor)")
+      data.Establecimientos.sort((a,b)=>b.PrecioSinImpuestos-a.PrecioSinImpuestos)
     }
     if(id==4){
-      setFiltroNombre("Ahorro (Mayor a menor)")
-      console.log(data.Ofertas.sort((a,b)=>b.PorcentajeAhorro-a.PorcentajeAhorro))
+      setFiltroNombre("Ahorro (Menor a mayor)")
+      console.log(data.Establecimientos.sort((a,b)=>a.PorcentajeAhorro-b.PorcentajeAhorro))
     }
     if(id==5){
-      setFiltroNombre("Establecimiento (A - Z)")
-      console.log(data.Ofertas.sort((a,b)=>a.Establecimiento.Titulo.localeCompare(b.Establecimiento.Titulo)))
+      setFiltroNombre("Ahorro (Mayor a menor)")
+      console.log(data.Establecimientos.sort((a,b)=>b.PorcentajeAhorro-a.PorcentajeAhorro))
     }
     if(id==6){
-      setFiltroNombre("Establecimiento (Z - A)")
-      console.log(data.Ofertas.sort((a,b)=>b.Establecimiento.Titulo.localeCompare(a.Establecimiento.Titulo)))
+      setFiltroNombre("Establecimiento (A - Z)")
+      console.log(data.Establecimientos.sort((a,b)=>a.Titulo.localeCompare(b.Titulo)))
     }
     if(id==7){
-      setFiltroNombre("Ciudad (A - Z)")
-      console.log(data.Ofertas.sort((a,b)=>a.Establecimiento.Ciudad.localeCompare(b.Establecimiento.Ciudad)))
+      setFiltroNombre("Establecimiento (Z - A)")
+      console.log(data.Establecimientos.sort((a,b)=>b.Titulo.localeCompare(a.Titulo)))
     }
     if(id==8){
-      setFiltroNombre("Ciudad (Z - A)")
-      console.log(data.Ofertas.sort((a,b)=>b.Establecimiento.Ciudad.localeCompare(a.Establecimiento.Ciudad)))
+      setFiltroNombre("Ciudad (A - Z)")
+      console.log(data.Establecimientos.sort((a,b)=>a.Ciudad.localeCompare(b.Ciudad)))
     }
     if(id==9){
-      setFiltroNombre("País (A - Z)")
-      console.log(data.Ofertas.sort((a,b)=>a.Establecimiento.Pais.localeCompare(b.Establecimiento.Pais)))
+      setFiltroNombre("Ciudad (Z - A)")
+      console.log(data.Establecimientos.sort((a,b)=>b.Ciudad.localeCompare(a.Ciudad)))
     }
     if(id==10){
+      setFiltroNombre("País (A - Z)")
+      console.log(data.Establecimientos.sort((a,b)=>a.Pais.localeCompare(b.Pais)))
+    }
+    if(id==11){
       setFiltroNombre("País (Z - A)")
-      console.log(data.Ofertas.sort((a,b)=>b.Establecimiento.Pais.localeCompare(a.Establecimiento.Pais)))
+      console.log(data.Establecimientos.sort((a,b)=>b.Pais.localeCompare(a.Pais)))
     }
   }
 
@@ -159,12 +173,20 @@ const Search = () => {
         <SearchBar
           Place={destination}
           Dates={date}
-          Options={options} />
+          Options={options}
+          NewPage={true}
+           />
       </div>
       <div >
         {
           data&&(
-            <MapScreen isOpen={isModalOpen} onClose={closeModal} data={data.Ofertas} />
+            <MapScreen
+              isOpen={isModalOpen} 
+              onClose={closeModal} 
+              data={data.Establecimientos}
+              destination={destination}
+              date={date}
+              options={options}/>
           )
         }
       </div>
@@ -187,8 +209,8 @@ const Search = () => {
               <h2 className="font-bold text-base">Precio</h2>
               <div className="px-3 py-4">
                 <div className="flex justify-between pb-2 text-sm">
-                  <p>Min. ${prices[0]}</p>
-                  <p>Max. ${prices[1]}</p>
+                  <p>Min. ${Math.round(parseFloat(prices[0]))}</p>
+                  <p>Max. ${Math.round(parseFloat(prices[1]))}</p>
                 </div>
                 <Slider
                   className="slider"
@@ -206,7 +228,7 @@ const Search = () => {
                 <div className="flex flex-col">
                   <div className="border-b-2 p-2">
                     {
-                      data.Servicios.length > 0 && (
+                      data.Servicios && (
                         <div className="flex flex-col">
                           <h2 className="font-bold text-base">Servicios</h2>
                           {
@@ -255,72 +277,78 @@ const Search = () => {
           <div className="flex">
             <div 
               className="border-2 h-fit rounded-xl px-2 py-0.5 mb-3 text-sm cursor-pointer"
-              onClick={()=>setOpenFilters(!openFilters)}> Ordenar por: {filtroNombre}</div>
-            {openFilters&&(<div className="absolute top-56 flex flex-col bg-white border rounded-md shadow-xl z-50" >
+              onClick={()=>data&&setOpenFilters(!openFilters)}> Ordenar por: {filtroNombre}</div>
+            {openFilters&&(<div className="absolute mt-8 flex flex-col bg-white border rounded-md shadow-xl z-50" >
               <button 
                 className="hover:bg-gray-200 px-2 py-1 text-sm" 
                 onClick={()=>handleFilterChange(0)}>
-                  Defecto
+                  Estrellas (Mayor a menor)
               </button>
               <button 
-                className="hover:bg-gray-200 px-2 py-1 text-sm"
+                className="hover:bg-gray-200 px-2 py-1 text-sm" 
                 onClick={()=>handleFilterChange(1)}>
-                  Precio Final (Menor a mayor)
+                  Estrellas (Menor a mayor)
               </button>
               <button 
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
                 onClick={()=>handleFilterChange(2)}>
-                  Precio Final (Mayor a menor)
+                  Precio (Menor a mayor)
               </button>
               <button 
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
                 onClick={()=>handleFilterChange(3)}>
+                  Precio (Mayor a menor)
+              </button>
+              {/*<button 
+                className="hover:bg-gray-200 px-2 py-1 text-sm"
+                onClick={()=>handleFilterChange(4)}>
                   Ahorro (Menor a mayor)
               </button>
               <button 
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
-                onClick={()=>handleFilterChange(4)}>
+                onClick={()=>handleFilterChange(5)}>
                   Ahorro (Mayor a menor)
-              </button>
+          </button>*/}
               <button 
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
-                onClick={()=>handleFilterChange(5)}>
+                onClick={()=>handleFilterChange(6)}>
                   Establecimiento (A - Z)
               </button>
               <button 
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
-                onClick={()=>handleFilterChange(6)}>
+                onClick={()=>handleFilterChange(7)}>
                   Establecimiento (Z - A)
               </button>
               <button 
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
-                onClick={()=>handleFilterChange(7)}>
+                onClick={()=>handleFilterChange(8)}>
                   Ciudad (A - Z)
               </button>
               <button 
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
-                onClick={()=>handleFilterChange(8)}>
+                onClick={()=>handleFilterChange(9)}>
                   Ciudad (Z - A)
               </button>
               <button 
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
-                onClick={()=>handleFilterChange(9)}>
+                onClick={()=>handleFilterChange(10)}>
                   País (A - Z)
               </button>
               <button 
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
-                onClick={()=>handleFilterChange(10)}>
+                onClick={()=>handleFilterChange(11)}>
                   País (Z - A)
               </button>
             </div>)}
           </div>
           {data
             ? (
-              data.Ofertas.map((item) => (
-                item.EstadoBusqueda == "A" &&
+              data.Establecimientos.map((item) => (
                 <SearchItem
-                  Oferta={item}
-                  Establecimiento={item.Establecimiento}
+                  options={options}
+                  date={date}
+                  destination={destination}
+                  Establecimiento={item}
                 />
               ))
             )
@@ -331,15 +359,15 @@ const Search = () => {
               <SearchItemSkeleton />
             </div>)
           }
-          {data
+          {/*data
             ? (
               <div>
                 {
-                  data.Ofertas.length>0
+                  data.Establecimientos.length>0
                   ?(<h2 className="text-center font-semibold text-2xl pb-2 text-remateColor pt-4">OTRAS OFERTAS DISPONIBLES</h2>)
                   :(<h2 className="text-center font-semibold text-2xl pb-2 text-remateColor pt-4">NO SE ENCONTRARON COINCIDENCIAS</h2>)
                 }                {
-                  data.Ofertas.map((item) => (
+                  data.Establecimientos.map((item) => (
                     item.EstadoBusqueda == "B" &&
                     <SearchItem
                       Oferta={item}
@@ -356,7 +384,7 @@ const Search = () => {
               <SearchItemSkeleton />
               <SearchItemSkeleton />
             </div>)
-          }
+            */}
         </div>
       </div>
       <Footer />
