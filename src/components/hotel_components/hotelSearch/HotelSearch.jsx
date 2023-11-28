@@ -107,7 +107,7 @@ const HotelSearch = (props) => {
       };
     
       const handleSearch = () => {
-        const path=`#/busqueda/?destino=${encodeURIComponent(JSON.stringify(destination))}&fechas=${encodeURIComponent(JSON.stringify(date))}&opciones=${encodeURIComponent(JSON.stringify(options))}`
+        const path=`../busqueda/?destino=${encodeURIComponent(JSON.stringify(destination))}&fechas=${encodeURIComponent(JSON.stringify(date))}&opciones=${encodeURIComponent(JSON.stringify(options))}`
         window.open(path)
       };
     

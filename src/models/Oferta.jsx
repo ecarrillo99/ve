@@ -18,6 +18,7 @@ class Oferta{
         TextoGanga,
         Rack,
         Final,
+        Base,
         Ahorro,
         FinalSinImpuestos,
         Impuestos,
@@ -61,6 +62,7 @@ class Oferta{
         this.TextoGanga=TextoGanga;
         this.Rack=Rack;
         this.Final=Final;
+        this.Base=Base;
         this.Ahorro=Ahorro;
         this.FinalSinImpuestos=FinalSinImpuestos;
         this.Impuestos=Impuestos;

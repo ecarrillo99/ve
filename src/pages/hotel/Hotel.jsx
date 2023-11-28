@@ -26,21 +26,20 @@ const Hotel = () => {
   console.log("Hola", date[0].endDate)
   const { id } = useParams();
   const [data, setData] = useState(null);
+  const [recomendados, setRecomendados] =useState({})
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        getDetalleOferta(id)
-          .then((result)=>{
-            if(result){
-              console.log(result)
-              setData(result);
-            }
-          })
-        
-      } catch (error) {
-        console.error("Error:", error);
+    function fetchData() {
+      
+      console.log(establecimiento)
+      const nuevoEstado = {};
+      for (const recomendado of establecimiento.Recomendados) {
+        console.log(recomendado.Id)
+        nuevoEstado[recomendado.Id] = recomendado.NumOfertas;
       }
+      console.log("Hola hola")
+      console.log(nuevoEstado)
+      setRecomendados(nuevoEstado);
     }
 
     fetchData();
@@ -81,7 +80,7 @@ const Hotel = () => {
         </div>
       </div>
       <div className="flex mx-auto max-w-6xl py-0 sm:px-6 lg:px-8 mb-20">
-        <HotelOfertas Establecimiento={establecimiento} Noches={noches}></HotelOfertas>
+        <HotelOfertas Establecimiento={establecimiento} Noches={noches} ></HotelOfertas>
       </div>
      
       <Footer />

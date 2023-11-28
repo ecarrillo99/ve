@@ -14,6 +14,7 @@ class Establecimiento{
         Foto,
         Direccion,
         Servicios,
+        ServiciosHab,
         Incluye,
         NoIncluye,
         Restricciones,
@@ -43,6 +44,7 @@ class Establecimiento{
         this.Foto=Foto
         this.Direccion=Direccion
         this.Servicios=Servicios
+        this.ServiciosHab=ServiciosHab
         this.Incluye=Incluye
         this.NoIncluye=NoIncluye
         this.Restricciones=Restricciones

@@ -1,10 +1,28 @@
 import { Accordion, AccordionBody, AccordionHeader } from "@material-tailwind/react";
 import Icons from "../../../global/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const HotelOfertas = (props) => {
     const {Establecimiento, Noches}=props;
     const icons = new Icons()
+    const [selectedOptions, setSelectedOptions] = useState({});
+
+    useEffect(() => {
+      function fetchData() {
+        const nuevoEstado = {};
+        for (const recomendado of Establecimiento.Recomendados) {
+          console.log(recomendado.Id)
+          nuevoEstado[recomendado.Id] = recomendado.NumOfertas;
+        }
+        console.log("Hola hola")
+        console.log(nuevoEstado)
+        setSelectedOptions(nuevoEstado);
+      }
+  
+      fetchData();
+    }, []);
+
+
 
     function Icon({ id, open }) {
         return (
@@ -31,12 +49,12 @@ const HotelOfertas = (props) => {
     const [total, setTotal]=useState(0);
     const [impuestos, setImpuestos]=useState(0)
 
-    const [selectedOptions, setSelectedOptions] = useState(options.map(() => options[0]));
+    
 
-    const handleSelectChange = (event, index) => {
-        const newSelectedOptions = [...selectedOptions];
-        newSelectedOptions[index] = event.target.value;
-        setSelectedOptions(newSelectedOptions);
+    const handleSelectChange = (event, key) => {
+    const newSelectedOptions = { ...selectedOptions };
+    newSelectedOptions[key] = event.target.value;
+    setSelectedOptions(newSelectedOptions);
     };
 
     const calcularTotal = () => {
@@ -46,7 +64,8 @@ const HotelOfertas = (props) => {
         };
         for (const id in selectedOptions) {
           const selectedValue = selectedOptions[id];
-          const objeto = Establecimiento.Ofertas[id];
+          
+          const objeto = Establecimiento.Ofertas.find(oferta => oferta.Id.toString() === id.toString());
           if (objeto) {
             total.SinImpuestos += objeto.FinalSinImpuestos * selectedValue;
             total.Impuestos += objeto.Impuestos * selectedValue;
@@ -55,9 +74,19 @@ const HotelOfertas = (props) => {
         return total;
       };
 
-    return (
-        
-    <table class="table-auto w-full">
+      const handleClickReservar = () => {
+        for (const id in selectedOptions){
+            if(selectedOptions[id]!=0){
+                const objeto = Establecimiento.Ofertas.find(oferta => oferta.Id.toString() === id.toString());
+                const cantidad= (objeto.Final/objeto.Base)*selectedOptions[id];
+            }
+        }
+      };
+      
+    
+
+    return ( 
+    <table id={"tabla-ofertas"} class="table-auto w-full">
     <thead className="bg-greenVE-600">
       <tr >
         <th className="border border-greenVE-600 px-2 text-gray-100 font-medium">Ofertas</th>
@@ -160,12 +189,12 @@ const HotelOfertas = (props) => {
                 }
                 </td>
                 <td className="border p-2">
-                    <div key={index} className="flex items-center justify-center space-x-2 mb-2">
+                    <div key={item.Id} className="flex items-center justify-center space-x-2 mb-2">
                         <select
-                            id={`combobox-${index}`}
-                            name={`combobox-${index}`}
-                            value={selectedOptions[index]}
-                            onChange={(event) => handleSelectChange(event, index)}
+                            id={`combobox-${item.Id}`}
+                            name={`combobox-${item.Id}`}
+                            value={selectedOptions[item.Id]}
+                            onChange={(event) => handleSelectChange(event, item.Id)}
                             className="border rounded-md px-2 py-1 text-sm"
                         >
                             {options.map((option) => (
@@ -182,7 +211,7 @@ const HotelOfertas = (props) => {
                         <div className="flex flex-col p-2 items-center gap-1">
                             <label className="font-semibold text-3xl text-center">${calcularTotal().SinImpuestos}</label>
                             <label className="text-xs text-gray-500 justify-center items-center">+ ${calcularTotal().Impuestos} de impuestos</label>
-                            <button className="bg-greenVE-500 text-white py-1 px-2 rounded-lg border-greenVE-600 border-2">Pre-Reservar</button>
+                            <button className="bg-greenVE-500 text-white py-1 px-2 rounded-lg border-greenVE-600 border-2" onClick={()=>handleClickReservar()}>Confirmar</button>
                         </div>
                     </td>)
                 }

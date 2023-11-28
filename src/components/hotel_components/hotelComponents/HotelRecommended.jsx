@@ -21,6 +21,18 @@ const HotelRecommended = (props) => {
         );
     }
 
+    const handleClickPreReserva=()=>{
+        const targetElement=document.getElementById('tabla-ofertas');
+
+        if(targetElement){
+            const scrollOptions={
+                behavior:"smooth",
+                block:"start"
+            }
+            targetElement.scrollIntoView(scrollOptions);
+        }
+    }
+
     const [open, setOpen] = useState(0);
     const [count, setCount] = useState(0);
 
@@ -112,7 +124,7 @@ const HotelRecommended = (props) => {
                 <div className="border-l w-2/12 flex flex-col p-2 items-center justify-center gap-1">
                     <label className="font-semibold text-3xl">${Establecimiento.PrecioSinImpuestos}</label>
                     <label className="text-xs text-gray-500">+ ${Establecimiento.Impuestos} de impuestos</label>
-                    <button className="bg-greenVE-500 text-white py-1 px-2 rounded-lg border-greenVE-600 border-2">Pre-Reservar</button>
+                    <button className="bg-greenVE-500 text-white py-1 px-2 rounded-lg border-greenVE-600 border-2" onClick={()=>handleClickPreReserva()}>Pre-Reservar</button>
                 </div>
             </div>
         </div>

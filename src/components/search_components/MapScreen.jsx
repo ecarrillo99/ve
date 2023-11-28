@@ -73,7 +73,6 @@ const MapScreen = ({ isOpen, onClose, data, destination, date, options }) => {
                                                     <InfoWindowF onCloseClick={() => setActiveMarker(null)}>
                                                         <div>
                                                             <p className="font-bold" >{item.Titulo}</p>
-                                                            <button className="font-bold" onClick={()=>console.log("pulsado")}>Boton</button>
                                                             <div className="flex gap-1 justify-center items-center">
                                                               <label className="font-semibold">Desde:</label>
                                                               <p>${item.PrecioSinImpuestos}</p>

@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom"
 import Icons from "../../../global/icons"
 import "./navbar.css"
 import { useState } from "react"
+import { endRemoteSession } from "../../../controllers/suscripcion/suscripcionController"
 const icons = new Icons()
 const Navbar = () => {
   const navigate = new useNavigate()
@@ -16,6 +17,20 @@ const Navbar = () => {
 
   const handleClickProfile=()=>{
     setOpenProfile(!openProfile)
+  }
+
+  const handleClickLogOut=()=>{
+    try{
+      endRemoteSession()
+        .then((result)=>{
+          if(result){
+            window.location.reload();
+            console.log("reload");
+          }
+        })
+    }catch (error) {
+      console.error("Error:", error);
+    }
   }
   
   return (
@@ -35,21 +50,21 @@ const Navbar = () => {
               {
                 <div className="flex items-center">
                   {
-                    foto!=""&&(
+                    (foto!=""&&nivel!="visitante")&&(
                     <img src={foto} className="rounded-full h-12 w-12 border-2 cursor-pointer" onClick={()=>handleClickProfile()}></img>
                     
                     )
                   }
                   {
                     (nivel!="visitante"&&openProfile)&&
-                    <div className="absolute z-50 bg-white flex flex-col top-16 -ml-12 p-4 shadow-lg rounded-md gap-0.5">
-                    <button>Mi perfil</button>
+                    <div className="absolute z-50 bg-white flex flex-col top-16 -ml-12 shadow-lg rounded-md gap-0.5">
+                    <button className="hover:bg-greenVE-200 px-4 hover:rounded-t-lg">Mi perfil</button>
                     <div className="border"></div>
-                    <button>Mis Favoritos</button>
+                    <button className="hover:bg-greenVE-200 px-4">Mis Favoritos</button>
                     <div className="border"></div>
-                    <button>Administrador</button>
+                    <button className="hover:bg-greenVE-200 px-4">Administrador</button>
                     <div className="border"></div>
-                    <button>Cerrar sesión</button>
+                    <button onClick={()=>handleClickLogOut()} className="hover:bg-greenVE-200 px-4 hover:rounded-b-lg">Cerrar sesión</button>
                   </div>
                   }
                 </div>

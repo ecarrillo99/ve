@@ -6,6 +6,8 @@ class ResultadoBusqueda{
         Catalogaciones,
         Locaciones,
         Servicios,
+        ServiciosHab,
+        Incluye,
         Ordenes,
         Beneficios,
     ){
@@ -15,8 +17,10 @@ class ResultadoBusqueda{
         this.Catalogacionesta=Catalogaciones;
         this.Locaciones=Locaciones;
         this.Servicios=Servicios;
+        this.ServiciosHab=ServiciosHab;
+        this.Incluye=Incluye;
         this.Ordenes=Ordenes;
-        this.Beneficios=Beneficios
+        this.Beneficios=Beneficios;
     }
 }
 

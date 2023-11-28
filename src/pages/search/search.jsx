@@ -18,11 +18,11 @@ const Search = () => {
   const searchParams = new URLSearchParams(location.search);
   const [destination, setDestination] = useState(JSON.parse(decodeURIComponent(searchParams.get('destino'))));
   const [options, setOptions] = useState(JSON.parse(decodeURIComponent(searchParams.get('opciones'))));
-  const fechas=JSON.parse(decodeURIComponent(searchParams.get('fechas')))
-  const dateTmp=[{
-    startDate:new Date(fechas[0].startDate),
-    endDate:new Date(fechas[0].endDate),
-    key:new Date(fechas.key)
+  const fechas = JSON.parse(decodeURIComponent(searchParams.get('fechas')))
+  const dateTmp = [{
+    startDate: new Date(fechas[0].startDate),
+    endDate: new Date(fechas[0].endDate),
+    key: new Date(fechas.key)
   }]
   const [date, setDate] = useState(dateTmp);
   const [minPrice, setMinPrice] = useState(10)
@@ -53,7 +53,7 @@ const Search = () => {
       getResultadoFiltro(filtro)
         .then((result) => {
           if (result) {
-            result.Establecimientos.sort((a,b)=>b.Catalogacion-a.Catalogacion)
+            result.Establecimientos.sort((a, b) => b.Catalogacion - a.Catalogacion)
             setDataFinal(result)
             setData(result)
             setMinPrice(parseFloat(result.PrecioMinimo))
@@ -67,92 +67,129 @@ const Search = () => {
   }
   useEffect(() => {
     fetchData(filtro);
-    
+
   }, []);
 
   useEffect(() => {
-  if (dataFinal) {
-    const ofertasTmp = dataFinal.Establecimientos;
-    const ofertasFiltradas = ofertasTmp.filter(establecimiento => {
-      return establecimiento.PrecioSinImpuestos >= prices[0] && establecimiento.PrecioSinImpuestos <= prices[1];
-    });
+    if (dataFinal) {
+      const ofertasTmp = dataFinal.Establecimientos;
+      const ofertasFiltradas = ofertasTmp.filter(establecimiento => {
+        return establecimiento.PrecioSinImpuestos >= prices[0] && establecimiento.PrecioSinImpuestos <= prices[1];
+      });
 
-    // Clona el objeto data para evitar modificar dataFinal
-    const dataClone = { ...data };
-    dataClone.Establecimientos = ofertasFiltradas;
-    setData(dataClone)
-  }
-}, [prices]);
+      // Clona el objeto data para evitar modificar dataFinal
+      const dataClone = { ...data };
+      dataClone.Establecimientos = ofertasFiltradas;
+      setData(dataClone)
+    }
+  }, [prices]);
 
-  const handleFilterChange=(id)=>{
+  const handleFilterChange = (id) => {
     setOpenFilters(!openFilters)
-    if(id==0){
+    if (id == 0) {
       setFiltroNombre("Estrellas (Mayor a menor)")
-      data.Establecimientos.sort((a,b)=>b.Catalogacion-a.Catalogacion)
+      data.Establecimientos.sort((a, b) => b.Catalogacion - a.Catalogacion)
     }
-    if(id==1){
+    if (id == 1) {
       setFiltroNombre("Estrellas (Menor a mayor)")
-      data.Establecimientos.sort((a,b)=>a.Catalogacion-b.Catalogacion)
+      data.Establecimientos.sort((a, b) => a.Catalogacion - b.Catalogacion)
     }
-    if(id==2){
+    if (id == 2) {
       setFiltroNombre("Precio (Menor a mayor)")
-      data.Establecimientos.sort((a,b)=>a.PrecioSinImpuestos-b.PrecioSinImpuestos)
+      data.Establecimientos.sort((a, b) => a.PrecioSinImpuestos - b.PrecioSinImpuestos)
     }
-    if(id==3){
+    if (id == 3) {
       setFiltroNombre("Precio (Mayor a menor)")
-      data.Establecimientos.sort((a,b)=>b.PrecioSinImpuestos-a.PrecioSinImpuestos)
+      data.Establecimientos.sort((a, b) => b.PrecioSinImpuestos - a.PrecioSinImpuestos)
     }
-    if(id==4){
+    if (id == 4) {
       setFiltroNombre("Ahorro (Menor a mayor)")
-      console.log(data.Establecimientos.sort((a,b)=>a.PorcentajeAhorro-b.PorcentajeAhorro))
+      console.log(data.Establecimientos.sort((a, b) => a.PorcentajeAhorro - b.PorcentajeAhorro))
     }
-    if(id==5){
+    if (id == 5) {
       setFiltroNombre("Ahorro (Mayor a menor)")
-      console.log(data.Establecimientos.sort((a,b)=>b.PorcentajeAhorro-a.PorcentajeAhorro))
+      console.log(data.Establecimientos.sort((a, b) => b.PorcentajeAhorro - a.PorcentajeAhorro))
     }
-    if(id==6){
+    if (id == 6) {
       setFiltroNombre("Establecimiento (A - Z)")
-      console.log(data.Establecimientos.sort((a,b)=>a.Titulo.localeCompare(b.Titulo)))
+      console.log(data.Establecimientos.sort((a, b) => a.Titulo.localeCompare(b.Titulo)))
     }
-    if(id==7){
+    if (id == 7) {
       setFiltroNombre("Establecimiento (Z - A)")
-      console.log(data.Establecimientos.sort((a,b)=>b.Titulo.localeCompare(a.Titulo)))
+      console.log(data.Establecimientos.sort((a, b) => b.Titulo.localeCompare(a.Titulo)))
     }
-    if(id==8){
+    if (id == 8) {
       setFiltroNombre("Ciudad (A - Z)")
-      console.log(data.Establecimientos.sort((a,b)=>a.Ciudad.localeCompare(b.Ciudad)))
+      console.log(data.Establecimientos.sort((a, b) => a.Ciudad.localeCompare(b.Ciudad)))
     }
-    if(id==9){
+    if (id == 9) {
       setFiltroNombre("Ciudad (Z - A)")
-      console.log(data.Establecimientos.sort((a,b)=>b.Ciudad.localeCompare(a.Ciudad)))
+      console.log(data.Establecimientos.sort((a, b) => b.Ciudad.localeCompare(a.Ciudad)))
     }
-    if(id==10){
+    if (id == 10) {
       setFiltroNombre("País (A - Z)")
-      console.log(data.Establecimientos.sort((a,b)=>a.Pais.localeCompare(b.Pais)))
+      console.log(data.Establecimientos.sort((a, b) => a.Pais.localeCompare(b.Pais)))
     }
-    if(id==11){
+    if (id == 11) {
       setFiltroNombre("País (Z - A)")
-      console.log(data.Establecimientos.sort((a,b)=>b.Pais.localeCompare(a.Pais)))
+      console.log(data.Establecimientos.sort((a, b) => b.Pais.localeCompare(a.Pais)))
     }
   }
 
   const [checkboxStates, setCheckboxStates] = useState([]);
 
   const handleCheckBoxChange = (id) => {
-    setCheckboxStates({
-      ...checkboxStates,
-      [id]: !checkboxStates[id],
+    setCheckboxStates(prevState => {
+      const updatedStates = {
+        ...prevState,
+        [id]: !prevState[id],
+      };
+      var servicios = []
+      for (const servicio in updatedStates) {
+        if (updatedStates[servicio]) {
+          servicios.push(servicio)
+        }
+      }
+  
+      if (dataFinal) {
+        const ofertasTmp = dataFinal.Establecimientos;
+  
+        // Verifica si la lista de servicios está vacía y muestra la data completa
+        if (servicios.length === 0) {
+          const dataClone = { ...data };
+          dataClone.Establecimientos = ofertasTmp;
+          setData(dataClone);
+          return updatedStates;
+        }
+  
+        const ofertasFiltradas = ofertasTmp.filter(establecimiento => {
+          // Verifica si establecimiento.Servicios es un array y no es undefined
+          const serviciosValidos = Array.isArray(establecimiento.Servicios) &&
+            establecimiento.Servicios.some(servicio => servicios.includes(servicio.Valor));
+  
+          // Verifica si establecimiento.Incluye es un valor válido y está en la lista de servicios
+          const incluyeValidos = Array.isArray(establecimiento.Incluye) &&
+            establecimiento.Incluye.some(servicio => servicios.includes(servicio.Valor));
+  
+          // Verifica si establecimiento.ServiciosHab es un valor válido y está en la lista de servicios
+          const serviciosHabValidos = Array.isArray(establecimiento.ServiciosHab) &&
+            establecimiento.ServiciosHab.some(servicio => servicios.includes(servicio.Valor));
+  
+          // Retorna true si al menos una de las condiciones se cumple
+          return serviciosValidos || incluyeValidos || serviciosHabValidos;
+        });
+  
+        // Clona el objeto data para evitar modificar dataFinal
+        const dataClone = { ...data };
+        dataClone.Establecimientos = ofertasFiltradas;
+        setData(dataClone);
+      }
+  
+      return updatedStates;
     });
-    var servicios = []
-    for (const servicio in checkboxStates) {
-      servicios.push(servicio)
-    }
-    filtro.IdServicios = servicios
-    console.log(filtro)
-    fetchData(filtro);
   };
 
-  const handleChangePriceRange=()=>{
+  const handleChangePriceRange = () => {
     setPrices()
   }
 
@@ -175,20 +212,20 @@ const Search = () => {
           Dates={date}
           Options={options}
           NewPage={true}
-           />
+        />
       </div>
       <div >
         {
-          data&&(
+          data && (
             <MapScreen
-              isOpen={isModalOpen} 
-              onClose={closeModal} 
+              isOpen={isModalOpen}
+              onClose={closeModal}
               data={data.Establecimientos}
               destination={destination}
               date={date}
-              options={options}/>
+              options={options} />
           )
-        }
+          }
       </div>
       <div className="flex mx-auto max-w-6xl py-6 sm:px-6 lg:px-8">
 
@@ -196,10 +233,10 @@ const Search = () => {
           <div className="mb-4 relative h-44 rounded-md">
             <img src="/img/map.svg" alt="Mi Imagen" class="w-full h-full object-cover rounded-md" />
             <div class="absolute top-0 left-0 w-full h-full bg-black opacity-30 rounded-md"></div>
-            <button 
+            <button
               class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-greenVE-500 text-white px-3 py-1 rounded-full"
               onClick={openModal}>
-                Ver en Mapa
+              Ver en Mapa
             </button>
           </div>
 
@@ -230,7 +267,7 @@ const Search = () => {
                     {
                       data.Servicios && (
                         <div className="flex flex-col">
-                          <h2 className="font-bold text-base">Servicios</h2>
+                          <h2 className="font-bold text-base">Servicios del hotel</h2>
                           {
                             data.Servicios.map((item) => (
                               <label key={item.Valor}>
@@ -243,15 +280,32 @@ const Search = () => {
                       )
                     }
                   </div>
-                  <div className="p-2">
+                  <div className="border-b-2 p-2">
                     {
-                      data.Beneficios.length > 0 && (
+                      data.ServiciosHab && (
                         <div className="flex flex-col">
-                          <h2 className="font-bold text-base">Beneficios</h2>
+                          <h2 className="font-bold text-base">Servicios de habitación</h2>
                           {
-                            data.Beneficios.map((item) => (
-                              <label>
-                                <input type="checkbox" onChange={null} />
+                            data.ServiciosHab.map((item) => (
+                              <label key={item.Valor}>
+                                <input type="checkbox" onChange={() => handleCheckBoxChange(item.Valor)} checked={checkboxStates[item.Valor]} />
+                                <span className="pl-2">{item.Titulo}</span>
+                              </label>
+                            ))
+                          }
+                        </div>
+                      )
+                    }
+                  </div>
+                  <div className="border-b-2 p-2">
+                    {
+                      data.Incluye && (
+                        <div className="flex flex-col">
+                          <h2 className="font-bold text-base">Incluye</h2>
+                          {
+                            data.Incluye.map((item) => (
+                              <label key={item.Valor}>
+                                <input type="checkbox" onChange={() => handleCheckBoxChange(item.Valor)} checked={checkboxStates[item.Valor]} />
                                 <span className="pl-2">{item.Titulo}</span>
                               </label>
                             ))
@@ -275,29 +329,29 @@ const Search = () => {
         </div>
         <div className="w-9/12">
           <div className="flex">
-            <div 
+            <div
               className="border-2 h-fit rounded-xl px-2 py-0.5 mb-3 text-sm cursor-pointer"
-              onClick={()=>data&&setOpenFilters(!openFilters)}> Ordenar por: {filtroNombre}</div>
-            {openFilters&&(<div className="absolute mt-8 flex flex-col bg-white border rounded-md shadow-xl z-50" >
-              <button 
-                className="hover:bg-gray-200 px-2 py-1 text-sm" 
-                onClick={()=>handleFilterChange(0)}>
-                  Estrellas (Mayor a menor)
-              </button>
-              <button 
-                className="hover:bg-gray-200 px-2 py-1 text-sm" 
-                onClick={()=>handleFilterChange(1)}>
-                  Estrellas (Menor a mayor)
-              </button>
-              <button 
+              onClick={() => data && setOpenFilters(!openFilters)}> Ordenar por: {filtroNombre}</div>
+            {openFilters && (<div className="absolute mt-8 flex flex-col bg-white border rounded-md shadow-xl z-50" >
+              <button
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
-                onClick={()=>handleFilterChange(2)}>
-                  Precio (Menor a mayor)
+                onClick={() => handleFilterChange(0)}>
+                Estrellas (Mayor a menor)
               </button>
-              <button 
+              <button
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
-                onClick={()=>handleFilterChange(3)}>
-                  Precio (Mayor a menor)
+                onClick={() => handleFilterChange(1)}>
+                Estrellas (Menor a mayor)
+              </button>
+              <button
+                className="hover:bg-gray-200 px-2 py-1 text-sm"
+                onClick={() => handleFilterChange(2)}>
+                Precio (Menor a mayor)
+              </button>
+              <button
+                className="hover:bg-gray-200 px-2 py-1 text-sm"
+                onClick={() => handleFilterChange(3)}>
+                Precio (Mayor a menor)
               </button>
               {/*<button 
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
@@ -309,35 +363,35 @@ const Search = () => {
                 onClick={()=>handleFilterChange(5)}>
                   Ahorro (Mayor a menor)
           </button>*/}
-              <button 
+              <button
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
-                onClick={()=>handleFilterChange(6)}>
-                  Establecimiento (A - Z)
+                onClick={() => handleFilterChange(6)}>
+                Establecimiento (A - Z)
               </button>
-              <button 
+              <button
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
-                onClick={()=>handleFilterChange(7)}>
-                  Establecimiento (Z - A)
+                onClick={() => handleFilterChange(7)}>
+                Establecimiento (Z - A)
               </button>
-              <button 
+              <button
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
-                onClick={()=>handleFilterChange(8)}>
-                  Ciudad (A - Z)
+                onClick={() => handleFilterChange(8)}>
+                Ciudad (A - Z)
               </button>
-              <button 
+              <button
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
-                onClick={()=>handleFilterChange(9)}>
-                  Ciudad (Z - A)
+                onClick={() => handleFilterChange(9)}>
+                Ciudad (Z - A)
               </button>
-              <button 
+              <button
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
-                onClick={()=>handleFilterChange(10)}>
-                  País (A - Z)
+                onClick={() => handleFilterChange(10)}>
+                País (A - Z)
               </button>
-              <button 
+              <button
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
-                onClick={()=>handleFilterChange(11)}>
-                  País (Z - A)
+                onClick={() => handleFilterChange(11)}>
+                País (Z - A)
               </button>
             </div>)}
           </div>

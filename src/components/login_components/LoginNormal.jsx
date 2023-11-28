@@ -2,6 +2,7 @@ import { useState } from "react";
 import { loginRemote } from "../../controllers/suscripcion/suscripcionController";
 import { Spinner } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
+import Config from "../../global/config";
 
 const LoginNormal = () => {
     const [inputUser, setInputUser] = useState('');
@@ -27,8 +28,16 @@ const LoginNormal = () => {
         inputUser == "" ? setValidUser(false) : setValidUser(true)
         if (inputPass != "" && inputUser != "" && !isLoading) {
             setIsLoading(true)
+            const params={
+                "id_metodo": Config.IDMETODO,
+                "id_servicio": Config.IDSERVICIO,
+                "id": inputUser,
+                "pass": inputPass,
+                "servicio": Config.SERVICIO,
+                "metodo": Config.METODO,
+              }
             try {
-                loginRemote(inputUser, inputPass, "interno")
+                loginRemote(params)
                     .then((result) => {
                         setIsLoading(false)
                         console.log(result)
