@@ -20,7 +20,7 @@ const LoginNormal = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [isIncorrect, setIsIncorrect] = useState(false)
 
-    const navigate =useNavigate()
+    const navigate = useNavigate()
 
     const handleClickLogin = () => {
         setIsIncorrect(false)
@@ -28,22 +28,22 @@ const LoginNormal = () => {
         inputUser == "" ? setValidUser(false) : setValidUser(true)
         if (inputPass != "" && inputUser != "" && !isLoading) {
             setIsLoading(true)
-            const params={
+            const params = {
                 "id_metodo": Config.IDMETODO,
                 "id_servicio": Config.IDSERVICIO,
                 "id": inputUser,
                 "pass": inputPass,
                 "servicio": Config.SERVICIO,
                 "metodo": Config.METODO,
-              }
+            }
             try {
                 loginRemote(params)
                     .then((result) => {
                         setIsLoading(false)
                         console.log(result)
-                        if(result){
+                        if (result) {
                             navigate(-1)
-                        }else{
+                        } else {
                             setIsIncorrect(true)
                         }
                     })

@@ -1,5 +1,5 @@
 class OfertaInicio{
-    constructor(IdOferta, Foto, Precio, Lugar, Establecimiento, Titulo, Noches, Dias, Adultos, Ninos){
+    constructor(IdOferta, Foto, Precio, Lugar, Establecimiento, Titulo, Noches, Dias, Adultos, Ninos, Catalogacion){
         this.IdOferta = IdOferta;
         this.Foto=Foto;
         this.Precio=Precio;
@@ -10,6 +10,7 @@ class OfertaInicio{
         this.Dias=Dias;
         this.Adultos=Adultos;
         this.Ninos=Ninos;
+        this.Catalogacion=Catalogacion
     }
 }
 

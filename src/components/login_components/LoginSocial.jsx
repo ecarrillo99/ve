@@ -18,7 +18,7 @@ const LoginSocial=()=>{
     const [isLoading, setIsLoading] = useState(false)
 
     const handleClickGoogle=()=>{
-        signInWithPopup(auth, gProvider).then((result)=>{
+        signInWithPopup(auth, gProvider).then(async (result)=>{
             setIsLoading(true);
             const user = result.user;
             try{
@@ -28,7 +28,6 @@ const LoginSocial=()=>{
                 const email = user.email??'';
                 var id = user.uid??randomStr;
                 var pass = encodePass(email);
-                console.log(result)
                 if (email.trim() === '') {
                     setIsLoading(false)
                     alert("Correo inválido, intente con otra cuenta")
@@ -44,10 +43,10 @@ const LoginSocial=()=>{
                     "email": email,
                     "id_servicio": Config.IDSERVICIO,
                     "id_metodo": Config.IDMETODO_EX_GO,
-                    "cp":"\"\"",
                 }
+                console.log(params)
                 try {
-                    loginRemote(params)
+                    await loginRemote(params)
                         .then((result) => {
                             setIsLoading(false)
                             console.log(result)

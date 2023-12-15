@@ -7,13 +7,13 @@ const Login = () => {
     return(
         <div className="h-screen">
             <Navbar></Navbar>
-            <div className="flex mx-auto my-28 max-w-6xl py-6 sm:px-6 lg:px-8  items-center">
-                <div className="w-1/2 border-r-2">
-                    <LoginNormal></LoginNormal>
-                </div>
-                <div className="w-1/2">
-                    <LoginSocial></LoginSocial>
-                </div>
+            <div className="flex flex-col mx-auto my-28 max-w-6xl py-6 sm:flex-row sm:px-6 lg:px-8 items-center">
+            <div className="w-full sm:w-1/2 border-r sm:border-r-2 mb-4 sm:mb-0">
+                <LoginNormal></LoginNormal>
+            </div>
+            <div className="w-full sm:w-1/2">
+                <LoginSocial></LoginSocial>
+            </div>
             </div>
             <Footer></Footer>
         </div>

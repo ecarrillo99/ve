@@ -152,9 +152,9 @@ const SearchBar = (props) => {
   return (
     <div>
       <>
-        <div className="bottom-[0px] bg-greenVE-600 relative rounded-2xl w-full">
+        <div className="bottom-[0px] bg-greenVE-600 relative rounded-sm w-full">
           <div className="grid lg:grid-cols-12 md:grid-cols-12 grid-flow-row">
-            <div className=" col-span-3 max-sm:col-span-1  bg-white flex items-center justify-center m-0.5 rounded-l-2xl rounded-r-md pl-4">
+            <div className=" col-span-3 max-sm:col-span-1  bg-white flex items-center justify-center m-0.5 rounded-sm pl-4">
               <FontAwesomeIcon icon={faBed} className="pr-2 text-gray-400" />
               <input
                 type="text"
@@ -186,7 +186,7 @@ const SearchBar = (props) => {
                 </ClickAwayListener>
               )}
             </div>
-            <div className="col-span-3 max-sm:col-span-1 bg-white flex items-center justify-center m-0.5 rounded-md">
+            <div className="col-span-3 max-sm:col-span-1 bg-white flex items-center justify-center m-0.5 rounded-sm">
               <FontAwesomeIcon icon={faCalendarDays} className="text-gray-400 pr-2" />
               <span
                 onClick={() => setOpenDate(!openDate)}
@@ -212,7 +212,7 @@ const SearchBar = (props) => {
                 </ClickAwayListener>
               )}
             </div>
-            <div className="col-span-4 max-sm:col-span-1 bg-white flex items-center justify-center m-0.5 rounded-md">
+            <div className="col-span-4 max-sm:col-span-1 bg-white flex items-center justify-center m-0.5 rounded-sm">
               <FontAwesomeIcon icon={faPerson} className="text-gray-400 pr-2" />
               <span
                 onClick={() => setOpenOptions(!openOptions)}
@@ -313,7 +313,7 @@ const SearchBar = (props) => {
                 </ClickAwayListener>
               )}
             </div>
-            <div className="col-span-2 max-sm:col-span-1 bg-greenVE-500 flex items-center justify-center rounded-l-md rounded-r-2xl m-0.5">
+            <div className="col-span-2 max-sm:col-span-1 bg-greenVE-500 flex items-center justify-center rounded-sm m-0.5">
               <button className="bg-greenVE-500 h-10 text-white" onClick={handleSearch}>
                 Buscar
               </button>

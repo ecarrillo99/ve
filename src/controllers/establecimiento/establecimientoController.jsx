@@ -75,7 +75,6 @@ const _getRemoteOfertas = async function () {
     try {
         const establecimientoService = new EstablecimientoService;
         var bd = JSON.parse(localStorage.getItem('datos'))
-        //console.log("Datos: "+JSON.stringify(datos))
         var params = {
             "token": bd['token']
         }
@@ -84,7 +83,7 @@ const _getRemoteOfertas = async function () {
         if (res.estado && res.codigo == 0) {   // falso
             if (Object.values(res).length > 0) {
                 var ofertas = res['data']['ofertas']
-                console.log(ofertas)
+                var establecimientos=res['data']['establecimientos']
                 var url = res['data']['url']['oferta']
                 for (const oferta of ofertas) {
                     const ofertaInicio = new OfertaInicio(
@@ -98,6 +97,7 @@ const _getRemoteOfertas = async function () {
                         oferta['dias'],
                         oferta['adultos'],
                         oferta['ninos'],
+                        establecimientos[oferta['id_establecimiento']]['catalogacion']
                     )
                     listadoOfertas.push(ofertaInicio)
                 }
@@ -133,7 +133,6 @@ const _getDetalleOferta = async function (idOferta) {
             "id_oferta": idOferta
         }
         const res = await establecimientoService.getDetalleOferta(params);
-        console.log(res)
         if (res.estado && res.codigo == 0) {   // falso
             if (Object.values(res).length > 0) {
                 var url = res['data']['url']['oferta']
@@ -150,7 +149,6 @@ const _getDetalleOferta = async function (idOferta) {
                 var _telefonoReservas = res['data']['configApp']['contacto_reserva']['telefono']['contacto']
                 var _celularReservas = res['data']['configApp']['contacto_reserva']['telefono_reservas']['contacto']
                 
-                console.log(_whatsappReservas)
                 
                 if(_serviciosEstablecimiento!=null){
                     for (const servicioEstablecimiento of _serviciosEstablecimiento) {
@@ -312,7 +310,6 @@ const _getResultadoFiltro = async function (filtro) {
         filtro.Pax&&(params.pax=filtro.Pax); 
 
         const res = await establecimientoService.filtro(params);
-        console.log("hola", res)
         if (res.estado && res.codigo === 0) {
             //const { data, opcionesOrden, beneficios, url } = res.data;
             //console.log(res.data)
@@ -345,8 +342,6 @@ const _getResultadoFiltro = async function (filtro) {
                 listadoOrdenes,
                 listadoBeneficios
             );
-            console.log("Resultado")
-            console.log(resultadoBusqueda)
             return resultadoBusqueda;
         }
     } catch (e) {
@@ -387,7 +382,6 @@ function createDetalles(data, titleKey, iconKey) {
 
 // Función para crear una lista de objetos Establecimiento a partir de un array
 function createEstablecimientos(establecimientos, url, beneficios, centralReservas) {
-    console.log(url);
 
     // Función para mapear propiedades de oferta
     function mapPropiedadesOferta(ofertaTmp) {
@@ -413,7 +407,6 @@ function createEstablecimientos(establecimientos, url, beneficios, centralReserv
     }
 
     return establecimientos.map(establecimientoTmp => {
-        console.log("Establecimiento", establecimientoTmp)
         const establecimiento = new Establecimiento();
 
         // Mapeo de propiedades
@@ -483,7 +476,7 @@ function createEstablecimientos(establecimientos, url, beneficios, centralReserv
     });
 }
 
-function createReservation(id, adultos, ninos, cantidad, inicio, fin, edades){
+export const createReservation = async function (id, adultos, ninos, cantidad, inicio, fin, edades){
     try{
         const establecimientoService = new EstablecimientoService();
         var bd = JSON.parse(localStorage.getItem('datos'))
@@ -494,10 +487,10 @@ function createReservation(id, adultos, ninos, cantidad, inicio, fin, edades){
             "ninos":ninos, 
             "cantidad_ofertas":cantidad,
             "fecha_inicio":inicio,
-            "fecha_fin":inicio,
+            "fecha_fin":fin,
             "edad_ninos":edades
         }
-        const res =establecimientoService.reserva(params);
+        const res = await establecimientoService.reserva(params);
         if (res.estado && res.codigo === 0) {
             return res.estado;
         }

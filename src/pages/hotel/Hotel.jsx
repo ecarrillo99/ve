@@ -13,6 +13,7 @@ import { getDetalleOferta } from "../../controllers/establecimiento/establecimie
 import React, { useEffect, useState } from "react";
 import HotelRecommended from "../../components/hotel_components/hotelComponents/HotelRecommended";
 import HotelOfertas from "../../components/hotel_components/hotelComponents/HotelOfertas";
+import HotelConfirmation from "../../components/hotel_components/hotelComponents/HotelConfirmation";
 
 
 
@@ -22,75 +23,62 @@ const Hotel = () => {
   const [options, setOptions] = useState(location.state.options);
   const [date, setDate] = useState(location.state.date);
   const [destination, setDestination] = useState(location.state.destination);
-  const [noches, setNoches]=useState(Math.ceil(Math.abs(new Date(date[0].endDate)) - new Date(date[0].startDate))/ (1000 * 60 * 60 * 24));
-  console.log("Hola", date[0].endDate)
+  const [noches, setNoches] = useState(Math.ceil(Math.abs(new Date(date[0].endDate)) - new Date(date[0].startDate)) / (1000 * 60 * 60 * 24));
   const { id } = useParams();
   const [data, setData] = useState(null);
-  const [recomendados, setRecomendados] =useState({})
-
-  useEffect(() => {
-    function fetchData() {
-      
-      console.log(establecimiento)
-      const nuevoEstado = {};
-      for (const recomendado of establecimiento.Recomendados) {
-        console.log(recomendado.Id)
-        nuevoEstado[recomendado.Id] = recomendado.NumOfertas;
-      }
-      console.log("Hola hola")
-      console.log(nuevoEstado)
-      setRecomendados(nuevoEstado);
-    }
-
-    fetchData();
-  }, []);
+  const session = JSON.parse(localStorage.getItem("datos"));
+  const nivel = session ? session.data.nivel : "visitante";
 
   return (
-    establecimiento?
-    (<div>
-      <Navbar />
-      <div className="flex mx-auto max-w-6xl py-6 sm:px-6 lg:px-8">
-        <div className="w-3/12  mr-5">
-          <HotelSearch
-            Place={destination}
-            Dates={date}
-            Options={options}/>
-          <HotelAdress Establecimiento={establecimiento}/>
-        </div>
-        <div className="w-9/12">
-          <div>
-            <HotelBanner Establecimiento={establecimiento}/>
-            <HotelGallery Galeria={establecimiento.Galeria}/>
+    establecimiento ? (
+      <div>
+        <Navbar />
+        <div className="flex flex-col md:flex-row mx-auto max-w-6xl py-6 sm:px-6 lg:px-8">
+          <div className="md:w-3/12 mr-5 mb-5">
+            <HotelSearch
+              Place={destination}
+              Dates={date}
+              Options={options} />
+            <HotelAdress Establecimiento={establecimiento} />
+          </div>
+          <div className="md:w-9/12">
+            <div>
+              <HotelBanner Establecimiento={establecimiento} />
+              <HotelGallery Galeria={establecimiento.Galeria} />
+            </div>
           </div>
         </div>
-      </div>
-      <div className="flex mx-auto max-w-6xl py-0 sm:px-6 lg:px-8">
-        <HotelRecommended Establecimiento={establecimiento} Noches={noches}  Personas={options.adult}></HotelRecommended>
-      </div>
-      <div className="flex mx-auto max-w-6xl py-0 sm:px-6 lg:px-8">
-      
-        <div className="w-9/12 mt-5">
-        <HotelDetails Establecimiento={establecimiento}/>
+        <div className="flex mx-auto max-w-6xl py-0 sm:px-6 lg:px-8">
+          <HotelRecommended Establecimiento={establecimiento} Noches={noches} Personas={options.adult}></HotelRecommended>
         </div>
-        <div className="flex flex-col gap-4 w-3/12">
-          <HotelContacts
-            Contactos={establecimiento.Contactos}
-            ContactosCentral={establecimiento.ContactosCentral}>
-          </HotelContacts>
+        <div className="flex flex-col md:flex-row mx-auto max-w-6xl py-0 sm:px-6 lg:px-8">
+          <div className="md:w-9/12 mt-5 mb-5">
+            <HotelDetails Establecimiento={establecimiento} />
+          </div>
+          <div className="flex flex-col md:w-3/12">
+            {
+              nivel!="visitante"
+              ?<HotelContacts
+              Contactos={establecimiento.Contactos}
+              ContactosCentral={establecimiento.ContactosCentral}>
+            </HotelContacts>
+              :<></>
+            }
+            
+          </div>
         </div>
+        <div className="flex mx-auto max-w-6xl py-0 sm:px-6 lg:px-8 mb-20">
+          <HotelOfertas Establecimiento={establecimiento} Noches={noches} Fechas={date} Opciones={options}></HotelOfertas>
+        </div>
+        <Footer />
+      </div>) : (
+      <div className="h-screen w-screen flex flex-col justify-center items-center">
+        <img src="/img/logo_verde.png" style={{ width: "300px", height: "auto" }} />
+        <div className="animate-spin w-16 h-16 border-t-4 border-greenVE-500 rounded-full"></div>
       </div>
-      <div className="flex mx-auto max-w-6xl py-0 sm:px-6 lg:px-8 mb-20">
-        <HotelOfertas Establecimiento={establecimiento} Noches={noches} ></HotelOfertas>
-      </div>
-     
-      <Footer />
-    </div>):
-    (<div className="h-screen w-screen flex flex-col justify-center items-center">
-      <img src="/img/logo_verde.png" style={{width: "300px", height: "auto"}} />
-      <div class="animate-spin w-16 h-16 border-t-4 border-greenVE-500 rounded-full"></div>
-    </div>)
-    
+    )
   );
 };
 
 export default Hotel;
+

@@ -2,48 +2,36 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const ItemRecomended = (props) => {
-    const navigate=useNavigate()
-    
+    const navigate = useNavigate()
+
     const HandleClickItem = () => {
-        navigate("/hotel/"+props.oferta.IdOferta,);
+        navigate("/hotel/" + props.oferta.IdOferta,);
     };
 
     return (
-        <div class=" bg-white rounded-xl border border-1 border-gray-200 cursor-pointer"
+        <div class=" bg-white rounded-xl border-gray-200 cursor-pointer"
             onClick={
                 HandleClickItem
             }>
-            <img src={props.oferta.Foto} class="h-44 w-full object-cover rounded-t-xl" />
-            <div class="p-4">
-                <h2 class="text-greenTitle font-bold text-center text-sm h-9 flex items-center justify-center leading-4">{props.oferta.Establecimiento}</h2>
-                <div class="flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blueLight">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                    </svg>
-                    <p class="text-sm text-blueLight" >{props.oferta.Lugar}</p>
+            <div className="relative w-full h-0" style={{ paddingBottom: '100%' }}>
+            <div className="animate-pulse absolute inset-0 w-full h-full bg-gray-200 rounded-md"></div>
+                <img
+                    src={props.oferta.Foto}
+                    className="absolute inset-0 w-full h-full object-cover rounded-md"
+                />
+            </div>
+            <div className="flex flex-col mt-3 gap-0.5">
+                <label className="text-xs text-gray-500 font-medium">{props.oferta.Lugar}</label>
+                <label className="text-xs font-semibold">{props.oferta.Establecimiento}</label>
+                <div className="flex items-center space-x-1">
+                    {Array(+(props.oferta.Catalogacion)).fill(null).map((item, index) => (
+                        <svg key={index} height="16px" width="16px" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="fill-current text-yellow-500">
+                            <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
+                        </svg>
+                    ))}
                 </div>
-                <div class="h-10 flex items-center justify-center">
-                    <h2 class="text-greenTitle  text-center text-xxs leading-4">{props.oferta.Titulo}</h2>
-                </div>
-                <div class="grid grid-cols-2  items-center ">
-                    <div class="col-span-1 flex justify-end  ">
-                        <h2 class="text-right text-greenVE-500 font-bold text-3xl pr-1">${props.oferta.Precio}/</h2>
-                    </div>
-                    <div class="col-span-1 pl-1">
-                        <h2 class="text-xxs text-greenVE-500"> {props.oferta.Dias + " dias, " + props.oferta.Noches + " noches"}</h2>
-                        <h2 class="text-xxs text-greenVE-500">
-                            {
-                            props.oferta.Ninos == null ? (
-                                props.oferta.Adultos + " adulto(s)"
-                            ) : (
-                                props.oferta.Adultos + " adulto(s), " + props.oferta.Ninos + " niño(s)"
-                            )
-                            }
-                        </h2>
-                    </div>
-                </div>
-
+                <label className="text-xs text-gray-500 font-medium">{"9.7 - 10 Comentarios"}</label>
+                <label className="text-sm font-medium text-gray-600">Desde: ${props.oferta.Precio}</label>
             </div>
         </div>
     );
