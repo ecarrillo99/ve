@@ -139,9 +139,9 @@ const HotelOfertas = (props) => {
                       <div className="flex flex-col p-2">
                         <label className="font-semibold text-sm text-greenVE-600">{item.TituloOferta}</label>
                         <label className="ml-2 text-xs font-semibold text-gray-500">Acomodación:</label>
-                        <div className="flex ml-6 text-sm">
+                        <div className="flex ml-6 text-sm items-center gap-1">
                           <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => item.Acomodacion.includes(clave))] }} className="" />
-                          <label className="text-gray-500 text-[0.65rem] ">{item.Acomodacion} </label>
+                          <label className="text-gray-500 text-xs ">{item.Acomodacion} </label>
                         </div>
                         <Accordion open={open === index + 1} icon={<Icon id={index + 1} open={open} />}>
                           <AccordionHeader className=" p-0 text-xs pl-2 border-0 w-auto font-semibold text-blue-500 mt-4" onClick={() => handleOpen(index + 1)}>
@@ -155,7 +155,7 @@ const HotelOfertas = (props) => {
                                   {item.NoIncluye.map((itemNoIncluye, noIncluyeIndex) => (
                                     <div key={noIncluyeIndex} className="flex gap-2 items-center">
                                       <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => itemNoIncluye.Titulo.includes(clave))] }} className="" />
-                                      <p dangerouslySetInnerHTML={{ __html: itemNoIncluye.Titulo }} className="my-0.5 text-[0.65rem] font-light text-gray-500 leading-3"></p>
+                                      <p dangerouslySetInnerHTML={{ __html: itemNoIncluye.Titulo }} className="my-0.5 text-xs font-light text-gray-500 leading-3"></p>
                                     </div>
                                   ))}
                                 </div>
@@ -166,7 +166,7 @@ const HotelOfertas = (props) => {
                                   {item.Restricciones.map((itemRestricciones, restriccionesIndex) => (
                                     <div key={restriccionesIndex} className="flex gap-2 items-center">
                                       <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => itemRestricciones.Titulo.includes(clave))] }} className="" />
-                                      <p dangerouslySetInnerHTML={{ __html: itemRestricciones.Titulo }} className="text-sm my-0.5 text-[0.63rem] leading-3 font-light text-gray-500"></p>
+                                      <p dangerouslySetInnerHTML={{ __html: itemRestricciones.Titulo }} className="text-sm my-0.5 text-xs leading-3 font-light text-gray-500"></p>
                                     </div>
                                   ))}
                                 </div>
@@ -177,7 +177,7 @@ const HotelOfertas = (props) => {
                                   {item.SistemaServicios.map((itemSistemaServicios, sistemaServiciosIndex) => (
                                     <div key={sistemaServiciosIndex} className="flex gap-2 items-center">
                                       <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => itemSistemaServicios.Titulo.includes(clave))] }} className="" />
-                                      <p dangerouslySetInnerHTML={{ __html: itemSistemaServicios.Titulo }} className="text-sm my-0.5 text-[0.62rem] leading-3 font-light text-gray-500"></p>
+                                      <p dangerouslySetInnerHTML={{ __html: itemSistemaServicios.Titulo }} className="text-sm my-0.5 text-xs leading-3 font-light text-gray-500"></p>
                                     </div>
                                   ))}
                                 </div>
@@ -190,12 +190,12 @@ const HotelOfertas = (props) => {
                     <td className="border">
                       <div className="flex ml-6 text-sm">
                         <div dangerouslySetInnerHTML={{ __html: icons.Data['Adulto'] }} className="" />
-                        <label className="text-gray-500 text-[0.65rem]"> x {item.Adultos} </label>
+                        <label className="text-gray-500 text-xs"> x {item.Adultos} </label>
                       </div>
                       {item.Ninos && (
                         <div className="flex ml-6 text-sm">
                           <div dangerouslySetInnerHTML={{ __html: icons.Data['niños'] }} className="" />
-                          <label className="text-gray-500 text-[0.65rem]"> x {item.Ninos} </label>
+                          <label className="text-gray-500 text-xs"> x {item.Ninos} </label>
                         </div>
                       )}
                     </td>
@@ -210,8 +210,8 @@ const HotelOfertas = (props) => {
                         <div className="flex-1 pr-1">
                           {item.Incluye.map((itemIncluye, incluyeIndex) => (
                             <div key={incluyeIndex} className="flex gap-2 items-center">
-                              <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => itemIncluye.Titulo.includes(clave))] }} className="" />
-                              <p dangerouslySetInnerHTML={{ __html: itemIncluye.Titulo }} className="my-0.5 text-[0.65rem] leading-3 font-light text-gray-500 "></p>
+                              <div dangerouslySetInnerHTML={{ __html: icons.Data.Check }}  />
+                              <p dangerouslySetInnerHTML={{ __html: itemIncluye.Titulo }} className="my-0.5 text-xs leading-3 font-light text-greenVE-600 "></p>
                             </div>
                           ))}
                         </div>

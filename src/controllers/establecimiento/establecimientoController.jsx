@@ -80,7 +80,10 @@ const _getRemoteOfertas = async function () {
         }
 
         const res = await establecimientoService.getOfertasPublicidad(params);
-        if (res.estado && res.codigo == 0) {   // falso
+        console.log("Banners");
+            console.log(res);
+        if (res.estado && res.codigo == 0) { 
+            
             if (Object.values(res).length > 0) {
                 var ofertas = res['data']['ofertas']
                 var establecimientos=res['data']['establecimientos']
@@ -272,11 +275,13 @@ const _getEstablecimientoDestino =async function(termino){
             if (Object.values(res).length > 0) {
                 var sugerencias = res['data']['sugerencias']
                 for (const sugerencia of sugerencias) {
-                    const sugerenciaBusqueda = new Sugerencia(
-                        sugerencia['id'],
-                        sugerencia['titulo'],
-                        sugerencia['tipo']
-                    )
+                    const sugerenciaBusqueda = new Sugerencia();
+
+                    sugerenciaBusqueda.Id=sugerencia['id'];
+                    sugerenciaBusqueda.Titulo=sugerencia['titulo'];
+                    sugerenciaBusqueda.Lugar=sugerencia['descripcion'];
+                    sugerenciaBusqueda.Tipo=sugerencia['tipo'];
+
                     listadoSugerencias.push(sugerenciaBusqueda)
                 }
                 return listadoSugerencias
@@ -296,6 +301,8 @@ const _getResultadoFiltro = async function (filtro) {
             "id":filtro.IdDestino,
             "tipo":filtro.TipoDestino,
         }
+
+        console.log(params)
         filtro.IdDestino&&(params.id=filtro.IdDestino); 
         filtro.TipoDestino&&(params.tipo=filtro.TipoDestino);
         filtro.txtBusqueda&&(params.txtBusqueda=filtro.txtBusqueda);
@@ -312,7 +319,7 @@ const _getResultadoFiltro = async function (filtro) {
         const res = await establecimientoService.filtro(params);
         if (res.estado && res.codigo === 0) {
             //const { data, opcionesOrden, beneficios, url } = res.data;
-            //console.log(res.data)
+            console.log(res.data)
             const {
                 establecimientos,
                 centralReserva,
@@ -410,8 +417,8 @@ function createEstablecimientos(establecimientos, url, beneficios, centralReserv
         const establecimiento = new Establecimiento();
 
         // Mapeo de propiedades
-        const propiedadesObj = ['IdEstablecimiento', 'Titulo', 'Ciudad', 'Pais', 'IdPais', 'IdCiudad', 'EdadNino', 'Catalogacion', 'Longitud', 'Latitud', 'Logo', 'Direccion', 'Descripcion'];
-        const propiedades = ['id_establecimiento', 'titulo', 'ciudad', 'pais', 'idPais', 'idCiudad', 'edad_nino', 'catalogacion', 'longitud', 'latitud', 'logo', 'direccion', 'descripcionEst'];
+        const propiedadesObj = ['IdEstablecimiento', 'Titulo', 'Ciudad', 'Pais', 'IdPais', 'IdCiudad', 'EdadNino', 'Catalogacion', 'Longitud', 'Latitud', 'Logo', 'Direccion', 'Descripcion', 'Favorito'];
+        const propiedades = ['id_establecimiento', 'titulo', 'ciudad', 'pais', 'idPais', 'idCiudad', 'edad_nino', 'catalogacion', 'longitud', 'latitud', 'logo', 'direccion', 'descripcionEst', 'favorito'];
         propiedades.forEach((prop, index) => establecimiento[propiedadesObj[index]] = establecimientoTmp[prop]);
 
         // Foto
@@ -472,6 +479,13 @@ function createEstablecimientos(establecimientos, url, beneficios, centralReserv
         establecimiento.Rack = establecimientoTmp.precioRecomendadoRack;
         establecimiento.Impuestos = establecimientoTmp.precioRecomendadoImpuestos;
 
+        //Calificacion
+        establecimiento.Calificacion= new Detalle(
+            establecimientoTmp.comentarios.calificacion,
+            establecimientoTmp.comentarios.cantidadComentarios,
+            establecimientoTmp.comentarios.puntuacion,
+        )
+
         return establecimiento;
     });
 }
@@ -498,4 +512,24 @@ export const createReservation = async function (id, adultos, ninos, cantidad, i
 
     }
     return false;
+}
+
+export const changeFavoritoStatus = async function (idEst, estado){
+    try{
+        const establecimientoService = new EstablecimientoService();
+        var bd = JSON.parse(localStorage.getItem('datos'))
+        var params={
+            "token": bd['token'],
+            "id_establecimiento":idEst,
+            "favorito": estado?1:2
+        }
+        const res= await establecimientoService.cambiarEstadoFavorito(params);
+        console.log(res)
+        if (res.estado && res.codigo === 0) {
+            return res.estado;
+        }
+
+    }catch{
+        
+    }
 }

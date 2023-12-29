@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import jQuery from 'jquery';
 
 const DatafastFormUI = ({trx, tarjeta, diferido}) => {
-    console.log(tarjeta)
+    console.log("Tarjeta")
+    console.log(tarjeta.Nombre)
     const [nombreTarjeta, setNombreTarjeta]=useState()
     useEffect(()=>{
         if(tarjeta.Nombre.toUpperCase()=="MASTERCARD"){
@@ -11,8 +12,8 @@ const DatafastFormUI = ({trx, tarjeta, diferido}) => {
         if(tarjeta.Nombre.toUpperCase()=="AMERICANEXPRESS"){
             setNombreTarjeta("AMEX");
         }
-        if(tarjeta.Nombre.toUpperCase()=="AMERICANEXPRESS"){
-            setNombreTarjeta("AMEX");
+        if(tarjeta.Nombre.toUpperCase()=="VISA"){
+            setNombreTarjeta("VISA");
         }
     }, [tarjeta])
     

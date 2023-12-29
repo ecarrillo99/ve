@@ -8,18 +8,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./header.css";
 import { DateRange } from "react-date-range";
 //import { DatePicker } from "react-datepicker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { es } from 'react-date-range/dist/locale/';
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { format } from "date-fns";
-import {  useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ClickAwayListener } from "@material-ui/core";
 import { getEstablacimientoDestino } from "../../../controllers/establecimiento/establecimientoController";
+import Icons from "../../../global/icons";
 
 const SearchBar = (props) => {
   const { Place, Dates, Options, NewPage } = props
-  const [params, setParams]=useSearchParams();
+  const [params, setParams] = useSearchParams();
+  const [inputValue, setInputValue] = useState('');
+  const icons= new Icons();
   const handleClickAway = () => {
     if (openDate) {
       setOpenDate(false)
@@ -38,6 +41,7 @@ const SearchBar = (props) => {
         Titulo: "",
         Tipo: "",
         Id: "",
+        Lugar: ""
       })
   );
   const [openDate, setOpenDate] = useState(false);
@@ -55,7 +59,7 @@ const SearchBar = (props) => {
   );
   const [openOptions, setOpenOptions] = useState(false);
 
-  
+
 
   const [options, setOptions] = useState(
     Options != null
@@ -78,7 +82,7 @@ const SearchBar = (props) => {
   const handleAgeChange = (event, index) => {
     const newSelectedAges = [...options['childrenAges']];
     newSelectedAges[index] = parseInt(event.target.value, 10);
-    setOptions( (prev)=>{
+    setOptions((prev) => {
       return {
         ...prev,
         "childrenAges": newSelectedAges,
@@ -87,22 +91,22 @@ const SearchBar = (props) => {
   };
 
   const handleOption = (name, operation) => {
-    if(name=="children"&operation=="i"){
+    if (name == "children" & operation == "i") {
       const tmpSelectedAges = [...options['childrenAges']];
       tmpSelectedAges.push(0)
-      setOptions( (prev)=>{
+      setOptions((prev) => {
         return {
           ...prev,
           "childrenAges": tmpSelectedAges,
         }
       })
-      
+
     }
-    if(name=="children"&operation=="d"){
+    if (name == "children" & operation == "d") {
       const tmpSelectedAges = [...options['childrenAges']];
       tmpSelectedAges.pop()
 
-      setOptions( (prev)=>{
+      setOptions((prev) => {
         return {
           ...prev,
           "childrenAges": tmpSelectedAges,
@@ -118,34 +122,34 @@ const SearchBar = (props) => {
   };
 
   const handleSearch = () => {
-    const path=`/busqueda/?destino=${encodeURIComponent(JSON.stringify(destination))}&fechas=${encodeURIComponent(JSON.stringify(date))}&opciones=${encodeURIComponent(JSON.stringify(options))}`
+    const path = `/busqueda/?destino=${encodeURIComponent(JSON.stringify(destination))}&fechas=${encodeURIComponent(JSON.stringify(date))}&opciones=${encodeURIComponent(JSON.stringify(options))}`
     navigate(path)
     window.location.reload();
   };
 
-
-  const fetchData = (value) => {
-    getEstablacimientoDestino(value).then((res) => {
-      if (res) {
-        setSuggestion(res)
-      }
-    })
-  }
-
-  let timeout = null
-  const handleChange = (value) => {
-    setDestination({ Titulo: value })
-    clearTimeout(null)
-    timeout = setTimeout(() => {
-      if (value != "") {
-        fetchData(value);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (inputValue !== '') {
+        getEstablacimientoDestino(inputValue).then((res) => {
+          if (res) {
+            console.log(res);
+            setSuggestion(res);
+          }
+        });
       } else {
-        setSuggestion(null)
+        setSuggestion([]);
       }
-    }, 1000)
+    }, 500);
+
+    return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta o el valor cambia
+  }, [inputValue]);
+
+  const handleChange = (value) => {
+    setInputValue(value);
+    setDestination({ Titulo: value });
   };
 
-  const handleChangeDate=(value)=>{
+  const handleChangeDate = (value) => {
     setDate(value)
   }
 
@@ -154,31 +158,34 @@ const SearchBar = (props) => {
       <>
         <div className="bottom-[0px] bg-greenVE-600 relative rounded-sm w-full">
           <div className="grid lg:grid-cols-12 md:grid-cols-12 grid-flow-row">
-            <div className=" col-span-3 max-sm:col-span-1  bg-white flex items-center justify-center m-0.5 rounded-sm pl-4">
-              <FontAwesomeIcon icon={faBed} className="pr-2 text-gray-400" />
+            <div className="gap-3 col-span-3 max-sm:col-span-1  bg-white flex items-center justify-center m-0.5 rounded-sm pl-4">
+              <div dangerouslySetInnerHTML={{ __html: icons.Data.Bed }} />
               <input
                 type="text"
                 placeholder=" ¿A dónde vas?"
-                className="w-full max-w-full overflow-hidden placeholder-gray-600 mr-4"
+                className="w-full max-w-full overflow-hidden placeholder-gray-600 mr-4 focus:outline-none"
                 onChange={(e) => handleChange(e.target.value)}
                 onClick={() => setOpenSearch(true)}
                 value={destination.Titulo.charAt(0).toUpperCase() + destination.Titulo.slice(1)}
               />
               {suggestion && (
                 <ClickAwayListener onClickAway={handleClickAway}>
-                  <div className="absolute top-12 max-h-40 w-64 bg-white z-50 shadow-md p-2 overflow-y-auto border">
+                  <div className=" absolute top-12 max-h-[17rem] w-80 bg-white z-50 shadow-2xl p-2 overflow-y-auto  rounded-lg">
                     {
                       suggestion ? (
                         suggestion.map((item, key) => (
-                          <div className="flex items-center p-1 border-b cursor-pointer" onClick={() => (setDestination(item), setSuggestion(null))}>
-                            {item.Tipo == "destino" ? (<FontAwesomeIcon icon={faMapMarkerAlt} className="pr-2 w-4 text-gray-500" />)
-                              : (<FontAwesomeIcon icon={faBed} className="pr-2 w-4 text-gray-500" />)}
-                            <p key={key} className="text-sm" >
-                              {item.Titulo.charAt(0).toUpperCase() + item.Titulo.slice(1)}
-                            </p>
-
+                          <div className={`flex items-center p-1 ${key !== suggestion.length - 1 ? 'border-b' : ''} cursor-pointer gap-2`} onClick={() => (setDestination(item), setSuggestion(null))}>
+                            {item.Tipo == "destino" ? (<div dangerouslySetInnerHTML={{ __html: icons.Data.MapPin }} />)
+                              : (<div dangerouslySetInnerHTML={{ __html: icons.Data.Bed }} />)}
+                            <div className="flex flex-col p-1 cursor-pointer" >
+                              <label key={key} className="text-sm font-semibold cursor-pointer" >
+                                {item.Titulo.charAt(0).toUpperCase() + item.Titulo.slice(1)}
+                              </label>
+                              <label className="text-xs cursor-pointer" >
+                                {item.Lugar.charAt(0).toUpperCase() + item.Lugar.slice(1)}
+                              </label>
+                            </div>
                           </div>
-
                         ))
                       ) : (<p></p>)
                     }
@@ -186,9 +193,9 @@ const SearchBar = (props) => {
                 </ClickAwayListener>
               )}
             </div>
-            <div className="col-span-3 max-sm:col-span-1 bg-white flex items-center justify-center m-0.5 rounded-sm">
-              <FontAwesomeIcon icon={faCalendarDays} className="text-gray-400 pr-2" />
-              <span
+            <div className="gap-3 col-span-3 max-sm:col-span-1 bg-white flex items-center justify-center m-0.5 rounded-sm">
+              <div dangerouslySetInnerHTML={{ __html: icons.Data.Calendar }} />
+              <span 
                 onClick={() => setOpenDate(!openDate)}
                 className="placeholder-gray-600"
               >{`${format(date[0].startDate, "dd/MM/yyyy")} al ${format(
@@ -199,7 +206,7 @@ const SearchBar = (props) => {
                 <ClickAwayListener onClickAway={handleClickAway}>
                   <DateRange
                     editableDateInputs={true}
-                    onChange={(item) => handleChangeDate([item.selection?item.selection:item['Invalid Date']])}
+                    onChange={(item) => handleChangeDate([item.selection ? item.selection : item['Invalid Date']])}
                     moveRangeOnFirstSelection={false}
                     ranges={date}
                     locale={es}
@@ -212,15 +219,15 @@ const SearchBar = (props) => {
                 </ClickAwayListener>
               )}
             </div>
-            <div className="col-span-4 max-sm:col-span-1 bg-white flex items-center justify-center m-0.5 rounded-sm">
-              <FontAwesomeIcon icon={faPerson} className="text-gray-400 pr-2" />
+            <div className="gap-3 col-span-4 max-sm:col-span-1 bg-white flex items-center justify-center m-0.5 rounded-sm">
+            <div dangerouslySetInnerHTML={{ __html: icons.Data.People }} />
               <span
                 onClick={() => setOpenOptions(!openOptions)}
                 className="placeholder-gray-600"
               >{`${options.adult} Adulto(s) · ${options.children} Niño(s) · ${options.room} Hab.`}</span>
               {openOptions && (
                 <ClickAwayListener onClickAway={handleClickAway}>
-                  <div className="absolute top-12 bg-white shadow-xl px-1 py-2 z-50">
+                  <div className="absolute top-12 bg-white shadow-2xl px-1 py-2 z-50 rounded-lg">
                     <div className="flex justify-between px-3 ">
                       <span>Adultos</span>
                       <div className="flex items-center justify-between border border-greenVE-600 rounded-md ">
@@ -268,11 +275,11 @@ const SearchBar = (props) => {
 
                       {Array.from({ length: options.children }, (_, index) => (
                         <select
-                         key={index} 
-                         name="age" 
-                         value={options['childrenAges'][index]}
-                         className="px-2 bg-white border border-greenVE-400 rounded-sm mt-2"
-                         onChange={(event) => handleAgeChange(event, index)}>
+                          key={index}
+                          name="age"
+                          value={options['childrenAges'][index]}
+                          className="px-2 bg-white border border-greenVE-400 rounded-sm mt-2"
+                          onChange={(event) => handleAgeChange(event, index)}>
                           <option value="0" data-key="0">0 años</option>
                           <option value="1" data-key="1">1 año</option>
                           <option value="2" data-key="2">2 años</option>
@@ -289,7 +296,7 @@ const SearchBar = (props) => {
                       ))}
                     </div>
                     <div className="flex justify-between px-3 pt-2">
-                      <span className="mr-6 ">Habitaciones</span> 
+                      <span className="mr-6 ">Habitaciones</span>
                       <div className="flex items-center justify-between border border-greenVE-600 rounded-md">
                         <button
                           disabled={options.room <= 1}

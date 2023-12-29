@@ -4,7 +4,6 @@ import DatafastController from "../../../controllers/pago/datafast/datafastContr
 import DataFastUI from "./DatafastFormUI";
 
 const DataFastForm = ({ tarjeta, diferido }) => {
-  console.log(tarjeta)
   const [trx, setTrx] = useState();
   const Persona = {
     "dni": "0706980562",

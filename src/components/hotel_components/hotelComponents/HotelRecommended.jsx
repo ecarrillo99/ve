@@ -48,14 +48,14 @@ const HotelRecommended = (props) => {
               <div className="w-full lg:w-10/12 p-2 flex flex-col">
                 <label className="font-semibold text-sm text-greenVE-600">{item.NumOfertas} x {item.TituloOferta}</label>
                 <label className="ml-2 text-xs font-semibold text-gray-500">Personas:</label>
-                <div className="flex ml-6 text-sm">
+                <div className="flex ml-6 text-sm items-center">
                   <div dangerouslySetInnerHTML={{ __html: icons.Data['Adulto'] }} className="" />
-                  <label className="text-gray-500 text-[0.65rem]"> x {item.Adultos * item.NumOfertas} </label>
+                  <label className="text-gray-500 text-xs"> x {item.Adultos * item.NumOfertas} </label>
                 </div>
                 <label className="ml-2 text-xs font-semibold text-gray-500">Acomodación:</label>
-                <div className="flex ml-6 text-sm">
+                <div className="flex ml-6 text-sm items-center">
                   <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => item.Acomodacion.includes(clave))] }} className="" />
-                  <label className="text-gray-500 text-[0.65rem] ">{item.Acomodacion} x {item.NumOfertas} </label>
+                  <label className="text-gray-500 text-xs ">{item.Acomodacion} x {item.NumOfertas} </label>
                 </div>
                 <Accordion open={open === index + 1} icon={<Icon id={index + 1} open={open} />}>
                   <AccordionHeader className="p-0 text-xs pl-2 border-0 w-auto font-semibold text-blue-500 mt-4" onClick={() => handleOpen(index + 1)}>
@@ -71,7 +71,7 @@ const HotelRecommended = (props) => {
                               <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => itemIncluye.Titulo.includes(clave))] }} className="" />
                               <p
                                 dangerouslySetInnerHTML={{ __html: itemIncluye.Titulo }}
-                                className="my-0.5 text-[0.65rem] leading-3 font-light text-gray-500"
+                                className="my-0.5 text-xs leading-3 font-light text-gray-500"
                               ></p>
                             </div>
                           ))}
@@ -85,7 +85,7 @@ const HotelRecommended = (props) => {
                               <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => itemNoIncluye.Titulo.includes(clave))] }} className="" />
                               <p
                                 dangerouslySetInnerHTML={{ __html: itemNoIncluye.Titulo }}
-                                className="my-0.5 text-[0.65rem] font-light text-gray-500 leading-3"
+                                className="my-0.5 text-xs font-light text-gray-500 leading-3"
                               ></p>
                             </div>
                           ))}
@@ -99,7 +99,7 @@ const HotelRecommended = (props) => {
                               <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => itemRestricciones.Titulo.includes(clave))] }} className="" />
                               <p
                                 dangerouslySetInnerHTML={{ __html: itemRestricciones.Titulo }}
-                                className="text-sm my-0.5 text-[0.63rem] leading-3 font-light text-gray-500"
+                                className="my-0.5 text-xs leading-3 font-light text-gray-500"
                               ></p>
                             </div>
                           ))}
@@ -113,7 +113,7 @@ const HotelRecommended = (props) => {
                               <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => itemSistemaServicios.Titulo.includes(clave))] }} className="" />
                               <p
                                 dangerouslySetInnerHTML={{ __html: itemSistemaServicios.Titulo }}
-                                className="text-sm my-0.5 text-[0.62rem] leading-3 font-light text-gray-500"
+                                className=" my-0.5 text-xs leading-3 font-light text-gray-500"
                               ></p>
                             </div>
                           ))}

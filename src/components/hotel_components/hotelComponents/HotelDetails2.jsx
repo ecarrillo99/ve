@@ -42,7 +42,7 @@ const HotelDetails = (props) => {
                     {descripciones.slice(0, mostrarMas ? descripciones.length : 5).map((itemRestricciones) => (
                         <div className='flex gap-2 items-center'>
                             <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find(clave => itemRestricciones.Titulo.includes(clave))] }} class='' />
-                            <p dangerouslySetInnerHTML={{ __html: itemRestricciones.Titulo }} className='text-sm my-0.5 text-[0.63rem] leading-3 font-light text-gray-500'></p>
+                            <p dangerouslySetInnerHTML={{ __html: itemRestricciones.Titulo }} className='my-0.5 text-xs leading-3 font-light text-gray-500'></p>
                         </div>
                     ))}
                 </div>

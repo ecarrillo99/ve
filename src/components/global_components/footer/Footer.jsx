@@ -4,6 +4,7 @@ const Footer = () => {
   const year = new Date().getFullYear();
   const icons = new Icons()
   return (
+    
     <div className="bg-footerColor mt-20">
       <div className="mx-auto max-w-6xl py-10 sm:px-6 lg:px-8">
         <div className="flex flex-wrap gap-y-5">
@@ -77,14 +78,14 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="flex justify-center gap-7 mt-5">
-          <div dangerouslySetInnerHTML={{ __html: icons.Data.Facebook }} />
-          <div dangerouslySetInnerHTML={{ __html: icons.Data.Instagram }} />
-          <div dangerouslySetInnerHTML={{ __html: icons.Data.WhatsappF }} />
-          <div dangerouslySetInnerHTML={{ __html: icons.Data.TikTok }} />
-          <div dangerouslySetInnerHTML={{ __html: icons.Data.YouTube }} />
-          <div dangerouslySetInnerHTML={{ __html: icons.Data.LinkedIn }} />
-          <div dangerouslySetInnerHTML={{ __html: icons.Data.Twitter }} />
+        <div className="flex flex-wrap justify-center gap-2 mt-5">
+          <div className="w-12 h-12 p-2" dangerouslySetInnerHTML={{ __html: icons.Data.Facebook }} />
+          <div className="w-12 h-12 p-2" dangerouslySetInnerHTML={{ __html: icons.Data.Instagram }} />
+          <div className="w-12 h-12 p-2" dangerouslySetInnerHTML={{ __html: icons.Data.WhatsappF }} />
+          <div className="w-12 h-12 p-2" dangerouslySetInnerHTML={{ __html: icons.Data.TikTok }} />
+          <div className="w-12 h-12 p-2" dangerouslySetInnerHTML={{ __html: icons.Data.YouTube }} />
+          <div className="w-12 h-12 p-2" dangerouslySetInnerHTML={{ __html: icons.Data.LinkedIn }} />
+          <div className="w-12 h-12 p-2" dangerouslySetInnerHTML={{ __html: icons.Data.Twitter }} />
         </div>
         <div className="flex flex-col items-center text-center text-xxs text-gray-400 mt-3">
           <label>Copyright © {year} Visitaecuador.com. Todos los derechos reservados</label>

@@ -19,6 +19,7 @@ const Navbar = () => {
   const [openProfile, setOpenProfile] = useState(false);
   const session = JSON.parse(localStorage.getItem("datos"));
   const nivel = session ? session.data.nivel : "visitante";
+  const nombre = session ? session.data.nombre:"";
   const foto = session ? (session.data.fotos ? session.data.fotos.m : "") : "";
 
   const handleClickProfile = () => {
@@ -60,26 +61,30 @@ const Navbar = () => {
                 Iniciar Sesión
               </button>
             )}
-            <div className="flex items-center">
+            <div className="flex items-end justify-end">
               {(foto !== "" && nivel !== "visitante") && (
-                <img src={foto} className="rounded-full h-12 w-12 border-2 cursor-pointer hidden md:block" alt="Profile" onClick={() => handleClickProfile()} />
+                <div className="flex gap-2 items-center cursor-pointer hover:bg-white hover:bg-opacity-20 hover:rounded-md p-1" onClick={() => handleClickProfile()}>
+                  <img src={foto} className="rounded-full h-10 w-10 border-2 hidden md:block" alt="Profile" />
+                  <div className="flex flex-col ">
+                    <label className="font-semibold text-white cursor-pointer">{nombre}</label>
+                    <label className="capitalize text-xs text-white cursor-pointer">{nivel}</label>
+                  </div>
+                </div>
               )}
               {(nivel !== "visitante" && openProfile) && (
-                <div className="md:absolute z-50 bg-white flex flex-col top-20 -ml-11 shadow-lg rounded-md gap-0.5">
-                  <button className="hover:bg-greenVE-200 px-4 hover:rounded-t-lg text-sm py-1">Mi perfil</button>
-                  <div className="border"></div>
-                  <button className="hover:bg-greenVE-200 px-4 text-sm py-1">Mis Favoritos</button>
-                  <div className="border"></div>
-                  <button className="hover:bg-greenVE-200 px-4 text-sm py-1">Administrador</button>
-                  <div className="border border-gray-50"></div>
-                  <button onClick={() => handleClickLogOut()} className="hover:bg-greenVE-200 px-4 hover:rounded-b-lg text-sm py-1">Cerrar sesión</button>
+                <div className="md:absolute z-50 bg-white flex flex-col items-start py-2 top-14  gap-2 shadow-2xl rounded-md ">
+                  <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Account }}  /> Mi perfil</button>
+                  <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Historial}}  /> Historial de Reservas</button>
+                  <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Favorito }}  /> Mis Favoritos</button>
+                  <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Administrador }}  /> Administrador</button>
+                  <button onClick={() => handleClickLogOut()} className="hover:bg-greenVE-200 w-full px-4 text-xs py-1 flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Logout }}  />Cerrar sesión</button>
                 </div>
               )}
             </div>
           </div>
           <div className="flex gap-2 items-end mt-4 sm:mt-0">
             <button className="flex gap-1 text-white border-2 rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300">
-              <div dangerouslySetInnerHTML={{ __html: icons.Data["Cama"] }} />
+              <div dangerouslySetInnerHTML={{ __html: icons.Data.Home}} />
               <label className="hidden md:flex">Hospedaje</label>
             </button>
             <button className="flex gap-1 text-white border-2 rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300">

@@ -3,6 +3,7 @@ class Filtro {
         IdDestino,
         TipoDestino,
         IdBeneficios,
+        IdEstablecimiento,
         IdServicios,
         Personas,
         Tiempo,
@@ -15,6 +16,7 @@ class Filtro {
     ){
         this.IdDestino=IdDestino;
         this.TipoDestino=TipoDestino;
+        this.IdBeneficios=IdBeneficios;
         this.IdBeneficios=IdBeneficios;
         this.IdServicios=IdServicios;
         this.Personas=Personas;

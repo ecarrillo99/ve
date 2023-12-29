@@ -6,7 +6,7 @@ import { CheckPromocionalCode } from "../../../controllers/suscripcion/suscripci
 import { Spinner } from "@material-tailwind/react";
 import ProductListSkeleton from "./ProductListSkeleton";
 
-const Productlist = ({cambioSlider}) => {
+const Productlist = ({cambioSlider, productoSeleccionado}) => {
   const [firstProducts, setFirstProducts] = useState();
   const [lastProducts, setLastProducts] = useState();
   const [codigoPromocional, setCodigoPromocional] = useState();
@@ -94,7 +94,7 @@ const Productlist = ({cambioSlider}) => {
       <div className="flex flex-wrap gap-y-3 gap-x-3 items-center justify-center sm:flex-col md:flex-row">
         {firstProducts ?
           firstProducts.map((item) => (
-            <ProductItem Producto={item} key={item.id} cambioSlider={cambioSlider} />
+            <ProductItem Producto={item} key={item.id} cambioSlider={cambioSlider} productoSeleccionado={productoSeleccionado}/>
           ))
           : <ProductListSkeleton></ProductListSkeleton>
         }

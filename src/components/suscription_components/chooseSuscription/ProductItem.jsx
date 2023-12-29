@@ -1,4 +1,4 @@
-const ProductItem=({Producto, cambioSlider})=>{
+const ProductItem=({Producto, cambioSlider, productoSeleccionado})=>{
     const getTiempo=(TipoTiempo)=>{
         if(TipoTiempo==1){
             return "año(s)"
@@ -19,6 +19,7 @@ const ProductItem=({Producto, cambioSlider})=>{
 
     const handleClick=()=>{
         cambioSlider(1);
+        productoSeleccionado(Producto);
     }
     
     return (

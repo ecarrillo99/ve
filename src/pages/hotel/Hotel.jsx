@@ -9,25 +9,102 @@ import HotelDetails from "../../components/hotel_components/hotelComponents/Hote
 import HotelContacts from "../../components/hotel_components/hotelComponents/HotelContacts";
 import HotelReservation from "../../components/hotel_components/hotelComponents/HotelReservation";
 import { useLocation, useParams } from 'react-router-dom';
-import { getDetalleOferta } from "../../controllers/establecimiento/establecimientoController";
+import { getDetalleOferta, getResultadoFiltro } from "../../controllers/establecimiento/establecimientoController";
 import React, { useEffect, useState } from "react";
 import HotelRecommended from "../../components/hotel_components/hotelComponents/HotelRecommended";
 import HotelOfertas from "../../components/hotel_components/hotelComponents/HotelOfertas";
 import HotelConfirmation from "../../components/hotel_components/hotelComponents/HotelConfirmation";
+import Filtro from "../../models/Filtro";
+import { format } from "date-fns";
 
 
 
 const Hotel = () => {
   const location = useLocation();
-  const [establecimiento, setEstablecimiento] = useState(location.state.Establecimiento);
-  const [options, setOptions] = useState(location.state.options);
-  const [date, setDate] = useState(location.state.date);
-  const [destination, setDestination] = useState(location.state.destination);
-  const [noches, setNoches] = useState(Math.ceil(Math.abs(new Date(date[0].endDate)) - new Date(date[0].startDate)) / (1000 * 60 * 60 * 24));
-  const { id } = useParams();
+  const searchParams = new URLSearchParams(location.search);
+  const [idHotel, setIdHotel] = useState(JSON.parse(decodeURIComponent(searchParams.get('id'))));
+  const [establecimiento, setEstablecimiento] = useState();
+  const [options, setOptions] = useState();
+  const [date, setDate] = useState();
+  const [destination, setDestination] = useState();
+  const [noches, setNoches] = useState();
   const [data, setData] = useState(null);
   const session = JSON.parse(localStorage.getItem("datos"));
   const nivel = session ? session.data.nivel : "visitante";
+  const filtro = new Filtro();
+  const {nombre}=useParams();
+
+  
+
+  useEffect(() => {
+    
+    if (location.state && location.state.Establecimiento) {
+      console.log("ingresó directo")
+      setEstablecimiento(location.state.Establecimiento);
+      setOptions(location.state.options);
+      setDate(location.state.date);
+      setDestination(location.state.destination);
+  
+      // Calcula las noches directamente usando location.state.date
+      const nochesCalculadas = Math.ceil(
+        Math.abs(new Date(location.state.date[0].endDate)) - new Date(location.state.date[0].startDate)
+      ) / (1000 * 60 * 60 * 24);
+  
+      setNoches(nochesCalculadas);
+    } else {
+      try {
+        const parsedOptions = JSON.parse(decodeURIComponent(searchParams.get('opciones')));
+        const fechas = JSON.parse(decodeURIComponent(searchParams.get('fechas')))
+        const dateTmp = [{
+          startDate: new Date(fechas[0].startDate),
+          endDate: new Date(fechas[0].endDate),
+          key: new Date(fechas.key)
+        }]
+        const parsedDestination = JSON.parse(decodeURIComponent(searchParams.get('destino')));
+  
+        setOptions(parsedOptions);
+        setDate(dateTmp);
+        setDestination(parsedDestination);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+  }, [location.state]);
+  
+  // Mueve el código de useEffect fuera del bloque else
+  useEffect(() => {
+    if(date){ 
+      // Calcula las noches directamente usando location.state.date
+      const nochesCalculadas = Math.ceil(
+        Math.abs(new Date(date[0].endDate)) - new Date(date[0].startDate)
+      ) / (1000 * 60 * 60 * 24);
+  
+      setNoches(nochesCalculadas);
+      console.log(format(date[0].startDate, "yyyy-MM-dd"))
+      console.log(date[0].startDate)
+      filtro.IdDestino = destination.Id;
+      filtro.TipoDestino = destination.Tipo;
+      filtro.txtBusqueda = nombre.replaceAll("-", " ");
+      filtro.Fechas = {
+        inicio: `${format(date[0].startDate, "yyyy-MM-dd")}`,
+        fin: `${format(date[0].endDate, "yyyy-MM-dd")}`
+      };
+      filtro.Pax = {
+        adultos: options.adult,
+        ninos: options.children,
+        edadninos: options.childrenAges
+      };
+  
+      console.log(filtro);
+      getResultadoFiltro(filtro).then((result) => {
+        if (result) {
+          setEstablecimiento(result.Establecimientos[0])
+          console.log(result.Establecimientos[0]);
+        }
+      });
+    }
+      
+  }, [destination, options, nombre, date]);
 
   return (
     establecimiento ? (

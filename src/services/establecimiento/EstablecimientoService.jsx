@@ -17,6 +17,11 @@ class EstablecimientoService extends GenericService{
         return await this.post(url, params);
     }
 
+    async cambiarEstadoFavorito(params){
+        const url = `${Config.URL_SERVICIOS}${Config.VEREST}setHotelFavorito/`;
+        return await this.post(url, params);
+    }
+
     async eliminarFavorito(params){
         const url = `${Config.URL_SERVICIOS}${Config.VEREST}eliminarFavorito/`;
         return await this.post(url, params);

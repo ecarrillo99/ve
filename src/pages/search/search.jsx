@@ -12,6 +12,7 @@ import { getResultadoFiltro } from "../../controllers/establecimiento/establecim
 import Filtro from "../../models/Filtro";
 import SearchItemSkeleton from "../../components/searchItem/SearchItemSkeleton";
 import MapScreen from "../../components/search_components/MapScreen";
+import Icons from "../../global/icons";
 
 const Search = () => {
   const location = useLocation();
@@ -24,6 +25,7 @@ const Search = () => {
     endDate: new Date(fechas[0].endDate),
     key: new Date(fechas.key)
   }]
+  const [coinEncontrada, setCoinEncontrada]=useState(false);
   const [date, setDate] = useState(dateTmp);
   const [minPrice, setMinPrice] = useState(10)
   const [maxPrice, setMaxPrice] = useState(1000)
@@ -34,6 +36,7 @@ const Search = () => {
   const [services, setServices] = useState([])
   const [openFilters, setOpenFilters] = useState(false);
   const filtro = new Filtro()
+  const icons = new Icons()
 
 
   filtro.IdDestino = destination.Id
@@ -48,12 +51,29 @@ const Search = () => {
     "ninos": options.children,
     "edadninos": options.childrenAges
   }
+  console.log(filtro);
   async function fetchData(filtro) {
     try {
       getResultadoFiltro(filtro)
         .then((result) => {
           if (result) {
-            result.Establecimientos.sort((a, b) => b.Catalogacion - a.Catalogacion)
+            //console.log(result);
+            result.Establecimientos.sort((a, b) => {
+              // Comprueba si el nombre del hotel coincide con la palabra clave
+              const aCoincide = a.Titulo.toLowerCase().includes(filtro.txtBusqueda.toLowerCase());
+              const bCoincide = b.Titulo.toLowerCase().includes(filtro.txtBusqueda.toLowerCase());
+            
+              // Si uno de los hoteles coincide, ese se coloca primero
+              if (aCoincide && !bCoincide) {
+                setCoinEncontrada(true);
+                return -1;
+              } else if (!aCoincide && bCoincide) {
+                return 1;
+              }
+            
+              // Si ninguno coincide o ambos coinciden, ordena por catalogación
+              return b.Catalogacion - a.Catalogacion;
+            });
             setDataFinal(result)
             setData(result)
             setMinPrice(parseFloat(result.PrecioMinimo))
@@ -330,8 +350,13 @@ const Search = () => {
         <div className="w-9/12">
           <div className="flex">
             <div
-              className="border-2 h-fit rounded-xl px-2 py-0.5 mb-3 text-sm cursor-pointer"
-              onClick={() => data && setOpenFilters(!openFilters)}> Ordenar por: {filtroNombre}</div>
+              className="flex items-center gap-2 border-2 h-fit rounded-xl px-2 py-0.5 mb-3 text-sm cursor-pointer"
+              onClick={() => data && setOpenFilters(!openFilters)}>
+                <div dangerouslySetInnerHTML={{ __html: icons.Data.Filtro }} />
+                 Ordenar por: {filtroNombre}
+                 <div dangerouslySetInnerHTML={{ __html: icons.Data.SelectArrows }} />
+                 </div>
+                
             {openFilters && (<div className="absolute mt-8 flex flex-col bg-white border rounded-md shadow-xl z-50" >
               <button
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
@@ -397,8 +422,9 @@ const Search = () => {
           </div>
           {data
             ? (
-              data.Establecimientos.map((item) => (
+              data.Establecimientos.map((item, index) => (
                 <SearchItem
+                  firstElement={index==0?coinEncontrada?true:false:false}
                   options={options}
                   date={date}
                   destination={destination}

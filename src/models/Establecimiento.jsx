@@ -29,6 +29,8 @@ class Establecimiento{
         Rack,
         Ofertas,
         Recomendados,
+        Favorito,
+        Calificacion,
     ){
         this.Establecimiento=IdEstablecimiento
         this.Titulo=Titulo
@@ -59,6 +61,8 @@ class Establecimiento{
         this.Rack=Rack
         this.Ofertas=Ofertas
         this.Recomendados=Recomendados
+        this.Favorito=Favorito
+        this.Calificacion=Calificacion
     }
 }
 

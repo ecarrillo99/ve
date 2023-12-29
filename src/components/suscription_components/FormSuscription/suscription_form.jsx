@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { getRemoteCountries } from "../../../controllers/lugares/lugaresController";
+import Icons from "../../../global/icons";
+import Suscripcion from "../../../models/Suscripcion";
 
-const SuscriptionForm = ({cambioSlider}) => {
+const SuscriptionForm = ({ cambioSlider, suscripcionForm }) => {
     const [listaPaises, setListaPaises] = useState();
     const [codePhone, setCodePhone] = useState();
     const [country, setCountry] = useState();
@@ -17,6 +19,7 @@ const SuscriptionForm = ({cambioSlider}) => {
     const [adressError, setAdressError] = useState(false)
     const [acceptTC, setAcceptTC] = useState(false)
     const [acceptTCError, setAcceptTCError] = useState(true)
+    const icons = new Icons();
 
 
     useEffect(() => {
@@ -54,7 +57,7 @@ const SuscriptionForm = ({cambioSlider}) => {
 
         if (regexCorreo.test(event.target.value)) {
             setIsMailValid(true)
-            setMail(event.target.isMailValid)
+            setMail(event.target.value)
         }
         else {
             setIsMailValid(false)
@@ -84,28 +87,39 @@ const SuscriptionForm = ({cambioSlider}) => {
         setAdress(event.target.value)
     }
 
-
-    const handleClickContinuar = () => {
-        names == "" ? setNamesError(true) : setNamesError(false)
-        dni == "" ? setDniError(true) : setDniError(false)
-        mail == "" ? setIsMailValid(false) : setIsMailValid(true)
-        phone == "" ? setIsPhoneValid(false) : setIsPhoneValid(true)
-        adress == "" ? setAdressError(true) : setAdressError(false)
-        if (!namesError && !dniError && isMailValid && isPhoneValid && !adressError&&!acceptTCError) {
-            //console.log("Ingresó")
-            cambioSlider(2)
-        }
-    }
-
-    const handleChangeTC=(event)=>{
+    const handleChangeTC = (event) => {
         setAcceptTCError(!event.target.checked)
         setAcceptTC(event.target.checked)
+    }
+
+
+    const handleClickContinuar = () => {
+        setNamesError(names === "");
+        setDniError(dni === "");
+        setIsMailValid(mail !== "");
+        setIsPhoneValid(phone !== "");
+        setAdressError(adress === "");
+
+            if (!namesError && !dniError && isMailValid && isPhoneValid && !adressError && !acceptTCError) {
+                const suscripcion= new Suscripcion();
+                suscripcion.Nombres=names;
+                suscripcion.DNI=dni;
+                suscripcion.Pais=country;
+                suscripcion.Correo=mail;
+                suscripcion.Telefono=phone;
+                suscripcion.Direccion=adress;
+                suscripcion.Terminos=acceptTC;
+                suscripcionForm(suscripcion);
+
+                cambioSlider(2);
+            }
     }
 
 
     return (
         <div className="w-full">
             <div className="flex gap-2 justify-center mb-4 items-center">
+                <div className="cursor-pointer" onClick={() => cambioSlider(0)} dangerouslySetInnerHTML={{ __html: icons.Data.Back }} />
                 <div className="flex bg-greenVE-500 h-7 w-7 justify-center items-center text-white font-bold rounded-full">2</div>
                 <label className="font-semibold">Ingresa tus datos personales</label>
             </div>
@@ -174,7 +188,7 @@ const SuscriptionForm = ({cambioSlider}) => {
                                         <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z" />
                                     </svg>
                                 </div>
-                                <input type="text" id="input-group-1" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full ps-10 p-2.5" placeholder="Ingrese su correo" onChange={validarCorreoElectronico} />
+                                <input type="mail" id="input-group-1" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full ps-10 p-2.5" placeholder="Ingrese su correo" onChange={validarCorreoElectronico} />
                             </div>
                             <div className="h-2">
                                 {
@@ -243,9 +257,7 @@ const SuscriptionForm = ({cambioSlider}) => {
                     <div className="flex items-center justify-center">
                         <button class=" text-white bg-greenVE-500 rounded-lg text-sm w-20 sm:w-auto px-5 py-2.5 text-center" onClick={() => handleClickContinuar()}>Continuar</button>
                     </div>
-
                 </div>
-
             </div>
         </div>
     );

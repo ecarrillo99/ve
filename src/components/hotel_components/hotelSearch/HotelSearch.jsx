@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { format } from "date-fns";
 import { DateRange } from "react-date-range";
 import { es } from 'react-date-range/dist/locale/';
@@ -7,11 +7,13 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import { getEstablacimientoDestino } from "../../../controllers/establecimiento/establecimientoController";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBed, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import Icons from "../../../global/icons";
 
 
 
 const HotelSearch = (props) => {
-    const { Place, Dates, Options } = props
+    /*const { Place, Dates, Options } = props
+    const [inputValue, setInputValue] = useState('');
     const handleClickAway = () => {
         if (openDate) {
           setOpenDate(false)
@@ -56,9 +58,7 @@ const HotelSearch = (props) => {
             room: 1,
           })
       );
-    
-      const navigate = useNavigate();
-    
+      const icons = new Icons();
       const [openSearch, setOpenSearch] = useState(false);
       const [suggestion, setSuggestion] = useState(null);
     
@@ -74,6 +74,8 @@ const HotelSearch = (props) => {
           };
         })
       };
+
+      
     
       const handleOption = (name, operation) => {
         if(name=="children"&operation=="i"){
@@ -112,26 +114,163 @@ const HotelSearch = (props) => {
       };
     
     
-      const fetchData = (value) => {
-        getEstablacimientoDestino(value).then((res) => {
-          if (res) {
-            setSuggestion(res)
-          }
-        })
-      }
-    
-      let timeout = null
-      const handleChange = (value) => {
-        setDestination({ Titulo: value })
-        clearTimeout(null)
-        timeout = setTimeout(() => {
-          if (value != "") {
-            fetchData(value);
+      useEffect(() => {
+        const timer = setTimeout(() => {
+          if (inputValue !== '') {
+            getEstablacimientoDestino(inputValue).then((res) => {
+              if (res) {
+                setSuggestion(res);
+              }
+            });
           } else {
-            setSuggestion(null)
+            setSuggestion([]);
           }
-        }, 1000)
+        }, 500);
+    
+        return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta o el valor cambia
+      }, [inputValue]);
+    
+      const handleChange = (value) => {
+        setInputValue(value);
+        setDestination({ Titulo: value });
       };
+
+      const handleChangeDate = (value) => {
+        setDate(value)
+      }*/
+
+      const { Place, Dates, Options, NewPage } = props
+  const [params, setParams] = useSearchParams();
+  const [inputValue, setInputValue] = useState('');
+  const icons= new Icons();
+  const handleClickAway = () => {
+    if (openDate) {
+      setOpenDate(false)
+    }
+    if (openOptions) {
+      setOpenOptions(false)
+    }
+    if (suggestion) {
+      setSuggestion(null)
+    }
+  };
+  const [destination, setDestination] = useState(
+    Place != null
+      ? (Place)
+      : ({
+        Titulo: "",
+        Tipo: "",
+        Id: "",
+        Lugar: ""
+      })
+  );
+  const [openDate, setOpenDate] = useState(false);
+  const [date, setDate] = useState(
+    Dates != null
+      ? (Dates)
+      : (
+        [{
+          startDate: new Date(),
+          endDate: new Date().setDate(new Date().getDate() + 1),
+          key: "selection",
+        }]
+      )
+    ,
+  );
+  const [openOptions, setOpenOptions] = useState(false);
+
+
+
+  const [options, setOptions] = useState(
+    Options != null
+      ? (Options)
+      : ({
+        adult: 1,
+        children: 0,
+        childrenAges: [],
+        room: 1,
+      })
+  );
+
+  const navigate = useNavigate();
+
+  const [openSearch, setOpenSearch] = useState(false);
+  const [suggestion, setSuggestion] = useState(null);
+
+  const [selectedAges, setSelectedAges] = useState([])
+
+  const handleAgeChange = (event, index) => {
+    const newSelectedAges = [...options['childrenAges']];
+    newSelectedAges[index] = parseInt(event.target.value, 10);
+    setOptions((prev) => {
+      return {
+        ...prev,
+        "childrenAges": newSelectedAges,
+      };
+    })
+  };
+
+  const handleOption = (name, operation) => {
+    if (name == "children" & operation == "i") {
+      const tmpSelectedAges = [...options['childrenAges']];
+      tmpSelectedAges.push(0)
+      setOptions((prev) => {
+        return {
+          ...prev,
+          "childrenAges": tmpSelectedAges,
+        }
+      })
+
+    }
+    if (name == "children" & operation == "d") {
+      const tmpSelectedAges = [...options['childrenAges']];
+      tmpSelectedAges.pop()
+
+      setOptions((prev) => {
+        return {
+          ...prev,
+          "childrenAges": tmpSelectedAges,
+        }
+      })
+    }
+    setOptions((prev) => {
+      return {
+        ...prev,
+        [name]: operation === "i" ? options[name] + 1 : options[name] - 1,
+      };
+    });
+  };
+
+  const handleSearch = () => {
+    const path = `/busqueda/?destino=${encodeURIComponent(JSON.stringify(destination))}&fechas=${encodeURIComponent(JSON.stringify(date))}&opciones=${encodeURIComponent(JSON.stringify(options))}`
+    window.open(path)
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (inputValue !== '') {
+        getEstablacimientoDestino(inputValue).then((res) => {
+          if (res) {
+            console.log(res);
+            setSuggestion(res);
+          }
+        });
+      } else {
+        setSuggestion(null);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta o el valor cambia
+  }, [inputValue]);
+
+  const handleChange = (value) => {
+    setInputValue(value);
+    setDestination({ Titulo: value });
+  };
+
+  const handleChangeDate = (value) => {
+    setDate(value)
+  }
 
     return (
         <div>
@@ -149,19 +288,22 @@ const HotelSearch = (props) => {
               />
               {suggestion && (
                 <ClickAwayListener onClickAway={handleClickAway}>
-                  <div className="absolute mt-14 max-h-40 w-64 bg-white z-50 shadow-md p-2 overflow-y-auto border">
+                  <div className=" absolute top-56 max-h-[17rem] w-80 bg-white z-50 shadow-2xl p-2 overflow-y-auto  rounded-lg">
                     {
                       suggestion ? (
                         suggestion.map((item, key) => (
-                          <div className="flex items-center p-1 border-b cursor-pointer" onClick={() => (setDestination(item), setSuggestion(null))}>
-                            {item.Tipo == "destino" ? (<FontAwesomeIcon icon={faMapMarkerAlt} className="pr-2 w-4 text-gray-500" />)
-                              : (<FontAwesomeIcon icon={faBed} className="pr-2 w-4 text-gray-500" />)}
-                            <p key={key} className="text-sm" >
-                              {item.Titulo.charAt(0).toUpperCase() + item.Titulo.slice(1)}
-                            </p>
-
+                          <div className={`flex items-center p-1 ${key !== suggestion.length - 1 ? 'border-b' : ''} cursor-pointer gap-2`} onClick={() => (setDestination(item), setSuggestion(null))}>
+                            {item.Tipo == "destino" ? (<div dangerouslySetInnerHTML={{ __html: icons.Data.MapPin }} />)
+                              : (<div dangerouslySetInnerHTML={{ __html: icons.Data.Bed }} />)}
+                            <div className="flex flex-col p-1 cursor-pointer" >
+                              <label key={key} className="text-sm font-semibold cursor-pointer" >
+                                {item.Titulo.charAt(0).toUpperCase() + item.Titulo.slice(1)}
+                              </label>
+                              <label className="text-xs cursor-pointer" >
+                                {item.Lugar.charAt(0).toUpperCase() + item.Lugar.slice(1)}
+                              </label>
+                            </div>
                           </div>
-
                         ))
                       ) : (<p></p>)
                     }
@@ -182,7 +324,7 @@ const HotelSearch = (props) => {
                         <ClickAwayListener onClickAway={handleClickAway}>
                           <DateRange
                             editableDateInputs={true}
-                            onChange={(item) => setDate([item.selection])}
+                            onChange={(item) => handleChangeDate([item.selection ? item.selection : item['Invalid Date']])}
                             moveRangeOnFirstSelection={false}
                             ranges={date}
                             locale={es}

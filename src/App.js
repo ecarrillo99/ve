@@ -15,7 +15,7 @@ function App() {
         <Route path="/busqueda/" element={<Search />} />
         <Route path="/suscripcion/" element={<Suscription />} />
         <Route path="/login/" element={<Login />} />
-        <Route path="/hotel/:id" element={<Hotel />} />
+        <Route path="/hotel/:nombre" element={<Hotel />} />
       </Routes>
     </Router>)
 
