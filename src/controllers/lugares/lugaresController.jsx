@@ -24,3 +24,34 @@ export const getRemoteCountries = async function (){
 
     }
 }
+
+
+export const getRemoteCities = async function (){
+    try{
+        const listaProvincias=[];
+        const lugaresService= new LugaresService();
+        const params={
+            "id_pais":239
+        }
+        const res = await lugaresService.listaCiudades(params);
+        if (res.estado) {
+            for (const provinciaKey in res.data) {
+                const listaCantones=[]
+                const Provincia=new Detalle();
+                Provincia.Titulo=provinciaKey;
+                for(const cantonItem of res.data[provinciaKey]){
+                    const Canton= new Detalle()
+                    Canton.Titulo=cantonItem['nombre']
+                    Canton.Valor=cantonItem['id_tbl_lugar']
+                    listaCantones.push(Canton)
+                }
+                Provincia.Valor=listaCantones;
+                listaProvincias.push(Provincia)
+                console.log(provinciaKey)
+            }
+            return listaProvincias
+        }
+    }catch(e){
+
+    }
+}

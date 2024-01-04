@@ -16,6 +16,10 @@ const Navbar = () => {
     navigate("/suscripcion");
   };
 
+  const handleClickProfileSet = () => {
+    navigate("/perfil");
+  };
+
   const [openProfile, setOpenProfile] = useState(false);
   const session = JSON.parse(localStorage.getItem("datos"));
   const nivel = session ? session.data.nivel : "visitante";
@@ -64,7 +68,7 @@ const Navbar = () => {
             <div className="flex items-end justify-end">
               {(foto !== "" && nivel !== "visitante") && (
                 <div className="flex gap-2 items-center cursor-pointer hover:bg-white hover:bg-opacity-20 hover:rounded-md p-1" onClick={() => handleClickProfile()}>
-                  <img src={foto} className="rounded-full h-10 w-10 border-2 hidden md:block" alt="Profile" />
+                  <img src={foto} className="rounded-full h-10 w-10 border-2 hidden md:block"/>
                   <div className="flex flex-col ">
                     <label className="font-semibold text-white cursor-pointer">{nombre}</label>
                     <label className="capitalize text-xs text-white cursor-pointer">{nivel}</label>
@@ -73,7 +77,7 @@ const Navbar = () => {
               )}
               {(nivel !== "visitante" && openProfile) && (
                 <div className="md:absolute z-50 bg-white flex flex-col items-start py-2 top-14  gap-2 shadow-2xl rounded-md ">
-                  <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Account }}  /> Mi perfil</button>
+                  <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickProfileSet}><div dangerouslySetInnerHTML={{ __html: icons.Data.Account }}  /> Mi perfil</button>
                   <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Historial}}  /> Historial de Reservas</button>
                   <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Favorito }}  /> Mis Favoritos</button>
                   <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Administrador }}  /> Administrador</button>
