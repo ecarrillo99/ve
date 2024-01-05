@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { getProfileData } from "../../controllers/perfil/perfilController";
+import { getProfileData, updateProfileData } from "../../controllers/perfil/perfilController";
 import ProfilePhoto from "./ProfilePhoto";
+import { Spinner } from "@material-tailwind/react";
 
 const ProfileEdit = ({ profileData, citiesData }) => {
     const [ciudad, setCiudad] = useState();
@@ -9,12 +10,23 @@ const ProfileEdit = ({ profileData, citiesData }) => {
     const [contactosField, setContactosField] = useState(profileData.Contactos);
     const [fotoPerfil, setFotoPerfil] = useState(profileData.Foto);
     const [modalOpen, setModalOpen] = useState(false);
+    const [selectedProvincia, setSelectedProvincia]=useState(obtenerIndiceProvinciaPorValor(citiesData, profileData.IdLugar));
+    const [selectedCanton, setSelectedCanton]=useState(profileData.IdLugar)
     const [editModes, setEditModes] = useState({
         ciudad: false,
         direccion: false,
         cumpleanios: false,
         contactos: Array(profileData.Contactos.length).fill(false),
     });
+
+    const [loadingModes, setLoadingModes] = useState({
+        ciudad: false,
+        direccion: false,
+        cumpleanios: false,
+        contactos: Array(profileData.Contactos.length).fill(false),
+    });
+
+    console.log(citiesData)
 
     const handleToggleEdit = (section) => {
         setEditModes((prevEditModes) => ({
@@ -23,6 +35,7 @@ const ProfileEdit = ({ profileData, citiesData }) => {
         }));
     };
 
+    
     const handleCancel = (section) => {
         setEditModes((prevEditModes) => ({
             ...prevEditModes,
@@ -31,15 +44,55 @@ const ProfileEdit = ({ profileData, citiesData }) => {
     };
 
     const handleSave = (section) => {
-        // Lógica para guardar los cambios
-        // Puedes realizar acciones de guardado según la sección (ciudad, dirección, etc.)
-        // Aquí puedes enviar los datos al servidor, por ejemplo.
-
-        // Después de guardar, puedes desactivar el modo de edición
-        setEditModes((prevEditModes) => ({
-            ...prevEditModes,
-            [section]: false,
+        setLoadingModes((prevLoadingModes) => ({
+            ...prevLoadingModes,
+            [section]: true,
         }));
+
+        var key=""
+        var value=""
+        if((section=="ciudad")){
+            key="id_tbl_lugar";
+            value=selectedCanton;
+        }
+
+        if((section=="direccion")){
+            key="direccion";
+            value=direccionField;
+        }
+
+        if((section=="cumpleanios")){
+            key="fecha_nac";
+            value=cumpleaniosField;
+        }
+
+        if((section.includes("contactos"))){
+            key="contactos";
+            value=Object.values(contactosField).map(item => ({
+                id_tbl_tipo_contacto: item.Valor,
+                contacto: item.Titulo
+              }));
+        }
+
+
+        updateProfileData(key, value).then((res)=>{
+            if(res){
+                setLoadingModes((prevLoadingModes) => ({
+                    ...prevLoadingModes,
+                    [section]: false,
+                }));
+                setEditModes((prevEditModes) => ({
+                    ...prevEditModes,
+                    [section]: false,
+                }));
+            }else{
+                setLoadingModes((prevLoadingModes) => ({
+                    ...prevLoadingModes,
+                    [section]: false,
+                }));
+            }
+        })        
+        
     };
 
     const handleCumpleaniosChange = (event) => {
@@ -75,6 +128,35 @@ const ProfileEdit = ({ profileData, citiesData }) => {
         setModalOpen(false);
     }
 
+    const handleChangeProvincia=(event)=>{
+        setSelectedProvincia(event.target.value)
+    }
+
+    const handleChangeCanton=(event)=>{
+        setSelectedCanton(event.target.value)
+    }
+
+    useEffect(() => {
+
+        async function fetchData() {
+
+            for (let i = 0; i < citiesData.length; i++) {
+                const provincia = citiesData[i];
+                const cantones = provincia.Valor;
+                
+                for (let j = 0; j < cantones.length; j++) {
+                    const canton = cantones[j];
+                    
+                    if (canton.Valor === profileData.IdLugar) {
+                        setCiudad(canton.Titulo);
+                    }
+                }
+            }
+        }
+
+        fetchData();
+    }, []);
+
     return (
         <div className="flex flex-col">
             {
@@ -109,11 +191,32 @@ const ProfileEdit = ({ profileData, citiesData }) => {
                     </div>
                     {
                         editModes.ciudad?(
-                            <div></div>
+                            <div className="flex flex-col gap-3"> 
+                                <div className="flex gap-3">
+                                    <label htmlFor="comboBox">Provincia:</label>
+                                    <select id="provincias" value={selectedProvincia} onChange={handleChangeProvincia}>
+                                        {
+                                            citiesData.map((item, index)=>(
+                                                <option value={index} key={index}>{item.Titulo}</option>
+                                            ))
+                                        }
+                                    </select>
+                                </div>
+                                <div className="flex gap-7">
+                                    <label htmlFor="comboBox">Cantón:</label>
+                                    <select id="provincias" value={selectedCanton} onChange={handleChangeCanton}>
+                                        {
+                                            citiesData[selectedProvincia].Valor.map((item, index)=>(
+                                                <option value={item.Valor} key={item.Valor}>{item.Titulo}</option>
+                                            ))
+                                        }
+                                    </select>
+                                </div>
+                            </div>
                         ):(
                             
                             <div className="w-7/12">
-                                <label className="text-sm ">Cuenca</label>
+                                <label className="text-sm ">{ciudad}</label>
                             </div>
                         )
                     }
@@ -121,8 +224,8 @@ const ProfileEdit = ({ profileData, citiesData }) => {
                 </div>
                 {editModes.ciudad ? (
                     <>
-                        <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel('ciudad')}>Cancelar</label>
-                        <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave('ciudad')}>Guardar</label>
+                        <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel('ciudad')}>{loadingModes.ciudad?"":"Cancelar"}</label>
+                        <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave('ciudad')}>{loadingModes.ciudad?<Spinner></Spinner>:"Guardar"}</label>
                     </>
                 ) : (
                     <label className="text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleToggleEdit('ciudad')}>Editar</label>
@@ -209,3 +312,19 @@ const ProfileEdit = ({ profileData, citiesData }) => {
 }
 
 export default ProfileEdit;
+
+const obtenerIndiceProvinciaPorValor = (provincias, valorBuscar) => {
+    for (let i = 0; i < provincias.length; i++) {
+        const provincia = provincias[i];
+        const cantones = provincia.Valor;
+
+        for (let j = 0; j < cantones.length; j++) {
+            const canton = cantones[j];
+
+            if (canton.Valor === valorBuscar) {
+                return i; // Devuelve el índice de la provincia
+            }
+        }
+    }
+    return -1; // Si no se encuentra, devuelve -1
+};

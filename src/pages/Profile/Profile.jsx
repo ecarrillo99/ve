@@ -30,20 +30,24 @@ const Profile=()=>{
 
             try {
                 getProfileData()
-                    .then((result) => {
-                        if (result) {
-                            setProfileData(result)
-                            setSelectedMenu(<ProfileEdit profileData={result}/>)
+                    .then((result1) => {
+                        if (result1) {
+                            getRemoteCities()
+                                .then((result2)=>{
+                                    if(result2){
+                                        setProfileData(result1)
+                                        setCitiesData(result2.slice().sort((a,b)=>a.Titulo.localeCompare(b.Titulo)))
+                                        setSelectedMenu(<ProfileEdit profileData={result1} citiesData={result2.slice().sort((a,b)=>a.Titulo.localeCompare(b.Titulo))}/>)
+                                    }
+                                    
+                                })
+                                .catch((error) => { console.log(error) })
+                            
                         }
                     })
                     .catch((error) => { console.log(error) })
                 
-                getRemoteCities()
-                    .then((result)=>{
-                        console.log(result)
-                        setCitiesData(result)
-                    })
-                    .catch((error) => { console.log(error) })
+                
 
             } catch (error) {
                 console.error("Error:", error);

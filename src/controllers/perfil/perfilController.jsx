@@ -36,6 +36,23 @@ export const getProfileData = async function(){
     }
 }
 
+export const updateProfileData = async function(parametro, valor){
+    try{
+        var perfilService= new PerfilService();
+        var bd = JSON.parse(localStorage.getItem('datos'))
+        const params={
+            "token":bd['token'],
+            [parametro]:valor
+        }
+        console.log(params);
+        const res = await perfilService.modificarDatosPersonales(params);
+        console.log(res);
+        return res.estado;
+    }catch(e){
+        return false;
+    }
+}
+
 export const saveRemotePhoto= async function(path){
     try{
         var perfilService= new PerfilService();

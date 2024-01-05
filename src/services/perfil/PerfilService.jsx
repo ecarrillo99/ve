@@ -10,6 +10,10 @@ class PerfilService extends GenericService{
         const url = `${Config.URL_SERVICIOS}${Config.VERAPP}setImgPerfil/`;
         return await this.post(url, params);
     }
+    async modificarDatosPersonales(params){
+        const url = `${Config.URL_SERVICIOS}${Config.VERSUS}modificarDatosPersonales/`;
+        return await this.post(url, params);
+    }
 }
 
 export default PerfilService;

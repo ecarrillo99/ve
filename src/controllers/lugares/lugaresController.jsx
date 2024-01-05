@@ -47,7 +47,6 @@ export const getRemoteCities = async function (){
                 }
                 Provincia.Valor=listaCantones;
                 listaProvincias.push(Provincia)
-                console.log(provinciaKey)
             }
             return listaProvincias
         }
