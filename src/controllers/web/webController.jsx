@@ -16,7 +16,6 @@ export const DefaultToken = async function () {
     try {
         const webService = new WebService;
         const datos = await webService.getDefaultToken(params);
-        //console.log("Datos: "+JSON.stringify(datos))
         if (datos.estado && datos.codigo == 0) {   // falso
             if (Object.values(datos).length > 0) {
                 var _values =

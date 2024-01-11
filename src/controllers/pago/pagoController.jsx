@@ -52,7 +52,6 @@ export const getRemoteTarjetas = async function (){
             }
             return(listaTipoPago)
         }
-        //console.log(res);
     }catch(e){
 
     }

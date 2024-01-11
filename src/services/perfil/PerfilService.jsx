@@ -14,6 +14,14 @@ class PerfilService extends GenericService{
         const url = `${Config.URL_SERVICIOS}${Config.VERSUS}modificarDatosPersonales/`;
         return await this.post(url, params);
     }
+    async modificarContrasenia(params){
+        const url = `${Config.URL_SERVICIOS}${Config.VERAPP}cambiarContrasenia/`;
+        return await this.post(url, params);
+    }
+    async actualizarCodigoPromocional(params){
+        const url = `${Config.URL_SERVICIOS}${Config.VERSUS}actualizarCodigoPromocional/`;
+        return await this.post(url, params);
+    }
 }
 
 export default PerfilService;

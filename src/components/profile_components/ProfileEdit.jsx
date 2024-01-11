@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { getProfileData, updateProfileData } from "../../controllers/perfil/perfilController";
+import { changePromoCode, updateProfileData } from "../../controllers/perfil/perfilController";
 import ProfilePhoto from "./ProfilePhoto";
 import { Spinner } from "@material-tailwind/react";
 
 const ProfileEdit = ({ profileData, citiesData }) => {
     const [ciudad, setCiudad] = useState();
+    const [errorCodigo, setErrorCodigo]=useState(false);
     const [direccionField, setDireccionField] = useState(profileData.Direccion);
+    const [codigoField, setCodigoField]= useState(profileData.Codigo);
     const [cumpleaniosField, setCumpleaniosField] = useState(profileData.FechaNacimiento);
     const [contactosField, setContactosField] = useState(profileData.Contactos);
     const [fotoPerfil, setFotoPerfil] = useState(profileData.Foto);
@@ -13,6 +15,7 @@ const ProfileEdit = ({ profileData, citiesData }) => {
     const [selectedProvincia, setSelectedProvincia]=useState(obtenerIndiceProvinciaPorValor(citiesData, profileData.IdLugar));
     const [selectedCanton, setSelectedCanton]=useState(profileData.IdLugar)
     const [editModes, setEditModes] = useState({
+        codigo:false,
         ciudad: false,
         direccion: false,
         cumpleanios: false,
@@ -20,13 +23,12 @@ const ProfileEdit = ({ profileData, citiesData }) => {
     });
 
     const [loadingModes, setLoadingModes] = useState({
+        codigo:false,
         ciudad: false,
         direccion: false,
         cumpleanios: false,
         contactos: Array(profileData.Contactos.length).fill(false),
     });
-
-    console.log(citiesData)
 
     const handleToggleEdit = (section) => {
         setEditModes((prevEditModes) => ({
@@ -34,7 +36,6 @@ const ProfileEdit = ({ profileData, citiesData }) => {
             [section]: !prevEditModes[section],
         }));
     };
-
     
     const handleCancel = (section) => {
         setEditModes((prevEditModes) => ({
@@ -74,30 +75,64 @@ const ProfileEdit = ({ profileData, citiesData }) => {
               }));
         }
 
-
-        updateProfileData(key, value).then((res)=>{
-            if(res){
-                setLoadingModes((prevLoadingModes) => ({
-                    ...prevLoadingModes,
-                    [section]: false,
-                }));
-                setEditModes((prevEditModes) => ({
-                    ...prevEditModes,
-                    [section]: false,
-                }));
-            }else{
-                setLoadingModes((prevLoadingModes) => ({
-                    ...prevLoadingModes,
-                    [section]: false,
-                }));
-            }
-        })        
-        
+        if(section="codigo"){
+            changePromoCode(codigoField).then((res)=>{
+                if(res){
+                    if(res==401){
+                        localStorage.removeItem("datos")
+                        window.location.reload();
+                    }else{
+                        setLoadingModes((prevLoadingModes) => ({
+                            ...prevLoadingModes,
+                            [section]: false,
+                        }));
+                        setEditModes((prevEditModes) => ({
+                            ...prevEditModes,
+                            [section]: false,
+                        }));
+                    }
+                }else{
+                    setErrorCodigo(true);
+                    setLoadingModes((prevLoadingModes) => ({
+                        ...prevLoadingModes,
+                        [section]: false,
+                    }));
+                }
+            })
+        }else{
+            updateProfileData(key, value).then((res)=>{
+                if(res){
+                    if(res==401){
+                        localStorage.removeItem("datos");
+                        window.location.reload();
+                    }else{
+                        setLoadingModes((prevLoadingModes) => ({
+                            ...prevLoadingModes,
+                            [section]: false,
+                        }));
+                        setEditModes((prevEditModes) => ({
+                            ...prevEditModes,
+                            [section]: false,
+                        }));
+                    }
+                }else{
+                    setLoadingModes((prevLoadingModes) => ({
+                        ...prevLoadingModes,
+                        [section]: false,
+                    }));
+                }
+            })  
+        }      
     };
 
     const handleCumpleaniosChange = (event) => {
         setCumpleaniosField(event.target.value);
     };
+
+    const handleCodigoChange=(event)=>{
+        setErrorCodigo(false);
+        setCodigoField(event.target.value)
+    }
 
     const handleDireccionChange = (event) => {
         setDireccionField(event.target.value);
@@ -134,6 +169,18 @@ const ProfileEdit = ({ profileData, citiesData }) => {
 
     const handleChangeCanton=(event)=>{
         setSelectedCanton(event.target.value)
+        for (let i = 0; i < citiesData.length; i++) {
+            const provincia = citiesData[i];
+            const cantones = provincia.Valor;
+            
+            for (let j = 0; j < cantones.length; j++) {
+                const canton = cantones[j];
+                
+                if (canton.Valor === event.target.value) {
+                    setCiudad(canton.Titulo);
+                }
+            }
+        }
     }
 
     useEffect(() => {
@@ -183,6 +230,35 @@ const ProfileEdit = ({ profileData, citiesData }) => {
                         <label className="text-sm">{profileData.Nombres}</label>
                     </div>
                 </div>
+            </div>
+            <div className="flex py-5 border-b justify-between">
+                <div className="flex w-10/12">
+                    <div className="w-3/12">
+                        <label className="text-sm font-semibold">Código promocional:</label>
+                    </div>
+                    <div className="w-7/12">
+                        {
+                            editModes.codigo ? (
+                                <div className="flex gap-2 items-center">
+                                    <input className="border border-greenVE-500 px-2 rounded-lg focus:outline-none text-sm" value={codigoField} onChange={handleCodigoChange}></input>
+                                    {
+                                        errorCodigo&&<label className="text-xxs text-red-500">El código ya está en uso</label>
+                                    }
+                                </div>
+                            ) : (
+                                <label className="text-sm ">{codigoField}</label>
+                            )
+                        }
+                    </div>
+                </div>
+                {editModes.codigo ? (
+                    <>
+                        <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel('codigo')}>{loadingModes.codigo?"":"Cancelar"}</label>
+                        <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave('codigo')}>{loadingModes.codigo?<Spinner></Spinner>:"Guardar"}</label>
+                    </>
+                ) : (
+                    <label className="text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleToggleEdit('codigo')}>Editar</label>
+                )}
             </div>
             <div className="flex py-5 border-b justify-between">
                 <div className="flex w-10/12">
@@ -248,8 +324,8 @@ const ProfileEdit = ({ profileData, citiesData }) => {
                 </div>
                 {editModes.direccion ? (
                     <>
-                        <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel('direccion')}>Cancelar</label>
-                        <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave('direccion')}>Guardar</label>
+                        <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel('direccion')}>{loadingModes.direccion?"":"Cancelar"}</label>
+                        <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave('direccion')}>{loadingModes.direccion?<Spinner></Spinner>:"Guardar"}</label>
                     </>
                 ) : (
                     <label className="text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleToggleEdit('direccion')}>Editar</label>
@@ -273,8 +349,8 @@ const ProfileEdit = ({ profileData, citiesData }) => {
                 </div>
                 {editModes.cumpleanios ? (
                     <>
-                        <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel('cumpleanios')}>Cancelar</label>
-                        <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave('cumpleanios')}>Guardar</label>
+                        <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel('cumpleanios')}>{loadingModes.cumpleanios?"":"Cancelar"}</label>
+                        <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave('cumpleanios')}>{loadingModes.cumpleanios?<Spinner></Spinner>:"Guardar"}</label>
 
                     </>
                 ) : (
@@ -299,8 +375,8 @@ const ProfileEdit = ({ profileData, citiesData }) => {
                     </div>
                     {editModes[`contactos_${index}`] ? (
                         <>
-                            <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel(`contactos_${index}`)}>Cancelar</label>
-                            <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave(`contactos_${index}`)}>Guardar</label>
+                            <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel(`contactos_${index}`)}>{loadingModes[`contactos_${index}`]?"":"Cancelar"}</label>
+                            <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave(`contactos_${index}`)}>{loadingModes[`contactos_${index}`]?<Spinner></Spinner>:"Guardar"}</label>
                         </>
                     ) : (
                         <label className="text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleToggleEdit(`contactos_${index}`)}>Editar</label>

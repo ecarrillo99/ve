@@ -93,39 +93,6 @@ class DatafastController {
     return _param;
   }
 
-  /*_getUrlParams(persona, product) {
-    console.log(persona)
-    const cedulaDF = (persona.dni.length < 10) ? persona.dni.trim().padStart(10, '0') : persona.dni.trim();
-    const date = dateFormat({ d: new Date() });
-    let subtotal = parseInt(product.precio_producto);
-    subtotal += subtotal * 0.12;
-    console.log(subtotal)
-
-    const _param =
-      "amount=" + subtotal.toFixed(2) +
-      "&currency=USD" +
-      "&paymentType=DB" +
-      "&customer.ip=127.0.0.1" +
-      "&billing.street1=" + encodeURIComponent(persona.address.trim()) +
-      "&customer.givenName=" + encodeURIComponent(persona.names.trim()) +
-      "&customer.merchantCustomerId=" + cedulaDF +
-      "&merchantTransactionId=transaction_" + btoa(cedulaDF + date) +
-      "&customer.email=" + encodeURIComponent(persona.email.trim()) +
-      "&customer.identificationDocType=IDCARD" +
-      "&customer.identificationDocId=" + cedulaDF.substring(0, 10) +
-      "&risk.parameters[USER_DATA2]=" + Config.APPNAME +
-      "&cart.items[0].name=" + encodeURIComponent(product.titulo) +
-      "&cart.items[0].description=" + encodeURIComponent(product.titulo) +
-      "&cart.items[0].price=" + subtotal.toFixed(2) +
-      "&cart.items[0].quantity=1" +
-      "&customParameters[SHOPPER_VAL_BASE0]=0" +
-      "&customParameters[SHOPPER_VAL_BASEIMP]=" + product.precio_producto.toFixed(2) +
-      "&customParameters[SHOPPER_VAL_IVA]=" + (product.precio_producto * 0.12).toFixed(2);
-    console.log("Parámetros")
-    console.log(_param);
-    return _param;
-  }*/
-
 }
 
 export default DatafastController

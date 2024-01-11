@@ -18,7 +18,7 @@ const ImageCropper = ({ closeModal, updateProfilePhoto }) => {
     const [imgSrc, setImgSrc] = useState("");
     const [crop, setCrop] = useState();
     const [error, setError] = useState("");
-    const [isLoading, setIsLoading]=useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const onSelectFile = (e) => {
         const file = e.target.files?.[0];
@@ -29,7 +29,6 @@ const ImageCropper = ({ closeModal, updateProfilePhoto }) => {
             const imageElement = new Image();
             const imageUrl = reader.result?.toString() || "";
             imageElement.src = imageUrl;
-
             imageElement.addEventListener("load", (e) => {
                 if (error) setError("");
                 const { naturalWidth, naturalHeight } = e.currentTarget;
@@ -71,7 +70,7 @@ const ImageCropper = ({ closeModal, updateProfilePhoto }) => {
 
     const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
-    const handleGuardarFoto=()=>{
+    const handleGuardarFoto = () => {
         setIsLoading(true);
         setCanvasPreview(
             imgRef.current, // HTMLImageElement
@@ -83,12 +82,17 @@ const ImageCropper = ({ closeModal, updateProfilePhoto }) => {
             )
         );
         const dataUrl = previewCanvasRef.current.toDataURL();
-        saveRemotePhoto(dataUrl).then((result)=>{
-            if(result){
-                updateProfilePhoto(dataUrl);
-                closeModal(true);
-                window.location.reload();
-            }else{
+        saveRemotePhoto(dataUrl).then((result) => {
+            if (result) {
+                if(result==401){
+                    localStorage.removeItem("datos")
+                    window.location.reload();
+                }else{
+                    updateProfilePhoto(dataUrl);
+                    closeModal(true);
+                    window.location.reload();
+                }
+            } else {
                 setIsLoading(false);
                 setError("Ha ocurrido un error")
             }
@@ -122,30 +126,30 @@ const ImageCropper = ({ closeModal, updateProfilePhoto }) => {
                             ref={imgRef}
                             src={imgSrc}
                             alt="Upload"
-                            style={{ maxHeight: "45vh" }}
+                            style={{ maxWidth: "100%", maxHeight: "45vh" }}
                             onLoad={onImageLoad}
                         />
                     </ReactCrop>
                     <button
-                        className="text-white flex items-center justify-center w-36 h-8 font-mono text-xs py-2 px-4 rounded-2xl mt-4 bg-sky-500 hover:bg-sky-600"
+                        className="text-white flex items-center justify-center w-full h-8 font-mono text-xs py-2 px-4 rounded-2xl mt-4 bg-sky-500 hover:bg-sky-600"
                         onClick={() => {
-                            if(!isLoading){
+                            if (!isLoading) {
                                 handleGuardarFoto();
                             }
                         }}
                     >
                         {
                             isLoading
-                            ?<Spinner color="white" className="h-5"></Spinner>
-                            :"Guardar Imagen"
+                                ? <Spinner color="white" className="h-5"></Spinner>
+                                : "Guardar Imagen"
                         }
                     </button>
                 </div>
             ) : <div className="h-auto w-auto  rounded-xl">
-                <div className="flex items-center justify-center min-h-[50vh] max-h-[50vh] w-auto  rounded-xl bg-gray-300 border-4 border-greenVE-500 border-dashed">
+                <div className="flex items-center justify-center min-h-[50vh] max-h-[50vh] w-full rounded-xl bg-gray-300 border-4 border-greenVE-500 border-dashed">
                     <div {...getRootProps()}>
                         <input {...getInputProps()} />
-                        <p className="text-3xl text-center px-4 text-gray-500">O arrastra una imagen a esta zona para continuar</p>
+                        <p className="md:text-3xl sm:text-base  text-center px-4 text-gray-500">O arrastra una imagen a esta zona para continuar</p>
                     </div>
                 </div>
             </div>
@@ -158,8 +162,9 @@ const ImageCropper = ({ closeModal, updateProfilePhoto }) => {
                         display: "none",
                         border: "1px solid black",
                         objectFit: "contain",
-                        width: 150,
-                        height: 150,
+                        width: "100%",
+                        maxWidth: "150px",  // Tamaño máximo del canvas
+                        height: "auto",     // Se ajusta automáticamente según el ancho
                     }}
                 />
             )}

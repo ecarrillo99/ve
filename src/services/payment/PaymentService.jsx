@@ -3,7 +3,6 @@ import Config from '../../global/config';
 
 class PaymentService {
     testPay = async (params) => {
-        console.log("espera respuesta");
         const res = await new Promise((resolve) => {
             setTimeout(() => {
                 resolve({
@@ -47,7 +46,6 @@ class PaymentService {
         });
 
         const data = await response.json();
-        console.log(data);
 
         if (response.ok) {
             return data;

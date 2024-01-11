@@ -12,7 +12,12 @@ const NewsBanner = () => {
                 getNews()
                     .then((result) => {
                         if (result) {
-                            setData(result)
+                            if(result==401){
+                                localStorage.removeItem('datos');
+                                window.location.reload();
+                            }else{
+                                setData(result)
+                            }
                         }
                     })
                     .catch((error) => { console.log(error) })
@@ -103,14 +108,14 @@ const NewsBanner = () => {
             <Slider {...settings} spaceBetween={10}>
                 {
                     data ?(
-                        data.map((item) => (
-                            <div className="w-1/2">
+                        data.map((item, index) => (
+                            <div key={index} className="w-1/2">
                                 <NewsItem noticia={item}></NewsItem>
                             </div>
                         ))
                     ):(
-                        Array(8).fill(null).map((item)=>(
-                            <div className="w-1/2">
+                        Array(8).fill(null).map((item, index)=>(
+                            <div key={index} className="w-1/2">
                                 <NewsItemSkeleton></NewsItemSkeleton>
                             </div>
                         ))

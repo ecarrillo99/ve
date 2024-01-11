@@ -1,4 +1,3 @@
-import "./hotel.css";
 import Navbar from "../../components/global_components/navbar/Navbar";
 import Footer from "../../components/global_components/footer/Footer";
 import HotelSearch from "../../components/hotel_components/hotelSearch/HotelSearch";
@@ -7,13 +6,11 @@ import HotelGallery from "../../components/hotel_components/hotelComponents/Hote
 import HotelAdress from "../../components/hotel_components/hotelComponents/HotelAdress";
 import HotelDetails from "../../components/hotel_components/hotelComponents/HotelDetails2";
 import HotelContacts from "../../components/hotel_components/hotelComponents/HotelContacts";
-import HotelReservation from "../../components/hotel_components/hotelComponents/HotelReservation";
 import { useLocation, useParams } from 'react-router-dom';
-import { getDetalleOferta, getResultadoFiltro } from "../../controllers/establecimiento/establecimientoController";
+import { getResultadoFiltro } from "../../controllers/establecimiento/establecimientoController";
 import React, { useEffect, useState } from "react";
 import HotelRecommended from "../../components/hotel_components/hotelComponents/HotelRecommended";
 import HotelOfertas from "../../components/hotel_components/hotelComponents/HotelOfertas";
-import HotelConfirmation from "../../components/hotel_components/hotelComponents/HotelConfirmation";
 import Filtro from "../../models/Filtro";
 import { format } from "date-fns";
 
@@ -27,6 +24,7 @@ const Hotel = () => {
   const [options, setOptions] = useState();
   const [date, setDate] = useState();
   const [destination, setDestination] = useState();
+  const [openMap, setOpenMap]=useState();
   const [noches, setNoches] = useState();
   const [data, setData] = useState(null);
   const session = JSON.parse(localStorage.getItem("datos"));
@@ -39,9 +37,9 @@ const Hotel = () => {
   useEffect(() => {
     
     if (location.state && location.state.Establecimiento) {
-      console.log("ingresó directo")
       setEstablecimiento(location.state.Establecimiento);
       setOptions(location.state.options);
+      setOpenMap(location.state.openMap!=null?location.state.openMap:false);
       setDate(location.state.date);
       setDestination(location.state.destination);
   
@@ -80,11 +78,10 @@ const Hotel = () => {
       ) / (1000 * 60 * 60 * 24);
   
       setNoches(nochesCalculadas);
-      console.log(format(date[0].startDate, "yyyy-MM-dd"))
-      console.log(date[0].startDate)
       filtro.IdDestino = destination.Id;
       filtro.TipoDestino = destination.Tipo;
       filtro.txtBusqueda = nombre.replaceAll("-", " ");
+      filtro.IdEstablecimiento=idHotel;
       filtro.Fechas = {
         inicio: `${format(date[0].startDate, "yyyy-MM-dd")}`,
         fin: `${format(date[0].endDate, "yyyy-MM-dd")}`
@@ -94,12 +91,15 @@ const Hotel = () => {
         ninos: options.children,
         edadninos: options.childrenAges
       };
-  
-      console.log(filtro);
+      
       getResultadoFiltro(filtro).then((result) => {
         if (result) {
-          setEstablecimiento(result.Establecimientos[0])
-          console.log(result.Establecimientos[0]);
+          if(result==401){
+            localStorage.removeItem("datos");
+            window.location.reload();
+          }else{
+            setEstablecimiento(result.Establecimientos[0])
+          }
         }
       });
     }
@@ -116,7 +116,7 @@ const Hotel = () => {
               Place={destination}
               Dates={date}
               Options={options} />
-            <HotelAdress Establecimiento={establecimiento} />
+            <HotelAdress Establecimiento={establecimiento} openMap={openMap} />
           </div>
           <div className="md:w-9/12">
             <div>
@@ -141,7 +141,6 @@ const Hotel = () => {
             </HotelContacts>
               :<></>
             }
-            
           </div>
         </div>
         <div className="flex mx-auto max-w-6xl py-0 sm:px-6 lg:px-8 mb-20">

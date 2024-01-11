@@ -4,7 +4,7 @@ const ItemRecomendedSkeleton = () => {
 
 
     return (
-        <div class=" bg-white rounded-xl border-gray-200 cursor-pointer">
+        <div className=" bg-white rounded-xl border-gray-200 cursor-pointer">
             <div className="bg-gray-200 rounded-md animate-pulse relative w-full h-0" style={{ paddingBottom: '100%' }}>
                 
             </div>

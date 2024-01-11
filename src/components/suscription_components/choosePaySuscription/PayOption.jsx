@@ -154,7 +154,7 @@ const PayOption = ({cambioSlider, tarjetaSeleccionada, diferidoSeleccionado, pag
             {
               bancosList && (
                 bancosList.map((item, index) => (
-                  <Accordion  className={open===index?`border-2 border-greenVE-500`:`pb-1`} open={open === index} icon={<Icon id={index} open={open} />}>
+                  <Accordion key={index} className={open===index?`border-2 border-greenVE-500`:`pb-1`} open={open === index} icon={<Icon id={index} open={open} />}>
                     <AccordionHeader className={`h-12 text-base `+(open===index?`border-b border-greenVE-500`:`border border-gray-100 `)+` font-medium text-gray-400 px-2`} onClick={() => handleOpen(index)}>
                       <div className="flex items-center gap-2">
                         <img src={item.Logo} className="h-8 w-8" />

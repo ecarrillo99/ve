@@ -126,15 +126,15 @@ const SuscriptionForm = ({ cambioSlider, suscripcionForm }) => {
             <div className="flex flex-wrap gap-y-3 gap-x-3 items-center justify-center sm:flex-col md:flex-row">
                 <div className="flex flex-col justify-center">
                     <div className="mb-5">
-                        <label for="names" class="block mb-2 text-sm font-medium text-gray-900 ">Nombres Completos</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
+                        <label for="names" className="block mb-2 text-sm font-medium text-gray-900 ">Nombres Completos</label>
+                        <div className="relative">
+                            <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                                <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
                                     <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z" />
                                     <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z" />
                                 </svg>
                             </div>
-                            <input type="text" id="input-group-1" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full ps-10 p-2.5" placeholder="Ingrese sus nombres" onChange={handleNames} />
+                            <input type="text" id="input-group-1" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full ps-10 p-2.5" placeholder="Ingrese sus nombres" onChange={handleNames} />
                         </div>
                         <div className="h-2">
                             {
@@ -142,17 +142,17 @@ const SuscriptionForm = ({ cambioSlider, suscripcionForm }) => {
                             }
                         </div>
                     </div>
-                    <div class="grid gap-x-6 mb-0 md:grid-cols-2">
+                    <div className="grid gap-x-6 mb-0 md:grid-cols-2">
                         <div className="mb-5">
-                            <label for="company" class="block mb-2 text-sm font-medium text-gray-900 ">Documento de Identidad</label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
+                            <label for="company" className="block mb-2 text-sm font-medium text-gray-900 ">Documento de Identidad</label>
+                            <div className="relative">
+                                <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                                    <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
                                         <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z" />
                                         <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z" />
                                     </svg>
                                 </div>
-                                <input type="text" id="input-group-1" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full ps-10 p-2.5" placeholder="Ingrese su DNI/CI/NIF" onChange={handleDNI} />
+                                <input type="text" id="input-group-1" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full ps-10 p-2.5" placeholder="Ingrese su DNI/CI/NIF" onChange={handleDNI} />
                             </div>
                             <div className="h-2">
                                 {
@@ -161,15 +161,15 @@ const SuscriptionForm = ({ cambioSlider, suscripcionForm }) => {
                             </div>
                         </div>
                         <div>
-                            <label class="block mb-2 text-sm font-medium text-gray-900 ">País</label>
-                            <div class="relative mb-6">
-                                <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
+                            <label className="block mb-2 text-sm font-medium text-gray-900 ">País</label>
+                            <div className="relative mb-6">
+                                <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                                    <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
                                         <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z" />
                                         <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z" />
                                     </svg>
                                 </div>
-                                <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ps-10" onChange={handleChangeCountry}>
+                                <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ps-10" onChange={handleChangeCountry}>
                                     {listaPaises &&
                                         listaPaises.map((item, index) => (
                                             <option key={index} value={index} selected={item.Titulo === country.Titulo}>
@@ -180,15 +180,15 @@ const SuscriptionForm = ({ cambioSlider, suscripcionForm }) => {
                             </div>
                         </div>
                         <div className="mb-5">
-                            <label for="company" class="block mb-2 text-sm font-medium text-gray-900">Correo electrónico</label>
-                            <div class="relative ">
-                                <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
+                            <label for="company" className="block mb-2 text-sm font-medium text-gray-900">Correo electrónico</label>
+                            <div className="relative ">
+                                <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                                    <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
                                         <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z" />
                                         <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z" />
                                     </svg>
                                 </div>
-                                <input type="mail" id="input-group-1" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full ps-10 p-2.5" placeholder="Ingrese su correo" onChange={validarCorreoElectronico} />
+                                <input type="mail" id="input-group-1" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full ps-10 p-2.5" placeholder="Ingrese su correo" onChange={validarCorreoElectronico} />
                             </div>
                             <div className="h-2">
                                 {
@@ -197,16 +197,16 @@ const SuscriptionForm = ({ cambioSlider, suscripcionForm }) => {
                             </div>
                         </div>
                         <div className="mb-5">
-                            <label for="company" class="block mb-2 text-sm font-medium text-gray-900">Número de teléfono</label>
-                            <div class="relative flex items-center">
+                            <label for="company" className="block mb-2 text-sm font-medium text-gray-900">Número de teléfono</label>
+                            <div className="relative flex items-center">
                                 <select
                                     id="countryCode"
-                                    class="appearance-none border border-gray-300 text-gray-900 text-sm rounded-l-lg px-4 py-2.5 focus:outline-none focus:ring focus:border-blue-500" onChange={handleChangeCodePhone}>
+                                    className="appearance-none border border-gray-300 text-gray-900 text-sm rounded-l-lg px-4 py-2.5 focus:outline-none focus:ring focus:border-blue-500" onChange={handleChangeCodePhone}>
                                     {listaPaises && listaPaises.map((item, id) => (
                                         <option key={id} value={id} selected={item.Icono === codePhone.Icono}>{item.Icono}</option>
                                     ))}
                                 </select>
-                                <input type="tel" id="input-group-1" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-r-lg block w-full p-2.5" placeholder="Ingrese su teléfono" onChange={validarTelefono} />
+                                <input type="tel" id="input-group-1" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-r-lg block w-full p-2.5" placeholder="Ingrese su teléfono" onChange={validarTelefono} />
                             </div>
                             <div className="h-2">
                                 {
@@ -216,16 +216,16 @@ const SuscriptionForm = ({ cambioSlider, suscripcionForm }) => {
                         </div>
 
                     </div>
-                    <div class="mb-10">
-                        <label for="names" class="block mb-2 text-sm font-medium text-gray-900 ">Dirección</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
+                    <div className="mb-10">
+                        <label for="names" className="block mb-2 text-sm font-medium text-gray-900 ">Dirección</label>
+                        <div className="relative">
+                            <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                                <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
                                     <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z" />
                                     <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z" />
                                 </svg>
                             </div>
-                            <input type="text" id="input-group-1" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full ps-10 p-2.5" placeholder="Ingrese su dirección" onChange={handleAdress} />
+                            <input type="text" id="input-group-1" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full ps-10 p-2.5" placeholder="Ingrese su dirección" onChange={handleAdress} />
                         </div>
                         <div className="h-2">
                             {
@@ -233,20 +233,20 @@ const SuscriptionForm = ({ cambioSlider, suscripcionForm }) => {
                             }
                         </div>
                     </div>
-                    <div class="flex items-center justify-center mb-6">
-                        <label for="remember" class="ms-2 text-xs font-medium  text-gray-400 text-center ">
+                    <div className="flex items-center justify-center mb-6">
+                        <label for="remember" className="ms-2 text-xs font-medium  text-gray-400 text-center ">
                             Al suscribirte aceptas nuestros
-                            <a href="#" class="text-blue-600 hover:underline dark:text-blue-500"> Términos y Condiciones de Uso</a>
+                            <a href="#" className="text-blue-600 hover:underline dark:text-blue-500"> Términos y Condiciones de Uso</a>
                             <br />y el uso de tus datos personales de acuerdo a nuestras
-                            <a href="#" class="text-blue-600 hover:underline dark:text-blue-500"> Políticas de Privacidad</a>.
+                            <a href="#" className="text-blue-600 hover:underline dark:text-blue-500"> Políticas de Privacidad</a>.
                         </label>
                     </div>
-                    <div class="mb-6">
+                    <div className="mb-6">
                         <div className="flex items-center justify-center ">
-                            <div class="flex items-center h-5">
-                                <input onChange={handleChangeTC} checked={acceptTC} id="remember" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300   dark:focus:ring-blue-600 dark:ring-offset-gray-800" required />
+                            <div className="flex items-center h-5">
+                                <input onChange={handleChangeTC} checked={acceptTC} id="remember" type="checkbox" value="" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300   dark:focus:ring-blue-600 dark:ring-offset-gray-800" required />
                             </div>
-                            <label for="remember" class="ms-2 text-sm font-medium text-gray-600">Acepto los terminos y condiciones</label>
+                            <label for="remember" className="ms-2 text-sm font-medium text-gray-600">Acepto los terminos y condiciones</label>
                         </div>
                         <div className="h-2 flex items-center justify-center">
                             {
@@ -255,7 +255,7 @@ const SuscriptionForm = ({ cambioSlider, suscripcionForm }) => {
                         </div>
                     </div>
                     <div className="flex items-center justify-center">
-                        <button class=" text-white bg-greenVE-500 rounded-lg text-sm w-20 sm:w-auto px-5 py-2.5 text-center" onClick={() => handleClickContinuar()}>Continuar</button>
+                        <button className=" text-white bg-greenVE-500 rounded-lg text-sm w-20 sm:w-auto px-5 py-2.5 text-center" onClick={() => handleClickContinuar()}>Continuar</button>
                     </div>
                 </div>
             </div>

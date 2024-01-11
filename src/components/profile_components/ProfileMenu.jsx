@@ -13,7 +13,12 @@ const ProfileMenu = ({ handleChangeOption, selectedOption }) => {
                 getProfileData()
                     .then((result) => {
                         if (result) {
-                            setProfileData(result)
+                            if(result==401){
+                                localStorage.removeItem("datos");
+                                window.location.reload();
+                            }else{
+                                setProfileData(result)
+                            }
                         }
                     })
                     .catch((error) => { console.log(error) })

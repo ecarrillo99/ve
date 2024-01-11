@@ -1,89 +1,113 @@
 import Config from "../../global/config";
+import { checkData } from "../../global/util";
 import Detalle from "../../models/Detalle";
-import Establecimiento from "../../models/Establecimiento";
+import HotelInicio from "../../models/HotelInicio";
 import Noticia from "../../models/Noticia";
 import ReservaReciente from "../../models/ReservaReciente";
 import InfoService from "../../services/info/InfoService"
 
 export const getNews = async function (){
     try{
-        var bd = JSON.parse(localStorage.getItem('datos'))
-        const infoService= new InfoService();
-        const listaNoticias=[];
-        const params={
-            "token": bd['token'],
-            "npag": 24,
-            "pag":1,
-            "id_metodo": Config.IDMETODO,
-        }
-        
-        const res= await infoService.obtenerNoticias(params)
-        if(res['estado']&&res['codigo']==0){
-            for(const noticia of res['data']){
-                const noticiaTmp= new Noticia();
-                noticiaTmp.Id=noticia['id_tbl_noticia']
-                noticiaTmp.Autor=noticia['nombreAutor']
-                noticiaTmp.Fecha=noticia['fecha']
-                noticiaTmp.Imagen=noticia['img']['300x1000']
-                noticiaTmp.Titulo=noticia['titulo']
-                noticiaTmp.Tipo=noticia['tipo']
-                noticiaTmp.Url=noticia['url']
-                listaNoticias.push(noticiaTmp)
+        const bdStr= await checkData('datos');
+        if(bdStr){
+            var bd = JSON.parse(bdStr)
+            const infoService= new InfoService();
+            const listaNoticias=[];
+            const params={
+                "token": bd['token'],
+                "npag": 24,
+                "pag":1,
+                "id_metodo": Config.IDMETODO,
             }
+            
+            const res= await infoService.obtenerNoticias(params)
+            
+            if(res['estado']&&res['codigo']==0){
+                for(const noticia of res['data']){
+                    const noticiaTmp= new Noticia();
+                    noticiaTmp.Id=noticia['id_tbl_noticia']
+                    noticiaTmp.Autor=noticia['nombreAutor']
+                    noticiaTmp.Fecha=noticia['fecha']
+                    noticiaTmp.Imagen=noticia['img']['300x1000']
+                    noticiaTmp.Titulo=noticia['titulo']
+                    noticiaTmp.Tipo=noticia['tipo']
+                    noticiaTmp.Url=noticia['url']
+                    listaNoticias.push(noticiaTmp)
+                }
+            }
+            if(res['codigo']==401){
+                return 401;
+            }
+            return listaNoticias;
         }
-        return listaNoticias;
-    }catch{
-
+        return [];
+    }catch(e){
+       
     }
 }
 
 export const getHotels = async function (){
     try{
-        var bd = JSON.parse(localStorage.getItem('datos'))
-        const infoService= new InfoService();
-        const listaHoteles=[];
-        const params={
-            "token": bd['token'],
-            "id_empresa": Config.IDEMPRESA,
-        }
-        
-        const res= await infoService.obtenerImágenesHoteles(params)
-        if(res['estado']&&res['codigo']==0){
-            for(const hotel of res['data']){
-                const hotelTmp= new Detalle();
-                hotelTmp.Titulo=hotel['establecimiento']
-                hotelTmp.Icono=hotel['logoHotel']
-                hotelTmp.Valor=hotel['oferta_mejor_precio']
-                listaHoteles.push(hotelTmp)
+        const bdStr= await checkData('datos');
+        if(bdStr){
+            var bd = JSON.parse(bdStr)
+            const infoService= new InfoService();
+            const listaHoteles=[];
+            const params={
+                "token": bd['token'],
+                "id_empresa": Config.IDEMPRESA,
             }
+            
+            const res= await infoService.obtenerImágenesHoteles(params)
+            if(res['estado']&&res['codigo']==0){
+                for(const hotel of res['data']){
+                    const hotelTmp= new HotelInicio();
+                    hotelTmp.Titulo=hotel['establecimiento']
+                    hotelTmp.Foto=hotel['logoHotel']
+                    hotelTmp.Minimo=hotel['oferta_mejor_precio']
+                    hotelTmp.Id=hotel['id_establecimiento']
+                    listaHoteles.push(hotelTmp)
+                }
+            }
+            if(res['codigo']==401){
+                return 401;
+            }
+            return listaHoteles;
         }
-        return listaHoteles;
+        return [];
     }catch{
-
     }
 }
 
 export const getReserves = async function (){
     try{
-        var bd = JSON.parse(localStorage.getItem('datos'))
-        const infoService= new InfoService();
-        const listaRecientes=[];
-        const params={
-            "token": bd['token'],
-        }
-        
-        const res= await infoService.obtenerActividadReservas(params)
-        if(res['estado']&&res['codigo']==0){
-            for(const reciente of res['data']){
-                const recienteTmp = new ReservaReciente();
-                recienteTmp.Costo=reciente['costo']
-                recienteTmp.Establecimiento=reciente['establecimiento']
-                recienteTmp.LugarEstablecimiento= reciente['lugarEstablecimiento']
-                recienteTmp.LugarSuscriptor=reciente['lugarSuscriptor']
-                listaRecientes.push(recienteTmp)
+        const bdStr= await checkData('datos');
+        if(bdStr){
+            var bd = JSON.parse(bdStr)
+            const infoService= new InfoService();
+            const listaRecientes=[];
+            const params={
+                "token": bd['token'],
             }
+            
+            const res= await infoService.obtenerActividadReservas(params)
+            if(res['estado']&&res['codigo']==0){
+                for(const reciente of res['data']){
+                    const recienteTmp = new ReservaReciente();
+                    recienteTmp.Costo=reciente['costo']
+                    recienteTmp.Establecimiento=reciente['establecimiento']
+                    recienteTmp.LugarEstablecimiento= reciente['lugarEstablecimiento']
+                    recienteTmp.LugarSuscriptor=reciente['lugarSuscriptor']
+                    listaRecientes.push(recienteTmp)
+                }
+            }
+            if(res['codigo']==401){
+                return 401;
+            }
+            return listaRecientes;
         }
-        return listaRecientes;
+        return[];
+        
     }catch{
 
     }
@@ -91,27 +115,33 @@ export const getReserves = async function (){
 
 export const getDestinoExpress = async function (lat, long){
     try{
-        var bd = JSON.parse(localStorage.getItem('datos'))
-        const infoService= new InfoService();
-        const listaDestinos=[];
-        const params={
-            "token": bd['token'],
-            "latitud":lat,
-            "longitud":long,
-        }
-        
-        const res= await infoService.obtenerDestinoExpress(params)
-        if(res['estado']&&res['codigo']==0){
-            console.log(res);
-            for(const destino of res['data']){
-                const destinoTmp = new Detalle();
-                destinoTmp.Icono=destino['imagen']
-                destinoTmp.Valor=destino['distancia']
-                destinoTmp.Titulo= destino['destino_express']
-                listaDestinos.push(destinoTmp)
+        const bdStr= await checkData('datos');
+        if(bdStr){
+            var bd = JSON.parse(bdStr)
+            const infoService= new InfoService();
+            const listaDestinos=[];
+            const params={
+                "token": bd['token'],
+                "latitud":lat,
+                "longitud":long,
             }
+            
+            const res= await infoService.obtenerDestinoExpress(params)
+            if(res['estado']&&res['codigo']==0){
+                for(const destino of res['data']){
+                    const destinoTmp = new Detalle();
+                    destinoTmp.Icono=destino['imagen']
+                    destinoTmp.Valor=destino['distancia']
+                    destinoTmp.Titulo= destino['destino_express']
+                    listaDestinos.push(destinoTmp)
+                }
+            }
+            if(res['codigo']==401){
+                return 401;
+            }
+            return listaDestinos;
         }
-        return listaDestinos;
+        return [];
     }catch{
 
     }

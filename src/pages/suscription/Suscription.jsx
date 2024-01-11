@@ -32,7 +32,6 @@ const Suscription = () => {
 
     const tarjetaSeleccionada = (tar) => {
         setTarjeta(tar)
-        console.log(tarjeta)
     }
 
     const diferidoSeleccionado = (dif) => {
@@ -55,7 +54,6 @@ const Suscription = () => {
         arrows: false
     };
     return (
-
         <div>
             <Navbar></Navbar>
             <div className="md:w-full justify-center py-10 md:flex-row mx-auto max-w-6xl sm:px-6 lg:px-8">
@@ -76,7 +74,6 @@ const Suscription = () => {
             </div>
             <Footer></Footer>
         </div>
-
     );
 }
 

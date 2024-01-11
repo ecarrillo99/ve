@@ -251,8 +251,12 @@ const HotelSearch = (props) => {
       if (inputValue !== '') {
         getEstablacimientoDestino(inputValue).then((res) => {
           if (res) {
-            console.log(res);
-            setSuggestion(res);
+            if(res==401){
+              localStorage.removeItem("datos");
+              window.location.reload();
+            }else{
+              setSuggestion(res);
+            }
           }
         });
       } else {
@@ -292,7 +296,7 @@ const HotelSearch = (props) => {
                     {
                       suggestion ? (
                         suggestion.map((item, key) => (
-                          <div className={`flex items-center p-1 ${key !== suggestion.length - 1 ? 'border-b' : ''} cursor-pointer gap-2`} onClick={() => (setDestination(item), setSuggestion(null))}>
+                          <div key={key} className={`flex items-center p-1 ${key !== suggestion.length - 1 ? 'border-b' : ''} cursor-pointer gap-2`} onClick={() => (setDestination(item), setSuggestion(null))}>
                             {item.Tipo == "destino" ? (<div dangerouslySetInnerHTML={{ __html: icons.Data.MapPin }} />)
                               : (<div dangerouslySetInnerHTML={{ __html: icons.Data.Bed }} />)}
                             <div className="flex flex-col p-1 cursor-pointer" >

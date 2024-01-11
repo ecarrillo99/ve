@@ -2,7 +2,7 @@ const AboutBanner = () => {
     return (
         <div className="bg-slate-100 pb-3">
             <div className="flex mx-auto max-w-6xl sm:px-6 lg:px-8 ">
-            <div class="flex items-center justify-center mw-8/12">
+            <div className="flex items-center justify-center mw-8/12">
                 <div>
                     <h2 className="text-lg text-greenTitle font-semibold">La plataforma de reservas hoteleras más importante del Ecuador.</h2>
                     <p className="text-xs text-black pt-3 ">Ofrecemos una suscripción actual para que hombres de negocio, viajeros y familias que gusten llegar a los hoteles más importantes del país
@@ -10,7 +10,7 @@ const AboutBanner = () => {
                     <h3 className="text-xs font-bold pt-7">Un ejemplo de nuestras ofertas*:</h3>
                     <p className="text-xs pt-2">Tryp by Wyndham en Guayaquil:</p>
                     <p className="text-xs pt-1">2 DÍAS, 1 NOCHE para 2 ADULTOS, 2 NIÑOS</p>
-                    <div class="grid grid-cols-2 mx-auto pt-5">
+                    <div className="grid grid-cols-2 mx-auto pt-5">
                         <div>
                             <h4 className="font-semibold text-center text-sm">VisitaEcuador.com</h4>
                             <h4 className="font-semibold text-center text-4xl text-greenVE-500">$82</h4>
@@ -28,7 +28,7 @@ const AboutBanner = () => {
                 </div>
             </div>
             <div className="md:w-4/12">
-            <img src="/img/comparation.png" style={{width: "180px", height: "auto"}} class="mx-auto pt-7"/>
+            <img src="/img/comparation.png" style={{width: "180px", height: "auto"}} className="mx-auto pt-7" alt=""/>
             </div>
         </div>
         </div>

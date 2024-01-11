@@ -1,9 +1,7 @@
-import "./list.css";
 import Navbar from "../../components/global_components/navbar/Navbar";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { DateRange } from "react-date-range";
 import SearchItem from "../../components/searchItem/SearchItem";
 import SearchBar from "../../components/global_components/searchBar/searchBar";
 import Slider from "react-slider";
@@ -17,8 +15,10 @@ import Icons from "../../global/icons";
 const Search = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const [destination, setDestination] = useState(JSON.parse(decodeURIComponent(searchParams.get('destino'))));
-  const [options, setOptions] = useState(JSON.parse(decodeURIComponent(searchParams.get('opciones'))));
+  //const [destination, setDestination] = useState(JSON.parse(decodeURIComponent(searchParams.get('destino'))));
+  const destination=JSON.parse(decodeURIComponent(searchParams.get('destino')));
+  //const [options, setOptions] = useState(JSON.parse(decodeURIComponent(searchParams.get('opciones'))));
+  const options=JSON.parse(decodeURIComponent(searchParams.get('opciones')));
   const fechas = JSON.parse(decodeURIComponent(searchParams.get('fechas')))
   const dateTmp = [{
     startDate: new Date(fechas[0].startDate),
@@ -26,14 +26,14 @@ const Search = () => {
     key: new Date(fechas.key)
   }]
   const [coinEncontrada, setCoinEncontrada]=useState(false);
-  const [date, setDate] = useState(dateTmp);
+  //const [date, setDate] = useState(dateTmp);
+  const date = dateTmp;
   const [minPrice, setMinPrice] = useState(10)
   const [maxPrice, setMaxPrice] = useState(1000)
   const [prices, setPrices] = useState([minPrice, maxPrice])
   const [data, setData] = useState(null)
   const [dataFinal, setDataFinal] = useState(null)
   const [filtroNombre, setFiltroNombre] = useState("Estrellas (Mayor a menor)")
-  const [services, setServices] = useState([])
   const [openFilters, setOpenFilters] = useState(false);
   const filtro = new Filtro()
   const icons = new Icons()
@@ -51,34 +51,37 @@ const Search = () => {
     "ninos": options.children,
     "edadninos": options.childrenAges
   }
-  console.log(filtro);
   async function fetchData(filtro) {
     try {
       getResultadoFiltro(filtro)
         .then((result) => {
           if (result) {
-            //console.log(result);
-            result.Establecimientos.sort((a, b) => {
-              // Comprueba si el nombre del hotel coincide con la palabra clave
-              const aCoincide = a.Titulo.toLowerCase().includes(filtro.txtBusqueda.toLowerCase());
-              const bCoincide = b.Titulo.toLowerCase().includes(filtro.txtBusqueda.toLowerCase());
-            
-              // Si uno de los hoteles coincide, ese se coloca primero
-              if (aCoincide && !bCoincide) {
-                setCoinEncontrada(true);
-                return -1;
-              } else if (!aCoincide && bCoincide) {
-                return 1;
-              }
-            
-              // Si ninguno coincide o ambos coinciden, ordena por catalogación
-              return b.Catalogacion - a.Catalogacion;
-            });
-            setDataFinal(result)
-            setData(result)
-            setMinPrice(parseFloat(result.PrecioMinimo))
-            setMaxPrice(parseFloat(result.PrecioMaximo))
-            setPrices([parseFloat(result.PrecioMinimo), parseFloat(result.PrecioMaximo)])
+            if(result===401){
+              localStorage.removeItem("datos");
+              window.location.reload();
+            }else{
+              result.Establecimientos.sort((a, b) => {
+                // Comprueba si el nombre del hotel coincide con la palabra clave
+                const aCoincide = a.Titulo.toLowerCase().includes(filtro.txtBusqueda.toLowerCase());
+                const bCoincide = b.Titulo.toLowerCase().includes(filtro.txtBusqueda.toLowerCase());
+              
+                // Si uno de los hoteles coincide, ese se coloca primero
+                if (aCoincide && !bCoincide) {
+                  setCoinEncontrada(true);
+                  return -1;
+                } else if (!aCoincide && bCoincide) {
+                  return 1;
+                }
+              
+                // Si ninguno coincide o ambos coinciden, ordena por catalogación
+                return b.Catalogacion - a.Catalogacion;
+              });
+              setDataFinal(result)
+              setData(result)
+              setMinPrice(parseFloat(result.PrecioMinimo))
+              setMaxPrice(parseFloat(result.PrecioMaximo))
+              setPrices([parseFloat(result.PrecioMinimo), parseFloat(result.PrecioMaximo)])
+            }
           }
         })
     } catch (error) {
@@ -106,53 +109,53 @@ const Search = () => {
 
   const handleFilterChange = (id) => {
     setOpenFilters(!openFilters)
-    if (id == 0) {
+    if (id === 0) {
       setFiltroNombre("Estrellas (Mayor a menor)")
       data.Establecimientos.sort((a, b) => b.Catalogacion - a.Catalogacion)
     }
-    if (id == 1) {
+    if (id === 1) {
       setFiltroNombre("Estrellas (Menor a mayor)")
       data.Establecimientos.sort((a, b) => a.Catalogacion - b.Catalogacion)
     }
-    if (id == 2) {
+    if (id === 2) {
       setFiltroNombre("Precio (Menor a mayor)")
       data.Establecimientos.sort((a, b) => a.PrecioSinImpuestos - b.PrecioSinImpuestos)
     }
-    if (id == 3) {
+    if (id === 3) {
       setFiltroNombre("Precio (Mayor a menor)")
       data.Establecimientos.sort((a, b) => b.PrecioSinImpuestos - a.PrecioSinImpuestos)
     }
-    if (id == 4) {
+    if (id === 4) {
       setFiltroNombre("Ahorro (Menor a mayor)")
-      console.log(data.Establecimientos.sort((a, b) => a.PorcentajeAhorro - b.PorcentajeAhorro))
+      data.Establecimientos.sort((a, b) => a.PorcentajeAhorro - b.PorcentajeAhorro)
     }
-    if (id == 5) {
+    if (id === 5) {
       setFiltroNombre("Ahorro (Mayor a menor)")
-      console.log(data.Establecimientos.sort((a, b) => b.PorcentajeAhorro - a.PorcentajeAhorro))
+      data.Establecimientos.sort((a, b) => b.PorcentajeAhorro - a.PorcentajeAhorro)
     }
-    if (id == 6) {
+    if (id === 6) {
       setFiltroNombre("Establecimiento (A - Z)")
-      console.log(data.Establecimientos.sort((a, b) => a.Titulo.localeCompare(b.Titulo)))
+      data.Establecimientos.sort((a, b) => a.Titulo.localeCompare(b.Titulo))
     }
-    if (id == 7) {
+    if (id === 7) {
       setFiltroNombre("Establecimiento (Z - A)")
-      console.log(data.Establecimientos.sort((a, b) => b.Titulo.localeCompare(a.Titulo)))
+      data.Establecimientos.sort((a, b) => b.Titulo.localeCompare(a.Titulo))
     }
-    if (id == 8) {
+    if (id === 8) {
       setFiltroNombre("Ciudad (A - Z)")
-      console.log(data.Establecimientos.sort((a, b) => a.Ciudad.localeCompare(b.Ciudad)))
+      data.Establecimientos.sort((a, b) => a.Ciudad.localeCompare(b.Ciudad))
     }
-    if (id == 9) {
+    if (id === 9) {
       setFiltroNombre("Ciudad (Z - A)")
-      console.log(data.Establecimientos.sort((a, b) => b.Ciudad.localeCompare(a.Ciudad)))
+      data.Establecimientos.sort((a, b) => b.Ciudad.localeCompare(a.Ciudad))
     }
-    if (id == 10) {
+    if (id === 10) {
       setFiltroNombre("País (A - Z)")
-      console.log(data.Establecimientos.sort((a, b) => a.Pais.localeCompare(b.Pais)))
+      data.Establecimientos.sort((a, b) => a.Pais.localeCompare(b.Pais))
     }
-    if (id == 11) {
+    if (id === 11) {
       setFiltroNombre("País (Z - A)")
-      console.log(data.Establecimientos.sort((a, b) => b.Pais.localeCompare(a.Pais)))
+      data.Establecimientos.sort((a, b) => b.Pais.localeCompare(a.Pais))
     }
   }
 
@@ -209,9 +212,6 @@ const Search = () => {
     });
   };
 
-  const handleChangePriceRange = () => {
-    setPrices()
-  }
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -251,10 +251,10 @@ const Search = () => {
 
         <div className="w-3/12 mr-5">
           <div className="mb-4 relative h-44 rounded-md">
-            <img src="/img/map.svg" alt="Mi Imagen" class="w-full h-full object-cover rounded-md" />
-            <div class="absolute top-0 left-0 w-full h-full bg-black opacity-30 rounded-md"></div>
+            <img src="/img/map.svg" alt="Mi Imagen" className="w-full h-full object-cover rounded-md" />
+            <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 rounded-md"></div>
             <button
-              class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-greenVE-500 text-white px-3 py-1 rounded-full"
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-greenVE-500 text-white px-3 py-1 rounded-full"
               onClick={openModal}>
               Ver en Mapa
             </button>
@@ -270,8 +270,10 @@ const Search = () => {
                   <p>Max. ${Math.round(parseFloat(prices[1]))}</p>
                 </div>
                 <Slider
-                  className="slider"
-                  trackClassName="track"
+                  className="w-full h-1.5 rounded-full bg-gray-300 z-20 "
+                  trackClassName="h-2 rounded-full overflow-hiden relative "
+                  trackOneClassName="h-2 rounded-full overflow-hiden relative bg-greenVE-500 "
+                  thumbClassName="w-6 h-6 cursor-pointer bg-greenVE-500 border-2 border-white rounded-full -mt-2"
                   onChange={
                     setPrices
                   }
@@ -336,8 +338,8 @@ const Search = () => {
                   </div>
                 </div>
               ) : (
-                Array(20).fill().map((_) => (
-                  <div className="animate-pulse flex gap-2 m-3">
+                Array(20).fill().map((_, index) => (
+                  <div key={index} className="animate-pulse flex gap-2 m-3">
                     <div className="h-4 w-4 bg-gray-300 rounded-sm" />
                     <div className="h-4 w-56 bg-gray-300 rounded-sm" />
                   </div>
@@ -424,7 +426,8 @@ const Search = () => {
             ? (
               data.Establecimientos.map((item, index) => (
                 <SearchItem
-                  firstElement={index==0?coinEncontrada?true:false:false}
+                  key={index}
+                  firstElement={index===0?coinEncontrada?true:false:false}
                   options={options}
                   date={date}
                   destination={destination}
@@ -439,32 +442,6 @@ const Search = () => {
               <SearchItemSkeleton />
             </div>)
           }
-          {/*data
-            ? (
-              <div>
-                {
-                  data.Establecimientos.length>0
-                  ?(<h2 className="text-center font-semibold text-2xl pb-2 text-remateColor pt-4">OTRAS OFERTAS DISPONIBLES</h2>)
-                  :(<h2 className="text-center font-semibold text-2xl pb-2 text-remateColor pt-4">NO SE ENCONTRARON COINCIDENCIAS</h2>)
-                }                {
-                  data.Establecimientos.map((item) => (
-                    item.EstadoBusqueda == "B" &&
-                    <SearchItem
-                      Oferta={item}
-                      Establecimiento={item.Establecimiento}
-                    />
-                  ))
-                }
-              </div>
-
-            )
-            : (<div>
-              <SearchItemSkeleton />
-              <SearchItemSkeleton />
-              <SearchItemSkeleton />
-              <SearchItemSkeleton />
-            </div>)
-            */}
         </div>
       </div>
       <Footer />

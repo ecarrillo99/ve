@@ -5,7 +5,7 @@ const Footer = () => {
   const icons = new Icons()
   return (
     
-    <div className="bg-footerColor mt-20">
+    <footer className="bg-footerColor mt-20">
       <div className="mx-auto max-w-6xl py-10 sm:px-6 lg:px-8">
         <div className="flex flex-wrap gap-y-5">
           <div className="w-1/2 md:w-1/4">
@@ -92,7 +92,7 @@ const Footer = () => {
           <label>VisitaEcuador.com forma parte de Aracno Cia. Ltda., Líder nacional en viajes online y servicios nacionales.</label>
         </div>
       </div>
-    </div>
+    </footer>
   );
 };
 

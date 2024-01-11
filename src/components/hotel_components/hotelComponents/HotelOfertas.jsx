@@ -25,7 +25,6 @@ const HotelOfertas = (props) => {
     function fetchData() {
       const nuevoEstado = {};
       for (const recomendado of Establecimiento.Recomendados) {
-        console.log(recomendado.Id);
         nuevoEstado[recomendado.Id] = recomendado.NumOfertas;
       }
       setSelectedOptions(nuevoEstado);
@@ -206,7 +205,7 @@ const HotelOfertas = (props) => {
                       </div>
                     </td>
                     <td className="border p-2">
-                      {item.Incluye.length > 0 ? (
+                      {(item.Incluye!=null&&item.Incluye.length > 0 )? (
                         <div className="flex-1 pr-1">
                           {item.Incluye.map((itemIncluye, incluyeIndex) => (
                             <div key={incluyeIndex} className="flex gap-2 items-center">

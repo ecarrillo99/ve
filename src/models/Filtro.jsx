@@ -16,7 +16,7 @@ class Filtro {
     ){
         this.IdDestino=IdDestino;
         this.TipoDestino=TipoDestino;
-        this.IdBeneficios=IdBeneficios;
+        this.IdEstablecimiento=IdEstablecimiento;
         this.IdBeneficios=IdBeneficios;
         this.IdServicios=IdServicios;
         this.Personas=Personas;

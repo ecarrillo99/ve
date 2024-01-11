@@ -1,6 +1,7 @@
 class DatosPersonales{
     constructor(
         Nombres,
+        Codigo,
         Direccion,
         FechaNacimiento,
         IdLugar,
@@ -8,6 +9,7 @@ class DatosPersonales{
         Contactos
     ){
         this.Nombres=Nombres;
+        this.Codigo=Codigo;
         this.Direccion=Direccion;
         this.FechaNacimiento=FechaNacimiento;
         this.IdLugar=IdLugar;

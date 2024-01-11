@@ -9,10 +9,11 @@ const ActivityBanner=()=>{
             try {
                 getReserves()
                     .then((result) => {
-                        if (result) {
+                        if(result==401){
+                            localStorage.removeItem('datos');
+                            window.location.reload();
+                        }else{
                             setData(result)
-                            console.log("resultados")
-                            console.log(data);
                         }
                     })
                     .catch((error) => { console.log(error) })
@@ -30,8 +31,8 @@ const ActivityBanner=()=>{
             <div className="mt-4">
             {
                 data
-                ?data.map((item)=>(
-                    <ActivityItem actividad={item}/>
+                ?data.map((item, index)=>(
+                    <ActivityItem key={index} actividad={item}/>
                 ))
                 :<></>
             }

@@ -78,28 +78,28 @@ const VideosBanner = () => {
         <div className="mt-10">
             <h1 className="font-bold text-xl">Entérate de las ventajas de ser Suscriptor</h1>
             <Slider {...settings}>
-                <div class=" bg-greenVE-500 aspect-w-16 aspect-h-9 flex justify-center items-center p-4 rounded-lg border-4 border-white cursor-pointer" onClick={()=>{window.open('https://youtu.be/VFjswE0are8?feature=shared', '_blank');}}>
-                    <div class="text-white font-bold text-center flex flex-col items-center justify-between">
+                <div className=" bg-greenVE-500 aspect-w-16 aspect-h-9 flex justify-center items-center p-4 rounded-lg border-4 border-white cursor-pointer" onClick={()=>{window.open('https://youtu.be/VFjswE0are8?feature=shared', '_blank');}}>
+                    <div className="text-white font-bold text-center flex flex-col items-center justify-between">
                         <label>¿Cómo descargar <br />la aplicación?</label>
-                        <img src="/img/ve_logo.svg" class="mt-4" style={{ width: "110px", height: "auto" }} alt="Logo" />
+                        <img src="/img/ve_logo.svg" className="mt-4" style={{ width: "110px", height: "auto" }} alt="Logo" />
                     </div>
                 </div>
-                <div class="bg-greenVE-500 aspect-w-16 aspect-h-9 flex justify-center items-center p-4 rounded-lg border-4 border-white cursor-pointer" onClick={()=>{window.open('https://youtu.be/7pAur5LY7_Y?feature=shared', '_blank');}}>
-                    <div class="text-white font-bold text-center flex flex-col items-center justify-between">
+                <div className="bg-greenVE-500 aspect-w-16 aspect-h-9 flex justify-center items-center p-4 rounded-lg border-4 border-white cursor-pointer" onClick={()=>{window.open('https://youtu.be/7pAur5LY7_Y?feature=shared', '_blank');}}>
+                    <div className="text-white font-bold text-center flex flex-col items-center justify-between">
                         <label>¿Cómo realizar <br />una reserva?</label>
-                        <img src="/img/ve_logo.svg" class="mt-4" style={{ width: "110px", height: "auto" }} alt="Logo" />
+                        <img src="/img/ve_logo.svg" className="mt-4" style={{ width: "110px", height: "auto" }} alt="Logo" />
                     </div>
                 </div>
-                <div class="bg-greenVE-500 aspect-w-16 aspect-h-9 flex justify-center items-center p-4 rounded-lg border-4 border-white cursor-pointer" onClick={()=>{window.open('https://youtu.be/PJKuhZO96DI?feature=shared', '_blank');}}>
-                    <div class="text-white font-bold text-center flex flex-col items-center justify-between">
+                <div className="bg-greenVE-500 aspect-w-16 aspect-h-9 flex justify-center items-center p-4 rounded-lg border-4 border-white cursor-pointer" onClick={()=>{window.open('https://youtu.be/PJKuhZO96DI?feature=shared', '_blank');}}>
+                    <div className="text-white font-bold text-center flex flex-col items-center justify-between">
                         <label>¿Cómo comprar <br />una suscripción?</label>
-                        <img src="/img/ve_logo.svg" class="mt-4" style={{ width: "110px", height: "auto" }} alt="Logo" />
+                        <img src="/img/ve_logo.svg" className="mt-4" style={{ width: "110px", height: "auto" }} alt="Logo" />
                     </div>
                 </div>
-                <div class="bg-greenVE-500 aspect-w-16 aspect-h-9 flex justify-center items-center p-4 rounded-lg border-4 border-white cursor-pointer" onClick={()=>{window.open('https://youtu.be/roZ8H-RT-j0?feature=shared', '_blank');}}>
-                    <div class="text-white font-bold text-center flex flex-col items-center justify-between">
+                <div className="bg-greenVE-500 aspect-w-16 aspect-h-9 flex justify-center items-center p-4 rounded-lg border-4 border-white cursor-pointer" onClick={()=>{window.open('https://youtu.be/roZ8H-RT-j0?feature=shared', '_blank');}}>
+                    <div className="text-white font-bold text-center flex flex-col items-center justify-between">
                         <label>¿Cómo generar <br />un certificado?</label>
-                        <img src="/img/ve_logo.svg" class="mt-4" style={{ width: "110px", height: "auto" }} alt="Logo" />
+                        <img src="/img/ve_logo.svg" className="mt-4" style={{ width: "110px", height: "auto" }} alt="Logo" />
                     </div>
                 </div>
             </Slider>

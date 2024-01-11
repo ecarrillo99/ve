@@ -1,7 +1,6 @@
 import OffersBanner from "../../components/home_components/offersBanner/OffersBanner";
 import Footer from "../../components/global_components/footer/Footer";
 import Navbar from "../../components/global_components/navbar/Navbar";
-import "./home.css";
 import HotelsBanner from "../../components/home_components/hotelsBanner/HotelsBanner";
 import MainBanner from "../../components/home_components/mainBanner/MainBanner";
 import AboutBanner from "../../components/home_components/aboutBanner/AboutBanner";

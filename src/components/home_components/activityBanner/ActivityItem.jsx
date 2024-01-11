@@ -1,5 +1,4 @@
 const ActivityItem = ({ actividad }) => {
-    console.log(actividad)
     return (
         <div className="flex flex-col gap-1 mb-2.5">
             <label className="text-sm font-medium text-greenVE-600">{actividad.LugarEstablecimiento}</label>

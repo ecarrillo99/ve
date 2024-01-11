@@ -47,8 +47,8 @@ const HotelContacts = (props) => {
                             </AccordionHeader>
                             <AccordionBody className="bg-white py-2">
                                 <div className="px-2  flex flex-col gap-1">
-                                    {Contactos.Whatsapp.map((item) => (
-                                        <a className="hover:text-greenVE-500" target="_blank" href={`https://wa.me/${item.replace(/\s/g, '')}?text=${encodeURIComponent("Hola, deseo reservar esta oferta")}`}>{item}</a>
+                                    {Contactos.Whatsapp.map((item, index) => (
+                                        <a key={index} className="hover:text-greenVE-500" target="_blank" href={`https://wa.me/${item.replace(/\s/g, '')}?text=${encodeURIComponent("Hola, deseo reservar esta oferta")}`}>{item}</a>
                                     ))}
                                 </div>
                             </AccordionBody>
@@ -64,8 +64,8 @@ const HotelContacts = (props) => {
                             </AccordionHeader>
                             <AccordionBody className="bg-white py-2">
                                 <div className="px-2  flex flex-col gap-1">
-                                    {Contactos.Telefono.map((item) => (
-                                        <p >{item}</p>
+                                    {Contactos.Telefono.map((item, index) => (
+                                        <p key={index}>{item}</p>
                                     ))}
                                 </div>
                             </AccordionBody>
@@ -81,8 +81,8 @@ const HotelContacts = (props) => {
                             </AccordionHeader>
                             <AccordionBody className="bg-white py-2">
                                 <div className="px-2  flex flex-col gap-1">
-                                    {Contactos.Email.map((item) => (
-                                        <a className="hover:text-greenVE-500" target="_blank" href={`mailto:${item.replace(/\s/g, '')}?text=${encodeURIComponent("Hola, deseo reservar esta oferta")}`}>{item}</a>
+                                    {Contactos.Email.map((item, index) => (
+                                        <a key={index} className="hover:text-greenVE-500" target="_blank" href={`mailto:${item.replace(/\s/g, '')}?text=${encodeURIComponent("Hola, deseo reservar esta oferta")}`}>{item}</a>
                                     ))}
                                 </div>
                             </AccordionBody>
@@ -98,8 +98,8 @@ const HotelContacts = (props) => {
                             </AccordionHeader>
                             <AccordionBody className="bg-white py-2">
                                 <div className="px-2  flex flex-col gap-1">
-                                    {Contactos.Web.map((item) => (
-                                        <a className="hover:text-greenVE-500" target="_blank" href={`https://${item}`}>{item}</a>
+                                    {Contactos.Web.map((item, index) => (
+                                        <a key={index} className="hover:text-greenVE-500" target="_blank" href={`https://${item}`}>{item}</a>
                                     ))}
                                 </div>
                             </AccordionBody>
@@ -118,8 +118,8 @@ const HotelContacts = (props) => {
                             </AccordionHeader>
                             <AccordionBody className="bg-white py-2">
                                 <div className="px-2  flex flex-col gap-1">
-                                    {ContactosCentral.Whatsapp.map((item) => (
-                                        <a className="hover:text-greenVE-500" target="_blank" href={`https://wa.me/${item['formateado'].replace(/\s/g, '')}?text=${encodeURIComponent("Hola, deseo reservar esta oferta")}`}>{item['valor']}</a>
+                                    {ContactosCentral.Whatsapp.map((item, index) => (
+                                        <a key={index} className="hover:text-greenVE-500" target="_blank" href={`https://wa.me/${item['formateado'].replace(/\s/g, '')}?text=${encodeURIComponent("Hola, deseo reservar esta oferta")}`}>{item['valor']}</a>
                                     ))}
                                 </div>
                             </AccordionBody>
@@ -135,8 +135,8 @@ const HotelContacts = (props) => {
                             </AccordionHeader>
                             <AccordionBody className="bg-white py-2">
                                 <div className="px-2  flex flex-col gap-1">
-                                    {ContactosCentral.Telefono.map((item) => (
-                                        <a >{item['valor']}</a>
+                                    {ContactosCentral.Telefono.map((item, index) => (
+                                        <a key={index} >{item['valor']}</a>
                                     ))}
                                 </div>
                             </AccordionBody>
@@ -152,8 +152,8 @@ const HotelContacts = (props) => {
                             </AccordionHeader>
                             <AccordionBody className="bg-white py-2">
                                 <div className="px-2  flex flex-col gap-1">
-                                    {ContactosCentral.Email.map((item) => (
-                                        <a className="hover:text-greenVE-500" target="_blank" href={`mailto:${item['valor'].replace(/\s/g, '')}?text=${encodeURIComponent("Hola, deseo reservar esta oferta")}`}>{item['valor']}</a>
+                                    {ContactosCentral.Email.map((item, index) => (
+                                        <a key={index} className="hover:text-greenVE-500" target="_blank" href={`mailto:${item['valor'].replace(/\s/g, '')}?text=${encodeURIComponent("Hola, deseo reservar esta oferta")}`}>{item['valor']}</a>
                                     ))}
                                 </div>
                             </AccordionBody>

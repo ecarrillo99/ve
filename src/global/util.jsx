@@ -90,3 +90,31 @@ export function validarCedula(cedula) {
   }
   return false;
 }
+
+export function sessionStatus(){
+  var session = JSON.parse(localStorage.getItem('datos'))
+    if(session!=null){
+      if(session.data.nivel!="visitante"){
+        return true;
+      }else{
+        return false;
+      }
+    }else{
+      return false;
+    } 
+}
+
+
+export async function checkData (key){
+  return new Promise((resolve) => {
+    const checkLocalStorage = () => {
+      const value = localStorage.getItem(key);
+      if (value !== null) {
+        resolve(value);
+      } else {
+        setTimeout(checkLocalStorage, 100);
+      }
+    };
+    checkLocalStorage();
+  });
+};

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "./searchItem.css";
 import { useNavigate } from "react-router-dom";
 import Icons from "../../global/icons";
 import { changeFavoritoStatus } from "../../controllers/establecimiento/establecimientoController";
@@ -7,24 +6,33 @@ import { changeFavoritoStatus } from "../../controllers/establecimiento/establec
 const SearchItem = (props) => {
   const navigate = useNavigate();
   const { options, date, destination, Establecimiento, firstElement } = props
-  const [noches, setNoches] = useState(Math.ceil(Math.abs(new Date(date[0].endDate)) - new Date(date[0].startDate)) / (1000 * 60 * 60 * 24));
+  //const [noches, setNoches] = useState(Math.ceil(Math.abs(new Date(date[0].endDate)) - new Date(date[0].startDate)) / (1000 * 60 * 60 * 24));
+  const noches = Math.ceil(Math.abs(new Date(date[0].endDate)) - new Date(date[0].startDate)) / (1000 * 60 * 60 * 24);
   const [favorito, setFavorito] = useState(JSON.parse(Establecimiento.Favorito))
   const [isLoading, setIsLoading] = useState(false)
   const session = JSON.parse(localStorage.getItem("datos"));
   const nivel = session ? session.data.nivel : "visitante";
+  const openMap=true;
   const icons = new Icons();
   const HandleClickItem = () => {
     navigate(`/hotel/${Establecimiento.Titulo.toLowerCase().replaceAll(" - ","-").replaceAll(" ","-")}/?id=${Establecimiento.IdEstablecimiento}&destino=${encodeURIComponent(JSON.stringify(destination))}&fechas=${encodeURIComponent(JSON.stringify(date))}&opciones=${encodeURIComponent(JSON.stringify(options))}`, { state: {Establecimiento, destination, date, options} });
   }
-  console.log(Establecimiento)
+  const HandleClickLocation = () => {
+    navigate(`/hotel/${Establecimiento.Titulo.toLowerCase().replaceAll(" - ","-").replaceAll(" ","-")}/?id=${Establecimiento.IdEstablecimiento}&destino=${encodeURIComponent(JSON.stringify(destination))}&fechas=${encodeURIComponent(JSON.stringify(date))}&opciones=${encodeURIComponent(JSON.stringify(options))}`, { state: {Establecimiento, destination, date, options, openMap} });
+  }
 
   const handleClickFav = () => {
     if (!isLoading) {
       setIsLoading(true)
       changeFavoritoStatus(Establecimiento.IdEstablecimiento, !favorito).then((res) => {
         if (res) {
-          setFavorito(!favorito)
-          setIsLoading(false)
+          if(res===401){
+            localStorage.removeItem("datos")
+            window.location.reload();
+          }else{
+            setFavorito(!favorito);
+            setIsLoading(false);
+          }
         } else {
           setIsLoading(false)
         }
@@ -46,30 +54,29 @@ const SearchItem = (props) => {
                 : (favorito
                   ? <div className=" " dangerouslySetInnerHTML={{ __html: icons.Data.Like }} />
                   : <div className=" " dangerouslySetInnerHTML={{ __html: icons.Data.Unlike }} />)
-
             }
           </div>
         )
       }
 
       <div className="w-4/12 flex items-center justify-center">
-        <img src={Establecimiento.Foto} class="w-52 h-52 object-cover rounded-md" />
+        <img alt="" src={Establecimiento.Foto} className="w-52 h-52 object-cover rounded-md" />
       </div>
       <div className="flex w-8/12">
         <div className="w-8/12">
           <div className="flex flex-wrap gap-x-2">
             <h2 className="text-greenVE-600 font-semibold">{Establecimiento.Titulo}</h2>
             <div className="flex content-between my-1">
-              {Array(+(Establecimiento.Catalogacion)).fill(null).map((item) => (
-                <svg height="15px" width="15px" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="fill-current text-yellow-500">
-                  <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+              {Array(+(Establecimiento.Catalogacion)).fill(null).map((item, index) => (
+                <svg key={index} height="15px" width="15px" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="fill-current text-yellow-500">
+                  <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
                 </svg>
               ))}
             </div>
           </div>
           <div className="flex gap-3">
-            <a class=" text-blue-600 text-xs my-1 cursor-pointer underline" >{Establecimiento.Ciudad}, {Establecimiento.Pais}</a>
-            <a class=" text-blue-600 text-xs my-1 cursor-pointer underline" >Mostrar en mapa</a>
+            <button className=" text-blue-600 text-xs my-1 cursor-pointer underline" onClick={HandleClickLocation} >{Establecimiento.Ciudad}, {Establecimiento.Pais}</button>
+            <button href="#" className=" text-blue-600 text-xs my-1 cursor-pointer underline" onClick={HandleClickLocation}>Mostrar en mapa</button>
           </div>
           <div className="mt-4">
             {

@@ -1,4 +1,3 @@
-import "./featured.css";
 import "react-multi-carousel/lib/styles.css";
 import ItemRecomended from "./ItemRecomended";
 import React, { useEffect, useState } from "react";
@@ -28,7 +27,12 @@ const OffersBanner = () => {
         getRemoteOfertas()
           .then((result) => {
             if (result) {
-              setData(result);
+              if(result==401){
+                localStorage.removeItem("datos");
+                window.location.reload();
+              }else{
+                setData(result);
+              }
             }
           })
           .catch((error) => { console.log(error) })
@@ -125,14 +129,14 @@ const OffersBanner = () => {
       <div>
         <Slider {...settings} spaceBetween={10}>
         {data ? (
-          data.map((oferta) => (
-            <div className="border-4 border-white">
+          data.map((oferta, index) => (
+            <div key={index} className="border-4 border-white">
               <ItemRecomended oferta={oferta} />
             </div>
           ))
         ) : (
-          Array(5).fill(null).map((item)=>(
-            <div className="border-4 border-white">
+          Array(5).fill(null).map((item, index)=>(
+            <div key={index} className="border-4 border-white">
               <ItemRecomendedSkeleton />
             </div>
           ))

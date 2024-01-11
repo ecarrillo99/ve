@@ -2,17 +2,15 @@ import React, { useEffect, useState } from 'react';
 import jQuery from 'jquery';
 
 const DatafastFormUI = ({trx, tarjeta, diferido}) => {
-    console.log("Tarjeta")
-    console.log(tarjeta.Nombre)
     const [nombreTarjeta, setNombreTarjeta]=useState()
     useEffect(()=>{
-        if(tarjeta.Nombre.toUpperCase()=="MASTERCARD"){
+        if(tarjeta.Nombre.toUpperCase()==="MASTERCARD"){
             setNombreTarjeta("MASTER");
         }
-        if(tarjeta.Nombre.toUpperCase()=="AMERICANEXPRESS"){
+        if(tarjeta.Nombre.toUpperCase()==="AMERICANEXPRESS"){
             setNombreTarjeta("AMEX");
         }
-        if(tarjeta.Nombre.toUpperCase()=="VISA"){
+        if(tarjeta.Nombre.toUpperCase()==="VISA"){
             setNombreTarjeta("VISA");
         }
     }, [tarjeta])
@@ -60,9 +58,9 @@ const DatafastFormUI = ({trx, tarjeta, diferido}) => {
       onError: function (error) {},
       onReady: function () {
         var numberOfInstallmentsHtml =
-          '<input type="hidden" name="recurring.numberOfInstallments" value="'+(diferido.Meses=="1"?"0":diferido.Meses)+'"><input type="hidden" name="customParameters[SHOPPER_interes]" value="1">';
+          '<input type="hidden" name="recurring.numberOfInstallments" value="'+(diferido.Meses==="1"?"0":diferido.Meses)+'"><input type="hidden" name="customParameters[SHOPPER_interes]" value="1">';
         var createRegistrationHtml =
-          '<div class="customLabel" style="display:none;">¿Desea guardar de manera segura sus datos?<div class="customInput"><input type="checkbox" checked="checked" name="createRegistration" /></div></div>';
+          '<div className="customLabel" style="display:none;">¿Desea guardar de manera segura sus datos?<div className="customInput"><input type="checkbox" checked="checked" name="createRegistration" /></div></div>';
         jQuery('form.wpwl-form-card').find('.wpwl-button').before(numberOfInstallmentsHtml);
         jQuery('form.wpwl-form-card').find('.wpwl-button').before(createRegistrationHtml);
       },

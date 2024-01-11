@@ -32,7 +32,7 @@ const HotelGallery = (props) => {
                     >
                     
                     {Galeria.map((img, index) => (
-                        <SwiperSlide>
+                        <SwiperSlide key={index}>
                             <img
                                 key={index}
                                 src={img.Valor}

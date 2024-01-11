@@ -40,7 +40,6 @@ const LoginNormal = () => {
                 loginRemote(params)
                     .then((result) => {
                         setIsLoading(false)
-                        console.log(result)
                         if (result) {
                             navigate(-1)
                         } else {

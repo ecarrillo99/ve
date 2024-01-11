@@ -7,7 +7,6 @@ const HotelDetails = (props) => {
     const { Establecimiento } = props
 
     const ServiciosOferta = ({ titulo, descripciones }) => {
-        console.log("descripciones", descripciones)
         const [mostrarMas, setMostrarMas] = useState(false);
 
         function Icon() {
@@ -39,9 +38,9 @@ const HotelDetails = (props) => {
                     )
                 }
                 <div className='flex flex-col gap-1'>
-                    {descripciones.slice(0, mostrarMas ? descripciones.length : 5).map((itemRestricciones) => (
-                        <div className='flex gap-2 items-center'>
-                            <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find(clave => itemRestricciones.Titulo.includes(clave))] }} class='' />
+                    {descripciones.slice(0, mostrarMas ? descripciones.length : 5).map((itemRestricciones, index) => (
+                        <div key={index} className='flex gap-2 items-center'>
+                            <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find(clave => itemRestricciones.Titulo.includes(clave))] }}/>
                             <p dangerouslySetInnerHTML={{ __html: itemRestricciones.Titulo }} className='my-0.5 text-xs leading-3 font-light text-gray-500'></p>
                         </div>
                     ))}

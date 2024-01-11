@@ -13,7 +13,12 @@ const DestinoBanner = () => {
             getDestinoExpress()
                 .then((result) => {
                     if (result) {
-                        setData(result)
+                        if(result==401){
+                            localStorage.removeItem('datos');
+                            window.location.reload();
+                        }else{
+                            setData(result)
+                        }
                     }
                 })
                 .catch((error) => { console.log(error) })
@@ -29,14 +34,18 @@ const DestinoBanner = () => {
                         getDestinoExpress(latitude, longitude)
                             .then((result) => {
                                 if (result) {
-                                    setData(result)
+                                    if(result==401){
+                                        localStorage.removeItem('datos');
+                                        window.location.reload();
+                                    }else{
+                                        setData(result)
+                                    }
                                 }
                             })
                             .catch((error) => { console.log(error) })
                     } catch (error) {
                         console.error("Error:", error);
                     }
-                    console.log(position.coords)
                 },
                 (error) => {
                     console.error('Error al obtener la ubicación:', error);
@@ -126,8 +135,8 @@ const DestinoBanner = () => {
             </div>
             <Slider {...settings}>
                 {data ? (
-                    data.map((item) => (
-                        <div>
+                    data.map((item, index) => (
+                        <div key={index}>
                             <DestinoItem destino={item}></DestinoItem>
                         </div>
                     ))) : (<></>

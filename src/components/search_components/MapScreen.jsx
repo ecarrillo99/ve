@@ -23,11 +23,10 @@ const MapScreen = ({ isOpen, onClose, data, destination, date, options }) => {
         }
         setActiveMarker(marker);
         setCenter({ lat: latitud, lng: longitud })
-        console.log(center)
     };
 
     const HandleClickItem = (est) => {
-      navigate("/hotel/" + est.IdEstablecimiento, { state: {est, destination, date, options} });
+      navigate(`/hotel/${est.Titulo.toLowerCase().replaceAll(" - ","-").replaceAll(" ","-")}/?id=${est.IdEstablecimiento}&destino=${encodeURIComponent(JSON.stringify(destination))}&fechas=${encodeURIComponent(JSON.stringify(date))}&opciones=${encodeURIComponent(JSON.stringify(options))}`, { state: {est, destination, date, options} });
     }
 
     if (!isOpen) return null;
@@ -71,7 +70,7 @@ const MapScreen = ({ isOpen, onClose, data, destination, date, options }) => {
                                             >
                                                 {activeMarker === item.IdEstablecimiento? (
                                                     <InfoWindowF onCloseClick={() => setActiveMarker(null)}>
-                                                        <div>
+                                                        <div onClick={()=>HandleClickItem(item)}>
                                                             <p className="font-bold" >{item.Titulo}</p>
                                                             <div className="flex gap-1 justify-center items-center">
                                                               <label className="font-semibold">Desde:</label>
@@ -98,46 +97,6 @@ const MapScreen = ({ isOpen, onClose, data, destination, date, options }) => {
 
         </div>
     );
-
-
-
-    /*
-      return (
-        <Fragment>
-          <div className="container">
-            <h1 className="text-center">Vite + React | Google Map Markers</h1>
-            <div style={{ height: "90vh", width: "100%" }}>
-              {isLoaded ? (
-                <GoogleMap
-                  center={{ lat: -3.074127, lng: -79.069786 }}
-                  zoom={10}
-                  onClick={() => setActiveMarker(null)}
-                  mapContainerStyle={{ width: "100%", height: "90vh" }}
-                >
-                  {markers.map(({ id, name, position }) => (
-                    <MarkerF
-                      key={id}
-                      position={position}
-                      onClick={() => handleActiveMarker(id)}
-                      // icon={{
-                      //   url:"https://t4.ftcdn.net/jpg/02/85/33/21/360_F_285332150_qyJdRevcRDaqVluZrUp8ee4H2KezU9CA.jpg",
-                      //   scaledSize: { width: 50, height: 50 }
-                      // }}
-                    >
-                      {activeMarker === id ? (
-                        <InfoWindowF onCloseClick={() => setActiveMarker(null)}>
-                          <div>
-                            <p>{name}</p>
-                          </div>
-                        </InfoWindowF>
-                      ) : null}
-                    </MarkerF>
-                  ))}
-                </GoogleMap>
-              ) : null}
-            </div>
-          </div>
-        </Fragment>);*/
 }
 
 export default MapScreen;

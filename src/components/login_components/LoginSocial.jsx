@@ -44,12 +44,10 @@ const LoginSocial=()=>{
                     "id_servicio": Config.IDSERVICIO,
                     "id_metodo": Config.IDMETODO_EX_GO,
                 }
-                console.log(params)
                 try {
                     await loginRemote(params)
                         .then((result) => {
                             setIsLoading(false)
-                            console.log(result)
                             if(result){
                                 navigate(-1)
                             }else{
@@ -80,7 +78,6 @@ const LoginSocial=()=>{
             .then((result) => {
                 // The signed-in user info.
                 const user = result.user;
-                console.log(user);
                 // This gives you a Facebook Access Token. You can use it to access the Facebook API.
                 const credential = FacebookAuthProvider.credentialFromResult(result);
                 const accessToken = credential.accessToken;

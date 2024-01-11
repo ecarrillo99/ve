@@ -7,7 +7,6 @@ export const loginRemote = async function (params) {
     try{
         const suscripcionService = new SuscripcionService() ;
         const res = await suscripcionService.getInformacionPerfil(params);
-        console.log(res)
         if(res.estado && res.codigo == 0){
             if (Object.values(res).length > 0) {
                 localStorage.setItem('datos', JSON.stringify(res));
@@ -30,6 +29,9 @@ export const endRemoteSession=async function (){
         if(res.estado&&res.codigo==0){
             localStorage.removeItem('datos')
             return res.estado;
+        }
+        if(res.codigo==401){
+            return 401;
         }
 
     }catch(e){}

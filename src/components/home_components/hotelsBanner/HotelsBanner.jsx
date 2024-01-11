@@ -1,4 +1,3 @@
-import "./featured.css";
 import "react-multi-carousel/lib/styles.css";
 import ItemHotels from "./ItemHotels";
 import Slider from 'react-slick';
@@ -17,9 +16,12 @@ const HotelsBanner = () => {
             try {
                 getHotels()
                     .then((result) => {
-                        if (result) {
-                            setData(result)
-                        }
+                      if(result==401){
+                        localStorage.removeItem('datos');
+                        window.location.reload();
+                      }else{
+                          setData(result)
+                      }
                     })
                     .catch((error) => { console.log(error) })
 
@@ -109,13 +111,13 @@ const HotelsBanner = () => {
       </div>
       <Slider {...settings}>
         {data?(
-          data.map((item)=>(
-            <div>
+          data.map((item, index)=>(
+            <div key={index}>
               <ItemHotels hotel={item} ></ItemHotels>
             </div>
           ))):(
-            Array(8).fill(null).map((item)=>(
-              <div>
+            Array(8).fill(null).map((item, index)=>(
+              <div key={index}>
               <ItemHotelsSkeleton></ItemHotelsSkeleton>
             </div>
             ))

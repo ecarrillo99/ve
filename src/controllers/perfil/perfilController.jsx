@@ -15,6 +15,7 @@ export const getProfileData = async function(){
             var datosPersonales = new DatosPersonales();
             var listaContactos= [];
             datosPersonales.Nombres=res["data"]["nombres"];
+            datosPersonales.Codigo=res["data"]["codigo"];
             datosPersonales.Direccion=res["data"]["direccion"];
             datosPersonales.FechaNacimiento=res["data"]["fecha_nac"];
             datosPersonales.Foto=res["data"]["direccion_foto"];
@@ -28,6 +29,9 @@ export const getProfileData = async function(){
             }
             datosPersonales.Contactos=listaContactos;
             return datosPersonales;
+        }
+        if(res.codigo==401){
+            return 401;
         }
 
         return res.estado;
@@ -44,9 +48,10 @@ export const updateProfileData = async function(parametro, valor){
             "token":bd['token'],
             [parametro]:valor
         }
-        console.log(params);
         const res = await perfilService.modificarDatosPersonales(params);
-        console.log(res);
+        if(res.codigo==401){
+            return 401;
+        }
         return res.estado;
     }catch(e){
         return false;
@@ -69,8 +74,56 @@ export const saveRemotePhoto= async function(path){
             localStorage.setItem('datos', JSON.stringify(bd));
             return(res.estado);
         }
+        if(res.codigo==401){
+            return 401;
+        }
         return(res.estado);
     }catch(e){
         return(false);
+    }
+}
+
+export const changePassword= async function(oldPass, newPass){
+    try{
+        var perfilService= new PerfilService();
+        var bd = JSON.parse(localStorage.getItem('datos'));
+        const params={
+            "token":bd['token'],
+            "oldPass":oldPass,
+            "newPass":newPass
+        }
+
+        const res = await perfilService.modificarContrasenia(params);
+        if(res.estado){
+            return res.estado;
+        }
+        if(res.codigo==401){
+            return 401;
+        }
+        return false;
+    }catch(e){
+
+    }
+}
+
+export const changePromoCode = async function(code){
+    try{
+        var perfilService = new PerfilService();
+        var bd = JSON.parse(localStorage.getItem('datos'));
+        const params={
+            "token":bd['token'],
+            "nuevoCodigo":code
+        }
+
+        const res = await perfilService.actualizarCodigoPromocional(params);
+        if(res.estado){
+            return(res.estado);
+        }
+        if(res.codigo==401){
+            return 401;
+        }
+        return(false);
+    }catch{
+
     }
 }
