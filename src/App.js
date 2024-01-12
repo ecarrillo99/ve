@@ -12,7 +12,7 @@ import Favorites from "./pages/Favorites/Favorites";
 function App() {
   
   return (
-    (<Router basename="/ve">
+    (<Router basename="">
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route path="/busqueda/" element={<Search />} />
