@@ -124,7 +124,6 @@ const OffersBanner = () => {
       <h1 className="font-bold text-xl">Nuestras ofertas</h1>
       <div className="flex justify-between mb-4">
         <h6 className="text-md">En hoteles TOP, el mejor precio certificado. Pero en serio.</h6>
-        <button className="text-md text-blue-600">ver mas...</button>
       </div>
       <div>
         <Slider {...settings} spaceBetween={10}>
