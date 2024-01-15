@@ -4,7 +4,6 @@ import Icons from '../../../global/icons';
 import HotelConfirmation from './HotelConfirmation';
 import Alert from '../../global_components/alert/Alert';
 import { useNavigate } from 'react-router-dom';
-import StickyBox from 'react-sticky-box';
 
 const HotelOfertas = (props) => {
   const { Establecimiento, Noches, Fechas, Opciones } = props;
@@ -50,11 +49,8 @@ const HotelOfertas = (props) => {
 
   const [open, setOpen] = useState(0);
   const [count, setCount] = useState(0);
-
   const handleOpen = (value) => setOpen(open === value ? 0 : value);
-
   const options = [0, 1, 2, 3, 4, 5];
-
   const [total, setTotal] = useState(0);
   const [impuestos, setImpuestos] = useState(0);
 
@@ -187,16 +183,26 @@ const HotelOfertas = (props) => {
                       </div>
                     </td>
                     <td className="border">
-                      <div className="flex ml-6 text-sm">
-                        <div dangerouslySetInnerHTML={{ __html: icons.Data['Adulto'] }} className="" />
-                        <label className="text-gray-500 text-xs"> x {item.Adultos} </label>
-                      </div>
-                      {item.Ninos && (
-                        <div className="flex ml-6 text-sm">
-                          <div dangerouslySetInnerHTML={{ __html: icons.Data['niños'] }} className="" />
-                          <label className="text-gray-500 text-xs"> x {item.Ninos} </label>
+                      <div className='flex items-end'>
+                        <div className="flex ml-1 text-sm">
+                          {
+                            Array.from({ length: item.Adultos }).map((item) => (
+                              <div dangerouslySetInnerHTML={{ __html: icons.Data['Adulto'] }} className="" />
+                            ))
+                          }
                         </div>
-                      )}
+                        {item.Ninos && (
+                          <div className="flex items-end text-sm">
+                            <label> +</label>
+                            {
+                              Array.from({ length: item.Ninos }).map((item) => (
+                                <div dangerouslySetInnerHTML={{ __html: icons.Data['niños'] }} className="" />
+                              ))
+                            }
+                          </div>
+                        )}
+                      </div>
+
                     </td>
                     <td className="border text-center">
                       <div className="flex flex-col p-2 items-center justify-center">
@@ -205,11 +211,11 @@ const HotelOfertas = (props) => {
                       </div>
                     </td>
                     <td className="border p-2">
-                      {(item.Incluye!=null&&item.Incluye.length > 0 )? (
+                      {(item.Incluye != null && item.Incluye.length > 0) ? (
                         <div className="flex-1 pr-1">
                           {item.Incluye.map((itemIncluye, incluyeIndex) => (
                             <div key={incluyeIndex} className="flex gap-2 items-center">
-                              <div dangerouslySetInnerHTML={{ __html: icons.Data.Check }}  />
+                              <div dangerouslySetInnerHTML={{ __html: icons.Data.Check }} />
                               <p dangerouslySetInnerHTML={{ __html: itemIncluye.Titulo }} className="my-0.5 text-xs leading-3 font-light text-greenVE-600 "></p>
                             </div>
                           ))}
@@ -237,14 +243,14 @@ const HotelOfertas = (props) => {
                     </td>
                     {index === 0 && (
                       <td className="border text-center align-top mt-2" rowSpan={Establecimiento.Ofertas.length}>
-                      <div className="flex flex-col p-2 items-center gap-1 sticky top-20 bg-white">
-                        <label className="font-semibold text-3xl text-center">${calcularTotal().SinImpuestos}</label>
-                        <label className="text-xs text-gray-500 justify-center items-center">+ ${calcularTotal().Impuestos} de impuestos</label>
-                        <button className="bg-greenVE-500 text-white py-1 px-2 rounded-lg border-greenVE-600 border-2" onClick={() => handleClickReservar()}>
-                          Confirmar
-                        </button>
-                      </div>
-                    </td>
+                        <div className="flex flex-col p-2 items-center gap-1 sticky top-20 bg-white">
+                          <label className="font-semibold text-3xl text-center">${calcularTotal().SinImpuestos}</label>
+                          <label className="text-xs text-gray-500 justify-center items-center">+ ${calcularTotal().Impuestos} de impuestos</label>
+                          <button className="bg-greenVE-500 text-white py-1 px-2 rounded-lg border-greenVE-600 border-2" onClick={() => handleClickReservar()}>
+                            Confirmar
+                          </button>
+                        </div>
+                      </td>
                     )}
                   </tr>
                 ))}

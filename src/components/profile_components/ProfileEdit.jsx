@@ -45,11 +45,13 @@ const ProfileEdit = ({ profileData, citiesData }) => {
     };
 
     const handleSave = (section) => {
+        console.log(section)
+        console.log("ingresado");
         setLoadingModes((prevLoadingModes) => ({
             ...prevLoadingModes,
             [section]: true,
         }));
-
+        
         var key=""
         var value=""
         if((section=="ciudad")){
@@ -75,7 +77,8 @@ const ProfileEdit = ({ profileData, citiesData }) => {
               }));
         }
 
-        if(section="codigo"){
+        if(section=="codigo"){
+            console.log("Ingreso código")
             changePromoCode(codigoField).then((res)=>{
                 if(res){
                     if(res==401){
@@ -122,7 +125,7 @@ const ProfileEdit = ({ profileData, citiesData }) => {
                     }));
                 }
             })  
-        }      
+        }    
     };
 
     const handleCumpleaniosChange = (event) => {

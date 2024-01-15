@@ -10,7 +10,6 @@ import Profile from "./pages/Profile/Profile";
 import BookHistory from "./pages/BookHistory/BookHistory";
 import Favorites from "./pages/Favorites/Favorites";
 function App() {
-  
   return (
     (<Router basename="">
       <Routes>
@@ -24,7 +23,6 @@ function App() {
         <Route path="/hotel/:nombre" element={<Hotel />} />
       </Routes>
     </Router>)
-
   );
 }
 
