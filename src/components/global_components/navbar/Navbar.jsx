@@ -104,11 +104,11 @@ const Navbar = () => {
               <div dangerouslySetInnerHTML={{ __html: icons.Data.Home}} />
               <label className="hidden md:flex">Hospedaje</label>
             </button>
-            <button className="flex gap-1 text-white border-2 rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300">
+            <button className="flex gap-1 text-white rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300">
               <div dangerouslySetInnerHTML={{ __html: icons.Data["Disney"] }} />
               <label className="hidden md:flex">Disney Destination Concierge</label>
             </button>
-            <button className="flex gap-1 text-white border-2 rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300">
+            <button className="flex gap-1 text-white rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300">
               <div dangerouslySetInnerHTML={{ __html: icons.Data["InfoTour"] }} />
               <label className="hidden md:flex">InfoTour</label>
             </button>

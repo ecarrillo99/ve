@@ -93,6 +93,7 @@ const OffersBanner = () => {
     autoplay: true,
     autoplaySpeed: 2000,
     speed: 500,
+    rows: 1,
     slidesToShow: 4,
     slidesToScroll: 1,
     nextArrow: <CustomNextArrow />,
@@ -107,18 +108,18 @@ const OffersBanner = () => {
       {
         breakpoint: 1150,
         settings: {
-          slidesToShow: 3,
+          slidesToShow: 2, // Cambié el número de elementos a mostrar en una fila
         },
       },
       {
         breakpoint: 1300,
         settings: {
-          slidesToShow: 4,
+          slidesToShow: 3, // Cambié el número de elementos a mostrar en una fila
         },
-      },]
+      },
+    ],
   };
-
-
+  
   return (
     <div className="pt-5">
       <h1 className="font-bold text-xl">Nuestras ofertas</h1>
@@ -127,24 +128,23 @@ const OffersBanner = () => {
       </div>
       <div>
         <Slider {...settings} spaceBetween={10}>
-        {data ? (
-          data.map((oferta, index) => (
-            <div key={index} className="border-4 border-white">
-              <ItemRecomended oferta={oferta} />
-            </div>
-          ))
-        ) : (
-          Array(5).fill(null).map((item, index)=>(
-            <div key={index} className="border-4 border-white">
-              <ItemRecomendedSkeleton />
-            </div>
-          ))
-        )}
-      </Slider>
+          {data ? (
+            data.map((oferta, index) => (
+              <div key={index} className="border-4 border-white">
+                <ItemRecomended oferta={oferta} />
+              </div>
+            ))
+          ) : (
+            Array(5).fill(null).map((item, index)=>(
+              <div key={index} className="border-4 border-white">
+                <ItemRecomendedSkeleton />
+              </div>
+            ))
+          )}
+        </Slider>
       </div>
-      
     </div>
-  )
+  );  
 };
 
 export default OffersBanner;
