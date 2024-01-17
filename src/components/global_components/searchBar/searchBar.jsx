@@ -323,8 +323,8 @@ const SearchBar = (props) => {
                 </ClickAwayListener>
               )}
             </div>
-            <div className="col-span-2 max-sm:col-span-1 bg-greenVE-500 flex items-center justify-center rounded-sm m-0.5">
-              <button className="bg-greenVE-500 h-10 text-white" onClick={handleSearch}>
+            <div className="col-span-2 max-sm:col-span-1 bg-greenVE-500 flex items-center justify-center rounded-sm m-0.5 cursor-pointer" onClick={handleSearch}>
+              <button className="bg-greenVE-500 h-10 text-white" >
                 Buscar
               </button>
             </div>

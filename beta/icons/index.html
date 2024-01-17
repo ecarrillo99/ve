@@ -1,0 +1,40 @@
+<html lang="es">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>datafast</title>
+</head>
+
+<body>
+    <div id="divFormDF">
+        <div class="mensaje"></div>
+        <form action='https://visitaecuador.com/compratest/transaction/dfcv/' class="paymentWidgets" data-brands='VISA'>
+        </form><br /><img src='https://www.datafast.com.ec/images/verified.png'
+            style='display:block;margin:0 auto; width:100%;'>
+    </div>
+    <style>
+        .button {
+            width: 100%
+        }
+
+        @media (min-width: 480px) {
+            .button {
+                width: 50%;
+            }
+        }
+
+        .input,
+        .button {
+            height: 44px;
+            width: 100%;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
+    <script
+        type='text/javascript'>jQuery(document).ready(function () { }); jQuery('body').on('click', '.wpwl-button-pay', function (e) { Print.postMessage('notifica pago'); }); var wpwlOptions = { useSummaryPage: false, locale: 'es', style: 'plain', labels: { cvv: 'CVV' }, registrations: { requireCvv: true, hideInitialPaymentForms: true }, onError: function (error) { }, onReady: function () { var numberOfInstallmentsHtml = '<input type="hidden" name="recurring.numberOfInstallments" value="3"><input type="hidden" name="customParameters[SHOPPER_interes]" value="1">'; var createRegistrationHtml = '<div class="customLabel" style="display:none;">¿Desea guardar de manera segura sus datos?<div class="customInput"><input type="checkbox" checked="checked" name="createRegistration" /></div></div>'; jQuery('form.wpwl-form-card').find('.wpwl-button').before(numberOfInstallmentsHtml); jQuery('form.wpwl-form-card').find('.wpwl-button').before(createRegistrationHtml); }, };</script>
+    <script
+        src="https://eu-prod.oppwa.com/v1/paymentWidgets.js?checkoutId=57DA5BE26584BA63772A600BEFCA252D.prod02-vm-tx01"></script>
+
+</body>
+
+</html>

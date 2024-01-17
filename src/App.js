@@ -11,7 +11,7 @@ import BookHistory from "./pages/BookHistory/BookHistory";
 import Favorites from "./pages/Favorites/Favorites";
 function App() {
   return (
-    (<Router basename="">
+    (<Router basename="/html/">
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route path="/busqueda/" element={<Search />} />
