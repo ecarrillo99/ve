@@ -1,4 +1,4 @@
-import { Route, BrowserRouter as Router, Routes, Navigate } from "react-router-dom";
+import { Route, HashRouter as Router, Routes } from "react-router-dom";
 //import { Route, HashRouter as Router, Routes } from "react-router-dom";
 import Home from "./pages/home/Home";
 import Hotel from "./pages/hotel/Hotel";
@@ -11,7 +11,7 @@ import BookHistory from "./pages/BookHistory/BookHistory";
 import Favorites from "./pages/Favorites/Favorites";
 function App() {
   return (
-    (<Router basename="/html/">
+    (<Router>
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route path="/busqueda/" element={<Search />} />
