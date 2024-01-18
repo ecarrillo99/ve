@@ -18,7 +18,7 @@ const Home = () => {
       <Navbar/>
       <MainBanner/>
       <div className="mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 -m-12">
-        <SearchBar/>
+        <SearchBar type={0}/>
         <OffersBanner/>
         <VideosBanner/>
         <HotelsBanner/>

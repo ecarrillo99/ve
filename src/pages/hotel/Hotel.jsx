@@ -1,6 +1,5 @@
 import Navbar from "../../components/global_components/navbar/Navbar";
 import Footer from "../../components/global_components/footer/Footer";
-import HotelSearch from "../../components/hotel_components/hotelSearch/HotelSearch";
 import HotelBanner from "../../components/hotel_components/hotelComponents/HotelBanner";
 import HotelGallery from "../../components/hotel_components/hotelComponents/HotelGallery";
 import HotelAdress from "../../components/hotel_components/hotelComponents/HotelAdress";
@@ -13,6 +12,7 @@ import HotelRecommended from "../../components/hotel_components/hotelComponents/
 import HotelOfertas from "../../components/hotel_components/hotelComponents/HotelOfertas";
 import Filtro from "../../models/Filtro";
 import { format } from "date-fns";
+import SearchBar from "../../components/global_components/searchBar/searchBar";
 
 
 
@@ -112,7 +112,8 @@ const Hotel = () => {
         <Navbar />
         <div className="flex flex-col md:flex-row mx-auto max-w-6xl py-6 sm:px-6 lg:px-8">
           <div className="md:w-3/12 mr-5 mb-5">
-            <HotelSearch
+            <SearchBar
+              type={2}
               Place={destination}
               Dates={date}
               Options={options} />

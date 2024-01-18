@@ -228,6 +228,7 @@ const Search = () => {
       <Navbar />
       <div className="mx-auto max-w-6xl py-6 sm:px-6 lg:px-8">
         <SearchBar
+        type={1}
           Place={destination}
           Dates={date}
           Options={options}

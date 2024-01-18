@@ -4,7 +4,8 @@ import HotelMap from "./HotelMap";
 
 const containerStyle = {
   width: '100%', // Ajuste el ancho al 100% para que se adapte al contenedor
-  height: '130px', // Ajuste la altura según sus necesidades
+  height: '182px', // Ajuste la altura según sus necesidades
+  borderRadius: "3%" 
 };
 
 const HotelAdress = (props) => {
@@ -32,17 +33,15 @@ const HotelAdress = (props) => {
   };
 
   return (
-    <div className="border mt-4 px-3 pt-1 pb-3 rounded-lg border-gray-300 ">
+    <div className="border mt-4 h-[23.3vh] rounded-lg border-gray-300 ">
       <HotelMap
         isOpen={isModalOpen}
         onClose={closeModal}
         item={Establecimiento} />
-      <label className="text-xl font-medium text-center">Dirección</label>
-      <p className="text-sm">{Establecimiento.Direccion}</p>
       {isLoaded && center.lat != null ? (
         <div className="relative aspect-w-3 aspect-h-2">
-          <div className="absolute w-full h-full z-10 aspect-w-3 aspect-h-2 bg-gray-400 bg-opacity-20 flex items-center justify-center">
-            <button className="bg-greenVE-600 text-white px-3 py-1 rounded-lg" onClick={openModal}>Ver en el mapa</button>
+          <div className="absolute w-full h-full z-10 aspect-w-3 rounded-md bg-gray-400 bg-opacity-20 flex items-center justify-center">
+            <button className="bg-greenVE-600 text-white px-3 py-1 rounded-lg z-20" onClick={openModal}>Ver en el mapa</button>
           </div>
           <GoogleMap
             mapContainerStyle={containerStyle}

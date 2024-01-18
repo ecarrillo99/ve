@@ -89,24 +89,24 @@ const SearchItem = (props) => {
             {
               Establecimiento.Recomendados.map((item, index) => (
                 (Establecimiento.Recomendados.length > 1 || parseInt(item.NumOfertas) > 1) ?
-                  (<div className="leading-3 flex gap-x-0.5 relative" key={index}>
-                    <div className="text-xxs z-50 font-medium bg-gray-200 mr-1.5 rounded-md h-6 w-6 flex items-center justify-center flex-shrink-0">
+                  (<div className={`leading-3 flex gap-x-0.5 relative ${index == Establecimiento.Recomendados.length - 1 ? 'pb-1' : ''}`} key={index}>
+                    <div className="text-[9px] z-50 font-medium bg-gray-200 mr-1.5 rounded-md h-[18px] w-[18px] flex items-center justify-center flex-shrink-0">
                       {item.NumOfertas} x
                     </div>
                     <div className={`flex flex-col ${index < Establecimiento.Recomendados.length - 1 ? 'mb-2' : ''} w-full`}>
                       <label className="text-xxs font-semibold">{item.TituloOferta}</label>
                       <label className="text-xxs">{item.NumOfertas} cama {item.Acomodacion}</label>
                     </div>
-                    <div className="absolute h-full bg-gray-300 w-0.5 left-3"></div>
+                    <div className="absolute h-full bg-gray-300 w-0.5 left-2"></div>
                   </div>)
                   : (
-                    <div className="leading-3 flex gap-x-2 relative" key={index}>
+                    <div className="leading-3 flex gap-x-2 relative pb-1" key={index}>
 
-                      <div className={`flex flex-col ml-8 ${index < Establecimiento.Recomendados.length - 1 ? 'mb-2' : ''} w-full`}>
+                      <div className={`flex flex-col ml-3 ${index < Establecimiento.Recomendados.length - 1 ? 'mb-2' : ''} w-full`}>
                         <label className="text-xxs font-semibold">{item.TituloOferta}</label>
                         <label className="text-xxs">{item.NumOfertas} cama {item.Acomodacion}</label>
                       </div>
-                      <div className="absolute h-full bg-gray-300 w-0.5 left-3"></div>
+                      <div className="absolute h-full bg-gray-300 w-0.5"></div>
                     </div>
                   )
               ))
