@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import {
     GoogleMap,
     InfoWindowF,
@@ -29,8 +29,13 @@ const MapScreen = ({ isOpen, onClose, data, destination, date, options }) => {
       navigate(`/hotel/${est.Titulo.toLowerCase().replaceAll(" - ","-").replaceAll(" ","-")}/?id=${est.IdEstablecimiento}&destino=${encodeURIComponent(JSON.stringify(destination))}&fechas=${encodeURIComponent(JSON.stringify(date))}&opciones=${encodeURIComponent(JSON.stringify(options))}`, { state: {est, destination, date, options} });
     }
 
-    if (!isOpen) return null;
+    
 
+    if (!isOpen) {
+        return null;
+    }
+
+    
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50">
             <div className="fixed inset-0 transition-opacity" onClick={()=>{
@@ -62,15 +67,14 @@ const MapScreen = ({ isOpen, onClose, data, destination, date, options }) => {
                                         onClick={() => setActiveMarker(null)}
                                         mapContainerStyle={{ width: "100%", height: "75vh", borderRadius: "1%" }}
                                     >
-                                        {data.map((item) => (
+                                        {data.map((item, index) => (
                                             <MarkerF
                                                 key={item.IdEstablecimiento}
                                                 position={{lat:item.Latitud, lng:item.Longitud}}
-                                                onClick={() => handleActiveMarker(item.IdEstablecimiento, item.Latitud, item.Longitud)}
-                                            >
+                                                onClick={() => handleActiveMarker(item.IdEstablecimiento, item.Latitud, item.Longitud)}>
                                                 {activeMarker === item.IdEstablecimiento? (
                                                     <InfoWindowF onCloseClick={() => setActiveMarker(null)}>
-                                                        <div onClick={()=>HandleClickItem(item)}>
+                                                        <div className="cursor-pointer" onClick={()=>HandleClickItem(item)}>
                                                             <p className="font-bold" >{item.Titulo}</p>
                                                             <div className="flex gap-1 justify-center items-center">
                                                               <label className="font-semibold">Desde:</label>
@@ -86,12 +90,6 @@ const MapScreen = ({ isOpen, onClose, data, destination, date, options }) => {
                             </div>
                         </div>
                     </Fragment>
-                    {/*<button
-          className="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
-          onClick={onClose}
-        >
-          Cerrar
-                      </button>*/}
                 </div>
             </div>
 

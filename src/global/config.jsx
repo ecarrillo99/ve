@@ -2,7 +2,8 @@ class Config {
     // App config
     static get URL_SERVICIOS() {
         //return "https://apidev.visitaecuador.com/v1.7";
-        return "http://test.visitaecuador.com/v1.7";
+        //return "http://test.visitaecuador.com/v1.7";
+        return "http://181.198.122.14/v1.7";
     }
     
     static get URL_WEB() {
@@ -145,6 +146,15 @@ class Config {
         return "https://visitaecuador.com/compratest/transaction/dfcv/";
     }
 
+    static get MENSAJE(){
+        return "Hola, mi nombre es {{nombre}} suscriptor de VisitaEcuador.com con ID {{ID}} y deseo resealizar la siguiente reserva:\n"+
+        "Hotel: {{hotel}}\n"+
+        "Check-In: {{checkin}}\n"+
+        "Check-Out: {{checkout}}\n"+
+        "Personas: {{personas}}\n"+
+        "Habitaciones: \n{{habitaciones}}\n"+
+        "Total: {{Total}}\n"
+    }
    
 }
 export default Config;

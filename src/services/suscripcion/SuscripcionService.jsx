@@ -10,6 +10,14 @@ class SuscripcionService extends GenericService{
         const url = `${Config.URL_SERVICIOS}${Config.VERSUS}loginpost/`;
         return await this.post(url, params);
     }
+    async getPermisos(params){
+        const url = `${Config.URL_SERVICIOS}${Config.VERSUS}obtenerPermisos/`;
+        return await this.post(url, params);
+    }
+    async setAdministrador(params){
+        const url = `http://181.198.122.14/ve/librerias/funciones/autorizacionAdmin.php`;
+        return await this.post(url, params);
+    }
     async renovacionUsuario(params){
         const url = `${Config.URL_SERVICIOS}${Config.VERSUS}enviarsolicitudrenovacion/`;
         return await this.post(url, params);

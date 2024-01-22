@@ -134,7 +134,7 @@ const HotelRecommended = (props) => {
           <label className="font-semibold text-3xl">${Establecimiento.PrecioSinImpuestos}</label>
           <label className="text-xs text-gray-500">+ ${Establecimiento.Impuestos} de impuestos</label>
           <button className="bg-greenVE-500 text-white py-1 px-2 rounded-lg border-greenVE-600 border-2" onClick={() => handleClickPreReserva()}>
-            Pre-Reservar
+            Reservar
           </button>
         </div>
       </div>

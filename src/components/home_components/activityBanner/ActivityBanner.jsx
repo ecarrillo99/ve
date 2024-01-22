@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getReserves } from "../../../controllers/info/infoController";
 import ActivityItem from "./ActivityItem";
+import ActivityItemSkeleton from "./ActivityItemSkeleton";
 
 const ActivityBanner=()=>{
     const [data, setData] = useState()
@@ -34,7 +35,7 @@ const ActivityBanner=()=>{
                 ?data.map((item, index)=>(
                     <ActivityItem key={index} actividad={item}/>
                 ))
-                :<></>
+                :Array.from({ length: 4 }, (item, index) => <ActivityItemSkeleton key={index} actividad={item}></ActivityItemSkeleton>)
             }
             </div>
         </div>

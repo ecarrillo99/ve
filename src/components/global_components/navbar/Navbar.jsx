@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import Icons from "../../../global/icons";
 import { useState } from "react";
-import { endRemoteSession } from "../../../controllers/suscripcion/suscripcionController";
+import { endRemoteSession, getPermissions } from "../../../controllers/suscripcion/suscripcionController";
 import { ClickAwayListener } from "@material-ui/core";
+import { Spinner } from "@material-tailwind/react";
 
 const icons = new Icons();
 
@@ -32,11 +33,25 @@ const Navbar = () => {
     navigate("/");
   }
 
+
   const [openProfile, setOpenProfile] = useState(false);
   const session = JSON.parse(localStorage.getItem("datos"));
   const nivel = session ? session.data.nivel : "visitante";
   const nombre = session ? session.data.nombre:"";
   const foto = session ? (session.data.fotos ? session.data.fotos.m : "") : "";
+  const [isLoadingAdmin, setLoadingAdmin]=useState(false);
+
+  const handleClickAdministrador=()=>{
+    if(!isLoadingAdmin){
+      setLoadingAdmin(true);
+      getPermissions(session.data.id_usuario).then((result)=>{
+        if(result){
+          window.open("http://181.198.122.14/ve/administrador");
+          setLoadingAdmin(false);
+        }
+      })
+    }
+  }
 
   const handleClickProfile = () => {
     setOpenProfile(!openProfile);
@@ -92,7 +107,11 @@ const Navbar = () => {
                     <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickProfileSet}><div dangerouslySetInnerHTML={{ __html: icons.Data.Account }}  /> Mi perfil</button>
                     <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickBookHistory}><div dangerouslySetInnerHTML={{ __html: icons.Data.Historial}}  /> Historial de Reservas</button>
                     <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickFavorites}><div dangerouslySetInnerHTML={{ __html: icons.Data.Favorito }}  /> Mis Favoritos</button>
-                    <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Administrador }}  /> Administrador</button>
+                    <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickAdministrador}><div dangerouslySetInnerHTML={{ __html: icons.Data.Administrador }}  /> Administrador
+                    {
+                      isLoadingAdmin?<Spinner className="h-4 w-4" color="white"></Spinner>:<></>
+                    }
+                    </button>
                     <button onClick={() => handleClickLogOut()} className="hover:bg-greenVE-200 w-full px-4 text-xs py-1 flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Logout }}  />Cerrar sesión</button>
                   </div>
                 </ClickAwayListener>
