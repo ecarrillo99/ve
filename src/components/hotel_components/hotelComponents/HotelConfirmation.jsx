@@ -4,13 +4,15 @@ import { Spinner } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 import Icons from "../../../global/icons";
 import Config from "../../../global/config";
+import HotelConfirmationDetail from "./HotelConfirmationDetail";
 
 const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, OnClose, Opciones }) => {
     const contactosHotel=Establecimiento.Contactos;
     const contactosCentral=Establecimiento.ContactosCentral;
+    console.log(contactosCentral);
     const user= JSON.parse(localStorage.getItem('datos'));
-    const id=user.data.codigo;
-    const nombre=user.data.nombre
+    const id= user!=null?user.data.codigo:"";
+    const nombre=user!=null?user.data.nombre:"";
     const navigate=useNavigate()
     const [isLoading, setIsLoading] = useState(false)
     const icons= new Icons();
@@ -28,16 +30,34 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}/${month}/${day}`;
     }
-
+    
     const mensaje=()=>{
+        const personas= Opciones.adult + (Opciones.adult>1?" adultos":" adulto")+
+                  (Opciones.children==0?"":", "+Opciones.children + (Opciones.children>1?" niños":" niño")); 
+
+        var habitaciones="\n";
+        Ofertas.forEach(element => {
+            habitaciones=habitaciones+(element.TotalOfertas)+"x "+element.TituloOferta+"\n"
+        });
+        const total="$"+Valores.SinImpuestos+ " más $"+Valores.Impuestos+" de impuestos y cargos";
         const msj= Config.MENSAJE
         .replaceAll("{{nombre}}", nombre)
-        .replaceAll("{{ID}}", id);
+        .replaceAll("{{id}}", id)
+        .replaceAll("{{hotel}}", Establecimiento.Titulo)
+        .replaceAll("{{checkin}}", formatDate(Fechas[0].startDate))
+        .replaceAll("{{checkout}}", formatDate(Fechas[0].endDate))
+        .replaceAll("{{personas}}", personas)
+        .replaceAll("{{habitaciones}}", habitaciones)
+        .replaceAll("{{total}}",total );
         return msj
     }
 
-    const handleClickWhatsApp=async()=>{
-        console.log(mensaje());
+    const handleClickWhatsApp=async(contacto)=>{
+        window.open("https://wa.me/"+contacto+"?text="+mensaje().replaceAll(" ","%20").replaceAll("\n","%0A"))
+    }
+
+    const handleClickEmail=async(email)=>{
+        console.log("mailto:"+email+"?subject=Reserva"+"&body="+mensaje().replaceAll(" ","%20").replaceAll("\n","%0A"));
     }
 
     const handleClickAceptar = async () => {
@@ -77,6 +97,7 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
                         <div className="flex w-full justify-center my-2">
                             <label className="font-semibold text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">Reserva</label>
                         </div>
+                        <HotelConfirmationDetail Ofertas={Ofertas} isOpen={isOpen} Establecimiento={Establecimiento} Fechas={Fechas} Valores={Valores} OnClose={OnClose} Opciones={Opciones} />
                         <div className="flex">
                             <div className="w-1/2 text-center font-semibold">
                                 <label>Directo al hotel</label>
@@ -85,11 +106,11 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
                                         <>
                                         {
                                             contactosHotel.Telefono.map((item)=>(
-                                                <div className="flex border-2 border-greenVE-300 rounded-md mx-3 py-1 bg-greenVE-50">
+                                                <div className="flex border-2 border-greenVE-300 rounded-md mx-3 py-1 bg-greenVE-50 mb-2">
                                                     <div className="flex items-center w-2/12">
                                                         <div dangerouslySetInnerHTML={{ __html: icons.Data.Telefono}} />
                                                     </div>
-                                                    <div className="flex flex-col w-8/2 justify-start items-start">
+                                                    <div className="flex flex-col w-8/12 justify-start items-start">
                                                         <label className="text-sm">Teléfono</label>
                                                         <div className="font-normal text-xs">{item}</div>
                                                     </div>
@@ -104,13 +125,13 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
                                         <>
                                         {
                                             contactosHotel.Whatsapp.map((item)=>(
-                                                <div className="flex border-2 border-greenVE-300 rounded-md mx-3 py-1 bg-greenVE-50 mt-2">
+                                                <div className="flex border-2 border-greenVE-300 rounded-md mx-3 py-1 bg-greenVE-50 mb-2">
                                                     <div className="flex items-center w-2/12">
                                                         <div dangerouslySetInnerHTML={{ __html: icons.Data.WhatsApp}} />
                                                     </div>
-                                                    <div className="flex flex-col w-8/2 justify-start items-start">
+                                                    <div className="flex flex-col w-8/12 justify-start items-start">
                                                         <label className="text-sm">WhatsApp</label>
-                                                        <div className="font-normal text-xs cursor-pointer hover:underline hover:text-blue-500" onClick={()=>handleClickWhatsApp()}>{item}</div>
+                                                        <div className="font-normal text-xs cursor-pointer hover:underline hover:text-blue-500" onClick={()=>handleClickWhatsApp(item.replaceAll("+","").replaceAll(" ",""))}>{item}</div>
                                                     </div>
                                                 </div>
                                             ))
@@ -123,13 +144,13 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
                                         <>
                                         {
                                             contactosHotel.Email.map((item)=>(
-                                                <div className="flex border-2 border-greenVE-300 rounded-md mx-3 py-1 bg-greenVE-50 mt-2">
+                                                <div className="flex border-2 border-greenVE-300 rounded-md mx-3 py-1 bg-greenVE-50 mb-2">
                                                     <div className="flex items-center w-2/12">
                                                         <div dangerouslySetInnerHTML={{ __html: icons.Data.Email}} />
                                                     </div>
                                                     <div className="flex flex-col w-8/12 justify-start items-start">
                                                         <label className="text-sm">Email</label>
-                                                        <div className="font-normal text-ellipsis text-start text-xs" style={{ maxWidth: '100%', overflowWrap: 'break-word' }}>{item}</div>
+                                                        <div className="font-normal text-ellipsis text-start text-xs cursor-pointer hover:underline hover:text-blue-500" style={{ maxWidth: '100%', overflowWrap: 'break-word' }} onClick={()=>handleClickEmail(item)}>{item}</div>
                                                     </div>
                                                 </div>
                                             ))
@@ -140,19 +161,64 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
                             </div>
                             <div className="w-1/2 text-center font-semibold">
                                 <label>Central de reserva</label>
+                                <div className="flex border-2 border-orange-300 cursor-pointer rounded-md mx-3 py-1 bg-orange-50 mb-2" onClick={() => handleClickAceptar()}>
+                                    <div className="flex items-center w-2/12">
+                                        <div dangerouslySetInnerHTML={{ __html: icons.Data.Web}} />
+                                    </div>
+                                    <div className="flex flex-col w-8/12 justify-start items-start cursor-pointer">
+                                        <label className="text-sm cursor-pointer">Reservar en la web</label>
+                                        <div className="font-normal text-xs cursor-pointer hover:underline hover:text-blue-500">Click para pre-rservar</div>
+                                    </div>
+                                    <div className="flex items-center just-end w-2/12 cursor-pointer">
+                                        {isLoading? <Spinner color="white"></Spinner>:<></>}
+                                    </div>
+                                </div>
+                                {
+                                    contactosCentral.Whatsapp.length>0&&(
+                                        <>
+                                        {
+                                            contactosCentral.Whatsapp.map((item)=>(
+                                                <div className="flex border-2 border-greenVE-300 rounded-md mx-3 py-1 bg-greenVE-50 mb-2">
+                                                    <div className="flex items-center w-2/12">
+                                                        <div dangerouslySetInnerHTML={{ __html: icons.Data.WhatsApp}} />
+                                                    </div>
+                                                    <div className="flex flex-col w-8/12 justify-start items-start">
+                                                        <label className="text-sm">WhatsApp / Teléfono</label>
+                                                        <div className="font-normal text-xs cursor-pointer hover:underline hover:text-blue-500" onClick={()=>handleClickWhatsApp(item.formateado.replaceAll("+","").replaceAll(" ",""))}>{item.valor}</div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        }
+                                        </>
+                                    )
+                                }
+                                {
+                                    contactosCentral.Email.length>0&&(
+                                        <>
+                                        {
+                                            contactosCentral.Email.map((item)=>(
+                                                <div className="flex border-2 border-greenVE-300 rounded-md mx-3 py-1 bg-greenVE-50 mb-2">
+                                                    <div className="flex items-center w-2/12">
+                                                        <div dangerouslySetInnerHTML={{ __html: icons.Data.Email}} />
+                                                    </div>
+                                                    <div className="flex flex-col w-8/12 justify-start items-start">
+                                                        <label className="text-sm">Email</label>
+                                                        <div className="font-normal text-ellipsis text-start text-xs cursor-pointer hover:underline hover:text-blue-500" style={{ maxWidth: '100%', overflowWrap: 'break-word' }} onClick={()=>handleClickEmail(item.valor)}>{item.valor}</div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        }
+                                        </>
+                                    )
+                                }
                             </div>
                         </div>
                         <div className="flex w-full justify-center mt-6 mb-2 gap-2">
                             <button className={`bg-${isLoading ? 'gray-500' : 'red-600'} text-white px-2 py-1 rounded-md w-full md:w-1/2`} onClick={() => OnClose()} disabled={isLoading}>Cancelar</button>
-                            <button className={`bg-greenVE-500 text-white px-2 py-1 rounded-md w-full md:w-1/2 flex justify-center`} onClick={() => handleClickAceptar()}>
-                                {isLoading
-                                    ? <Spinner color="white"></Spinner>
-                                    : "Confirmar"}
-                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>``
         </div>
     );
 };

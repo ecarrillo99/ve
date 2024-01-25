@@ -49,60 +49,85 @@ const VideosBanner = () => {
         autoplay: false,
         autoplaySpeed: 4000,
         speed: 500,
-        slidesToShow: 3,
+        slidesToShow: 1,
         slidesToScroll: 1,
         nextArrow: <CustomNextArrow />,
         prevArrow: <CustomPrevArrow />,
-        responsive: [
-            {
-                breakpoint: 900,
-                settings: {
-                    slidesToShow: 1,
-                },
-            },
-            {
-                breakpoint: 1150,
-                settings: {
-                    slidesToShow: 3,
-                },
-            },
-            {
-                breakpoint: 1300,
-                settings: {
-                    slidesToShow: 4,
-                },
-            },]
+
     };
 
     return (
-        <div className="mt-10">
-            <h1 className="font-bold text-xl">Entérate de las ventajas de ser Suscriptor</h1>
-            <Slider {...settings}>
-                <div className=" bg-greenVE-500 aspect-w-16 aspect-h-9 flex justify-center items-center p-4 rounded-lg border-4 border-white cursor-pointer" onClick={()=>{window.open('https://youtu.be/VFjswE0are8?feature=shared', '_blank');}}>
-                    <div className="text-white font-bold text-center flex flex-col items-center justify-between">
-                        <label>¿Cómo descargar <br />la aplicación?</label>
-                        <img src="/img/ve_logo.svg" className="mt-4" style={{ width: "110px", height: "auto" }} alt="Logo" />
-                    </div>
+        <div className="mt-10 ">
+            <div className='flex gap-8'>
+                <div className='w-[31.5%]'>
+                    <h1 className="font-bold text-xl pl-1">VisitaEcuador.com</h1>
+                    <Slider {...settings}>
+                        <div className="bg-greenVE-500 aspect-w-16 aspect-h-9 flex justify-center items-center rounded-lg border-4 border-white cursor-pointer" onClick={() => { window.open('https://www.youtube.com/watch?v=E7wBH85tJZM&list=PLoJIl4RxrOuipCFIrm3o1b5ejtkjmc1Bf', '_blank'); }}>
+                            <div className="flex items-center justify-center">
+                                <img src="/img/ve_quees.png" className="h-[170px]" alt="" />
+                            </div>
+                        </div>
+                        <div className="bg-greenVE-500 aspect-w-16 aspect-h-9 flex justify-center items-center rounded-lg border-4 border-white cursor-pointer" onClick={() => { window.open('https://www.youtube.com/watch?v=zYZLhoMEy8o&list=PLoJIl4RxrOugErlsERXyOzEjkmRpoOxp6', '_blank'); }}>
+                            <div className="flex items-center justify-center">
+                                <img src="/img/ve_influencer.png" className="h-[170px]" alt="" />
+                            </div>
+                        </div>
+                        <div className="bg-[#f3f7e8] aspect-w-16 aspect-h-9 flex justify-center items-center rounded-lg border-4 border-white cursor-pointer" onClick={() => { window.open('https://www.youtube.com/watch?v=hMwe4kteLOo&list=PLoJIl4RxrOuhixQkJ5DEXEsdzF-C5UgCb', '_blank'); }}>
+                            <div className="flex items-center justify-center">
+                                <img src="/img/ve_bicipet.png" className="h-[170px]" alt="" />
+                            </div>
+                        </div>
+                    </Slider>
                 </div>
-                <div className="bg-greenVE-500 aspect-w-16 aspect-h-9 flex justify-center items-center p-4 rounded-lg border-4 border-white cursor-pointer" onClick={()=>{window.open('https://youtu.be/7pAur5LY7_Y?feature=shared', '_blank');}}>
-                    <div className="text-white font-bold text-center flex flex-col items-center justify-between">
-                        <label>¿Cómo realizar <br />una reserva?</label>
-                        <img src="/img/ve_logo.svg" className="mt-4" style={{ width: "110px", height: "auto" }} alt="Logo" />
+                <div className='w-[31.5%]'>
+                    <h1 className="font-bold text-xl pl-1">Recomendados</h1>
+                    <Slider {...settings}>
+                    <div className="bg-greenVE-500 aspect-w-16 aspect-h-9 flex justify-center items-center rounded-lg border-4 border-white cursor-pointer relative overflow-hidden" onClick={() => { window.open('https://www.youtube.com/watch?v=L7VatuY-UZ8&list=PL9GTu60V_TJqk4buTJOqv2LKWqZPnKKIe', '_blank'); }}>
+                        <div className="flex items-center relative z-10">
+                            <img src="/img/hoteles.jpg" className="h-[170px] w-full object-cover" alt="" />
+                        </div>
+                        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
+                        <div className="absolute top-0 left-0 w-full h-full z-30 flex items-center justify-center">
+                            <div className="text-white text-4xl font-bold">HOTELES</div>
+                        </div>
                     </div>
-                </div>
-                <div className="bg-greenVE-500 aspect-w-16 aspect-h-9 flex justify-center items-center p-4 rounded-lg border-4 border-white cursor-pointer" onClick={()=>{window.open('https://youtu.be/PJKuhZO96DI?feature=shared', '_blank');}}>
-                    <div className="text-white font-bold text-center flex flex-col items-center justify-between">
-                        <label>¿Cómo comprar <br />una suscripción?</label>
-                        <img src="/img/ve_logo.svg" className="mt-4" style={{ width: "110px", height: "auto" }} alt="Logo" />
+                    <div className="bg-greenVE-500 aspect-w-16 aspect-h-9 flex justify-center items-center rounded-lg border-4 border-white cursor-pointer relative overflow-hidden" onClick={() => { window.open('https://www.youtube.com/watch?v=02tXe1JTdoo&list=PL9GTu60V_TJoIoNqd2KFsvVtHG8l1-kQw', '_blank'); }}>
+                        <div className="flex items-center relative z-10">
+                            <img src="/img/huecas.jpg" className="h-[170px] w-full object-cover" alt="" />
+                        </div>
+                        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
+                        <div className="absolute top-0 left-0 w-full h-full z-30 flex items-center justify-center">
+                            <div className="text-white text-4xl font-bold">HUECAS</div>
+                        </div>
                     </div>
-                </div>
-                <div className="bg-greenVE-500 aspect-w-16 aspect-h-9 flex justify-center items-center p-4 rounded-lg border-4 border-white cursor-pointer" onClick={()=>{window.open('https://youtu.be/roZ8H-RT-j0?feature=shared', '_blank');}}>
-                    <div className="text-white font-bold text-center flex flex-col items-center justify-between">
-                        <label>¿Cómo generar <br />un certificado?</label>
-                        <img src="/img/ve_logo.svg" className="mt-4" style={{ width: "110px", height: "auto" }} alt="Logo" />
+                    <div className="bg-greenVE-500 aspect-w-16 aspect-h-9 flex justify-center items-center rounded-lg border-4 border-white cursor-pointer relative overflow-hidden" onClick={() => { window.open('https://www.youtube.com/watch?v=lxwvngPafOs&list=PL9GTu60V_TJp4t7oyuHPJVVbRzBq2lbk2', '_blank'); }}>
+                        <div className="flex items-center relative z-10">
+                            <img src="/img/aventuras.jpg" className="h-[170px] w-full object-cover" alt="" />
+                        </div>
+                        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
+                        <div className="absolute top-0 left-0 w-full h-full z-30 flex items-center justify-center">
+                            <div className="text-white text-4xl font-bold">AVENTURAS</div>
+                        </div>
                     </div>
+                    </Slider>
                 </div>
-            </Slider>
+                <div className='w-[31.5%]'>
+                    <h1 className="font-bold text-xl pl-1">Disney Destinations Concierge</h1>
+                    <Slider  {...settings}>
+                        <div className="bg-[#f3f7e8] aspect-w-16 aspect-h-9 flex justify-center items-center rounded-lg border-4 border-white cursor-pointer" onClick={() => { window.open('https://www.youtube.com/watch?v=1gAbSh17SVQ&list=PLfJNkC1lghoyfHnPpgKZJNggpRD5_H41L', '_blank'); }}>
+                            <div className="flex items-center justify-center">
+                                <img src="/img/dc_quees.png" className="h-[170px] w-full object-cover rounded-md border" alt="" />
+                            </div>`````
+                        </div>
+                        <div className="bg-[#f3f7e8] aspect-w-16 aspect-h-9 flex justify-center items-center rounded-lg border-4 border-white cursor-pointer" onClick={() => { window.open('https://www.youtube.com/watch?v=O2tgG_eKjck&list=PLfJNkC1lghozWVHIAVCF-mipEwHZH8fxi', '_blank'); }}>
+                            <div className="flex items-center justify-center">
+                                <img src="/img/dc_minuto.png" className="h-[170px] w-full object-cover rounded-md border" alt="" />
+                            </div>
+                        </div>
+                    </Slider>
+                </div>
+            </div>
+            
         </div>
     )
 }
