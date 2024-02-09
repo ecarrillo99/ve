@@ -2,6 +2,7 @@ import Config from "../../global/config";
 import SuscripcionService from "../../services/suscripcion/SuscripcionService";
 
 export const loginRemote = async function (params) {
+    console.log(params);
     const isLogged=false;
     
     try{

@@ -1,9 +1,9 @@
 class Config {
     // App config
     static get URL_SERVICIOS() {
-        //return "https://apidev.visitaecuador.com/v1.7";
+        return "https://apidev.visitaecuador.com/v1.7";
         //return "http://test.visitaecuador.com/v1.7";
-        return "http://181.198.122.14:8080/v1.7";
+        //return "http://181.198.122.14:8080/v1.7";
     }
     
     static get URL_WEB() {

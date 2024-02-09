@@ -117,7 +117,7 @@ const VideosBanner = () => {
                         <div className="bg-[#f3f7e8] aspect-w-16 aspect-h-9 flex justify-center items-center rounded-lg border-4 border-white cursor-pointer" onClick={() => { window.open('https://www.youtube.com/watch?v=1gAbSh17SVQ&list=PLfJNkC1lghoyfHnPpgKZJNggpRD5_H41L', '_blank'); }}>
                             <div className="flex items-center justify-center">
                                 <img src="/img/dc_quees.png" className="h-[170px] w-full object-cover rounded-md border" alt="" />
-                            </div>`````
+                            </div>
                         </div>
                         <div className="bg-[#f3f7e8] aspect-w-16 aspect-h-9 flex justify-center items-center rounded-lg border-4 border-white cursor-pointer" onClick={() => { window.open('https://www.youtube.com/watch?v=O2tgG_eKjck&list=PLfJNkC1lghozWVHIAVCF-mipEwHZH8fxi', '_blank'); }}>
                             <div className="flex items-center justify-center">

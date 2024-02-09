@@ -15,7 +15,7 @@ class SuscripcionService extends GenericService{
         return await this.post(url, params);
     }
     async setAdministrador(params){
-        const url = `http://181.198.122.14/ve/librerias/funciones/autorizacionAdmin.php`;
+        const url = `http://181.198.122.14:8080/ve/librerias/funciones/autorizacionAdmin.php`;
         return await this.post(url, params);
     }
     async renovacionUsuario(params){
