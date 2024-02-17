@@ -142,9 +142,9 @@ const Navbar = () => {
         </div>
         <div className="flex flex-col w-10/12 justify-between ">
           <div className="flex gap-2 justify-end items-center">
-            <button className="flex gap-1 text-white border-white rounded-full border-2 px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-300">
+            <a className="flex gap-1 text-white border-white rounded-full border-2 px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-300" href="/smart/">
               Registrar alojamiento
-            </button>
+            </a>
             <div className="flex justify-center">
             {(nivel === "visitante" || nivel === "gratuito") && (
               <button className="flex gap-1 text-greenVE-600 bg-white rounded-full px-5 py-1 text-xs hover:border-gray-300 hover:text-gray-500" onClick={handleClickSuscribing}>

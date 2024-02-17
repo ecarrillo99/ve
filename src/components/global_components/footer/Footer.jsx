@@ -11,7 +11,7 @@ const Footer = () => {
           <div className="w-1/2 md:w-1/4">
             <h3 className="text-greenVE-700 font-bold text-sm">Nosotros</h3>
             <div>
-              <a href="https://www.ejemplo.com" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Quienes somos</a>
+              <a href="/#/nosotros" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Quienes somos</a>
             </div>
             <div>
               <a href="https://www.ejemplo.com" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Remate y consulta</a>
@@ -32,19 +32,19 @@ const Footer = () => {
           <div className="w-1/2 md:w-1/4">
             <h3 className="text-greenVE-700 font-bold text-sm">SMART Hoteles</h3>
             <div>
-              <a href="https://www.ejemplo.com" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Registrar establecimiento</a>
+              <a href="/smart/" target="_blank" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Registrar establecimiento</a>
             </div>
             <div>
-              <a href="https://www.ejemplo.com" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Administrar establecimiento</a>
+              <a href="/smart/" target="_blank" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Administrar establecimiento</a>
             </div>
           </div>
           <div className="w-1/2 md:w-1/4">
             <h3 className="text-greenVE-700 font-bold text-sm">Desacargar APP</h3>
             <div>
-              <a href="https://www.ejemplo.com" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Descargar para iOS</a>
+              <a href="https://apps.apple.com/ec/app/visitaecuador-com/id1385161516" target="_blank" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Descargar para iOS</a>
             </div>
             <div>
-              <a href="https://www.ejemplo.com" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Descargar para Android</a>
+              <a href="https://play.google.com/store/apps/details?id=com.visitaEcuador" target="_blank" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Descargar para Android</a>
             </div>
           </div>
           <div className="w-1/2 md:w-1/4">
@@ -56,25 +56,25 @@ const Footer = () => {
           <div className="w-1/2 md:w-1/4">
             <h3 className="text-greenVE-700 font-bold text-sm">InfoTour</h3>
             <div>
-              <a href="https://www.ejemplo.com" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Ir al sitio web</a>
+              <a href="https://infotour.app/" target="_blank" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Ir al sitio web</a>
             </div>
           </div>
           <div className="w-1/2 md:w-1/4">
             <h3 className="text-greenVE-700 font-bold text-sm">Suscripciones</h3>
             <div>
-              <a href="https://www.ejemplo.com" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Comprar suscripción</a>
+              <a href="/#/suscripcion" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Comprar suscripción</a>
             </div>
             <div>
-              <a href="https://www.ejemplo.com" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Activar suscripción</a>
+              <a href="/#/activacion" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Activar suscripción</a>
             </div>
           </div>
           <div className="w-1/2 md:w-1/4">
             <h3 className="text-greenVE-700 font-bold text-sm">Legal</h3>
             <div>
-              <a href="https://www.ejemplo.com" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Políticas de privacidad</a>
+              <a href="/#/politicas-privacidad" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Políticas de privacidad</a>
             </div>
             <div>
-              <a href="https://www.ejemplo.com" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Términos y condiciones</a>
+              <a href="/#/terminos-condiciones" className="text-footerTextColor font-thin hover:text-greenVE-500 text-xs">Términos y condiciones</a>
             </div>
           </div>
         </div>
