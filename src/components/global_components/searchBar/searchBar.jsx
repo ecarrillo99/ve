@@ -206,7 +206,7 @@ const SearchBar = (props) => {
               <div dangerouslySetInnerHTML={{ __html: icons.Data.Calendar }} />
               <span 
                 onClick={() => setOpenDate(!openDate)}
-                className="placeholder-gray-600"
+                className="placeholder-gray-600 hover:cursor-pointer"
               >{`${formatDate(new Date(date[0].startDate))} - ${formatDate(new Date(date[0].endDate))}`}</span>
               {openDate && (
                 <ClickAwayListener onClickAway={handleClickAway}>
@@ -225,7 +225,7 @@ const SearchBar = (props) => {
                 </ClickAwayListener>
               )}
             </div>
-            <div className="gap-3 col-span-4 max-sm:col-span-1 bg-white flex items-center justify-center m-0.5 rounded-sm">
+            <div className="gap-3 col-span-4 max-sm:col-span-1 bg-white flex items-center justify-center m-0.5 rounded-sm cursor-pointer">
             <div dangerouslySetInnerHTML={{ __html: icons.Data.People }} />
               <span
                 onClick={() => setOpenOptions(!openOptions)}

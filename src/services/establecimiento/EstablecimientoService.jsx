@@ -12,20 +12,20 @@ class EstablecimientoService extends GenericService{
         return await this.post(url, params);
     }
 
-    async agregarFavorito(params){
+    /*async agregarFavorito(params){
         const url = `${Config.URL_SERVICIOS}${Config.VEREST}guardarFavorito/`;
         return await this.post(url, params);
-    }
+    }*/
 
     async cambiarEstadoFavorito(params){
         const url = `${Config.URL_SERVICIOS}${Config.VEREST}setHotelFavorito/`;
         return await this.post(url, params);
     }
 
-    async eliminarFavorito(params){
+    /*async eliminarFavorito(params){
         const url = `${Config.URL_SERVICIOS}${Config.VEREST}eliminarFavorito/`;
         return await this.post(url, params);
-    }
+    }*/
 
     async getFavoritos(params){
         const url = `${Config.URL_SERVICIOS}${Config.VEREST}getHotelesFavoritos/`;

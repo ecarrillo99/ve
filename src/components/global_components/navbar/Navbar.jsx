@@ -11,7 +11,7 @@ import Config from "../../../global/config";
 
 const icons = new Icons();
 
-const Navbar = () => {
+const Navbar = ({activo}) => {
   const navigate = new useNavigate();
   const handleClickLogin = () => {
     navigate("/login");
@@ -55,7 +55,7 @@ const Navbar = () => {
       setLoadingAdmin(true);
       getPermissions(session.data.id_usuario).then((result)=>{
         if(result){
-          window.open("http://181.198.122.14/ve/administrador");
+          window.open("/ve/administrador");
           setLoadingAdmin(false);
         }
       })
@@ -81,6 +81,18 @@ const Navbar = () => {
       console.error("Error:", error);
     }
   };
+
+  const handleClickDisney=()=>{
+    navigate("/disney");
+  }
+
+  const handleClickInicio=()=>{
+    navigate("/");
+  }
+
+  const handleClickInfotour=()=>{
+    window.open("https://infotour.app/");
+  }
 
   const handleClickGoogle=()=>{
     signInWithPopup(auth, gProvider).then(async (result)=>{
@@ -215,18 +227,45 @@ const Navbar = () => {
             </div>
           </div>
           <div className="flex gap-2 items-end mt-4 sm:mt-0">
-            <button className="flex gap-1 text-white border-2 border-white rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300">
-            <img src="/img/homeMenu.svg" style={{height:"25px"}}></img>
-              <label className="hidden md:flex">Hospedaje</label>
-            </button>
-            <button className="flex gap-1 border-2 border-transparent text-white hover:border-2  rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white">
-              <img src="/img/disneymenu.svg" style={{height:"25px"}}></img>
-              <label className="hidden md:flex">Disney Destination Concierge</label>
-            </button>
-            <button className="flex gap-1 border-2 border-transparent text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white">
-              <img src="/img/infotourMenu.svg" style={{height:"25px"}}></img>
-              <label className="hidden md:flex">InfoTour</label>
-            </button>
+            {
+              activo==null||activo==1?(
+                <button className="flex gap-1 text-white border-2 border-white rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300" onClick={handleClickInicio} >
+                <img src="/img/homeMenu.svg" style={{height:"25px"}}></img>
+                  <label className="hidden md:flex cursor-pointer">Hospedaje</label>
+                </button>
+              ):(
+                <button className="flex gap-1 border-2 border-transparent text-white hover:border-2  rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white" onClick={handleClickInicio} >
+                <img src="/img/homeMenu.svg" style={{height:"25px"}}></img>
+                  <label className="hidden md:flex cursor-pointer">Hospedaje</label>
+                </button>
+              )
+            }
+            {
+              activo==2?(
+                <button className="flex gap-1 text-white border-2 border-white rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300" onClick={handleClickDisney}>
+                  <img src="/img/disneymenu.svg"  style={{height:"25px"}}></img>
+                  <label className="hidden md:flex cursor-pointer">Disney Destination Concierge</label>
+                </button>
+              ):(
+                <button className="flex gap-1 border-2 border-transparent text-white hover:border-2  rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white" onClick={handleClickDisney}>
+                  <img src="/img/disneymenu.svg"  style={{height:"25px"}}></img>
+                  <label className="hidden md:flex cursor-pointer">Disney Destination Concierge</label>
+                </button>
+              )
+            }
+            {
+              activo==3?(
+                <button className="flex gap-1 text-white border-2 border-white rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300" onClick={handleClickInfotour}>
+                  <img src="/img/infotourMenu.svg" style={{height:"25px"}}></img>
+                  <label className="hidden md:flex cursor-pointer">InfoTour</label>
+                </button>
+              ):(
+                <button className="flex gap-1 border-2 border-transparent text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white" onClick={handleClickInfotour}>
+                  <img src="/img/infotourMenu.svg" style={{height:"25px"}}></img>
+                  <label className="hidden md:flex cursor-pointer">InfoTour</label>
+                </button>
+              )
+            }
           </div>
         </div>
       </div>

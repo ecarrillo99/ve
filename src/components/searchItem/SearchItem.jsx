@@ -6,6 +6,7 @@ import { changeFavoritoStatus } from "../../controllers/establecimiento/establec
 const SearchItem = (props) => {
   const navigate = useNavigate();
   const { options, date, destination, Establecimiento, firstElement } = props
+  const ganga=Establecimiento.Recomendados.some(recomendado => recomendado.Ganga === true);
   //const [noches, setNoches] = useState(Math.ceil(Math.abs(new Date(date[0].endDate)) - new Date(date[0].startDate)) / (1000 * 60 * 60 * 24));
   const noches = Math.ceil(Math.abs(new Date(date[0].endDate)) - new Date(date[0].startDate)) / (1000 * 60 * 60 * 24);
   const [favorito, setFavorito] = useState(JSON.parse(Establecimiento.Favorito))
@@ -14,6 +15,7 @@ const SearchItem = (props) => {
   const nivel = session ? session.data.nivel : "visitante";
   const openMap=true;
   const icons = new Icons();
+  const petFriendly=(Establecimiento.Incluye!=null?Establecimiento.Incluye.some(item => parseInt(item.Valor) === 112):false)||(Establecimiento.SistemaServicios!=null?Establecimiento.SistemaServicios.some(item => parseInt(item.Valor) === 151):false);
   const HandleClickItem = () => {
     navigate(`/hotel/${Establecimiento.Titulo.toLowerCase().replaceAll(" - ","-").replaceAll(" ","-")}/?id=${Establecimiento.IdEstablecimiento}&destino=${encodeURIComponent(JSON.stringify(destination))}&fechas=${encodeURIComponent(JSON.stringify(date))}&opciones=${encodeURIComponent(JSON.stringify(options))}`, { state: {Establecimiento, destination, date, options} });
   }
@@ -65,7 +67,7 @@ const SearchItem = (props) => {
       <div className="flex w-8/12">
         <div className="w-8/12">
           <div className="flex flex-wrap gap-x-2">
-            <h2 className="text-greenVE-600 font-semibold">{Establecimiento.Titulo}</h2>
+            <h2 className="text-greenVE-600 font-semibold hover:underline cursor-pointer" onClick={HandleClickItem}>{Establecimiento.Titulo}</h2>
             <div className="flex content-between my-1">
               {Array(+(Establecimiento.Catalogacion)).fill(null).map((item, index) => (
                 <svg key={index} height="15px" width="15px" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="fill-current text-yellow-500">
@@ -78,11 +80,24 @@ const SearchItem = (props) => {
             <button className=" text-blue-600 text-xs my-1 cursor-pointer underline" onClick={HandleClickLocation} >{Establecimiento.Ciudad}, {Establecimiento.Pais}</button>
             <button href="#" className=" text-blue-600 text-xs my-1 cursor-pointer underline" onClick={HandleClickLocation}>Mostrar en mapa</button>
           </div>
-          <div className="mt-4">
+          <div>
+          {
+            petFriendly==true?(
+            <div className="flex items-center gap-x-1 bg-greenVE-100 rounded-md w-32 justify-center mt-3 py-1">
+              <div className="" dangerouslySetInnerHTML={{ __html: icons.Data.PetFriendly }} />
+              <label className="text-greenVE-600 text-sm font-medium">Pet Friendly</label>
+            </div>):(<></>)
+          }
+          </div>
+          <div className="mt-3">
             {
+              ganga?(<div className="flex  text-xs text-orange-600  bg-orange-100 rounded-md px-2 gap-1.5 py-0.5 mb-2 w-36 ">
+                <div className="" dangerouslySetInnerHTML={{ __html: icons.Data.Ganga }} />
+              <label className="text-orange-500 text-sm font-medium">Precio ganga</label>
+              </div>):(<div>{
               options.adult>2
               ?<div className="text-xs border border-gray-400 rounded-md px-1 py-0.5 mb-2 inline-block">Recomendado para tu grupo</div>
-              :<div className="text-xs border border-gray-400 rounded-md px-1 py-0.5 mb-2 inline-block">Recomendado para ti</div>
+              :<div className="text-xs border border-gray-400 rounded-md px-1 py-0.5 mb-2 inline-block">Recomendado para ti</div>}</div>)
 
             }
             
@@ -94,7 +109,7 @@ const SearchItem = (props) => {
                       {item.NumOfertas} x
                     </div>
                     <div className={`flex flex-col ${index < Establecimiento.Recomendados.length - 1 ? 'mb-2' : ''} w-full`}>
-                      <label className="text-xxs font-semibold">{item.TituloOferta}</label>
+                      <label className="text-xxs font-semibold" >{item.TituloOferta}</label>
                       <label className="text-xxs">{item.NumOfertas} cama {item.Acomodacion}</label>
                     </div>
                     <div className="absolute h-full bg-gray-300 w-0.5 left-2"></div>
@@ -124,12 +139,12 @@ const SearchItem = (props) => {
             </div>
           </div>
           <div className="flex flex-col items-end">
-            <label className="text-xs text-end text-gray-600">{noches} {noches > 1 ? "noches" : "noche"}, {options.adult} {options.adult > 1 ? "adultos" : "adulto"}{options.children > 0 ? (options.children > 1 ? ", " + options.children + " niños" : ", " + options.children + " niño") : ""} </label>
+            <label className="text-xs text-end text-gray-800">{noches} {noches > 1 ? "noches" : "noche"}, {options.adult} {options.adult > 1 ? "adultos" : "adulto"}{options.children > 0 ? (options.children > 1 ? ", " + options.children + " niños" : ", " + options.children + " niño") : ""} </label>
             <div className="flex gap-2 justify-center items-center">
               <label className="text-sm text-red-600 line-through">US${Math.round(parseFloat(Establecimiento.Rack))}</label>
               <label className="text-xl font-semibold">US${Math.round(parseFloat(Establecimiento.PrecioSinImpuestos))}</label>
             </div>
-            <label className="text-end text-xs text-gray-600">+ US${Math.round(parseFloat(Establecimiento.Impuestos))} de impuestos y cargos</label>
+            <label className="text-end text-xs text-gray-800">+ US${Math.round(parseFloat(Establecimiento.Impuestos))} de impuestos y cargos</label>
             <button className="flex justify-center gap-1 items-center bg-greenVE-500 text-white px-2 py-1.5 rounded-md w-full text-sm font-medium mt-2" onClick={HandleClickItem}>Ver disponibilidad <div dangerouslySetInnerHTML={{ __html: icons.Data.NextArrow }} /></button>
           </div>
         </div>

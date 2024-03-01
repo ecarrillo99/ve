@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 const HotelMap = ({isOpen,item, onClose }) => {
   const navigate = useNavigate();
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyA6HUJy-ywbROEmCSK-Nx4-smVRLRVyR84",
+    googleMapsApiKey: 'AIzaSyAwURL3bmODrFj1G0RUpgVT6DlGvlkhQzo',//"AIzaSyA6HUJy-ywbROEmCSK-Nx4-smVRLRVyR84",
   });
 
   const [center, setCenter] = useState({ lat: item.Latitud, lng: item.Longitud })

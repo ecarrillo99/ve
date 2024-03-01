@@ -13,6 +13,7 @@ import About from "./pages/About/About";
 import Politicas from "./pages/Politicas/Politicas";
 import Terminos from "./pages/Terminos/Terminos";
 import Certificado from "./pages/Certificado/Certificado";
+import Disney from "./pages/Disney/Disney";
 function App() {
   return (
     (<Router>
@@ -29,6 +30,7 @@ function App() {
         <Route path="/politicas-privacidad/" element={<Politicas />} />
         <Route path="/terminos-condiciones/" element={<Terminos />} />
         <Route path="/certificado/" element={<Certificado />} />
+        <Route path="/disney/" element={<Disney />} />
       </Routes>
     </Router>)
   );

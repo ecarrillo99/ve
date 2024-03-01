@@ -8,7 +8,10 @@ export const loginRemote = async function (params) {
     try{
         const suscripcionService = new SuscripcionService() ;
         const res = await suscripcionService.getInformacionPerfil(params);
+        console.log("login Google");
+        console.log(res);
         if(res.estado && res.codigo == 0){
+            
             if (Object.values(res).length > 0) {
                 localStorage.setItem('datos', JSON.stringify(res));
             }

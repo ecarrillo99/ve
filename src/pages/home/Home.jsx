@@ -15,7 +15,7 @@ import DestinoBanner from "../../components/home_components/destinoBanner/Destin
 const Home = () => {
   return (
     <main>
-      <Navbar/>
+      <Navbar activo={1}/>
       <MainBanner/>
       <div className="mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 -m-12">
         <SearchBar type={0}/>

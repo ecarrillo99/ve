@@ -56,25 +56,32 @@ const Suscription = () => {
     return (
         <div>
             <Navbar></Navbar>
-            <div className="md:w-full justify-center py-10 md:flex-row mx-auto max-w-6xl sm:px-6 lg:px-8">
-                <Slider ref={sliderRef} {...settings} spaceBetween={10}>
-                    <div className="md:mx-auto sm:mx-4 lg:mx-8"> {/* Añadir márgenes en dispositivos móviles */}
-                        <Productlist cambioSlider={cambioSlider} productoSeleccionado={productoSeleccionado}></Productlist>
-                    </div>
-                    <div className="md:mx-auto sm:mx-4 lg:mx-8"> {/* Añadir márgenes en dispositivos móviles */}
-                        <SuscriptionForm cambioSlider={cambioSlider} suscripcionForm={suscripcionForm}></SuscriptionForm>
-                    </div>
-                    <div className="md:mx-auto sm:mx-4 lg:mx-8"> {/* Añadir márgenes en dispositivos móviles */}
-                        <PayOption cambioSlider={cambioSlider} tarjetaSeleccionada={tarjetaSeleccionada} diferidoSeleccionado={diferidoSeleccionado} pagoSeleccionado={pagoSeleccionado}></PayOption>
-                    </div>
-                    <div className="md:mx-auto sm:mx-4 lg:mx-8"> {/* Añadir márgenes en dispositivos móviles */}
-                        <FormPayment cambioSlider={cambioSlider} formPago={formPago}></FormPayment>
-                    </div>
-                </Slider>
-            </div>
+                <iframe
+                    src="https://visitaecuador.com/compra"
+                    width="100%"
+                    height="1010px"
+                >
+
+                </iframe>
             <Footer></Footer>
         </div>
     );
 }
 
 export default Suscription;
+
+
+/*{<Slider ref={sliderRef} {...settings} spaceBetween={10}>
+                    <div className="md:mx-auto sm:mx-4 lg:mx-8"> 
+                        <Productlist cambioSlider={cambioSlider} productoSeleccionado={productoSeleccionado}></Productlist>
+                    </div>
+                    <div className="md:mx-auto sm:mx-4 lg:mx-8"> 
+                        <SuscriptionForm cambioSlider={cambioSlider} suscripcionForm={suscripcionForm}></SuscriptionForm>
+                    </div>
+                    <div className="md:mx-auto sm:mx-4 lg:mx-8"> 
+                        <PayOption cambioSlider={cambioSlider} tarjetaSeleccionada={tarjetaSeleccionada} diferidoSeleccionado={diferidoSeleccionado} pagoSeleccionado={pagoSeleccionado}></PayOption>
+                    </div>
+                    <div className="md:mx-auto sm:mx-4 lg:mx-8"> 
+                        <FormPayment cambioSlider={cambioSlider} formPago={formPago}></FormPayment>
+                    </div>
+                </Slider>}*/

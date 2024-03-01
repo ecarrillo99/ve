@@ -111,7 +111,7 @@ const HotelOfertas = (props) => {
     <>
       <HotelConfirmation Ofertas={ofertas} isOpen={isModalOpen} Establecimiento={Establecimiento} Fechas={Fechas} Valores={calcularTotal()} OnClose={() => handleClickCancelar()} Opciones={Opciones} />
       <Alert Titulo={"Acción no permitida"} Descripcion={"Debe iniciar sesión o registrarse para continuar"} isOpen={isAlertLoginOpen} Aceptar={handleClickLoginAlertAceptar} Cancelar={handleClickLoginAlertCancelar}></Alert>
-      <div className='relative'>
+      <div className='relative w-full'>
         <div className='sticky top-0 z-10'>
           <div className='table-fixed w-full'>
             <table id={'tabla-ofertas'} className=" table-auto w-full">
@@ -133,11 +133,23 @@ const HotelOfertas = (props) => {
                     <td className="border">
                       <div className="flex flex-col p-2">
                         <label className="font-semibold text-sm text-greenVE-600">{item.TituloOferta}</label>
+                        {
+                          item.Ganga?(<div className="flex  text-xs text-orange-600  bg-orange-100 rounded-md px-2 gap-1.5 py-0.5 mb-2 w-36 ">
+                          <div className="" dangerouslySetInnerHTML={{ __html: icons.Data.Ganga }} />
+                        <label className="text-orange-500 text-sm font-medium">Precio ganga</label>
+                        </div>):(<></>)
+                        }
+                        <label className="ml-2 text-xs font-semibold text-gray-500">Aplica:</label>
+                        <div className="flex ml-6 text-sm items-center gap-1">
+                          <div dangerouslySetInnerHTML={{ __html: icons.Data.Feriados }} className="" />
+                          <label className="text-gray-500 text-xs ">{item.AplicaEn} </label>
+                        </div>
                         <label className="ml-2 text-xs font-semibold text-gray-500">Acomodación:</label>
                         <div className="flex ml-6 text-sm items-center gap-1">
                           <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => item.Acomodacion.includes(clave))] }} className="" />
                           <label className="text-gray-500 text-xs ">{item.Acomodacion} </label>
                         </div>
+                        
                         <Accordion open={open === index + 1} icon={<Icon id={index + 1} open={open} />}>
                           <AccordionHeader className=" p-0 text-xs pl-2 border-0 w-auto font-semibold text-blue-500 mt-4" onClick={() => handleOpen(index + 1)}>
                             Ver servicios y otros detalles

@@ -10,7 +10,7 @@ const Alert = ({Titulo, Descripcion, isOpen, Cancelar, Aceptar}) =>{
                             <label className="font-semibold text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">{Titulo}</label>
                         </div>
                         <div className="flex w-full justify-center my-2">
-                            <label className="font-medium text-xs md:text-lg lg:text-xl xl:text-xl 2xl:text-2xl">{Descripcion}</label>
+                            <label className="font-medium text-xs md:text-lg lg:text-xl xl:text-xl 2xl:text-2xl text-center">{Descripcion}</label>
                         </div>
                         <div className="flex w-full justify-center mt-6 mb-2 gap-2">
                             <button className={`bg-red-600 text-white px-2 py-1 rounded-md w-full md:w-1/2`} onClick={()=>Cancelar()}>Cancelar</button>

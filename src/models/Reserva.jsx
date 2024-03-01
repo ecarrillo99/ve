@@ -7,7 +7,8 @@ class Reserva{
         NombreHotel,
         FotoHotel,
         Total,
-        Estado
+        Estado,
+        IDs,
     ){
         this.Ciudad=Ciudad;
         this.FechaInicio=FechaInicio;
@@ -17,6 +18,7 @@ class Reserva{
         this.FotoHotel=FotoHotel;
         this.Total=Total;
         this.Estado=Estado;
+        this.IDs=IDs;
     }
 }
 

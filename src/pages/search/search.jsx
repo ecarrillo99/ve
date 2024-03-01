@@ -11,8 +11,17 @@ import Filtro from "../../models/Filtro";
 import SearchItemSkeleton from "../../components/searchItem/SearchItemSkeleton";
 import MapScreen from "../../components/search_components/MapScreen";
 import Icons from "../../global/icons";
+import { GoogleMap, useLoadScript } from "@react-google-maps/api";
+import Map from "./Map";
 
 const Search = () => {
+  return(
+
+    <div>
+        <Map apikey={"Mnv8DEsU8VpXidvH25XMtoUBvx2eiaxCRHgr3uiAl5g"} />
+      </div>
+
+);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   //const [destination, setDestination] = useState(JSON.parse(decodeURIComponent(searchParams.get('destino'))));
@@ -55,7 +64,9 @@ const Search = () => {
     try {
       getResultadoFiltro(filtro)
         .then((result) => {
+          
           if (result) {
+            console.log(result)
             if(result===401){
               localStorage.removeItem("datos");
               window.location.reload();
@@ -82,6 +93,8 @@ const Search = () => {
               setMaxPrice(parseFloat(result.PrecioMaximo))
               setPrices([parseFloat(result.PrecioMinimo), parseFloat(result.PrecioMaximo)])
             }
+          }else{
+            console.log("falló");
           }
         })
     } catch (error) {
@@ -160,6 +173,9 @@ const Search = () => {
   }
 
   const [checkboxStates, setCheckboxStates] = useState([]);
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: 'AIzaSyAwURL3bmODrFj1G0RUpgVT6DlGvlkhQzo',//"AIzaSyA6HUJy-ywbROEmCSK-Nx4-smVRLRVyR84",
+  }); 
 
   const handleCheckBoxChange = (id) => {
     setCheckboxStates(prevState => {
@@ -251,15 +267,42 @@ const Search = () => {
       <div className="flex mx-auto max-w-6xl py-6 sm:px-6 lg:px-8">
 
         <div className="w-3/12 mr-5">
-          <div className="mb-4 relative h-44 rounded-md">
-            <img src="/img/map.svg" alt="Mi Imagen" className="w-full h-full object-cover rounded-md" />
-            <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 rounded-md"></div>
-            <button
+          
+          <div className="relative aspect-w-3 aspect-h-2 h-44 mb-4">
+                <div className="absolute w-full h-full z-10 aspect-w-3 rounded-md bg-gray-400 bg-opacity-20 flex items-center justify-center">
+                <button
               className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-greenVE-500 text-white px-3 py-1 rounded-full"
               onClick={openModal}>
               Ver en Mapa
             </button>
-          </div>
+                </div>{
+                  data?
+                  <GoogleMap
+                  mapContainerStyle={{
+                    width: '100%', // Ajuste el ancho al 100% para que se adapte al contenedor
+                    height: '180px', // Ajuste la altura según sus necesidades
+                    borderRadius: "3%", 
+                  }}
+                  center={{
+                    lat: data.Establecimientos[0].Latitud,
+                    lng: data.Establecimientos[0].Longitud,
+                  }}
+                  zoom={16}
+                  options={{fullscreenControl: false}}
+                >
+                </GoogleMap>:
+                <div className="mb-4 relative h-44 rounded-md">
+                <img src="/img/map.svg" alt="Mi Imagen" className="w-full h-full object-cover rounded-md" />
+                <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 rounded-md"></div>
+                <button
+                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-greenVE-500 text-white px-3 py-1 rounded-full"
+                  onClick={openModal}>
+                  Ver en Mapa
+                </button>
+              </div>
+                }
+                
+              </div>
 
           <div className="border-2 rounded-md">
             <h2 className="font-bold text-lg pt-1 pl-2">Filtrar por</h2>

@@ -159,8 +159,9 @@ const _getResultadoFiltro = async function (filtro) {
         filtro.Ordenar&&(params.ordenar=filtro.Ordenar); 
         filtro.Fechas&&(params.fechas=filtro.Fechas); 
         filtro.Pax&&(params.pax=filtro.Pax); 
-
+        console.log(filtro);
         const res = await establecimientoService.filtro(params);
+       
         if (res.estado && res.codigo === 0) {
             const {
                 establecimientos,
@@ -222,6 +223,7 @@ function createEstablecimientos(establecimientos, url, beneficios, centralReserv
 
     // Función para mapear propiedades de oferta
     function mapPropiedadesOferta(ofertaTmp) {
+        console.log(ofertaTmp)
         const oferta = new Oferta();
         const propiedadesOfertaObj = ['Id', 'IdLugar', 'EstadoBusqueda', 'IdOferta', 'Habitaciones', 'IdEstablecimiento', 'AplicaEn', 'TituloOferta', 'Ninos', 'Adultos', 'Dias', 'Noches', 'Ganga', 'Rack', 'Final', 'Ahorro', 'FinalSinImpuestos', 'Impuestos', 'Ciudad', 'Provincia', 'Favorito', 'FotoPrincipal', 'EstiloBeneficio', 'IdBeneficio', 'ColorBeneficio', 'Localidad', 'Acomodacion', 'Incluye', 'NoIncluye', 'Restricciones', 'SistemaServicios', 'NumOfertas', 'Base'];
         const propiedadesOferta = ['id', 'id_lugar', 'estadoBusqueda', 'id_oferta', 'habitaciones', 'id_establecimiento', 'aplicaen', 'tituloOferta', 'ninos', 'adultos', 'dias', 'noches', 'ganga', 'rack', 'final', 'ahorro', 'sinImpuestos', 'impuestos', 'ciudad', 'provincia', 'fav', 'foto', 'estiloBeneficio', 'idBeneficio', 'colorBeneficio', 'localidad', 'acomodacion', 'incluyeOferta', 'noIncluyeOferta', 'restriccionesOferta', 'sistemaServiciosOferta', 'numOfertas', 'base'];
@@ -258,6 +260,7 @@ function createEstablecimientos(establecimientos, url, beneficios, centralReserv
         establecimiento.Galeria = establecimientoTmp.galeria.map(g => new Detalle(g.nombre, url + g.img));
 
         // Ofertas
+        console.log(establecimientoTmp.id_establecimiento)
         establecimiento.Ofertas = Object.values(establecimientoTmp.ofertas).map(mapPropiedadesOferta);
 
         // Servicios

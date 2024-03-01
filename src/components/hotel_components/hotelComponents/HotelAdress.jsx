@@ -12,8 +12,8 @@ const HotelAdress = (props) => {
   const { Establecimiento, openMap } = props;
   const [isModalOpen, setIsModalOpen] = useState(openMap!=null?openMap:false);
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyA6HUJy-ywbROEmCSK-Nx4-smVRLRVyR84",
-  });
+    googleMapsApiKey: 'AIzaSyAwURL3bmODrFj1G0RUpgVT6DlGvlkhQzo',//"AIzaSyA6HUJy-ywbROEmCSK-Nx4-smVRLRVyR84",
+  }); 
 
   const center = {
     lat: Establecimiento.Latitud,

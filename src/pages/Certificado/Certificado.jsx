@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { PDFViewer, Document, Page, View, Text, StyleSheet, Font, Image, Svg } from '@react-pdf/renderer';
 import montserratRegular from '../../global/fonts/Montserrat/Montserrat-Regular.ttf';
 import montserratBold from '../../global/fonts/Montserrat/Montserrat-Bold.ttf';
 import Icons from '../../global/icons';
+import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 
 Font.register({ family: 'Montserrat', src: montserratRegular });
@@ -58,12 +60,12 @@ const styles = StyleSheet.create({
       aspectRatio: 1,
       height: 60,
       alignSelf: 'flex-start', 
-      backgroundColor: 'blue'
+      marginRight:4
     },
     image: {
-      width: 60, 
+      width: "100%", 
       height: '100%', 
-      objectFit: 'contain', 
+      objectFit: 'cover', 
     }
 });
 
@@ -71,13 +73,43 @@ const generateStaticMapImageUrl = (latitude, longitude) => {
   const apiKey = 'AIzaSyAwURL3bmODrFj1G0RUpgVT6DlGvlkhQzo'; // Reemplaza 'TU_API_KEY' con tu propia clave de la API de Google Maps
   const size = '1800x160'; // Tamaño de la imagen del mapa
   const markers = `${latitude},${longitude}`; // Marcador en las coordenadas dadas
-  const apiUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${markers}&zoom=14&size=${size}&markers=${markers}&key=${apiKey}`;
+  const apiUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${markers}&zoom=16&size=${size}&markers=${markers}&key=${apiKey}`;
   return apiUrl;
 };
-const latitude = 37.7749; // Latitud de San Francisco, por ejemplo
-const longitude = -122.4194; 
-const staticMapImageUrl = generateStaticMapImageUrl(latitude, longitude);
+
+
 const Certificado = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const reserva = {};
+
+  for (const [key, value] of searchParams) {
+    if (value.startsWith('[') && value.endsWith(']')) {
+      reserva[key] = JSON.parse(value);
+    } else {
+      reserva[key] = value;
+    }
+  }
+  const latitude = reserva.LatitudEst; 
+  const longitude = reserva.LongitudEst; 
+  const staticMapImageUrl = generateStaticMapImageUrl(latitude, longitude);
+  const formatDate = (date, option) => {
+        var options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' };
+      if(option=="weekday"){
+         options = { weekday: 'long'};
+      }
+      if(option=="day"){
+         options = {day: '2-digit'};
+      }
+      if(option=="month"){
+         options = { month: 'long'};
+      }
+      const formattedDate = date.toLocaleDateString('es-ES', options);
+      return formattedDate;
+  };
+
+  console.log(reserva);
+
   return (
     <div className="w-screen h-screen flex justify-center items-center">
       <PDFViewer className="w-full h-full">
@@ -91,7 +123,7 @@ const Certificado = () => {
                       </View>
                     </View>
                     <View style={styles.column}>
-                        <Text style={styles.title}>Certificado de Pre-Reserva</Text>
+                        <Text style={styles.title}>Certificado de {reserva.Estado!="Confirmada"?"Pre-Reserva":"Reserva"}</Text>
                         <View style={styles.row}>
                           <Text style={{...styles.paragraph, ...{fontFamily:'Montserrat-Bold'}}}>
                             NÚMERO DE RESERVA:
@@ -105,7 +137,7 @@ const Certificado = () => {
                                   marginLeft:4
                                 }
                             }}>
-                            000000000
+                            {reserva.IdRes}
                           </Text>
                         </View>
                         <View style={styles.row}>
@@ -127,7 +159,7 @@ const Certificado = () => {
                                   marginLeft:4
                                 }
                             }}>
-                            77123
+                            {reserva.IdSus}
                           </Text>
                         </View>
                         <View style={styles.row}>
@@ -143,7 +175,7 @@ const Certificado = () => {
                                   marginLeft:4
                                 }
                             }}>
-                            EDISSON CARRILLO GONZAGA
+                            {reserva.NombreSus}
                           </Text>
                         </View>
                     </View>
@@ -152,24 +184,48 @@ const Certificado = () => {
                   <View style={styles.column}>
                     <View style={{...styles.row, height:63}}>
                       <View style={styles.imageContainer}>
-                        <Image style={styles.image} src="/img/logo_verde.png"/>
+                        <Image style={styles.image} src={reserva.FotoEst}/>
                       </View>
                       <View style={{...styles.column, width:'100%', }}>
                         <Text style={{...styles.paragraph, fontFamily:'Montserrat-Bold', fontSize:10 }}>
-                          Hotel Polito
+                          {reserva.NombreEst}
                         </Text>
                         <Text style={{...styles.paragraph }}>
-                          Direccion: Panamericana Norte 12 km, 010150
+                          Direccion: {reserva.DireccionEst}
                         </Text>
                         <Text style={{...styles.paragraph }}>
-                          Cuenca, Ecuador
+                          {reserva.LugarEst}
                         </Text>
-                        <Text style={{...styles.paragraph }}>
-                          Teléfono: +593999999999
-                        </Text>
-                        <Text style={{...styles.paragraph }}>
-                          Email: +593999999999
-                        </Text>
+                        {
+                          reserva.TelefonoEst!=null&&reserva.TelefonoEst!=""?
+                          (
+                            <Text style={{...styles.paragraph }}>
+                              Teléfono: {reserva.TelefonoEst}
+                            </Text>
+                          ):(
+                            <></>
+                          )
+                        }
+                        {
+                          reserva.WhatsappEst!=null&&reserva.WhatsappEst!=""?
+                          (
+                            <Text style={{...styles.paragraph }}>
+                              Whatsapp: {reserva.WhatsappEst}
+                            </Text>
+                          ):(
+                            <></>
+                          )
+                        }
+                        {
+                          reserva.EmailEst!=null&&reserva.EmailEst!=""?
+                          (
+                            <Text style={{...styles.paragraph }}>
+                              Email: {reserva.EmailEst}
+                            </Text>
+                          ):(
+                            <></>
+                          )
+                        }
                       </View>
                     </View>
                   </View>
@@ -180,17 +236,17 @@ const Certificado = () => {
                           ENTRADA
                         </Text>
                         <Text style={{...styles.paragraph, textAlign:'center', fontSize:20 }}>
-                          10
+                          {formatDate(new Date(reserva.FechaIn), "day")}
                         </Text>
                         <Text style={{...styles.paragraph, textAlign:'center' }}>
-                          FEBRERO
+                          {formatDate(new Date(reserva.FechaIn), "month").toUpperCase()}
                         </Text>
                         <Text style={{...styles.paragraph, textAlign:'center', fontSize:7 }}>
-                          Sábado
+                        {formatDate(new Date(reserva.FechaIn), "weekday")}
                         </Text>
                         <Image src="/img/clock.png" style={{height:10 , width: '100%', objectFit: 'contain'}} />
                         <Text style={{...styles.paragraph, textAlign:'center', fontSize:7 }}>
-                          de 14:00 a 00:00
+                          desde {reserva.CheckIn}
                         </Text>
                       </View>
                       <View style={{...styles.column, width:'33.33%', borderLeft:0.5, borderColor:'#D0D0D0'}}>
@@ -198,17 +254,17 @@ const Certificado = () => {
                           SALIDA
                         </Text>
                         <Text style={{...styles.paragraph, textAlign:'center', fontSize:20 }}>
-                          11
+                        {formatDate(new Date(reserva.FechaOut), "day")}
                         </Text>
                         <Text style={{...styles.paragraph, textAlign:'center' }}>
-                          FEBRERO
+                        {formatDate(new Date(reserva.FechaOut), "month").toUpperCase()}
                         </Text>
                         <Text style={{...styles.paragraph, textAlign:'center', fontSize:7 }}>
-                          Domingo
+                        {formatDate(new Date(reserva.FechaOut), "weekday")}
                         </Text>
                         <Image src="/img/clock.png" style={{height:10 , width: '100%', objectFit: 'contain'}} />
                         <Text style={{...styles.paragraph, textAlign:'center', fontSize:7 }}>
-                          de 12:00 a 12:00
+                          hasta {reserva.CheckOut}
                         </Text>
                       </View>
                       <View style={{...styles.column, width:'33.33%', height:79,  borderLeft:0.5, borderColor:'#D0D0D0'}}>
@@ -216,7 +272,7 @@ const Certificado = () => {
                           HAB. / NOCHES
                         </Text>
                         <Text style={{...styles.paragraph, textAlign:'center', fontSize:20 }}>
-                          2 / 1
+                          {reserva.CantidadHab} / {Math.round((new Date(reserva.FechaOut) - new Date(reserva.FechaIn)) / (1000 * 60 * 60 * 24))}
                         </Text>
                       </View>
                     </View>
@@ -227,30 +283,20 @@ const Certificado = () => {
                       Precio
                     </Text>
                 </View>
-                <View style={styles.row}>
-                  <View style={styles.column}>
-                    <Text style={{...styles.paragraph, fontSize:8 }}>
-                      1 Habitacion
-                    </Text>
+                {reserva.Habitaciones.map((item, index) => (
+                  <View key={index} style={styles.row}>
+                    <View style={styles.column}>
+                      <Text style={{ ...styles.paragraph, fontSize: 8 }}>
+                        {item.Nombre}
+                      </Text>
+                    </View>
+                    <View style={styles.column}>
+                      <Text style={{ ...styles.paragraph, textAlign: 'right', fontSize: 8 }}>
+                        ${item.Subtotal.toFixed(2)}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={styles.column}>
-                    <Text style={{...styles.paragraph, textAlign:'right', fontSize:8 }}>
-                      $44.00
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.row}>
-                  <View style={styles.column}>
-                    <Text style={{...styles.paragraph, fontSize:8 }}>
-                      1 Habitacion
-                    </Text>
-                  </View>
-                  <View style={styles.column}>
-                    <Text style={{...styles.paragraph, textAlign:'right', fontSize:8 }}>
-                      $192.00
-                    </Text>
-                  </View>
-                </View>
+                ))}
                 <View style={{...styles.row, marginTop:5}}>
                   <View style={styles.column}>
                     <Text style={{...styles.paragraph, fontSize:13 }}>
@@ -259,7 +305,7 @@ const Certificado = () => {
                   </View>
                   <View style={styles.column}>
                     <Text style={{...styles.paragraph, textAlign:'right', fontSize:13 }}>
-                      $192.00
+                      ${Number(reserva.Subtotal).toFixed(2)}
                     </Text>
                   </View>
                 </View>
@@ -281,7 +327,7 @@ const Certificado = () => {
                   </View>
                   <View style={styles.column}>
                     <Text style={{...styles.paragraph, textAlign:'right', fontSize:8 }}>
-                      $32.00
+                      ${Number(reserva.Impuestos).toFixed(2)}
                     </Text>
                   </View>
                 </View>
@@ -293,12 +339,12 @@ const Certificado = () => {
                   </View>
                   <View style={styles.column}>
                     <Text style={{...styles.paragraph, textAlign:'right', fontSize:8, fontFamily:'Montserrat-Bold' }}>
-                      $268.00
+                      ${reserva.Total}.00
                     </Text>
                   </View>
                 </View>
                 <View style={{...styles.row}}>
-                  <Text style={{...styles.paragraph, fontSize:10, }}>
+                  <Text style={{...styles.paragraph, fontSize:8, }}>
                     (Impuestos incluidos)
                   </Text>
                 </View>
@@ -340,157 +386,97 @@ const Certificado = () => {
                 <View style={{...styles.row, borderBottom:0.5, borderColor: '#D0D0D0', paddingBottom:3}}>
                   <Image src={staticMapImageUrl} style={{ width: '100%', height: '120px' }} />
                 </View>
-                <View style={{...styles.row, paddingTop:3}}>
-                  <Text style={{...styles.paragraph, fontSize:10, fontFamily:'Montserrat-Bold' }}>
-                    Habitación Deluxe 1 Cama
+                {
+                  reserva.Habitaciones.map((item, index)=>(
+                    <>
+                    <View style={{ ...styles.row, paddingTop: 3 }}>
+                      <Text style={{ ...styles.paragraph, fontSize: 10, fontFamily: 'Montserrat-Bold' }}>
+                        {item.Nombre}
+                      </Text>
+                    </View>
+                    <View style={{ ...styles.row, paddingTop: 3, paddingBottom: 1 }}>
+                      <Text style={{ ...styles.paragraph, fontSize: 8 }}>
+                        <Text style={{ fontFamily: 'Montserrat-Bold' }}>Incluye:</Text> {item.Incluye}
+                      </Text>
+                    </View>
+                    <View style={{ ...styles.row, paddingTop: 1, borderBottom: 0.5, borderColor: '#D0D0D0', paddingBottom: 3 }}>
+                      <Text style={{ ...styles.paragraph, fontSize: 8 }}>
+                        <Text style={{ fontFamily: 'Montserrat-Bold' }}>Acomodación:</Text> {item.Acomodacion}
+                      </Text>
+                    </View>
+                    </>
+                  ))
+                }
+                <View style={{ ...styles.row, paddingTop: 30, paddingBottom: 1 }}>
+                  <Text style={{ ...styles.paragraph, fontSize: 6, fontFamily:  'Montserrat-Bold'}}>
+                    Términos y condiciones:
                   </Text>
                 </View>
-                <View style={{...styles.row, paddingTop:3, borderBottom:0.5, borderColor: '#D0D0D0', paddingBottom:3 }}>
-                  <Text style={{...styles.paragraph, fontSize:8, }}>
-                    Incluye:
+                <View style={{ ...styles.row, paddingTop: 1, paddingBottom: 1 }}>
+                  <Text style={{ ...styles.paragraph, fontSize: 6 }}>
+                    - Para hacer la reserva sugerimos comunicarse con 5 días de anticipación al lugar de destino y realizar el pago respectivo.
+                  </Text>
+                  - Los beneficiarios deberán cancelar la suma del paq
+                </View>
+                <View style={{ ...styles.row, paddingTop: 1, paddingBottom: 1 }}>
+                  <Text style={{ ...styles.paragraph, fontSize: 6 }}>
+                  - Los beneficiarios deberán cancelar la suma del paquete promocional previo a la utilización del mismo. Por ningún concepto cancele esta cantidad a otra persona o empresa que no sea la presentadora del servicio que está descrito en este certificado.
                   </Text>
                 </View>
-                <View style={{...styles.row, paddingTop:3}}>
-                  <Text style={{...styles.paragraph, fontSize:10, fontFamily:'Montserrat-Bold' }}>
-                    Habitación Deluxe 1 Cama
+                <View style={{ ...styles.row, paddingTop: 1, paddingBottom: 1}}>
+                  <Text style={{ ...styles.paragraph, fontSize: 6 }}>
+                  - Los beneficiarios aceptan cancelar los gastos extras como: comida, bebida, fee de emisión y otros.
                   </Text>
                 </View>
-                <View style={{...styles.row, paddingTop:3, borderBottom:0.5, borderColor: '#D0D0D0', paddingBottom:3 }}>
-                  <Text style={{...styles.paragraph, fontSize:8, }}>
-                    Incluye:
+                <View style={{ ...styles.row, paddingTop: 1, paddingBottom: 1}}>
+                  <Text style={{ ...styles.paragraph, fontSize: 6 }}>
+                  - Este Certificado deslinda de toda responsabilidad a VisitaEcuador.com, el cumplimiento y alcance del mismo estará a cargo del hospedaje, por tal razón no nos hacemos responsables por el servicio brindado en el establecimiento hotelero.
                   </Text>
                 </View>
-                <View style={{...styles.row, paddingTop:3}}>
-                  <Text style={{...styles.paragraph, fontSize:10, fontFamily:'Montserrat-Bold' }}>
-                    Habitación Deluxe 1 Cama
+                <View style={{ ...styles.row, paddingTop: 1, paddingBottom: 1}}>
+                  <Text style={{ ...styles.paragraph, fontSize: 6 }}>
+                  - Este Certificado es transferible hasta 1er Grado de Consanguineidad (Padres e hijos hasta 21 años, solteros).
                   </Text>
                 </View>
-                <View style={{...styles.row, paddingTop:3, borderBottom:0.5, borderColor: '#D0D0D0', paddingBottom:3 }}>
-                  <Text style={{...styles.paragraph, fontSize:8, }}>
-                    Incluye:
+                <View style={{ ...styles.row, paddingTop: 1, paddingBottom: 1}}>
+                  <Text style={{ ...styles.paragraph, fontSize: 6 }}>
+                  - Aplica no show. Aplica restricciones.
                   </Text>
                 </View>
-                <View style={{...styles.row, paddingTop:3}}>
-                  <Text style={{...styles.paragraph, fontSize:10, fontFamily:'Montserrat-Bold' }}>
-                    Habitación Deluxe 1 Cama
+                <View style={{ ...styles.row, paddingTop: 1, paddingBottom: 1}}>
+                  <Text style={{ ...styles.paragraph, fontSize: 6 }}>
+                  - Horario de atención al cliente de la Central de Reservas de VisitaEcuador.com: Lunes a Viernes 08h30-13h00 y 14h30-18h00.
                   </Text>
                 </View>
-                <View style={{...styles.row, paddingTop:3, borderBottom:0.5, borderColor: '#D0D0D0', paddingBottom:3 }}>
-                  <Text style={{...styles.paragraph, fontSize:8, }}>
-                    Incluye:
+                <View style={{ ...styles.row, paddingTop: 1, paddingBottom: 1}}>
+                  <Text style={{ ...styles.paragraph, fontSize: 6 }}>
+                  Este certificado es válido según los terminos especificados en el mismo.
                   </Text>
                 </View>
-                <View style={{...styles.row, paddingTop:3}}>
-                  <Text style={{...styles.paragraph, fontSize:10, fontFamily:'Montserrat-Bold' }}>
-                    Habitación Deluxe 1 Cama
+                <View style={{ ...styles.row, paddingTop: 1, borderBottom: 0.5, borderColor: '#D0D0D0', paddingBottom: 3}}>
+                  <Text style={{ ...styles.paragraph, fontSize: 6 }}>
+                    <Text style={{ fontFamily: 'Montserrat-Bold' }}>PBX:</Text> +593 7 413 4500 :: 
+                    <Text style={{ fontFamily: 'Montserrat-Bold' }}>DIR.:</Text> Calle del Batán 5-317 y Esmeraldas :: Cuenca ::
+                    <Text style={{ fontFamily: 'Montserrat-Bold' }}>VisitaEcuador.com</Text> 
                   </Text>
                 </View>
-                <View style={{...styles.row, paddingTop:3, borderBottom:0.5, borderColor: '#D0D0D0', paddingBottom:3 }}>
-                  <Text style={{...styles.paragraph, fontSize:8, }}>
-                    Incluye:
-                  </Text>
+                <View style={styles.row}>
+                  <View style={{...styles.column,width:"88%" }}>
+                    <View style={styles.row}>
+                      <Image src="/img/whatsapp_cert.png" style={{height:40 , width: 40, objectFit: 'contain'}}></Image>
+                      <View style={styles.column}>
+                        <Text style={{ fontFamily: 'Montserrat-Bold', fontSize:8 }}>CENTRAL DE RESERVAS:</Text> 
+                        <Text style={{ fontFamily: 'Montserrat', fontSize:7 }}>+593 98 064 4467</Text> 
+                        <Text style={{ fontFamily: 'Montserrat', fontSize:7 }}>+593 98 185 0436</Text> 
+                        <Text style={{ fontFamily: 'Montserrat', fontSize:7 }}>+593 98 626 3432</Text> 
+                      </View>
+                    </View>
+                  </View>
+                  <View style={styles.column}>
+                    <Text style={{ fontFamily: 'Montserrat-Bold', fontSize:8 }}>CON EL AUSPICIO DE:</Text> 
+                    <Image src="/img/patrocinadores.png" style={{height:26 , width: 200, objectFit: 'contain'}}></Image>
+                  </View>
                 </View>
-                <View style={{...styles.row, paddingTop:3}}>
-                  <Text style={{...styles.paragraph, fontSize:10, fontFamily:'Montserrat-Bold' }}>
-                    Habitación Deluxe 1 Cama
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3, borderBottom:0.5, borderColor: '#D0D0D0', paddingBottom:3 }}>
-                  <Text style={{...styles.paragraph, fontSize:8, }}>
-                    Incluye:
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3}}>
-                  <Text style={{...styles.paragraph, fontSize:10, fontFamily:'Montserrat-Bold' }}>
-                    Habitación Deluxe 1 Cama
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3, borderBottom:0.5, borderColor: '#D0D0D0', paddingBottom:3 }}>
-                  <Text style={{...styles.paragraph, fontSize:8, }}>
-                    Incluye:
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3}}>
-                  <Text style={{...styles.paragraph, fontSize:10, fontFamily:'Montserrat-Bold' }}>
-                    Habitación Deluxe 1 Cama
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3, borderBottom:0.5, borderColor: '#D0D0D0', paddingBottom:3 }}>
-                  <Text style={{...styles.paragraph, fontSize:8, }}>
-                    Incluye:
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3}}>
-                  <Text style={{...styles.paragraph, fontSize:10, fontFamily:'Montserrat-Bold' }}>
-                    Habitación Deluxe 1 Cama
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3, borderBottom:0.5, borderColor: '#D0D0D0', paddingBottom:3 }}>
-                  <Text style={{...styles.paragraph, fontSize:8, }}>
-                    Incluye:
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3}}>
-                  <Text style={{...styles.paragraph, fontSize:10, fontFamily:'Montserrat-Bold' }}>
-                    Habitación Deluxe 1 Cama
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3, borderBottom:0.5, borderColor: '#D0D0D0', paddingBottom:3 }}>
-                  <Text style={{...styles.paragraph, fontSize:8, }}>
-                    Incluye:
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3}}>
-                  <Text style={{...styles.paragraph, fontSize:10, fontFamily:'Montserrat-Bold' }}>
-                    Habitación Deluxe 1 Cama
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3, borderBottom:0.5, borderColor: '#D0D0D0', paddingBottom:3 }}>
-                  <Text style={{...styles.paragraph, fontSize:8, }}>
-                    Incluye:
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3}}>
-                  <Text style={{...styles.paragraph, fontSize:10, fontFamily:'Montserrat-Bold' }}>
-                    Habitación Deluxe 1 Cama
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3, borderBottom:0.5, borderColor: '#D0D0D0', paddingBottom:3 }}>
-                  <Text style={{...styles.paragraph, fontSize:8, }}>
-                    Incluye:
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3}}>
-                  <Text style={{...styles.paragraph, fontSize:10, fontFamily:'Montserrat-Bold' }}>
-                    Habitación Deluxe 1 Cama
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3, borderBottom:0.5, borderColor: '#D0D0D0', paddingBottom:3 }}>
-                  <Text style={{...styles.paragraph, fontSize:8, }}>
-                    Incluye:
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3}}>
-                  <Text style={{...styles.paragraph, fontSize:10, fontFamily:'Montserrat-Bold' }}>
-                    Habitación Deluxe 1 Cama
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3, borderBottom:0.5, borderColor: '#D0D0D0', paddingBottom:3 }}>
-                  <Text style={{...styles.paragraph, fontSize:8, }}>
-                    Incluye:
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3}}>
-                  <Text style={{...styles.paragraph, fontSize:10, fontFamily:'Montserrat-Bold' }}>
-                    Habitación Deluxe 1 Cama
-                  </Text>
-                </View>
-                <View style={{...styles.row, paddingTop:3, borderBottom:0.5, borderColor: '#D0D0D0', paddingBottom:3 }}>
-                  <Text style={{...styles.paragraph, fontSize:8, }}>
-                    Incluye:
-                  </Text>
-                </View>
-                
             </View>
           </Page>
         </Document>
