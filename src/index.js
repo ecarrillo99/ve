@@ -14,7 +14,7 @@ root.render(
   <React.StrictMode>
     <App />
     <div className="fixed bottom-5 right-0 bg-transparent  py-2 rounded-full cursor-pointer" onClick={()=>handleOnClick()}>
-      <img src="/img/central.svg" style={{ width: "100px", height: "auto" }} alt="Logo" />
+      <img src="./img/central.svg" style={{ width: "100px", height: "auto" }} alt="Logo" />
     </div>
   </React.StrictMode>
 );

@@ -31,7 +31,7 @@ export const getPermissions= async function(idUsuario){
         const res = await suscripcionService.setAdministrador(params);
         if(res.estado){
             const expirationDate = new Date();
-            expirationDate.setDate(expirationDate.getDate() + 1); 
+            expirationDate.setTime(expirationDate.getTime() + (8 * 60 * 60 * 1000));
 
             document.cookie = `PHPSESSID=${res.data};expires=${expirationDate.toUTCString()}`;
             return res.estado;
@@ -60,12 +60,12 @@ export const endRemoteSession=async function (){
         var params = {
             "token": bd['token']
         }
-
+        localStorage.removeItem('datos')
+        // Expirar la cookie del administrador
+        document.cookie = 'PHPSESSID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
         const suscripcionService = new SuscripcionService() ;
         const res = await suscripcionService.cerrarSesion(params);
-
         if(res.estado&&res.codigo==0){
-            localStorage.removeItem('datos')
             return res.estado;
         }
         if(res.codigo==401){

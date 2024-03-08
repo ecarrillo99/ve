@@ -1,5 +1,5 @@
+//import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Route, HashRouter as Router, Routes } from "react-router-dom";
-//import { Route, HashRouter as Router, Routes } from "react-router-dom";
 import Home from "./pages/home/Home";
 import Hotel from "./pages/hotel/Hotel";
 import Search from "./pages/search/search";
@@ -16,7 +16,7 @@ import Certificado from "./pages/Certificado/Certificado";
 import Disney from "./pages/Disney/Disney";
 function App() {
   return (
-    (<Router>
+    <Router>
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route path="/nosotros/:seccion?" element={<About/>} />
@@ -32,7 +32,7 @@ function App() {
         <Route path="/certificado/" element={<Certificado />} />
         <Route path="/disney/" element={<Disney />} />
       </Routes>
-    </Router>)
+    </Router>
   );
 }
 

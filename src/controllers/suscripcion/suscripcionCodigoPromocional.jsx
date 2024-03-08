@@ -26,3 +26,23 @@ export const CheckPromocionalCode = async function(codigo) {
         console.log(e);
     }
 };
+
+export const validatePromocionalCode = async function(codigo) {
+    try {
+        const contactoService = new ContactoService();
+        const params = {
+            "id_servicio": Config.IDSERVICIO,
+            "codigo": codigo
+        };
+
+        const res = await contactoService.verificarCodigo(params);
+
+        if (res.estado) {
+            return res;
+        } else {
+            return false;
+        }
+    } catch (e) {
+        console.log(e);
+    }
+};

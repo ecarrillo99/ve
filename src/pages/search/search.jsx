@@ -12,16 +12,9 @@ import SearchItemSkeleton from "../../components/searchItem/SearchItemSkeleton";
 import MapScreen from "../../components/search_components/MapScreen";
 import Icons from "../../global/icons";
 import { GoogleMap, useLoadScript } from "@react-google-maps/api";
-import Map from "./Map";
+import BingMapsReact from "bingmaps-react";
 
 const Search = () => {
-  return(
-
-    <div>
-        <Map apikey={"Mnv8DEsU8VpXidvH25XMtoUBvx2eiaxCRHgr3uiAl5g"} />
-      </div>
-
-);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   //const [destination, setDestination] = useState(JSON.parse(decodeURIComponent(searchParams.get('destino'))));
@@ -268,7 +261,7 @@ const Search = () => {
 
         <div className="w-3/12 mr-5">
           
-          <div className="relative aspect-w-3 aspect-h-2 h-44 mb-4">
+          <div className="relative aspect-w-3 aspect-h-2 h-44 mb-4 z-0">
                 <div className="absolute w-full h-full z-10 aspect-w-3 rounded-md bg-gray-400 bg-opacity-20 flex items-center justify-center">
                 <button
               className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-greenVE-500 text-white px-3 py-1 rounded-full"
@@ -276,8 +269,24 @@ const Search = () => {
               Ver en Mapa
             </button>
                 </div>{
+                  
                   data?
-                  <GoogleMap
+                    <BingMapsReact
+                    bingMapsKey="AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z"
+                    viewOptions={{
+                      center: { latitude: data.Establecimientos[0].Latitud, longitude: data.Establecimientos[0].Longitud },
+                      zoom: 15,
+                      mapTypeId: "aerialWithLabels",
+                    }}
+                    mapOptions={{
+                      showZoomButtons: false,
+                      showMapTypeSelector: false,
+                      showBreadcrumb: false,
+                      showLocateMeButton: false,
+                    }}
+                  />
+                  
+                  /*<GoogleMap
                   mapContainerStyle={{
                     width: '100%', // Ajuste el ancho al 100% para que se adapte al contenedor
                     height: '180px', // Ajuste la altura según sus necesidades
@@ -290,9 +299,9 @@ const Search = () => {
                   zoom={16}
                   options={{fullscreenControl: false}}
                 >
-                </GoogleMap>:
+                </GoogleMap>*/:
                 <div className="mb-4 relative h-44 rounded-md">
-                <img src="/img/map.svg" alt="Mi Imagen" className="w-full h-full object-cover rounded-md" />
+                <img src="./img/map.svg" alt="Mi Imagen" className="w-full h-full object-cover rounded-md" />
                 <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 rounded-md"></div>
                 <button
                   className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-greenVE-500 text-white px-3 py-1 rounded-full"

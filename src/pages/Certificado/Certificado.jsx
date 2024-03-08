@@ -119,7 +119,7 @@ const Certificado = () => {
                 <View style={styles.row}>
                     <View style={styles.column}>
                       <View style={styles.logoContainer}>
-                        <Image src="/img/logo_verde.png" style={styles.logo} />
+                        <Image src="./img/logo_verde.png" style={styles.logo} />
                       </View>
                     </View>
                     <View style={styles.column}>
@@ -244,7 +244,7 @@ const Certificado = () => {
                         <Text style={{...styles.paragraph, textAlign:'center', fontSize:7 }}>
                         {formatDate(new Date(reserva.FechaIn), "weekday")}
                         </Text>
-                        <Image src="/img/clock.png" style={{height:10 , width: '100%', objectFit: 'contain'}} />
+                        <Image src="./img/clock.png" style={{height:10 , width: '100%', objectFit: 'contain'}} />
                         <Text style={{...styles.paragraph, textAlign:'center', fontSize:7 }}>
                           desde {reserva.CheckIn}
                         </Text>
@@ -262,7 +262,7 @@ const Certificado = () => {
                         <Text style={{...styles.paragraph, textAlign:'center', fontSize:7 }}>
                         {formatDate(new Date(reserva.FechaOut), "weekday")}
                         </Text>
-                        <Image src="/img/clock.png" style={{height:10 , width: '100%', objectFit: 'contain'}} />
+                        <Image src="./img/clock.png" style={{height:10 , width: '100%', objectFit: 'contain'}} />
                         <Text style={{...styles.paragraph, textAlign:'center', fontSize:7 }}>
                           hasta {reserva.CheckOut}
                         </Text>
@@ -463,7 +463,7 @@ const Certificado = () => {
                 <View style={styles.row}>
                   <View style={{...styles.column,width:"88%" }}>
                     <View style={styles.row}>
-                      <Image src="/img/whatsapp_cert.png" style={{height:40 , width: 40, objectFit: 'contain'}}></Image>
+                      <Image src="./img/whatsapp_cert.png" style={{height:40 , width: 40, objectFit: 'contain'}}></Image>
                       <View style={styles.column}>
                         <Text style={{ fontFamily: 'Montserrat-Bold', fontSize:8 }}>CENTRAL DE RESERVAS:</Text> 
                         <Text style={{ fontFamily: 'Montserrat', fontSize:7 }}>+593 98 064 4467</Text> 
@@ -474,7 +474,7 @@ const Certificado = () => {
                   </View>
                   <View style={styles.column}>
                     <Text style={{ fontFamily: 'Montserrat-Bold', fontSize:8 }}>CON EL AUSPICIO DE:</Text> 
-                    <Image src="/img/patrocinadores.png" style={{height:26 , width: 200, objectFit: 'contain'}}></Image>
+                    <Image src="./img/patrocinadores.png" style={{height:26 , width: 200, objectFit: 'contain'}}></Image>
                   </View>
                 </View>
             </View>

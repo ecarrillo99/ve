@@ -17,6 +17,7 @@ const DataFastForm = ({ tarjeta, diferido }) => {
   };
   const datafastController = new DatafastController({ persona: Persona, product: Producto });
 
+
   useEffect(() => {
     async function fetchData() {
       try {

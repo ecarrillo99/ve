@@ -6,6 +6,8 @@ import {
   useLoadScript,
 } from "@react-google-maps/api";
 import { useNavigate } from "react-router-dom";
+import BingMapsReact from "bingmaps-react";
+
 
 
 const HotelMap = ({isOpen,item, onClose }) => {
@@ -15,7 +17,7 @@ const HotelMap = ({isOpen,item, onClose }) => {
   });
 
   const [center, setCenter] = useState({ lat: item.Latitud, lng: item.Longitud })
-
+  
   if (!isOpen) return null;
 
   return (
@@ -40,26 +42,26 @@ const HotelMap = ({isOpen,item, onClose }) => {
             <div>
               <div>
                 {isLoaded ? (
-                  <GoogleMap
-                    center={center}
-                    zoom={18}
-                    mapContainerStyle={{ width: "100%", height: "75vh", borderRadius: "1%" }}
-                  >
-                    <MarkerF
-                      key={item.IdEstablecimiento}
-                      position={{ lat: item.Latitud, lng: item.Longitud }}
-                    >
-                      <InfoWindowF position={{ lat: item.Latitud, lng: item.Longitud }}>
-                        <div>
-                          <p className="font-bold">{item.Titulo}</p>
-                          <div className="flex gap-1 justify-center items-center">
-                            <label className="font-semibold">Desde:</label>
-                            <p>${item.PrecioSinImpuestos}</p>
-                          </div>
-                        </div>
-                      </InfoWindowF>
-                    </MarkerF>
-                  </GoogleMap>
+                  <BingMapsReact
+                  bingMapsKey="AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z"
+                  height="500px"
+                  pushPins={[{
+                    center: {
+                      latitude: item.Latitud,
+                      longitude: item.Longitud,
+                    },
+                    options: {
+                        icon:"./img/pinMap.png",
+                      title: item.Titulo,
+                    },
+                  }]}
+                  
+                  viewOptions={{
+                      center: { latitude: item.Latitud, longitude: item.Longitud },
+                      zoom: 12,
+                      mapTypeId: "road",
+                  }}
+              />
                 ) : null}
               </div>
             </div>

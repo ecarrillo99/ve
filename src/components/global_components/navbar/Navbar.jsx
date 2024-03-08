@@ -150,7 +150,7 @@ const Navbar = ({activo}) => {
     <header className="bg-greenVE-500">
       <div className="flex mx-auto max-w-6xl py-2 px-4 sm:px-6 lg:px-8">
         <div className="w-2/12 flex cursor-pointer" onClick={handleClickLogo}>
-          <img src="/img/ve_logo.svg" style={{ width: "110px", height: "auto" }} alt="Logo" />
+          <img src="./img/ve_logo.svg" style={{ width: "110px", height: "auto" }} alt="Logo" />
         </div>
         <div className="flex flex-col w-10/12 justify-between ">
           <div className="flex gap-2 justify-end items-center">
@@ -230,12 +230,12 @@ const Navbar = ({activo}) => {
             {
               activo==null||activo==1?(
                 <button className="flex gap-1 text-white border-2 border-white rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300" onClick={handleClickInicio} >
-                <img src="/img/homeMenu.svg" style={{height:"25px"}}></img>
+                <img src="./img/homeMenu.svg" style={{height:"25px"}}></img>
                   <label className="hidden md:flex cursor-pointer">Hospedaje</label>
                 </button>
               ):(
                 <button className="flex gap-1 border-2 border-transparent text-white hover:border-2  rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white" onClick={handleClickInicio} >
-                <img src="/img/homeMenu.svg" style={{height:"25px"}}></img>
+                <img src="./img/homeMenu.svg" style={{height:"25px"}}></img>
                   <label className="hidden md:flex cursor-pointer">Hospedaje</label>
                 </button>
               )
@@ -243,12 +243,12 @@ const Navbar = ({activo}) => {
             {
               activo==2?(
                 <button className="flex gap-1 text-white border-2 border-white rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300" onClick={handleClickDisney}>
-                  <img src="/img/disneymenu.svg"  style={{height:"25px"}}></img>
+                  <img src="./img/disneyMenu.svg"  style={{height:"25px"}}></img>
                   <label className="hidden md:flex cursor-pointer">Disney Destination Concierge</label>
                 </button>
               ):(
                 <button className="flex gap-1 border-2 border-transparent text-white hover:border-2  rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white" onClick={handleClickDisney}>
-                  <img src="/img/disneymenu.svg"  style={{height:"25px"}}></img>
+                  <img src="./img/disneyMenu.svg"  style={{height:"25px"}}></img>
                   <label className="hidden md:flex cursor-pointer">Disney Destination Concierge</label>
                 </button>
               )
@@ -256,12 +256,12 @@ const Navbar = ({activo}) => {
             {
               activo==3?(
                 <button className="flex gap-1 text-white border-2 border-white rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300" onClick={handleClickInfotour}>
-                  <img src="/img/infotourMenu.svg" style={{height:"25px"}}></img>
+                  <img src="./img/infotourMenu.svg" style={{height:"25px"}}></img>
                   <label className="hidden md:flex cursor-pointer">InfoTour</label>
                 </button>
               ):(
                 <button className="flex gap-1 border-2 border-transparent text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white" onClick={handleClickInfotour}>
-                  <img src="/img/infotourMenu.svg" style={{height:"25px"}}></img>
+                  <img src="./img/infotourMenu.svg" style={{height:"25px"}}></img>
                   <label className="hidden md:flex cursor-pointer">InfoTour</label>
                 </button>
               )

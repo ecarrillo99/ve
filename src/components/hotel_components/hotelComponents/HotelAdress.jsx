@@ -1,6 +1,8 @@
 import { GoogleMap, MarkerF, InfoWindowF, useLoadScript } from "@react-google-maps/api";
 import React, { useState } from 'react';
 import HotelMap from "./HotelMap";
+import BingMapsReact from "bingmaps-react";
+
 
 const containerStyle = {
   width: '100%', // Ajuste el ancho al 100% para que se adapte al contenedor
@@ -34,6 +36,7 @@ const HotelAdress = (props) => {
 
   return (
     <div className="border mt-4 h-[23.3vh] rounded-lg border-gray-300 ">
+      
       <HotelMap
         isOpen={isModalOpen}
         onClose={closeModal}
@@ -43,13 +46,21 @@ const HotelAdress = (props) => {
           <div className="absolute w-full h-full z-10 aspect-w-3 rounded-md bg-gray-400 bg-opacity-20 flex items-center justify-center">
             <button className="bg-greenVE-600 text-white px-3 py-1 rounded-lg z-20" onClick={openModal}>Ver en el mapa</button>
           </div>
-          <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={center}
-            zoom={16}
-            options={mapOptions}
-          >
-          </GoogleMap>
+          <BingMapsReact
+                    bingMapsKey="AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z"
+                    height="183px"
+                    viewOptions={{
+                      center: { latitude: Establecimiento.Latitud, longitude: Establecimiento.Longitud },
+                      zoom: 16,
+                      mapTypeId: "aerialWithLabels",
+                    }}
+                    mapOptions={{
+                      showZoomButtons: false,
+                      showMapTypeSelector: false,
+                      showBreadcrumb: false,
+                      showLocateMeButton: false,
+                    }}
+                  />
         </div>
       ) : (
         <></>

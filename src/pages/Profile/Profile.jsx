@@ -77,7 +77,7 @@ const Profile=({})=>{
             </div>
           ) : (
             <div className="h-screen w-screen flex flex-col justify-center items-center">
-              <img src="/img/logo_verde.png" style={{ width: "300px", height: "auto" }} alt="Logo" />
+              <img src="./img/logo_verde.png" style={{ width: "300px", height: "auto" }} alt="Logo" />
               <div className="animate-spin w-16 h-16 border-t-4 border-greenVE-500 rounded-full"></div>
             </div>
           )
