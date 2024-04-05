@@ -62,7 +62,7 @@ const SearchItem = (props) => {
       }
 
       <div className="w-4/12 flex items-center justify-center">
-        <img alt="" src={Establecimiento.Foto} className="w-52 h-52 object-cover rounded-md" />
+        <img src={Establecimiento.Foto} className="w-52 h-52 object-cover rounded-md" />
       </div>
       <div className="flex w-8/12">
         <div className="w-8/12">

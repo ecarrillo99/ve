@@ -125,7 +125,6 @@ const ImageCropper = ({ closeModal, updateProfilePhoto }) => {
                         <img
                             ref={imgRef}
                             src={imgSrc}
-                            alt="Upload"
                             style={{ maxWidth: "100%", maxHeight: "45vh" }}
                             onLoad={onImageLoad}
                         />

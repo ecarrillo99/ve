@@ -78,7 +78,6 @@ const DatafastFormUI = ({trx, tarjeta, diferido}) => {
       <img
         src="https://www.datafast.com.ec/images/verified.png"
         style={{ display: 'block', margin: '0 auto', width: '100%' }}
-        alt="Verified"
       />
     </div>
   );

@@ -5,7 +5,7 @@ const Certificado = () =>{
         <div className="border-2 border-greenVE-500 m-5 rounded-xl">
             <div className="flex ">
                 <div className="w-1/2">
-                    <img src="./img/logo_verde.png" className="h-16 pl-5"></img>
+                    <img src="./img/web/logo_verde.png" className="h-16 pl-5"></img>
                 </div>
                 <div className="w-1/2">
                     <label className="font-bold">

@@ -3,7 +3,7 @@ import { Accordion, AccordionBody, AccordionHeader } from '@material-tailwind/re
 import Icons from '../../../global/icons';
 
 const HotelRecommended = (props) => {
-  const { Establecimiento, Noches, Personas } = props;
+  const { Establecimiento, Noches, Personas, SetRecomendados } = props;
   const icons = new Icons();
 
   function Icon({ id, open }) {
@@ -23,7 +23,7 @@ const HotelRecommended = (props) => {
 
   const handleClickPreReserva = () => {
     const targetElement = document.getElementById('tabla-ofertas');
-
+    SetRecomendados(true);
     if (targetElement) {
       const scrollOptions = {
         behavior: 'smooth',
@@ -31,6 +31,7 @@ const HotelRecommended = (props) => {
       };
       targetElement.scrollIntoView(scrollOptions);
     }
+    
   };
 
   const [open, setOpen] = useState(0);

@@ -25,6 +25,12 @@ class Certificado{
         Total,
         Habitaciones,
         CantidadHab,
+        serviciosEst,
+        restriccionesEst,
+        sistemaServEst,
+        serviciosHabEst,
+        incluyeEst,
+        noIncluyeEst,
     ){
         this.IdRes=IdRes;
         this.NombreSus=NombreSus;
@@ -51,6 +57,12 @@ class Certificado{
         this.Impuestos=Impuestos;
         this.Total=Total;
         this.Habitaciones=Habitaciones;
+        this.serviciosEst=serviciosEst;
+        this.restriccionesEst=restriccionesEst;
+        this.sistemaServEst=sistemaServEst;
+        this.serviciosHabEst=serviciosHabEst;
+        this.incluyeEst=incluyeEst;
+        this.noIncluyeEst=noIncluyeEst;
     }
 }
 export default Certificado;

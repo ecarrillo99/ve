@@ -28,7 +28,7 @@ const AboutBanner = () => {
                 </div>
             </div>
             <div className="md:w-4/12">
-            <img src="./img/comparation.png" style={{width: "180px", height: "auto"}} className="mx-auto pt-7" alt=""/>
+            <img src="./img/web/comparation.png" style={{width: "180px", height: "auto"}} className="mx-auto pt-7" />
             </div>
         </div>
         </div>

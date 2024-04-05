@@ -6,9 +6,9 @@ import Alert from '../../global_components/alert/Alert';
 import { useNavigate } from 'react-router-dom';
 
 const HotelOfertas = (props) => {
-  const { Establecimiento, Noches, Fechas, Opciones } = props;
+  const { Establecimiento, Noches, Fechas, Opciones, clickRecomendados, SetRecomendados} = props;
   const icons = new Icons();
-  const [selectedOptions, setSelectedOptions] = useState({});
+  const [selectedOptions, setSelectedOptions] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAlertLoginOpen, setIsAlertLoginOpen] = useState(false);
   const [ofertas, setOfertas] = useState([]);
@@ -21,16 +21,18 @@ const HotelOfertas = (props) => {
   };
 
   useEffect(() => {
-    function fetchData() {
-      const nuevoEstado = {};
-      for (const recomendado of Establecimiento.Recomendados) {
-        nuevoEstado[recomendado.Id] = recomendado.NumOfertas;
+    if(clickRecomendados){
+      function fetchData() {
+        const nuevoEstado = {};
+        for (const recomendado of Establecimiento.Recomendados) {
+          nuevoEstado[recomendado.Id] = recomendado.NumOfertas;
+        }
+        setSelectedOptions(nuevoEstado);
       }
-      setSelectedOptions(nuevoEstado);
+      fetchData();
     }
-
-    fetchData();
-  }, []);
+    SetRecomendados(false);
+  }, [clickRecomendados]);
 
   function Icon({ id, open }) {
     return (

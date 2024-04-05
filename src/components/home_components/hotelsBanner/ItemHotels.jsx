@@ -30,7 +30,7 @@ const ItemHotels = ({ hotel }) => {
     return (
         <div className="relative group rounded-lg border-4 border-white overflow-hidden cursor-pointer" onClick={()=>handleClickHotel()}>
             <div className="border rounded-md px-2">
-                <img src={hotel.Foto} className="h-20 w-full object-contain rounded-xl" alt="Hotel Icon" />
+                <img src={hotel.Foto} className="h-20 w-full object-contain rounded-xl"/>
             </div>
             <div className="absolute cursor-pointer inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="bg-greenVE-700 bg-opacity-90 cursor-pointer text-white text-center px-4 py-2 rounded-md w-full h-full flex items-center justify-center">

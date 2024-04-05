@@ -15,7 +15,7 @@ class SuscripcionService extends GenericService{
         return await this.post(url, params);
     }
     async setAdministrador(params){
-        const url = `https://visitaecuador.com/ve/librerias/funciones/autorizacionAdmin.php`;
+        const url = `${Config.URL_SERVICIOS}${Config.VERSUS}loginAdministrador/`;
         return await this.post(url, params);
     }
     async renovacionUsuario(params){
@@ -103,4 +103,5 @@ class SuscripcionService extends GenericService{
         return await this.post(url, params);
     }
 }
+
 export default SuscripcionService;

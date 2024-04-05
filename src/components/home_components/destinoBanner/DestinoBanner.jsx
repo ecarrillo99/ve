@@ -128,7 +128,7 @@ const DestinoBanner = () => {
     };
 
     return (
-        <div className="mt-10">
+        <div className="mt-10 md:mx-0 mx-5">
             <h1 className="font-bold text-xl">Destino Express</h1>
             <div className="flex justify-between mb-4">
                 <h6 className="text-md">Descubre la emoción de escapadas cercanas. ¡Vive la aventura sin largos trayectos!</h6>

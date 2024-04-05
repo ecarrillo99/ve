@@ -1,18 +1,26 @@
-import Navbar from "../../components/global_components/navbar/Navbar";
+//import Navbar from "../../components/global_components/navbar/Navbar";
 import { useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { format } from "date-fns";
-import SearchItem from "../../components/searchItem/SearchItem";
-import SearchBar from "../../components/global_components/searchBar/searchBar";
+//import SearchItem from "../../components/searchItem/SearchItem";
+//import SearchBar from "../../components/global_components/searchBar/searchBar";
 import Slider from "react-slider";
-import Footer from "../../components/global_components/footer/Footer";
+//import Footer from "../../components/global_components/footer/Footer";
 import { getResultadoFiltro } from "../../controllers/establecimiento/establecimientoController";
 import Filtro from "../../models/Filtro";
-import SearchItemSkeleton from "../../components/searchItem/SearchItemSkeleton";
-import MapScreen from "../../components/search_components/MapScreen";
+//import SearchItemSkeleton from "../../components/searchItem/SearchItemSkeleton";
+//import MapScreen from "../../components/search_components/MapScreen";
 import Icons from "../../global/icons";
 import { GoogleMap, useLoadScript } from "@react-google-maps/api";
 import BingMapsReact from "bingmaps-react";
+
+const Navbar = lazy(() => import("../../components/global_components/navbar/Navbar"));
+const SearchItem = lazy(() => import("../../components/searchItem/SearchItem"));
+const SearchBar = lazy(() => import("../../components/global_components/searchBar/searchBar"));
+const Footer = lazy(() => import("../../components/global_components/footer/Footer"));
+const SearchItemSkeleton = lazy(() => import("../../components/searchItem/SearchItemSkeleton"));
+const MapScreen = lazy(() => import("../../components/search_components/MapScreen"));
+
 
 const Search = () => {
   const location = useLocation();
@@ -232,28 +240,54 @@ const Search = () => {
     setIsModalOpen(false);
   };
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Definir 768 como el punto de corte para móvil
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
     <div >
-      <Navbar />
-      <div className="mx-auto max-w-6xl py-6 sm:px-6 lg:px-8">
-        <SearchBar
-        type={1}
-          Place={destination}
-          Dates={date}
-          Options={options}
-          NewPage={true}
-        />
+      <Suspense><Navbar /></Suspense>
+      <div className="mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 md:mt-0 -mt-6">
+        {
+          isMobile
+          ?<Suspense><SearchBar
+          type={4}
+            Place={destination}
+            Dates={date}
+            Options={options}
+            NewPage={true}
+          /></Suspense>
+          :<Suspense>
+            <SearchBar
+            type={1}
+              Place={destination}
+              Dates={date}
+              Options={options}
+              NewPage={true}
+            />
+          </Suspense>
+        }
       </div>
       <div >
         {
           data && (
-            <MapScreen
-              isOpen={isModalOpen}
-              onClose={closeModal}
-              data={data.Establecimientos}
-              destination={destination}
-              date={date}
-              options={options} />
+            <Suspense><MapScreen
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            data={data.Establecimientos}
+            destination={destination}
+            date={date}
+            options={options} /></Suspense>
           )
           }
       </div>
@@ -271,20 +305,22 @@ const Search = () => {
                 </div>{
                   
                   data?
-                    <BingMapsReact
-                    bingMapsKey="AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z"
-                    viewOptions={{
-                      center: { latitude: data.Establecimientos[0].Latitud, longitude: data.Establecimientos[0].Longitud },
-                      zoom: 15,
-                      mapTypeId: "aerialWithLabels",
-                    }}
-                    mapOptions={{
-                      showZoomButtons: false,
-                      showMapTypeSelector: false,
-                      showBreadcrumb: false,
-                      showLocateMeButton: false,
-                    }}
-                  />
+                    <Suspense>
+                      <BingMapsReact
+                        bingMapsKey="AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z"
+                        viewOptions={{
+                          center: { latitude: data.Establecimientos[0].Latitud, longitude: data.Establecimientos[0].Longitud },
+                          zoom: 15,
+                          mapTypeId: "aerialWithLabels",
+                        }}
+                        mapOptions={{
+                          showZoomButtons: false,
+                          showMapTypeSelector: false,
+                          showBreadcrumb: false,
+                          showLocateMeButton: false,
+                        }}
+                      />
+                    </Suspense>
                   
                   /*<GoogleMap
                   mapContainerStyle={{
@@ -301,7 +337,7 @@ const Search = () => {
                 >
                 </GoogleMap>*/:
                 <div className="mb-4 relative h-44 rounded-md">
-                <img src="./img/map.svg" alt="Mi Imagen" className="w-full h-full object-cover rounded-md" />
+                <img src="./img/web/map.svg" className="w-full h-full object-cover rounded-md" />
                 <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 rounded-md"></div>
                 <button
                   className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-greenVE-500 text-white px-3 py-1 rounded-full"
@@ -478,21 +514,23 @@ const Search = () => {
           {data
             ? (
               data.Establecimientos.map((item, index) => (
-                <SearchItem
-                  key={index}
-                  firstElement={index===0?coinEncontrada?true:false:false}
-                  options={options}
-                  date={date}
-                  destination={destination}
-                  Establecimiento={item}
-                />
+                <Suspense>
+                  <SearchItem
+                    key={index}
+                    firstElement={index===0?coinEncontrada?true:false:false}
+                    options={options}
+                    date={date}
+                    destination={destination}
+                    Establecimiento={item}
+                  />
+                </Suspense>
               ))
             )
             : (<div>
-              <SearchItemSkeleton />
-              <SearchItemSkeleton />
-              <SearchItemSkeleton />
-              <SearchItemSkeleton />
+              <Suspense><SearchItemSkeleton /></Suspense>
+              <Suspense><SearchItemSkeleton /></Suspense>
+              <Suspense><SearchItemSkeleton /></Suspense>
+              <Suspense><SearchItemSkeleton /></Suspense>
             </div>)
           }
         </div>

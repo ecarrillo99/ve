@@ -28,7 +28,7 @@ const MapScreen = ({ isOpen, onClose, data, destination, date, options }) => {
           longitude: item.Longitud,
         },
         options: {
-            icon:"./img/pinMap.png",
+            icon:"./img/web/pinMap.png",
              title: item.Titulo,
         },
     }));

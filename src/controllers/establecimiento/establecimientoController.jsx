@@ -15,7 +15,6 @@ export const getRemoteOfertas = async function () {
 
     var bd = JSON.parse(localStorage.getItem('datos'))
     if (bd == null) {
-
         return DefaultToken()
             .then((result) => {
                 if (result) {
@@ -38,6 +37,48 @@ export const getEstablacimientoDestino = async function (termino) {
             });
     } else {
         return _getEstablecimientoDestino(termino)
+    }
+}
+
+
+export const shareHotel=async function(tipo, url){
+    try{
+        var params={
+            "tipo":tipo,
+            "url":url
+        }
+        const establecimientoService = new EstablecimientoService;
+        const res = await establecimientoService.shareHotel(params);
+        if(res!=null&&res.estado){
+            return res.data
+        }
+        return false;
+    }catch{
+    }
+}
+
+export const getCertificado=async function  (usuario, id_establecimiento, ofertas, fechas, adultos, ninos){
+    try{
+        var bd = JSON.parse(localStorage.getItem('datos'))
+        console.log(bd["data"]);
+        var params = {
+            "token": bd['token'],
+            "usuario":(usuario==null||usuario=="")?bd["data"]['codigo']:usuario,
+            "id_establecimiento":id_establecimiento,
+            "ofertas":ofertas,
+            "fecha":fechas,
+            "adultos":adultos,
+            "ninos":ninos,
+        }
+        console.log(params);
+        const establecimientoService = new EstablecimientoService;
+        const res = await establecimientoService.generarCertificado(params);
+        if(res!=null&&res["estado"]){
+            return res["data"];
+        }
+        return false;
+    }catch{
+       
     }
 }
 

@@ -11,12 +11,17 @@ export const loginRemote = async function (params) {
         console.log("login Google");
         console.log(res);
         if(res.estado && res.codigo == 0){
-            
+            if(res.data.fin!=null){
+                if(new Date(res.data.fin)<new Date()){
+                    return <label>{"Cuenta caducada el "+res.data.fin}<br/> <a className="text-blue-500 underline cursor-pointer" href={window.location.origin+"/#/suscripcion"}>Renueva aquí</a></label>
+                }
+            }
             if (Object.values(res).length > 0) {
                 localStorage.setItem('datos', JSON.stringify(res));
             }
             return res.estado
         }
+        return false
     }catch(e){}
 }
 
@@ -73,4 +78,17 @@ export const endRemoteSession=async function (){
         }
 
     }catch(e){}
+}
+
+export const gestionarSuscripcion=async function (params){
+    try{
+        const suscripcionService = new SuscripcionService() ;
+        const res = await suscripcionService.registroTransaccion(params);
+        console.log(res)
+        if(res.estado){
+            return res;
+        }
+        return false;
+    }
+    catch(e){}
 }

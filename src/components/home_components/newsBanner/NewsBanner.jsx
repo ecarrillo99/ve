@@ -85,6 +85,7 @@ const NewsBanner = () => {
                 breakpoint: 900,
                 settings: {
                     slidesToShow: 1,
+                    rows: 1,
                 },
             },
             {

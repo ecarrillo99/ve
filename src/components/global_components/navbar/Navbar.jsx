@@ -33,6 +33,10 @@ const Navbar = ({activo}) => {
     navigate("/favoritos");
   }
 
+  const handleClickYaGanaste=()=>{
+    navigate("/yaganaste");
+  }
+
   const handleClickLogo=()=>{
     navigate("/");
   }
@@ -43,6 +47,7 @@ const Navbar = ({activo}) => {
   const session = JSON.parse(localStorage.getItem("datos"));
   const nivel = session ? session.data.nivel : "visitante";
   const nombre = session ? session.data.nombre:"";
+  const yaGanaste=session ? session.data.permisos.perfil.yaGanaste:false;
   const foto = session ? (session.data.fotos ? session.data.fotos.m : "") : "";
   const [isLoadingAdmin, setLoadingAdmin]=useState(false);
   const [isLoadingGoogle, setisLoadingGoogle] = useState(false)
@@ -150,7 +155,7 @@ const Navbar = ({activo}) => {
     <header className="bg-greenVE-500">
       <div className="flex mx-auto max-w-6xl py-2 px-4 sm:px-6 lg:px-8">
         <div className="w-2/12 flex cursor-pointer" onClick={handleClickLogo}>
-          <img src="./img/ve_logo.svg" style={{ width: "110px", height: "auto" }} alt="Logo" />
+          <img src="./img/web/ve_logo.svg" style={{ width: "110px", height: "auto" }}/>
         </div>
         <div className="flex flex-col w-10/12 justify-between ">
           <div className="flex gap-2 justify-end items-center">
@@ -170,6 +175,8 @@ const Navbar = ({activo}) => {
                     {
                       (nivel === "visitante")&&(
                         <>
+                          <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickSuscription}><div dangerouslySetInnerHTML={{ __html: icons.Data.Buy }}/>Comprar suscripción</button>
+                          <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickBookHistory}><div dangerouslySetInnerHTML={{ __html: icons.Data.Gift}}  />Activar VisitaPack</button>
                           <label className="text-xs font-medium text-center w-full">Prueba gratis con:</label>
                           <div className="flex justify-center items-center w-full gap-2  pb-3">
                             {
@@ -186,8 +193,6 @@ const Navbar = ({activo}) => {
                         </>
                       )
                     }
-                    <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickSuscription}><div dangerouslySetInnerHTML={{ __html: icons.Data.Buy }}/>Comprar suscripción</button>
-                    <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickBookHistory}><div dangerouslySetInnerHTML={{ __html: icons.Data.Gift}}  />Activar VisitaPack</button>
                   </div>
                 </ClickAwayListener>)
             }
@@ -220,6 +225,11 @@ const Navbar = ({activo}) => {
                       isLoadingAdmin?<Spinner className="h-4 w-4" color="white"></Spinner>:<></>
                     }
                     </button>
+                    {
+                      yaGanaste?
+                      <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickYaGanaste}><div dangerouslySetInnerHTML={{ __html: icons.Data.CrearUsuario }}  /> Crear Suscripción</button>
+                      :<></>
+                    }
                     <button onClick={() => handleClickLogOut()} className="hover:bg-greenVE-200 w-full px-4 text-xs py-1 flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Logout }}  />Cerrar sesión</button>
                   </div>
                 </ClickAwayListener>
@@ -230,12 +240,12 @@ const Navbar = ({activo}) => {
             {
               activo==null||activo==1?(
                 <button className="flex gap-1 text-white border-2 border-white rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300" onClick={handleClickInicio} >
-                <img src="./img/homeMenu.svg" style={{height:"25px"}}></img>
+                <img src="./img/web/homeMenu.svg" style={{height:"25px"}}></img>
                   <label className="hidden md:flex cursor-pointer">Hospedaje</label>
                 </button>
               ):(
                 <button className="flex gap-1 border-2 border-transparent text-white hover:border-2  rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white" onClick={handleClickInicio} >
-                <img src="./img/homeMenu.svg" style={{height:"25px"}}></img>
+                <img src="./img/web/homeMenu.svg" style={{height:"25px"}}></img>
                   <label className="hidden md:flex cursor-pointer">Hospedaje</label>
                 </button>
               )
@@ -243,12 +253,12 @@ const Navbar = ({activo}) => {
             {
               activo==2?(
                 <button className="flex gap-1 text-white border-2 border-white rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300" onClick={handleClickDisney}>
-                  <img src="./img/disneyMenu.svg"  style={{height:"25px"}}></img>
+                  <img src="./img/web/disneyMenu.svg"  style={{height:"25px"}}></img>
                   <label className="hidden md:flex cursor-pointer">Disney Destination Concierge</label>
                 </button>
               ):(
                 <button className="flex gap-1 border-2 border-transparent text-white hover:border-2  rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white" onClick={handleClickDisney}>
-                  <img src="./img/disneyMenu.svg"  style={{height:"25px"}}></img>
+                  <img src="./img/web/disneyMenu.svg"  style={{height:"25px"}}></img>
                   <label className="hidden md:flex cursor-pointer">Disney Destination Concierge</label>
                 </button>
               )
@@ -256,12 +266,12 @@ const Navbar = ({activo}) => {
             {
               activo==3?(
                 <button className="flex gap-1 text-white border-2 border-white rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300" onClick={handleClickInfotour}>
-                  <img src="./img/infotourMenu.svg" style={{height:"25px"}}></img>
+                  <img src="./img/web/infotourMenu.svg" style={{height:"25px"}}></img>
                   <label className="hidden md:flex cursor-pointer">InfoTour</label>
                 </button>
               ):(
                 <button className="flex gap-1 border-2 border-transparent text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white" onClick={handleClickInfotour}>
-                  <img src="./img/infotourMenu.svg" style={{height:"25px"}}></img>
+                  <img src="./img/web/infotourMenu.svg" style={{height:"25px"}}></img>
                   <label className="hidden md:flex cursor-pointer">InfoTour</label>
                 </button>
               )

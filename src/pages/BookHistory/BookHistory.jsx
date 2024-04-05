@@ -19,6 +19,7 @@ const BookHistory =({isAuth})=>{
                         window.location.reload();
                     }else{
                         setData(res);
+                        console.log(res);
                     }
                 }
             })

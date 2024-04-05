@@ -16,6 +16,7 @@ const LoginSocial=()=>{
     const fProvider = new FacebookAuthProvider();
     const navigate =useNavigate()
     const [isLoading, setIsLoading] = useState(false)
+    const [isLoadingFB, setIsLoadingFB] = useState(false)
 
     const handleClickGoogle=()=>{
         signInWithPopup(auth, gProvider).then(async (result)=>{
@@ -75,15 +76,53 @@ const LoginSocial=()=>{
 
     const handleClickFacebook=()=>{
         signInWithPopup(auth, fProvider)
-            .then((result) => {
+            .then(async (result) => {
+                setIsLoadingFB(true);
                 // The signed-in user info.
                 const user = result.user;
-                // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-                const credential = FacebookAuthProvider.credentialFromResult(result);
-                const accessToken = credential.accessToken;
-
-                // IdP data available using getAdditionalUserInfo(result)
-                // ...
+                try{
+                    const random = () => Math.floor(Math.random() * 100);
+                    const randomStr = Array.from({ length: 7 }, () => random()).join('');
+                    const username = user.displayName ?? ('usuario' + randomStr.substring(0, 6));
+                    const email = user.email??'';
+                    var id = user.uid??randomStr;
+                    var pass = encodePass(email);
+                    if (email.trim() === '') {
+                        setIsLoadingFB(false)
+                        alert("Correo inválido, intente con otra cuenta")
+                        return;
+                    }
+                    const params={
+                        "id": id,
+                        "pass": pass,
+                        "servicio": Config.SERVICIO,
+                        "metodo": Config.METODO_EX_FB,
+                        "username": username, 
+                        "nombre": username,
+                        "email": email,
+                        "id_servicio": Config.IDSERVICIO,
+                        "id_metodo": Config.IDMETODO_EX_FB,
+                    }
+                    try {
+                        await loginRemote(params)
+                            .then((result) => {
+                                setIsLoadingFB(false)
+                                if(result){
+                                    navigate(-1)
+                                }else{
+                                    setIsLoadingFB(false)
+                                    alert("Ha ocurrido un error, intente nuevamente")
+                                }
+                            })
+                            .catch((error) => { console.log(error) })
+        
+                    } catch (error) {
+                        setIsLoadingFB(false)
+                        console.error("Error:", error);
+                    }
+                }catch(e){
+    
+                }
             })
             .catch((error) => {
                 // Handle Errors here.
@@ -93,13 +132,13 @@ const LoginSocial=()=>{
                 const email = error.customData.email;
                 // The AuthCredential type that was used.
                 const credential = FacebookAuthProvider.credentialFromError(error);
-
-                // ...
             });
     }
 
     return(
         <div className="flex flex-col items-center justify-center gap-4 ">
+            <button onClick={()=> navigate("/suscripcion")} className="bg-greenVE-500 px-4 py-1 rounded-md text-white w-1/2">Adquirir Suscripción</button>
+            <h1 className="text-center w-1/2 font-bold text-greenVE-700 text-xl ">Ó</h1>
             <h1 className="text-center w-1/2 font-bold text-greenVE-700 text-xl ">PRUEBA GRATIS CON:</h1>
             <div className="flex gap-8 items-center justify-center">
                 {
@@ -107,11 +146,12 @@ const LoginSocial=()=>{
                     ?<Spinner color="blue" className="text-greenVE-300"></Spinner>
                     :<a onClick={()=>handleClickGoogle()} dangerouslySetInnerHTML={{ __html: icons.Data['LoginGoogle'] }} className='border-2 p-2 rounded-md hover:border-greenVE-500' />
                 }
-                
-                <a onClick={()=>handleClickFacebook()} dangerouslySetInnerHTML={{ __html: icons.Data['LoginFacebook'] }} className='border-2 p-2 rounded-md hover:border-greenVE-500' />
+                {
+                    isLoadingFB
+                    ?<Spinner color="blue" className="text-greenVE-300"></Spinner>
+                    :<a onClick={()=>handleClickFacebook()} dangerouslySetInnerHTML={{ __html: icons.Data['LoginFacebook'] }} className='border-2 p-2 rounded-md hover:border-greenVE-500' />
+                }
             </div>
-            <h1 className="text-center w-1/2 font-bold text-greenVE-700 text-xl ">Ó</h1>
-            <button className="bg-greenVE-500 px-4 py-1 rounded-md text-white w-1/2">Adquirir Suscripción</button>
         </div>
     )
 }

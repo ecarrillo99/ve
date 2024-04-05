@@ -119,10 +119,10 @@ const SearchBar = (props) => {
 
   const handleSearch = () => {
     const path = `/busqueda/?destino=${encodeURIComponent(JSON.stringify(destination))}&fechas=${encodeURIComponent(JSON.stringify(date))}&opciones=${encodeURIComponent(JSON.stringify(options))}`
-    if(type===0){
+    if(type===0||type===3){
       navigate(path)
     }
-    if(type===1){
+    if(type===1||type===4){
       navigate(path)
       window.location.reload();
     }
@@ -339,7 +339,7 @@ const SearchBar = (props) => {
     </div>
     :
     <div>
-            <div className="bg-greenVE-300 p-4 rounded-lg">
+            <div className="bg-greenVE-300 p-4 md:rounded-lg rounded-none">
                 <h1 className="text-xl mb-2 font-medium">Buscar</h1>
                 <div className=" text-sm flex flex-col">
                     <label className="mb-1 ">Destino</label>
@@ -353,7 +353,7 @@ const SearchBar = (props) => {
               />
               {suggestion && (
                 <ClickAwayListener onClickAway={handleClickAway}>
-                  <div className=" absolute top-56 max-h-[17rem] w-80 bg-white z-50 shadow-2xl p-2 overflow-y-auto  rounded-lg">
+                  <div className=" absolute mt-14 max-h-[17rem] w-80 bg-white z-50 shadow-2xl p-2 overflow-y-auto  rounded-lg">
                     {
                       suggestion ? (
                         suggestion.map((item, key) => (

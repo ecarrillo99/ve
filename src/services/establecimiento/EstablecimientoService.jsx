@@ -22,6 +22,21 @@ class EstablecimientoService extends GenericService{
         return await this.post(url, params);
     }
 
+    async shareHotel(params){
+        const url = `${Config.URL_SERVICIOS}${Config.VERINFO}acortarUrl/`;
+        return await this.post(url, params);
+    }
+
+    async generarCertificado(params){
+        const url = `${Config.URL_SERVICIOS}${Config.VEREST}getCertificado/`;
+        return await this.post(url, params);
+    }
+
+    async cambiarEstadoFavorito(params){
+        const url = `${Config.URL_SERVICIOS}${Config.VEREST}setHotelFavorito/`;
+        return await this.post(url, params);
+    }
+
     /*async eliminarFavorito(params){
         const url = `${Config.URL_SERVICIOS}${Config.VEREST}eliminarFavorito/`;
         return await this.post(url, params);

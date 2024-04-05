@@ -4,7 +4,7 @@ const Footer = () => {
   const year = new Date().getFullYear();
   const icons = new Icons()
   return (
-    <footer className="bg-footerColor mt-20">
+    <footer className="bg-footerColor mt-20 md:px-0 px-5">
       <div className="mx-auto max-w-6xl py-10 sm:px-6 lg:px-8">
         <div className="flex flex-wrap gap-y-5">
           <div className="w-1/2 md:w-1/4">
@@ -77,7 +77,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-wrap justify-center gap-2 mt-5">
+        <div className="flex flex-wrap justify-center md:gap-2 mt-5">
           <a href="https://www.facebook.com/visitaecuadorcom" target="_blank"><div className="w-12 h-12 p-2 cursor-pointer" dangerouslySetInnerHTML={{ __html: icons.Data.Facebook }} /></a>
           <a href="https://www.instagram.com/visitaecuadorcom/" target="_blank"><div className="w-12 h-12 p-2" dangerouslySetInnerHTML={{ __html: icons.Data.Instagram }} /></a>
           <a href="https://walink.co/99db0b" target="_blank"><div className="w-12 h-12 p-2" dangerouslySetInnerHTML={{ __html: icons.Data.WhatsappF }} /></a>

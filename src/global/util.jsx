@@ -104,6 +104,19 @@ export function sessionStatus(){
     } 
 }
 
+export function sessionYaGanaste(){
+  var session = JSON.parse(localStorage.getItem('datos'))
+    if(session!=null){
+      if(session.data.permisos.perfil.yaGanaste){
+        return true;
+      }else{
+        return false;
+      }
+    }else{
+      return false;
+    } 
+}
+
 
 export async function checkData (key){
   return new Promise((resolve) => {

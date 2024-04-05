@@ -35,7 +35,7 @@ const HotelsBanner = () => {
   const CustomNextArrow = (props) => {
     return (
       <div
-        className="-mr-3 z-50 absolute top-1/2 transform -translate-y-1/2 right-0 cursor-pointer"
+        className="-mr-3 absolute top-1/2 transform -translate-y-1/2 right-0 cursor-pointer"
         onClick={props.onClick}
         style={{ filter: 'drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.5))' }}>
         <svg className="h-7 w-7" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xmlSpace="preserve" fill="#000000">
@@ -55,7 +55,7 @@ const HotelsBanner = () => {
   const CustomPrevArrow = (props) => {
     return (
       <div
-        className="-ml-3 z-50  absolute top-1/2 transform -translate-y-1/2 left-0 cursor-pointer"
+        className="-ml-3 z-30  absolute top-1/2 transform -translate-y-1/2 left-0 cursor-pointer"
         onClick={props.onClick}
         style={{ filter: 'drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.5))' }}>
         <svg className="h-7 w-7" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xmlSpace="preserve" fill="#000000" transform="rotate(180)" >
@@ -104,7 +104,7 @@ const HotelsBanner = () => {
   };
 
   return (
-    <div className="mt-10 ">
+    <div className="mt-10 mx-5 md:mx-0">
       <h1 className="font-bold text-xl">Establecimientos Asociados</h1>
       <div className="flex justify-between mb-4">
         <h6 className="text-md">Mas de 500 ofertas disponibles.</h6>
