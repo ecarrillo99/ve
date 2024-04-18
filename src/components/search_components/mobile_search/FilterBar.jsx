@@ -124,11 +124,10 @@ const FilterBar = ({ handleOrderChange, selectedFiltro, minPrice, maxPrice, pric
                     ? <div className={`h-screen w-full bg-white fixed top-0 z-50 `}>
                         <div className='flex justify-between items-center px-5 py-1 shadow-lg'>
                             <label onClick={() => setOpenFilter(false)} className='text-2xl text-greenVE-500'>x</label>
-                            <label className='font-bold'>Filtros</label>
-                            <label className='text-sm font-semibold text-gray-400'>Borrar</label>
+                            <label className='font-bold w-full text-center'>Filtros</label>
+                            {/*<label className='text-sm font-semibold text-gray-400'>Borrar</label>*/}
                         </div>
                         <div className='h-screen overflow-y-auto'>
-                            
                             <div className="border-b p-2 ">
                                 <h2 className="font-bold text-base mx-2">Precio</h2>
                                 <div className="px-3 py-4">

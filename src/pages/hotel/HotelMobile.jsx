@@ -112,6 +112,8 @@ const HotelMobile = () => {
                 NoIncluye={Establecimiento.NoIncluye}
                 Restricciones={Establecimiento.Restricciones}
                 SistemaServicios={Establecimiento.SistemaServicios}
+                esFavorito={Establecimiento.Favorito=="false"?false:true}
+                IdEstablecimiento={Establecimiento.IdEstablecimiento}
             /></Suspense>
             <div className='h-3 bg-gray-200'/>
             <Suspense><HotelSearch date={date} options={options} Establecimiento={Establecimiento}/></Suspense>

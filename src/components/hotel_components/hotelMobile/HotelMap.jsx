@@ -25,7 +25,7 @@ const HotelMap = ({Latitud, Longitud, Direccion, Titulo, PrecioSinImpuestos}) =>
         }
     ]
     return (
-        <div className='p-3 z-0'>
+        <div className='p-3 z-0 abs'>
                    <div >
                        <div className="relative border border-gray-300 z-10">
                            <BingMapsReact

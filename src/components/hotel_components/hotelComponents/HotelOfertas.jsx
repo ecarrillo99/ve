@@ -80,7 +80,7 @@ const HotelOfertas = (props) => {
   };
 
   const handleClickReservar = () => {
-    if (nivel != "visitante") {
+    if (nivel == "suscriptor") {
       const ofertasList = [];
       for (const id in selectedOptions) {
         if (selectedOptions[id] != 0) {
@@ -112,7 +112,7 @@ const HotelOfertas = (props) => {
   return (
     <>
       <HotelConfirmation Ofertas={ofertas} isOpen={isModalOpen} Establecimiento={Establecimiento} Fechas={Fechas} Valores={calcularTotal()} OnClose={() => handleClickCancelar()} Opciones={Opciones} />
-      <Alert Titulo={"Acción no permitida"} Descripcion={"Debe iniciar sesión o registrarse para continuar"} isOpen={isAlertLoginOpen} Aceptar={handleClickLoginAlertAceptar} Cancelar={handleClickLoginAlertCancelar}></Alert>
+      <Alert Titulo={"Acción no permitida"} Descripcion={nivel=="visitante"?"Debe iniciar sesión o registrarse para continuar":"La reserva con cuentas gratuitas solo está disponible en la app móvil."} isOpen={isAlertLoginOpen} Aceptar={nivel=="visitante"?handleClickLoginAlertAceptar: handleClickLoginAlertCancelar} Cancelar={handleClickLoginAlertCancelar}></Alert>
       <div className='relative w-full'>
         <div className='sticky top-0 z-10'>
           <div className='table-fixed w-full'>

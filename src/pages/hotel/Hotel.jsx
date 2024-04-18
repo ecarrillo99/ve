@@ -179,7 +179,7 @@ const Hotel = () => {
           </div>
           <div className="flex flex-col md:w-3/12">
             {
-              nivel!="visitante"
+              nivel=="suscriptor"
               ?<Suspense>
                 <HotelContacts
                   Contactos={establecimiento.Contactos}
