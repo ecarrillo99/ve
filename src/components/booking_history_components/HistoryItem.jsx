@@ -34,21 +34,21 @@ const HistoryItem = ({ reserva }) => {
             <label className="text-xl font-semibold">{reserva.Ciudad}</label>
             <label>{formatDate(new Date(reserva.FechaInicio+"T00:00:00"))} - {formatDate(new Date(reserva.FechaFin+"T00:00:00"))}</label>
             <div className="flex border mt-3 shadow-lg rounded-lg p-4 gap-4 cursor-pointer">
-                <div className="w-1/12 aspect-square relative">
+                <div className="w-2/6 md:w-1/12 aspect-square relative">
                     <div className="absolute inset-0 overflow-hidden rounded-xl">
                         <img
                             
-                            className="w-full h-full object-cover rounded-xl"
+                            className="w-32  md:w-full h-full object-cover rounded-xl"
                             src={reserva.FotoHotel}
                         />
                     </div>
                 </div>
-                <div className="w-10/12 flex flex-col justify-between">
+                <div className="w-3/6 md:w-10/12 flex flex-col justify-between">
                     <label className="font-semibold cursor-pointer">{reserva.NombreHotel}</label>
                     <label className="text-xs cursor-pointer">{formatDate(new Date(reserva.FechaInicio+"T00:00:00"))} - {formatDate(new Date(reserva.FechaFin+"T00:00:00"))} · {reserva.Ciudad}</label>
                     <label className={reserva.Estado === "Confirmada" ? "text-xs text-greenVE-500" : reserva.Estado === "Cancelada" ? "text-xs text-red-500" : "text-xs text-yellow-500"}>{reserva.Estado}</label>
                 </div>
-                <div className="w-1/12 flex-col justify-end">
+                <div className="w-2/6 md:w-1/12 flex flex-col justify-center items-end">
                     <label className="font-bold cursor-pointer">US${reserva.Total}.00</label>
                     <button className="bg-greenVE-500 px-1 py-0.5 rounded-lg mt-8 text-white text-sm font-medium">Imprimir</button>
                 </div>

@@ -70,7 +70,7 @@ export const getCertificado=async function  (usuario, id_establecimiento, oferta
             "adultos":adultos,
             "ninos":ninos,
         }
-        console.log(params);
+        
         const establecimientoService = new EstablecimientoService;
         const res = await establecimientoService.generarCertificado(params);
         if(res!=null&&res["estado"]){

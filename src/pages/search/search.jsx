@@ -361,7 +361,7 @@ const Search = () => {
                 <Slider
                   className="w-full h-1.5 rounded-full bg-gray-300 z-20 "
                   trackClassName="h-2 rounded-full overflow-hiden relative "
-                  trackOneClassName="h-2 rounded-full overflow-hiden relative bg-greenVE-500 "
+                  trackOneClassName="h-2 rounded-full overflow-hiden relative bg-greenVE-500"
                   thumbClassName="w-6 h-6 cursor-pointer bg-greenVE-500 border-2 border-white rounded-full -mt-2"
                   onChange={
                     setPrices

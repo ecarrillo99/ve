@@ -10,11 +10,25 @@ import { ClickAwayListener } from "@material-ui/core";
 import { DateRange } from "react-date-range";
 import { sessionStatus } from "../../global/util";
 import { Navigate } from "react-router-dom";
+import NavbarMobile from "../../components/global_components/navbar/NavbarMobile";
 
 const Favorites = ({isAuth}) => {
     const [data, setData] = useState();
     const [openDate, setOpenDate] = useState(false);
     const [openOptions, setOpenOptions] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Definir 768 como el punto de corte para móvil
+
+    useEffect(() => {
+        const handleResize = () => {
+        setIsMobile(window.innerWidth < 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+        window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     const [date, setDate] = useState(
         ([{
@@ -115,14 +129,18 @@ const Favorites = ({isAuth}) => {
     return (
         sessionStatus()?(
             <div>
-                <Navbar />
-                <div className="flex flex-col mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 gap-7">
+                {
+                    isMobile
+                    ?<NavbarMobile/>
+                    :<Navbar />
+                }
+                <div className="flex flex-col mx-5 md:mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 gap-7">
                     <h1 className="font-semibold text-3xl">Mis favoritos</h1>
                     <div className="flex gap-2">
                         <div>
                             <div className="border border-greenVE-500 rounded-md px-2 py-1 flex items-center gap-2 cursor-pointer" onClick={() => setOpenDate(!openDate)}>
                                 <div dangerouslySetInnerHTML={{ __html: icons.Data.Calendar }} />
-                                <label className="text-greenVE-600 text-sm cursor-pointer">{formatDate(date[0].startDate)} - {formatDate(new Date(date[0].endDate))}</label>
+                                <label className="text-greenVE-600 text-xs md:text-sm cursor-pointer">{formatDate(date[0].startDate)} - {formatDate(new Date(date[0].endDate))}</label>
                                 <div dangerouslySetInnerHTML={{ __html: icons.Data.SelectArrows }} />
                             </div>
                             {openDate && (
@@ -133,7 +151,7 @@ const Favorites = ({isAuth}) => {
                                         moveRangeOnFirstSelection={false}
                                         ranges={date}
                                         locale={es}
-                                        months={2}
+                                        months={1}
                                         direction="horizontal"
                                         className="absolute mt-2 shadow-xl z-50"
                                         rangeColors={["#96c121"]}
@@ -145,12 +163,12 @@ const Favorites = ({isAuth}) => {
                         <div>
                             <div className="border border-greenVE-500 rounded-md px-2 py-1 flex items-center gap-2" onClick={()=>setOpenOptions(!openOptions)}>
                                 <div dangerouslySetInnerHTML={{ __html: icons.Data.People }} />
-                                <label className="text-greenVE-600 text-sm">{options.adult + (options.adult > 1 ? " adultos · " : " adulto · ") + (options.children > 0 ? options.children + (options.children > 1 ? " niños · " : " niño · ") : "") + options.room + (options.room > 1 ? " habitaciones" : " habitación")}</label>
+                                <label className="text-greenVE-600 text-xs md:text-sm ">{options.adult + (options.adult > 1 ? " adultos · " : " adulto · ") + (options.children > 0 ? options.children + (options.children > 1 ? " niños · " : " niño · ") : "") + options.room + (options.room > 1 ? " habitaciones" : " habitación")}</label>
                                 <div dangerouslySetInnerHTML={{ __html: icons.Data.SelectArrows }} />
                             </div>
                             {openOptions && (
                                 <ClickAwayListener onClickAway={() => setOpenOptions(!openOptions)}>
-                                    <div className="absolute mt-1 bg-white shadow-2xl px-1 py-2 z-50 rounded-lg">
+                                    <div className="absolute right-5 md:right-0 md:mt-1 bg-white shadow-2xl px-1 py-2 z-50 rounded-lg">
                                         <div className="flex justify-between px-3 ">
                                             <span>Adultos</span>
                                             <div className="flex items-center justify-between border border-greenVE-600 rounded-md ">

@@ -12,6 +12,7 @@ import React, { Suspense, lazy, useEffect, useState } from "react";
 //import HotelOfertas from "../../components/hotel_components/hotelComponents/HotelOfertas";
 import Filtro from "../../models/Filtro";
 import { format } from "date-fns";
+import NavbarMobile from '../../components/global_components/navbar/NavbarMobile';
 //import SearchBar from "../../components/global_components/searchBar/searchBar";
 
 const Navbar = lazy(() => import("../../components/global_components/navbar/Navbar"));
@@ -43,11 +44,23 @@ const Hotel = () => {
   const filtro = new Filtro();
   const {nombre}=useParams();
   const [clickRecomendados, setClickRecomendados]=useState(false)
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Definir 768 como el punto de corte para móvil
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   
 
   useEffect(() => {
-    
     if (location.state && location.state.Establecimiento) {
       setEstablecimiento(location.state.Establecimiento);
       setOptions(location.state.options);
@@ -132,13 +145,15 @@ const Hotel = () => {
       
   }, [destination]);
 
-  
-
 
   return (
     establecimiento ? (
       <div>
-        <Suspense><Navbar /></Suspense>
+        {
+          isMobile
+          ?<Suspense><NavbarMobile /></Suspense>
+          :<Suspense><Navbar /></Suspense>
+        }
         <div className="flex flex-col md:flex-row mx-auto max-w-6xl py-6 sm:px-6 lg:px-8">
           <div className="md:w-3/12 mr-5 mb-5">
             <Suspense><SearchBar

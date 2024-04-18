@@ -12,6 +12,7 @@ import React, { lazy, Suspense } from 'react';
 //import ActivityBanner from "../../components/home_components/activityBanner/ActivityBanner";
 //import DestinoBanner from "../../components/home_components/destinoBanner/DestinoBanner";
 import { useEffect, useState } from "react";
+import NavbarMobile from '../../components/global_components/navbar/NavbarMobile';
 const Navbar = lazy(() => import("../../components/global_components/navbar/Navbar"));
 const OffersBanner = lazy(() => import('../../components/home_components/offersBanner/OffersBanner'));
 const Footer = lazy(() => import("../../components/global_components/footer/Footer"));
@@ -41,7 +42,11 @@ const Home = () => {
   }, []);
   return (
     <main>
-      <Suspense><Navbar activo={1}/></Suspense>
+      {
+        isMobile
+        ?<Suspense><NavbarMobile activo={1}/></Suspense>
+        :<Suspense><Navbar activo={1}/></Suspense>
+      }
       <Suspense><MainBanner/></Suspense>
       <div className="mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 -m-12">
         {

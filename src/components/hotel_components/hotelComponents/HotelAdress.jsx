@@ -33,7 +33,7 @@ const HotelAdress = (props) => {
 
   try{
     return (
-      <div className=" mt-4 h-[23.3vh] rounded-lg  z-0">
+      <div className=" mt-4 rounded-lg  z-0">
         <HotelMap
           isOpen={isModalOpen}
           onClose={closeModal}
@@ -45,7 +45,7 @@ const HotelAdress = (props) => {
             </div>
             <BingMapsReact
                       bingMapsKey="AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z"
-                      height="183px"
+                      height="205px"
                       viewOptions={{
                         center: { latitude: Establecimiento.Latitud, longitude: Establecimiento.Longitud },
                         zoom: 16,

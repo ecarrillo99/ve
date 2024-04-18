@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const ItemRecomended = ({oferta}) => {
+const ItemRecomended = ({ oferta }) => {
     const navigate = useNavigate()
     const HandleClickItem = () => {
-        navigate(`/hotel/${oferta.Establecimiento.toLowerCase().replaceAll(" - ","-").replaceAll(" ","-")}/?id=${oferta.IdEstablecimiento}&fechas=${encodeURIComponent(JSON.stringify(date))}&destino=${encodeURIComponent(JSON.stringify(destination))}&opciones=${encodeURIComponent(JSON.stringify(options))}`);
+        navigate(`/hotel/${oferta.Establecimiento.toLowerCase().replaceAll(" - ", "-").replaceAll(" ", "-")}/?id=${oferta.IdEstablecimiento}&fechas=${encodeURIComponent(JSON.stringify(date))}&destino=${encodeURIComponent(JSON.stringify(destination))}&opciones=${encodeURIComponent(JSON.stringify(options))}`);
     };
 
     const [date, setDate] = useState(
@@ -18,7 +18,7 @@ const ItemRecomended = ({oferta}) => {
     const [options, setOptions] = useState(
         ({
             adult: parseInt(oferta.Adultos),
-            children: oferta.Ninos!=null?parseInt(oferta.Ninos):0,
+            children: oferta.Ninos != null ? parseInt(oferta.Ninos) : 0,
             childrenAges: [],
             room: 1,
         })
@@ -34,18 +34,18 @@ const ItemRecomended = ({oferta}) => {
     );
 
     return (
-        <div className=" bg-white rounded-xl border-gray-200 cursor-pointer"
+        <div className=" bg-white rounded-xl border md:border-0  border-gray-200 cursor-pointer "
             onClick={
                 HandleClickItem
             }>
-            <div className="relative w-full h-0" style={{ paddingBottom: '100%' }}>
-            <div className="animate-pulse absolute inset-0 w-full h-full bg-gray-200 rounded-md"></div>
+            <div className="relative w-full md:h-48  h-32" >
+                <div className="animate-pulse absolute inset-0 w-full  bg-gray-200 rounded-md h-full"></div>
                 <img
                     src={oferta.Foto}
-                    className="absolute inset-0 w-full h-full object-cover rounded-md"
+                    className="absolute inset-0 w-full h-full object-cover rounded-t-md md:rounded-md"
                 />
             </div>
-            <div className="flex flex-col mt-3 gap-0.5">
+            <div className="flex flex-col mt-3 gap-0.5 items-center sm:items-start px-2 md:px-0">
                 <label className="text-xs text-gray-500 font-medium">{oferta.Lugar}</label>
                 <label className="text-xs font-semibold">{oferta.Establecimiento}</label>
                 <div className="flex items-center space-x-1">

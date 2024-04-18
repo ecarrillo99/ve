@@ -92,3 +92,21 @@ export const gestionarSuscripcion=async function (params){
     }
     catch(e){}
 }
+
+export const resetContrasenia=async function (tipo, valor){
+    try{
+        const params ={
+            tipo: tipo,
+            valor: valor,
+            servicio: Config.SERVICIO
+        }
+        const suscripcionService = new SuscripcionService();
+        const res = await suscripcionService.reenviarContrasena(params)
+        if(res!=null){
+            return res;
+        }
+    }catch(e){
+
+    }
+    return false;
+}

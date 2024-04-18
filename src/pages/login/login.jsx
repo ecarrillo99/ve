@@ -1,19 +1,39 @@
+import { useEffect, useState } from "react";
 import Footer from "../../components/global_components/footer/Footer";
 import Navbar from "../../components/global_components/navbar/Navbar";
+import NavbarMobile from "../../components/global_components/navbar/NavbarMobile";
 import LoginNormal from "../../components/login_components/LoginNormal";
 import LoginSocial from "../../components/login_components/LoginSocial";
+import ResetPassword from "./Reset_password";
 
 const Login = () => {
-    return(
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Definir 768 como el punto de corte para móvil
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+    return (
         <div className="h-screen">
-            <Navbar></Navbar>
-            <div className="flex flex-col mx-auto my-28 max-w-6xl py-6 sm:flex-row sm:px-6 lg:px-8 items-center">
-            <div className="w-full sm:w-1/2 border-r sm:border-r-2 mb-4 sm:mb-0">
-                <LoginNormal></LoginNormal>
-            </div>
-            <div className="w-full sm:w-1/2">
-                <LoginSocial></LoginSocial>
-            </div>
+            {
+                isMobile
+                    ? <NavbarMobile />
+                    : <Navbar />
+            }
+            <div className="flex flex-col md:mx-auto md:my-28 md:max-w-6xl py-6 md:flex-row md:px-6 lg:px-8 items-center">
+                <div className="w-full md:w-1/2 border-r md:border-r-2 mb-4 md:mb-0">
+                    <LoginNormal></LoginNormal>
+                </div>
+                <div className="w-full md:w-1/2">
+                    <LoginSocial></LoginSocial>
+                </div>
             </div>
             <Footer></Footer>
         </div>

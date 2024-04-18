@@ -136,19 +136,21 @@ const HotelOfertas = (props) => {
                       <div className="flex flex-col p-2">
                         <label className="font-semibold text-sm text-greenVE-600">{item.TituloOferta}</label>
                         {
-                          item.Ganga?(<div className="flex  text-xs text-orange-600  bg-orange-100 rounded-md px-2 gap-1.5 py-0.5 mb-2 w-36 ">
-                          <div className="" dangerouslySetInnerHTML={{ __html: icons.Data.Ganga }} />
-                        <label className="text-orange-500 text-sm font-medium">Precio ganga</label>
+                          item.Ganga?(<div className="ml-5 flex items-center text-xs text-orange-600  bg-orange-100 rounded-md px-2 gap-1.5 py-0.5 mb-2 w-36 border border-orange-200">
+                          <span className="icon-[ic--outline-local-offer] rotate-90 h-5 w-5"></span>
+                        <label className="text-orange-500 text-xs font-medium">Precio ganga</label>
                         </div>):(<></>)
                         }
                         <label className="ml-2 text-xs font-semibold text-gray-500">Aplica:</label>
-                        <div className="flex ml-6 text-sm items-center gap-1">
-                          <div dangerouslySetInnerHTML={{ __html: icons.Data.Feriados }} className="" />
-                          <label className="text-gray-500 text-xs ">{item.AplicaEn} </label>
+                        <div className="flex ml-5 text-sm items-center gap-1">
+                          <div className='flex items-center bg-blue-100 rounded-md px-1 py-1 border border-blue-200'>
+                            <span className="icon-[material-symbols-light--calendar-month-rounded] text-[#3d82f5] h-5 w-5"></span>
+                            <label className="text-blue-500 font-medium text-xs ">{item.AplicaEn} </label>
+                          </div>
                         </div>
                         <label className="ml-2 text-xs font-semibold text-gray-500">Acomodación:</label>
                         <div className="flex ml-6 text-sm items-center gap-1">
-                          <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => item.Acomodacion.includes(clave))] }} className="" />
+                          <span className="icon-[material-symbols--bed-outline-rounded] text-[#3d82f5] h-5 w-5"></span>
                           <label className="text-gray-500 text-xs ">{item.Acomodacion} </label>
                         </div>
                         

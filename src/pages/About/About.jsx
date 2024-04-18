@@ -15,10 +15,25 @@ import Footer from "../../components/global_components/footer/Footer";
 import Navbar from "../../components/global_components/navbar/Navbar";
 import {Accordion, AccordionHeader, AccordionBody,} from "@material-tailwind/react";
 import { useEffect, useRef, useState } from "react";
+import NavbarMobile from "../../components/global_components/navbar/NavbarMobile";
 
 const About=()=>{
+    
     const { seccion } = useParams();
     const [refsReady, setRefsReady] = useState(false); 
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Definir 768 como el punto de corte para móvil
+
+    useEffect(() => {
+        const handleResize = () => {
+        setIsMobile(window.innerWidth < 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+        window.removeEventListener('resize', handleResize);
+        };
+    }, []);
     function Icon({ id, open }) {
         return (
             <svg
@@ -83,7 +98,11 @@ const About=()=>{
     }, [seccion, refsReady, sectionRefs]);
     return(
         <>
-        <Navbar/>
+        {
+            isMobile
+            ?<NavbarMobile/>
+            :<Navbar/>
+        }
             <div className="flex flex-col mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 gap-7">
                 <div className="flex">
                     <div className="w-1/3 pr-10 ">

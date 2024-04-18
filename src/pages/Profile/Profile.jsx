@@ -8,12 +8,26 @@ import ProfilePassword from "../../components/profile_components/ProfilePassword
 import { getProfileData } from "../../controllers/perfil/perfilController";
 import { getRemoteCities } from "../../controllers/lugares/lugaresController";
 import { sessionStatus } from "../../global/util";
+import NavbarMobile from "../../components/global_components/navbar/NavbarMobile";
 
 const Profile=({})=>{
     const [selectedOption, setSelectedOption]=useState(1);
     const [profileData, setProfileData]=useState();
     const [citiesData, setCitiesData]=useState();
     const [selectedMenu, setSelectedMenu]=useState(<ProfileEdit profileData={profileData} citiesData={citiesData}/>);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Definir 768 como el punto de corte para móvil
+
+    useEffect(() => {
+        const handleResize = () => {
+        setIsMobile(window.innerWidth < 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+        window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     const handleChangeOption=(option)=>{
         setSelectedOption(option)
@@ -64,8 +78,12 @@ const Profile=({})=>{
       sessionStatus()?(
         citiesData != null && citiesData != null ? (
             <div>
-              <Navbar />
-              <div className="flex flex-col md:flex-row mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 gap-7">
+              {
+                isMobile
+                ?<NavbarMobile/>
+                :<Navbar />
+              }
+              <div className="flex flex-col md:flex-row mx-5 md:mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 gap-7">
                 <div className="w-full md:w-3/12">
                   <ProfileMenu handleChangeOption={handleChangeOption} selectedOption={selectedOption} />
                 </div>

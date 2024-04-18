@@ -4,8 +4,8 @@ const ItemRecomendedSkeleton = () => {
 
 
     return (
-        <div className=" bg-white rounded-xl border-gray-200 cursor-pointer">
-            <div className="bg-gray-200 rounded-md animate-pulse relative w-full h-0" style={{ paddingBottom: '100%' }}>
+        <div className=" bg-white rounded-xl border md:border-0 border-gray-200 cursor-pointer">
+            <div className="bg-gray-200 rounded-md animate-pulse relative w-full  md:h-48  h-32" >
                 
             </div>
             <div className="flex flex-col mt-3 gap-1.5">

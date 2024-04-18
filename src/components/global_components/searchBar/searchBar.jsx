@@ -218,7 +218,7 @@ const SearchBar = (props) => {
                     locale={es}
                     months={2}
                     direction="horizontal"
-                    className="absolute mt-100 shadow-xl z-20"
+                    className="absolute mt-100 shadow-xl z-50"
                     rangeColors={["#96c121"]}
                     minDate={new Date()}
                   />
@@ -392,7 +392,7 @@ const SearchBar = (props) => {
                             locale={es}
                             months={1}
                             direction="horizontal"
-                            className="absolute mt-1 shadow-xl z-20"
+                            className="absolute mt-1 shadow-xl z-50"
                             rangeColors={["#96c121"]}
                             minDate={new Date()}
                           />

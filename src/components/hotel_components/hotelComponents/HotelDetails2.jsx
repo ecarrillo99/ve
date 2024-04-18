@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Icons from '../../../global/icons';
+import { getIcon } from '../../../global/icons2';
 
 const icons = new Icons()
 
@@ -39,9 +40,13 @@ const HotelDetails = (props) => {
                 }
                 <div className='flex flex-col gap-1'>
                     {descripciones.slice(0, mostrarMas ? descripciones.length : 5).map((itemRestricciones, index) => (
-                        <div key={index} className='flex gap-2 items-center'>
-                            <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find(clave => itemRestricciones.Titulo.includes(clave))] }}/>
-                            <p dangerouslySetInnerHTML={{ __html: itemRestricciones.Titulo }} className='my-0.5 text-xs leading-3 font-light text-gray-500'></p>
+                        <div key={index} className='flex gap-x-2 items-center'>
+                            <div className='h-5'>
+                                {
+                                    getIcon({text:itemRestricciones.Titulo, h:"h-5", w:"w-5", c:"text-[#3d82f5]"})
+                                }
+                            </div>
+                            <p dangerouslySetInnerHTML={{ __html: itemRestricciones.Titulo }} className='text-xs leading-3 font-light text-gray-500'></p>
                         </div>
                     ))}
                 </div>

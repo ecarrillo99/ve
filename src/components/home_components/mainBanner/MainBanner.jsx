@@ -23,9 +23,9 @@ const MainBanner = () => {
     //"./img/web/banner3.webp",
   ]
   const colors = [
-    "md:h-80 bg-[#f2f7e8] flex items-end justify-center ",
-    "md:h-80 bg-greenVE-500 flex items-end justify-center ",
-    "md:h-80 bg-[#f2f7e8] flex items-end justify-center ",
+    "bg-[#f2f7e8] flex items-center justify-center",
+    "bg-greenVE-500 flex items-center justify-center ",
+    "bg-[#f2f7e8] flex items-center justify-center ",
   ]
   const web = [
     "https://play.google.com/store/search?q=visitaecuador.com",
@@ -39,7 +39,7 @@ const MainBanner = () => {
     banners.map((item, index) => (
       <div className={colors[index]}>
         <img
-          className=" object-cover cursor-pointer h-[100px] md:h-[100%]"
+          className=" object-cover cursor-pointer h-[110px] md:h-[100%] flex items-center justify-center"
           src={item}
           onClick={() => window.open(web[index])}
         />

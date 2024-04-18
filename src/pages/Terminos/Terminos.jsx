@@ -1,7 +1,22 @@
+import { useEffect, useState } from "react";
 import Footer from "../../components/global_components/footer/Footer";
 import Navbar from "../../components/global_components/navbar/Navbar";
+import NavbarMobile from "../../components/global_components/navbar/NavbarMobile";
 
 const Terminos=()=>{
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Definir 768 como el punto de corte para móvil
+
+    useEffect(() => {
+        const handleResize = () => {
+        setIsMobile(window.innerWidth < 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+        window.removeEventListener('resize', handleResize);
+        };
+    }, []);
     const terminos=`<div>
     <p style='margin:0cm;font-size:16px;font-family:"Times New Roman",serif;border:none;'><span style="font-family: Calibri, sans-serif; font-size: 14px;"><strong>T&eacute;rminos y condiciones</strong></span></p>
     <p style='margin:0cm;font-size:16px;font-family:"Times New Roman",serif;border:none;'><span style="font-family: Calibri, sans-serif; font-size: 14px;">&nbsp;</span></p>
@@ -426,7 +441,11 @@ const Terminos=()=>{
   </div>`;
     return(
         <div>
-            <Navbar></Navbar>
+            {
+                isMobile
+                ?<NavbarMobile/>
+                :<Navbar/>
+            }
             <div className="flex flex-col mx-auto my-28 max-w-6xl py-6 sm:flex-row sm:px-6 lg:px-8 items-center">
             <div dangerouslySetInnerHTML={{ __html: terminos }} />
             </div>

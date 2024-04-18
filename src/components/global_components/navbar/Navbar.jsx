@@ -37,6 +37,10 @@ const Navbar = ({activo}) => {
     navigate("/yaganaste");
   }
 
+  const handleClickDashboard=()=>{
+    window.open("/dashboard");
+  }
+
   const handleClickLogo=()=>{
     navigate("/");
   }
@@ -48,10 +52,11 @@ const Navbar = ({activo}) => {
   const nivel = session ? session.data.nivel : "visitante";
   const nombre = session ? session.data.nombre:"";
   const yaGanaste=session ? session.data.permisos.perfil.yaGanaste:false;
+  const dashboard=session ? session.data.permisos.perfil.dashboard:false;
   const foto = session ? (session.data.fotos ? session.data.fotos.m : "") : "";
   const [isLoadingAdmin, setLoadingAdmin]=useState(false);
   const [isLoadingGoogle, setisLoadingGoogle] = useState(false)
-  const [isLoadingFacebook, setIsLoadingFacebook] = useState(false)
+  const [isLoadingFB, setIsLoadingFB] = useState(false)
   const gProvider = new GoogleAuthProvider();
   const fProvider = new FacebookAuthProvider();
 
@@ -151,6 +156,69 @@ const Navbar = ({activo}) => {
       });
   }
 
+  const handleClickFacebook=()=>{
+    if(!isLoadingFB){
+        signInWithPopup(auth, fProvider)
+        .then(async (result) => {
+            setIsLoadingFB(true);
+            // The signed-in user info.
+            const user = result.user;
+            try{
+                const random = () => Math.floor(Math.random() * 100);
+                const randomStr = Array.from({ length: 7 }, () => random()).join('');
+                const username = user.displayName ?? ('usuario' + randomStr.substring(0, 6));
+                const email = user.email??'';
+                var id = user.uid??randomStr;
+                var pass = encodePass(email);
+                if (email.trim() === '') {
+                    setIsLoadingFB(false)
+                    alert("Correo inválido, intente con otra cuenta")
+                    return;
+                }
+                const params={
+                    "id": id,
+                    "pass": pass,
+                    "servicio": Config.SERVICIO,
+                    "metodo": Config.METODO_EX_FB,
+                    "username": username, 
+                    "nombre": username,
+                    "email": email,
+                    "id_servicio": Config.IDSERVICIO,
+                    "id_metodo": Config.IDMETODO_EX_FB,
+                }
+                try {
+                    await loginRemote(params)
+                        .then((result) => {
+                            setIsLoadingFB(false)
+                            if(result){
+                                navigate(-1)
+                            }else{
+                                setIsLoadingFB(false)
+                                alert("Ha ocurrido un error, intente nuevamente")
+                            }
+                        })
+                        .catch((error) => { console.log(error) })
+    
+                } catch (error) {
+                    setIsLoadingFB(false)
+                    console.error("Error:", error);
+                }
+            }catch(e){
+
+            }
+        })
+        .catch((error) => {
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // The email of the user's account used.
+            const email = error.customData.email;
+            // The AuthCredential type that was used.
+            const credential = FacebookAuthProvider.credentialFromError(error);
+        });
+    }
+} 
+
   return (
     <header className="bg-greenVE-500">
       <div className="flex mx-auto max-w-6xl py-2 px-4 sm:px-6 lg:px-8">
@@ -185,9 +253,9 @@ const Navbar = ({activo}) => {
                               :<a  dangerouslySetInnerHTML={{ __html: icons.Data['LoginGoogleSM'] }} className='border p-2 rounded-md hover:border-greenVE-500' onClick={()=>handleClickGoogle()} />
                             }
                             {
-                              isLoadingFacebook
+                              isLoadingFB
                               ?<Spinner color="blue" className="text-greenVE-300"></Spinner>
-                              :<a  dangerouslySetInnerHTML={{ __html: icons.Data['LoginFacebookSM'] }} className='border p-2 rounded-md hover:border-greenVE-500' />
+                              :<a  dangerouslySetInnerHTML={{ __html: icons.Data['LoginFacebookSM'] }} className='border p-2 rounded-md hover:border-greenVE-500'  onClick={()=>handleClickFacebook()}/>
                             }
                           </div>
                         </>
@@ -230,6 +298,11 @@ const Navbar = ({activo}) => {
                       <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickYaGanaste}><div dangerouslySetInnerHTML={{ __html: icons.Data.CrearUsuario }}  /> Crear Suscripción</button>
                       :<></>
                     }
+                    {
+                      dashboard
+                      ?<button onClick={() => handleClickDashboard()} className="hover:bg-greenVE-200 w-full px-4 text-xs py-1 flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Dashboard }}  />Dashboard</button>
+                      :<></>
+                    }
                     <button onClick={() => handleClickLogOut()} className="hover:bg-greenVE-200 w-full px-4 text-xs py-1 flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Logout }}  />Cerrar sesión</button>
                   </div>
                 </ClickAwayListener>
@@ -240,7 +313,7 @@ const Navbar = ({activo}) => {
             {
               activo==null||activo==1?(
                 <button className="flex gap-1 text-white border-2 border-white rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300" onClick={handleClickInicio} >
-                <img src="./img/web/homeMenu.svg" style={{height:"25px"}}></img>
+                  <img src="./img/web/homeMenu.svg" style={{height:"25px"}}></img>
                   <label className="hidden md:flex cursor-pointer">Hospedaje</label>
                 </button>
               ):(

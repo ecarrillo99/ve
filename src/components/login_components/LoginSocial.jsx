@@ -137,9 +137,9 @@ const LoginSocial=()=>{
 
     return(
         <div className="flex flex-col items-center justify-center gap-4 ">
-            <button onClick={()=> navigate("/suscripcion")} className="bg-greenVE-500 px-4 py-1 rounded-md text-white w-1/2">Adquirir Suscripción</button>
-            <h1 className="text-center w-1/2 font-bold text-greenVE-700 text-xl ">Ó</h1>
-            <h1 className="text-center w-1/2 font-bold text-greenVE-700 text-xl ">PRUEBA GRATIS CON:</h1>
+            <button onClick={()=> navigate("/suscripcion")} className="bg-orange-500 md:bg-greenVE-500 px-4 py-1 rounded-md text-white w-3/4 md:w-1/2 ">Adquirir Suscripción</button>
+            <h1 className="text-center w-3/4 md:w-1/2  font-bold text-greenVE-700 text-base md:text-xl ">Ó</h1>
+            <h1 className="text-center w-3/4 md:w-1/2  font-bold text-greenVE-700 text-base md:text-xl ">PRUEBA GRATIS CON:</h1>
             <div className="flex gap-8 items-center justify-center">
                 {
                     isLoading

@@ -40,14 +40,16 @@ function App() {
 
 export default App;*/
 
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { Route, HashRouter as Router, Routes } from 'react-router-dom';
 import Short from './pages/Short/short';
 
 // Importa los componentes utilizando lazy
 const Home = lazy(() => import('./pages/home/Home'));
 const Hotel = lazy(() => import('./pages/hotel/Hotel'));
+const HotelMobile = lazy(() => import('./pages/hotel/HotelMobile'));
 const Search = lazy(() => import('./pages/search/search'));
+const SearchMobile = lazy(() => import('./pages/search/SearchMobile'));
 const Login = lazy(() => import('./pages/login/login'));
 const Suscription = lazy(() => import('./pages/suscription/Suscription'));
 const Profile = lazy(() => import('./pages/Profile/Profile'));
@@ -67,19 +69,32 @@ const handleOnClick=()=>{
   window.open(path, '_blank')
 }
 function App() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Definir 768 como el punto de corte para móvil
+
+    useEffect(() => {
+        const handleResize = () => {
+        setIsMobile(window.innerWidth < 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+        window.removeEventListener('resize', handleResize);
+        };
+    }, []);
   return (
     <>
     <Router>
       <Routes>
         <Route exact path="/" element={<Suspense /*fallback={<div>Loading...</div>}*/><Home /></Suspense>} />
         <Route path="/nosotros/:seccion?" element={<Suspense><About /></Suspense>} />
-        <Route path="/busqueda/" element={<Suspense><Search /></Suspense>} />
+        <Route path="/busqueda/" element={<Suspense>{isMobile?<SearchMobile />:<Search />}</Suspense>} />
         <Route path="/perfil/" element={<Suspense><Profile /></Suspense>} />
         <Route path="/historial/" element={<Suspense><BookHistory /></Suspense>} />
         <Route path="/favoritos/" element={<Suspense><Favorites /></Suspense>} />
         <Route path="/suscripcion/" element={<Suspense><Suscription /></Suspense>} />
         <Route path="/login/" element={<Suspense><Login /></Suspense>} />
-        <Route path="/hotel/:nombre" element={<Suspense><Hotel /></Suspense>} />
+        <Route path="/hotel/:nombre" element={<Suspense>{isMobile?<HotelMobile/>:<Hotel/>}</Suspense>} />
         <Route path="/politicas-privacidad/" element={<Suspense><Politicas /></Suspense>} />
         <Route path="/terminos-condiciones/" element={<Suspense><Terminos /></Suspense>} />
         <Route path="/certificado/" element={<Suspense><Certificado /></Suspense>} />

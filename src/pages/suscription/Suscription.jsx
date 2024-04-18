@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../../components/global_components/footer/Footer";
 import Navbar from "../../components/global_components/navbar/Navbar";
 import SuscriptionForm from "../../components/suscription_components/FormSuscription/suscription_form";
@@ -10,6 +10,7 @@ import DatafastFormUI from "../../components/suscription_components/FormPayment/
 import DataFastForm from "../../components/suscription_components/FormPayment/DataFastForm";
 import Icons from "../../global/icons";
 import FormPayment from "../../components/suscription_components/FormPayment/FormPayment";
+import NavbarMobile from "../../components/global_components/navbar/NavbarMobile";
 
 
 const Suscription = () => {
@@ -18,6 +19,19 @@ const Suscription = () => {
     const [tarjeta, setTarjeta] = useState();
     const [diferido, setDiferido] = useState();
     const [formPago, setformPago] = useState(<PayPhoneForm></PayPhoneForm>);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Definir 768 como el punto de corte para móvil
+
+    useEffect(() => {
+        const handleResize = () => {
+        setIsMobile(window.innerWidth < 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+        window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     const sliderRef = React.createRef();
     const icons = new Icons();
@@ -55,7 +69,11 @@ const Suscription = () => {
     };
     return (
         <div>
-            <Navbar></Navbar>
+            {
+                isMobile
+                ?<NavbarMobile/>
+                :<Navbar/>
+            }
                 <iframe
                     src="https://visitaecuador.com/compra"
                     width="100%"
