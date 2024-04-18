@@ -238,7 +238,7 @@ const HotelContacts = ({setOpenContacts, Establecimiento, options, date, selecci
                             <AccordionBody className="bg-white py-2 border-b">
                                 <div className="px-2  flex flex-col gap-4">
                                     {Establecimiento.ContactosCentral.Whatsapp.map((item, index) => (
-                                        <a onClick={()=>handleClickWhatsApp(item['valor'].replace(/\s/g, ''))} key={index} className="hover:text-greenVE-500">
+                                        <a onClick={()=>handleClickWhatsApp(item['formateado'].replace(/\s/g, ''))} key={index} className="hover:text-greenVE-500">
                                             <div className='flex gap-2 items-center justify-between'>
                                                 <div className='flex gap-1 items-center'>
                                                     <span className="icon-[mdi--whatsapp] h-5 w-5"></span>
