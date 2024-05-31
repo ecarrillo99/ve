@@ -38,7 +38,7 @@ const Footer = () => {
             </div>
           </div>
           <div className="w-1/2 md:w-1/4">
-            <h3 className="text-greenVE-700 font-bold text-sm">Desacargar APP</h3>
+            <h3 className="text-greenVE-700 font-bold text-sm">Descargar APP</h3>
             <div>
               <a href="https://apps.apple.com/ec/app/visitaecuador-com/id1385161516" target="_blank" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Descargar para iOS</a>
             </div>
@@ -47,7 +47,7 @@ const Footer = () => {
             </div>
           </div>
           <div className="w-1/2 md:w-1/4">
-            <h3 className="text-greenVE-700 font-bold text-sm">Contácanos</h3>
+            <h3 className="text-greenVE-700 font-bold text-sm">Contáctanos</h3>
             <div>
               <a href="" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Formulario de consulta</a>
             </div>

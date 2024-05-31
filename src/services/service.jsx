@@ -33,6 +33,10 @@ class GenericService {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }          
           const data = await response.json();
+          if([401, 404, 403, 1005, 100002, 100001].includes(data.codigo)){
+            localStorage.removeItem('datos')
+            window.location.href = "/";
+          }
           return data;
         } catch (error) {
           console.error('Cannot post to ' + url + '. error:' + error.message);

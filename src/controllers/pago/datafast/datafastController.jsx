@@ -1,7 +1,7 @@
 import Config from '../../../global/config';
 import PaymentService from '../../../services/payment/PaymentService';
 
-const { encodeURIComponent, dateFormat, btoa } = require('../../../global/util');
+import { dateFormat, btoa } from '../../../global/util';
 
 class DatafastController {
   constructor({persona, product} ) {
@@ -18,7 +18,7 @@ class DatafastController {
     };
 
     this.setInitParams(this.persona, this.product);
-    this.prepareRemotePayment(true, this.persona, this.product);
+    //this.prepareRemotePayment(true, this.persona, this.product);
   }
 
   static params({ persona, product }) {
@@ -29,7 +29,7 @@ class DatafastController {
     this.persona = persona;
     this.product = product;
   }
-
+  
   async prepareRemotePayment(reload, persona, product) {
     if (reload) {
       this.setInitParams(persona, product);
@@ -40,7 +40,7 @@ class DatafastController {
         this.reload = true;
         return _res
       } catch (e) {
-        console.log(e);
+        
       }
     } else {
       this.reload = false;
@@ -48,16 +48,17 @@ class DatafastController {
   }
 
   async checkRemotePaymentV3(id){
+    
     try{
+      
         const res= await new Promise(
             response=>setTimeout(()=>{
                 response(this._paymentService.verificarDFV3(id));
             }, 5000)
         );
-
         return res;
     }catch(e){
-
+        console.log(e);
     }
     return {}
   }
@@ -66,7 +67,7 @@ class DatafastController {
   _getUrlParams() {
     const cedulaDF = (this.persona.dni.length < 10) ? this.persona.dni.trim().padStart(10, '0') : this.persona.dni.trim();
     const date = dateFormat({ d: new Date() });
-    let subtotal = parseInt(this.product.precio_producto);
+    let subtotal = parseFloat(this.product.precio_producto);
     subtotal += subtotal * 0.12;
 
     const _param =
@@ -79,6 +80,7 @@ class DatafastController {
       "&customer.merchantCustomerId=" + cedulaDF +
       "&merchantTransactionId=transaction_" + btoa(cedulaDF + date) +
       "&customer.email=" + encodeURI(this.persona.email.trim()) +
+      "&customer.phone=" + encodeURI(this.persona.phone.trim()) +
       "&customer.identificationDocType=IDCARD" +
       "&customer.identificationDocId=" + cedulaDF.substring(0, 10) +
       "&risk.parameters[USER_DATA2]=" + Config.APPNAME +
@@ -87,9 +89,20 @@ class DatafastController {
       "&cart.items[0].price=" + subtotal.toFixed(2) +
       "&cart.items[0].quantity=1" +
       "&customParameters[SHOPPER_VAL_BASE0]=0" +
-      "&customParameters[SHOPPER_VAL_BASEIMP]=" + parseInt(this.product.precio_producto).toFixed(2) +
-      "&customParameters[SHOPPER_VAL_IVA]=" + (parseInt(this.product.precio_producto) * 0.12).toFixed(2);
-
+      "&customParameters[id_codigo_promocional]=" + encodeURI(this.product.id_codigo_promocional) +
+      "&customParameters[beneficio_cantidad_tiempo]=" + encodeURI(this.product.beneficio_cantidad_tiempo) +
+      "&customParameters[beneficio_tipo_tiempo]=" + encodeURI(this.product.beneficio_tipo_tiempo) +
+      "&customParameters[id_usuario_vendedor]=" + encodeURI(this.product.id_usuario_vendedor) +
+      "&customParameters[id_suscripcion_vendedor]=" + encodeURI(this.product.id_suscripcion_vendedor) +
+      "&customParameters[id_producto]=" + encodeURI(this.product.id_producto) +
+      "&customParameters[id_lista_precio_producto]=" + encodeURI(this.product.id_lista_precio_producto) +
+      "&customParameters[id_prod_suscripcion]=" + encodeURI(this.product.id_prod_suscripcion) +
+      "&customParameters[id_tipo_canal]=" + encodeURI(this.product.id_tipo_canal) +
+      "&customParameters[tipo_pago]=" + encodeURI(this.product.tipo_pago) +
+      "&customParameters[tipo_pago_boton]=" + encodeURI(this.product.tipo_pago_boton) +
+      "&customParameters[id_diferido]=" + encodeURI(this.product.id_diferido) +
+      "&customParameters[SHOPPER_VAL_BASEIMP]=" + parseFloat(this.product.precio_producto).toFixed(2) +
+      "&customParameters[SHOPPER_VAL_IVA]=" + (parseFloat(this.product.precio_producto) * 0.12).toFixed(2);
     return _param;
   }
 

@@ -86,6 +86,7 @@ export const gestionarSuscripcion=async function (params){
         const res = await suscripcionService.registroTransaccion(params);
         console.log(res)
         if(res.estado){
+            //suscripcionService.sendNotificationSubscription({"id_suscripcion_renovacion":res.data.id_suscripcion_renovacion})
             return res;
         }
         return false;

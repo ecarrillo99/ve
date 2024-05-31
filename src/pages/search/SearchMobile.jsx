@@ -34,6 +34,7 @@ const SearchMobile = () => {
     const [prices, setPrices] = useState([minPrice, maxPrice])
     const [data, setData] = useState(null)
     const [dataFinal, setDataFinal] = useState(null)
+    const [sinResultados, setSinResultados]=useState(false)
     const [selectedFiltro, setSelectedFiltro] = useState("0")
     const [openFilters, setOpenFilters] = useState(false);
     const filtro = new Filtro()
@@ -86,10 +87,12 @@ const SearchMobile = () => {
 
                         }
                     } else {
+                        setSinResultados(true);
                         console.log("falló");
                     }
                 })
         } catch (error) {
+            setSinResultados(true);
             console.error("Error:", error);
         }
     }
@@ -285,6 +288,11 @@ const SearchMobile = () => {
                         Destacado={coinEncontrada}
                     />
                 </Suspense>
+                :sinResultados?
+                <div className='flex flex-col justify-center items-center mt-10'>
+                    <span className="icon-[fluent--search-info-20-regular] h-28 w-28 text-greenVE-600"></span>
+                    <label className="text-center text-sm">La búsqueda no ha generado resultados.<br></br>Intenta con otras fechas, ciudad o establecimiento.</label>
+                </div>
                 :<Suspense><SearchResultSkeleton/></Suspense>
             }
             <Suspense><Footer/></Suspense>

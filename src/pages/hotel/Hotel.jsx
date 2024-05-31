@@ -45,6 +45,7 @@ const Hotel = () => {
   const {nombre}=useParams();
   const [clickRecomendados, setClickRecomendados]=useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Definir 768 como el punto de corte para móvil
+  console.log(options)
 
   useEffect(() => {
     const handleResize = () => {
@@ -171,7 +172,7 @@ const Hotel = () => {
           </div>
         </div>
         <div className="flex mx-auto max-w-6xl py-0 sm:px-6 lg:px-8">
-          <Suspense><HotelRecommended Establecimiento={establecimiento} Noches={noches} Personas={options.adult} SetRecomendados={setClickRecomendados} ></HotelRecommended></Suspense>
+          <Suspense><HotelRecommended Establecimiento={establecimiento} Noches={noches} Adultos={options.adult} Ninos ={(options.children!=null?options.children:0)} SetRecomendados={setClickRecomendados} ></HotelRecommended></Suspense>
         </div>
         <div className="flex flex-col md:flex-row mx-auto max-w-6xl py-0 sm:px-6 lg:px-8">
           <div className="md:w-9/12 mt-5 mb-5">

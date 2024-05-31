@@ -52,7 +52,7 @@ export const getCertificadoReserva=async function(IDs){
             "token":bd['token'],
         }        
         const res= await reservasService.getCertificadoReserva(params);
-        //console.log(res);
+        console.log(res);
         if(res.estado){
             const certificado= new Certificado();
             const impuestos= (parseInt(res['data'][0]['iva'])+parseInt(res['data'][0]['servicios']))/100;
@@ -107,6 +107,7 @@ export const getCertificadoReserva=async function(IDs){
                 habitacion.Impuestos=Number(habitacion.Impuestos);
                 habitacion.Total=parseInt(reserva["cantidad"])*parseInt(reserva["precio"]);
                 habitacion.Acomodacion=reserva["acomodacion"];
+                habitacion.AplicaEn = reserva["aplicaEn"];
                 habitacion.Ninos=reserva["ninosOferta"];
                 habitacion.Adultos=reserva["adultosOferta"];
                 habitaciones.push(habitacion);

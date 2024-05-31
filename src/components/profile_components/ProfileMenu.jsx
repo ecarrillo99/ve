@@ -33,36 +33,25 @@ const ProfileMenu = ({ handleChangeOption, selectedOption }) => {
 
     return (
         <div className="border rounded-md">
-            {
-                selectedOption == 1
-                    ? (
-                        <div className="flex items-center gap-3 px-4 py-2 cursor-pointer" onClick={() => handleChangeOption(1)}>
-                            <div className="bg-gray-100 p-2 rounded-full" dangerouslySetInnerHTML={{ __html: icons.Data.ProfileHov }} />
-                            <label className="font-medium cursor-pointer text-sm text-greenVE-500">Datos personales</label>
-                        </div>
-                    )
-                    : (
-                        <div className="flex items-center gap-3 px-4 py-2 cursor-pointer" onClick={() => handleChangeOption(1)}>
-                            <div className="bg-gray-100 p-2 rounded-full" dangerouslySetInnerHTML={{ __html: icons.Data.Profile }} />
-                            <label className="font-medium cursor-pointer text-sm hover:text-greenVE-500">Datos personales</label>
-                        </div>
-                    )
-            }
-            {
-                selectedOption == 2
-                    ? (
-                        <div className="flex items-center gap-3 px-4 py-2 cursor-pointer border-t" onClick={() => handleChangeOption(2)}>
-                            <div className="bg-gray-100 p-2 rounded-full" dangerouslySetInnerHTML={{ __html: icons.Data.SeguridadHov }} />
-                            <label className="font-medium cursor-pointer text-sm text-greenVE-500">Seguridad</label>
-                        </div>
-                    )
-                    : (
-                        <div className="flex items-center gap-3 px-4 py-2 cursor-pointer border-t" onClick={() => handleChangeOption(2)}>
-                            <div className="bg-gray-100 p-2 rounded-full" dangerouslySetInnerHTML={{ __html: icons.Data.Seguridad }} />
-                            <label className="font-medium cursor-pointer text-sm hover:text-greenVE-500">Seguridad</label>
-                        </div>
-                    )
-            }
+            <div className="flex items-center gap-3 px-4 py-2 cursor-pointer hover:text-greenVE-500" onClick={() => handleChangeOption(1)}>
+                <div className="bg-gray-100 h-9 w-9 rounded-full flex items-center justify-center">
+                    <span className={`${selectedOption == 1?"text-greenVE-500":""} icon-[material-symbols-light--person-edit-outline] h-8 w-8`}></span>
+                </div>
+                <label className={`${selectedOption==1?"text-greenVE-500":""} font-medium cursor-pointer text-sm `}>Datos personales</label>
+            </div>
+            <div className="flex items-center gap-3 px-4 py-2 cursor-pointer border-t hover:text-greenVE-500" onClick={() => handleChangeOption(3)}>
+                <div className="bg-gray-100 h-9 w-9 rounded-full flex items-center justify-center">
+                    <span className={`${selectedOption == 3?"text-greenVE-500":""} icon-[material-symbols-light--change-circle-outline-rounded] h-8 w-8`}></span>
+                </div>
+                <label className={`${selectedOption==3?"text-greenVE-500":""} font-medium cursor-pointer text-sm `}>Mi Cashback</label>
+            </div>
+            <div className="flex items-center gap-3 px-4 py-2 cursor-pointer border-t hover:text-greenVE-500" onClick={() => handleChangeOption(2)}>
+                <div className="bg-gray-100 h-9 w-9 rounded-full flex items-center justify-center">
+                    <span className={`${selectedOption == 2?"text-greenVE-500":""} icon-[cil--https] h-6 w-6`}></span>
+                </div>
+                <label className={`${selectedOption==2?"text-greenVE-500":""} font-medium cursor-pointer text-sm `}>Seguridad</label>
+            </div>
+            
         </div>
     );
 }

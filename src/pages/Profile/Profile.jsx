@@ -9,6 +9,7 @@ import { getProfileData } from "../../controllers/perfil/perfilController";
 import { getRemoteCities } from "../../controllers/lugares/lugaresController";
 import { sessionStatus } from "../../global/util";
 import NavbarMobile from "../../components/global_components/navbar/NavbarMobile";
+import Cashback from "../../components/profile_components/cashback/Cashback";
 
 const Profile=({})=>{
     const [selectedOption, setSelectedOption]=useState(1);
@@ -37,6 +38,9 @@ const Profile=({})=>{
         if(option==2){
             setSelectedMenu(<ProfilePassword/>)
         }
+        if(option==3){
+          setSelectedMenu(<Cashback/>)
+      }
     }
 
     useEffect(() => {

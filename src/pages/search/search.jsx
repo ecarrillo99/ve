@@ -26,22 +26,23 @@ const Search = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   //const [destination, setDestination] = useState(JSON.parse(decodeURIComponent(searchParams.get('destino'))));
-  const destination=JSON.parse(decodeURIComponent(searchParams.get('destino')));
+  const destination = JSON.parse(decodeURIComponent(searchParams.get('destino')));
   //const [options, setOptions] = useState(JSON.parse(decodeURIComponent(searchParams.get('opciones'))));
-  const options=JSON.parse(decodeURIComponent(searchParams.get('opciones')));
+  const options = JSON.parse(decodeURIComponent(searchParams.get('opciones')));
   const fechas = JSON.parse(decodeURIComponent(searchParams.get('fechas')))
   const dateTmp = [{
     startDate: new Date(fechas[0].startDate),
     endDate: new Date(fechas[0].endDate),
     key: new Date(fechas.key)
   }]
-  const [coinEncontrada, setCoinEncontrada]=useState(false);
+  const [coinEncontrada, setCoinEncontrada] = useState(false);
   //const [date, setDate] = useState(dateTmp);
   const date = dateTmp;
   const [minPrice, setMinPrice] = useState(10)
   const [maxPrice, setMaxPrice] = useState(1000)
   const [prices, setPrices] = useState([minPrice, maxPrice])
   const [data, setData] = useState(null)
+  const [sinResultados, setSinResultados] = useState(false);
   const [dataFinal, setDataFinal] = useState(null)
   const [filtroNombre, setFiltroNombre] = useState("Estrellas (Mayor a menor)")
   const [openFilters, setOpenFilters] = useState(false);
@@ -65,18 +66,18 @@ const Search = () => {
     try {
       getResultadoFiltro(filtro)
         .then((result) => {
-          
+
           if (result) {
             console.log(result)
-            if(result===401){
+            if (result === 401) {
               localStorage.removeItem("datos");
               window.location.reload();
-            }else{
+            } else {
               result.Establecimientos.sort((a, b) => {
                 // Comprueba si el nombre del hotel coincide con la palabra clave
                 const aCoincide = a.Titulo.toLowerCase().includes(filtro.txtBusqueda.toLowerCase());
                 const bCoincide = b.Titulo.toLowerCase().includes(filtro.txtBusqueda.toLowerCase());
-              
+
                 // Si uno de los hoteles coincide, ese se coloca primero
                 if (aCoincide && !bCoincide) {
                   setCoinEncontrada(true);
@@ -84,7 +85,7 @@ const Search = () => {
                 } else if (!aCoincide && bCoincide) {
                   return 1;
                 }
-              
+
                 // Si ninguno coincide o ambos coinciden, ordena por catalogación
                 return b.Catalogacion - a.Catalogacion;
               });
@@ -94,11 +95,13 @@ const Search = () => {
               setMaxPrice(parseFloat(result.PrecioMaximo))
               setPrices([parseFloat(result.PrecioMinimo), parseFloat(result.PrecioMaximo)])
             }
-          }else{
+          } else {
+            setSinResultados(true)
             console.log("falló");
           }
         })
     } catch (error) {
+      setSinResultados(true)
       console.error("Error:", error);
     }
   }
@@ -176,7 +179,7 @@ const Search = () => {
   const [checkboxStates, setCheckboxStates] = useState([]);
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: 'AIzaSyAwURL3bmODrFj1G0RUpgVT6DlGvlkhQzo',//"AIzaSyA6HUJy-ywbROEmCSK-Nx4-smVRLRVyR84",
-  }); 
+  });
 
   const handleCheckBoxChange = (id) => {
     setCheckboxStates(prevState => {
@@ -190,10 +193,10 @@ const Search = () => {
           servicios.push(servicio)
         }
       }
-  
+
       if (dataFinal) {
         const ofertasTmp = dataFinal.Establecimientos;
-  
+
         // Verifica si la lista de servicios está vacía y muestra la data completa
         if (servicios.length === 0) {
           const dataClone = { ...data };
@@ -201,30 +204,30 @@ const Search = () => {
           setData(dataClone);
           return updatedStates;
         }
-  
+
         const ofertasFiltradas = ofertasTmp.filter(establecimiento => {
           // Verifica si establecimiento.Servicios es un array y no es undefined
           const serviciosValidos = Array.isArray(establecimiento.Servicios) &&
             establecimiento.Servicios.some(servicio => servicios.includes(servicio.Valor));
-  
+
           // Verifica si establecimiento.Incluye es un valor válido y está en la lista de servicios
           const incluyeValidos = Array.isArray(establecimiento.Incluye) &&
             establecimiento.Incluye.some(servicio => servicios.includes(servicio.Valor));
-  
+
           // Verifica si establecimiento.ServiciosHab es un valor válido y está en la lista de servicios
           const serviciosHabValidos = Array.isArray(establecimiento.ServiciosHab) &&
             establecimiento.ServiciosHab.some(servicio => servicios.includes(servicio.Valor));
-  
+
           // Retorna true si al menos una de las condiciones se cumple
           return serviciosValidos || incluyeValidos || serviciosHabValidos;
         });
-  
+
         // Clona el objeto data para evitar modificar dataFinal
         const dataClone = { ...data };
         dataClone.Establecimientos = ofertasFiltradas;
         setData(dataClone);
       }
-  
+
       return updatedStates;
     });
   };
@@ -260,68 +263,68 @@ const Search = () => {
       <div className="mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 md:mt-0 -mt-6">
         {
           isMobile
-          ?<Suspense><SearchBar
-          type={4}
-            Place={destination}
-            Dates={date}
-            Options={options}
-            NewPage={true}
-          /></Suspense>
-          :<Suspense>
-            <SearchBar
-            type={1}
+            ? <Suspense><SearchBar
+              type={4}
               Place={destination}
               Dates={date}
               Options={options}
               NewPage={true}
-            />
-          </Suspense>
+            /></Suspense>
+            : <Suspense>
+              <SearchBar
+                type={1}
+                Place={destination}
+                Dates={date}
+                Options={options}
+                NewPage={true}
+              />
+            </Suspense>
         }
       </div>
       <div >
         {
           data && (
             <Suspense><MapScreen
-            isOpen={isModalOpen}
-            onClose={closeModal}
-            data={data.Establecimientos}
-            destination={destination}
-            date={date}
-            options={options} /></Suspense>
+              isOpen={isModalOpen}
+              onClose={closeModal}
+              data={data.Establecimientos}
+              destination={destination}
+              date={date}
+              options={options} /></Suspense>
           )
-          }
+        }
       </div>
       <div className="flex mx-auto max-w-6xl py-6 sm:px-6 lg:px-8">
 
         <div className="w-3/12 mr-5">
-          
+
           <div className="relative aspect-w-3 aspect-h-2 h-44 mb-4 z-0">
-                <div className="absolute w-full h-full z-10 aspect-w-3 rounded-md bg-gray-400 bg-opacity-20 flex items-center justify-center">
-                <button
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-greenVE-500 text-white px-3 py-1 rounded-full"
-              onClick={openModal}>
-              Ver en Mapa
-            </button>
-                </div>{
-                  
-                  data?
-                    <Suspense>
-                      <BingMapsReact
-                        bingMapsKey="AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z"
-                        viewOptions={{
-                          center: { latitude: data.Establecimientos[0].Latitud, longitude: data.Establecimientos[0].Longitud },
-                          zoom: 15,
-                          mapTypeId: "aerialWithLabels",
-                        }}
-                        mapOptions={{
-                          showZoomButtons: false,
-                          showMapTypeSelector: false,
-                          showBreadcrumb: false,
-                          showLocateMeButton: false,
-                        }}
-                      />
-                    </Suspense>
-                  
+            <div className="absolute w-full h-full z-10 aspect-w-3 rounded-md bg-gray-400 bg-opacity-20 flex items-center justify-center">
+              <button
+                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-greenVE-500 text-white px-3 py-1 rounded-full"
+                onClick={openModal}>
+                Ver en Mapa
+              </button>
+            </div>{
+
+              data ?
+                <Suspense>
+                  <BingMapsReact
+                    bingMapsKey="AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z"
+                    viewOptions={{
+                      center: { latitude: data.Establecimientos[0].Latitud, longitude: data.Establecimientos[0].Longitud },
+                      zoom: 15,
+                      mapTypeId: "aerialWithLabels",
+                    }}
+                    mapOptions={{
+                      showZoomButtons: false,
+                      showMapTypeSelector: false,
+                      showBreadcrumb: false,
+                      showLocateMeButton: false,
+                    }}
+                  />
+                </Suspense>
+
                   /*<GoogleMap
                   mapContainerStyle={{
                     width: '100%', // Ajuste el ancho al 100% para que se adapte al contenedor
@@ -337,17 +340,17 @@ const Search = () => {
                 >
                 </GoogleMap>*/:
                 <div className="mb-4 relative h-44 rounded-md">
-                <img src="./img/web/map.svg" className="w-full h-full object-cover rounded-md" />
-                <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 rounded-md"></div>
-                <button
-                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-greenVE-500 text-white px-3 py-1 rounded-full"
-                  onClick={openModal}>
-                  Ver en Mapa
-                </button>
-              </div>
-                }
-                
-              </div>
+                  <img src="./img/web/map.svg" className="w-full h-full object-cover rounded-md" />
+                  <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 rounded-md"></div>
+                  <button
+                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-greenVE-500 text-white px-3 py-1 rounded-full"
+                    onClick={openModal}>
+                    Ver en Mapa
+                  </button>
+                </div>
+            }
+
+          </div>
 
           <div className="border-2 rounded-md">
             <h2 className="font-bold text-lg pt-1 pl-2">Filtrar por</h2>
@@ -426,7 +429,10 @@ const Search = () => {
                     }
                   </div>
                 </div>
-              ) : (
+              ) :sinResultados?
+              <></>
+              
+              :(
                 Array(20).fill().map((_, index) => (
                   <div key={index} className="animate-pulse flex gap-2 m-3">
                     <div className="h-4 w-4 bg-gray-300 rounded-sm" />
@@ -443,11 +449,11 @@ const Search = () => {
             <div
               className="flex items-center gap-2 border-2 h-fit rounded-xl px-2 py-0.5 mb-3 text-sm cursor-pointer"
               onClick={() => data && setOpenFilters(!openFilters)}>
-                <div dangerouslySetInnerHTML={{ __html: icons.Data.Filtro }} />
-                 Ordenar por: {filtroNombre}
-                 <div dangerouslySetInnerHTML={{ __html: icons.Data.SelectArrows }} />
-                 </div>
-                
+              <div dangerouslySetInnerHTML={{ __html: icons.Data.Filtro }} />
+              Ordenar por: {filtroNombre}
+              <div dangerouslySetInnerHTML={{ __html: icons.Data.SelectArrows }} />
+            </div>
+
             {openFilters && (<div className="absolute mt-8 flex flex-col bg-white border rounded-md shadow-xl z-50" >
               <button
                 className="hover:bg-gray-200 px-2 py-1 text-sm"
@@ -517,7 +523,7 @@ const Search = () => {
                 <Suspense>
                   <SearchItem
                     key={index}
-                    firstElement={index===0?coinEncontrada?true:false:false}
+                    firstElement={index === 0 ? coinEncontrada ? true : false : false}
                     options={options}
                     date={date}
                     destination={destination}
@@ -526,12 +532,17 @@ const Search = () => {
                 </Suspense>
               ))
             )
-            : (<div>
-              <Suspense><SearchItemSkeleton /></Suspense>
-              <Suspense><SearchItemSkeleton /></Suspense>
-              <Suspense><SearchItemSkeleton /></Suspense>
-              <Suspense><SearchItemSkeleton /></Suspense>
-            </div>)
+            : sinResultados ?
+              <div className="flex flex-col items-center justify-center mt-10">
+                <span className="icon-[fluent--search-info-20-regular] h-28 w-28 text-greenVE-600"></span>
+                <label className="text-center">La búsqueda no ha generado resultados.<br></br>Intenta con otras fechas, ciudad o establecimiento.</label>
+              </div>
+              : (<div>
+                <Suspense><SearchItemSkeleton /></Suspense>
+                <Suspense><SearchItemSkeleton /></Suspense>
+                <Suspense><SearchItemSkeleton /></Suspense>
+                <Suspense><SearchItemSkeleton /></Suspense>
+              </div>)
           }
         </div>
       </div>

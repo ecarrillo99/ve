@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import Config from '../../global/config';
+import GenericService from '../service';
 
-class PaymentService {
+class PaymentService extends GenericService {
+
+    async validarCuentaJA(params) {
+        return this.post(Config.URL_SERVICIOS_PAGOS+'ApiJA.php', params);
+    }
+
     testPay = async (params) => {
         const res = await new Promise((resolve) => {
             setTimeout(() => {
@@ -133,6 +139,7 @@ class PaymentService {
 
     /// comprueba pago data fast api response
     verificarDFV3 = async (chekOutId) => {
+        
         const params = {
             id: chekOutId,
             id_servicio: Config.IDSERVICIO,
@@ -140,7 +147,7 @@ class PaymentService {
         };
 
         try {
-            const response = await fetch(Config.URL_SERVICIOS + Config.VERPAY + 'checkPagoDFv3.2/', {
+            const response = await fetch(Config.URL_SERVICIOS + Config.VERPAY + 'checkPagoDFv3.3/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -149,6 +156,7 @@ class PaymentService {
             });
 
             if (response.ok) {
+                
                 const data = await response.json();
                 return data;
             } else {

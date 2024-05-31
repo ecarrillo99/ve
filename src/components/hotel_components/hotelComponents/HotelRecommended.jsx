@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Accordion, AccordionBody, AccordionHeader } from '@material-tailwind/react';
 import Icons from '../../../global/icons';
+import { getIcon } from '../../../global/icons2';
 
 const HotelRecommended = (props) => {
-  const { Establecimiento, Noches, Personas, SetRecomendados } = props;
+  const { Establecimiento, Noches, Adultos, Ninos, SetRecomendados } = props;
   const icons = new Icons();
 
   function Icon({ id, open }) {
@@ -41,7 +42,7 @@ const HotelRecommended = (props) => {
 
   return (
     <div className="border-l border-r border-t rounded-lg w-full">
-      <label className="font-semibold p-2 text-xl">Recomendado para {Personas} personas y {Noches} noches </label>
+      <label className="font-semibold p-2 text-xl">Recomendado para {Adultos} {Adultos==1?"adulto":"adultos"}{Ninos==0?"":Ninos==1?`, ${Ninos} niño`:`, ${Ninos} niños`} y {Noches} {Noches==1?"noche":"noches"} </label>
       <div className="border-y w-full flex flex-col-reverse lg:flex-row rounded-b-lg">
         <div className="lg:w-10/12 w-full">
           {Establecimiento.Recomendados.map((item, index) => (
@@ -49,9 +50,17 @@ const HotelRecommended = (props) => {
               <div className="w-full lg:w-10/12 p-2 flex flex-col">
                 <label className="font-semibold text-sm text-greenVE-600">{item.NumOfertas} x {item.TituloOferta}</label>
                 <label className="ml-2 text-xs font-semibold text-gray-500">Personas:</label>
-                <div className="flex ml-6 text-sm items-center">
-                  <div dangerouslySetInnerHTML={{ __html: icons.Data['Adulto'] }} className="" />
+                <div className="flex ml-6 text-sm items-end">
+                  <span className="icon-[solar--user-rounded-outline] h-5 w-5 text-[#3d82f5]"></span>
                   <label className="text-gray-500 text-xs"> x {item.Adultos * item.NumOfertas} </label>
+                  {
+                    (item.Ninos)!=null
+                    ?<div className='flex items-end'>,  
+                      <span className="icon-[solar--user-rounded-outline] h-3.5 w-3.5 text-[#3d82f5] ml-1"></span>
+                      <label className="text-gray-500 text-xs"> x {item.Ninos * item.NumOfertas} </label>
+                    </div>
+                    :<></>
+                  }
                 </div>
                 <label className="ml-2 text-xs font-semibold text-gray-500">Acomodación:</label>
                 <div className="flex ml-6 text-sm items-center">
@@ -69,10 +78,12 @@ const HotelRecommended = (props) => {
                           <label className="text-xs font-semibold text-gray-500">Incluye</label>
                           {item.Incluye.map((itemIncluye, incluyeIndex) => (
                             <div key={incluyeIndex} className="flex gap-2 items-center">
-                              <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => itemIncluye.Titulo.includes(clave))] }} className="" />
+                              {
+                                getIcon({text:itemIncluye.Titulo, h:"h-5", w:"w-5", c:"text-[#3d82f5]"})
+                              }
                               <p
                                 dangerouslySetInnerHTML={{ __html: itemIncluye.Titulo }}
-                                className="my-0.5 text-xs leading-3 font-light text-gray-500"
+                                className="my-0.5 text-xs leading-3 font-light text-gray-500 w-11/12"
                               ></p>
                             </div>
                           ))}
@@ -83,10 +94,12 @@ const HotelRecommended = (props) => {
                           <label className="text-xs font-semibold text-gray-500">No Incluye</label>
                           {item.NoIncluye.map((itemNoIncluye, noIncluyeIndex) => (
                             <div key={noIncluyeIndex} className="flex gap-2 items-center">
-                              <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => itemNoIncluye.Titulo.includes(clave))] }} className="" />
+                              {
+                                getIcon({text:itemNoIncluye.Titulo, h:"h-5", w:"w-5", c:"text-[#3d82f5]"})
+                              }
                               <p
                                 dangerouslySetInnerHTML={{ __html: itemNoIncluye.Titulo }}
-                                className="my-0.5 text-xs font-light text-gray-500 leading-3"
+                                className="my-0.5 text-xs font-light text-gray-500 leading-3 w-11/12"
                               ></p>
                             </div>
                           ))}

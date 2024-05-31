@@ -4,11 +4,8 @@ import { calcularNoches, formatearFecha } from '../../../global/formatearFecha';
 
 const HotelRoomItem = ({date, oferta, index, selectedRooms, setSelectedRooms}) => {
     const [selectedOption, setSelectedOption] = useState(null);
-
     const handleChange = (event) => {
         const selectedValue = event.target.value;
-        
-        console.log(selectedValue==""?"0":selectedValue);
         setSelectedOption(selectedValue);
         const lista=[...selectedRooms];
         lista[index]=selectedValue==""?0:parseInt(selectedValue);
@@ -18,10 +15,14 @@ const HotelRoomItem = ({date, oferta, index, selectedRooms, setSelectedRooms}) =
         <div>
             <div className='w-full bg-white border border-gray-300 p-3 flex flex-col gap-2'>
                 <label className='font-semibold'>{oferta.TituloOferta}</label>
-                <div className='flex gap-2 items-center'>
-                    <span className="icon-[material-symbols--calendar-month-outline] h-5 w-5"></span>
-                    <label className='text-sm'>Aplica {oferta.AplicaEn.toLowerCase()}</label>
-                </div>
+                {
+                    oferta.AplicaEn!=null&&oferta.AplicaEn!=null
+                    ?<div className='flex gap-2 items-center'>
+                        <span className="icon-[material-symbols--calendar-month-outline] h-5 w-5"></span>
+                        <label className='text-sm'>Aplica {oferta.AplicaEn.toLowerCase()}</label>
+                    </div>
+                    :<></>
+                }
                 <div className='flex gap-2 items-center'>
                     <span className="icon-[material-symbols--bed-outline] h-5 w-5"></span>
                     <label className='text-sm'>Acomodación {oferta.Acomodacion.toLowerCase()}</label>
@@ -38,7 +39,6 @@ const HotelRoomItem = ({date, oferta, index, selectedRooms, setSelectedRooms}) =
                         </div>
                     ))
                 }
-                
                 <div >
                     <label className='text-sm'>Precio para {calcularNoches(date[0].startDate, date[0].endDate)} ({formatearFecha({ fecha: date[0].startDate, dia: true, mes: true })} - {formatearFecha({ fecha: date[0].endDate, dia: true, mes: true })})</label>
                     <div className=' flex gap-4 items-center'>

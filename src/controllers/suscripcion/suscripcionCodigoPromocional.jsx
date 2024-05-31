@@ -15,7 +15,10 @@ export const CheckPromocionalCode = async function(codigo) {
         if (res.estado) {
             const result = await SuscripcionProducto(res.data.id_codigo_promocional);
             if (result) {
-                return result;
+                return {
+                    codigo:res.data,
+                    productos: result
+                };
             } else {
                 return false;
             }

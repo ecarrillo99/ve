@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import DatosPersonales from "../../models/DatosPersonales";
 import Detalle from "../../models/Detalle";
 import PerfilService from "../../services/perfil/PerfilService";
+import SuscripcionService from "../../services/suscripcion/SuscripcionService";
 
 export const getProfileData = async function(){
     try{
@@ -126,4 +128,56 @@ export const changePromoCode = async function(code){
     }catch{
 
     }
+}
+
+export const getCashbackInformation = async function( fechInicio, fechaFin, tipo){
+    try{
+        var suscripcionService = new SuscripcionService();
+        var bd = JSON.parse(localStorage.getItem('datos'));
+        const params={
+            "token":bd['token'],
+            "fechas":[fechInicio, fechaFin],
+            "comision":tipo
+        }
+
+        const res = await suscripcionService.getInformacionCashback(params);
+        
+        if(res.estado){
+            var total =0;
+            if (res.data!=null&&res.data.red!=null){
+                res.data.red.forEach((item)=>{
+                    total+=parseFloat(item.valor);
+                })
+                
+            }
+            return {
+                "total":total,
+                "historial":res.data.red
+            };
+        }
+    }catch{
+        
+    }
+    return false;
+}
+
+export const setSolicitudCashback = async function(ids){
+    try{
+        var suscripcionService = new SuscripcionService();
+        var bd = JSON.parse(localStorage.getItem('datos'));
+        const params={
+            "token":bd['token'],
+            "ids_red":ids,
+        }
+        console.log(params);
+        const res = await suscripcionService.setSolicitudPagoCashback(params);
+        console.log(res);
+        if(res.estado){
+            suscripcionService.sendCorreoPagoCashback(res.data);
+            return res.estado;
+        }
+    }catch{
+
+    }
+    return false;
 }

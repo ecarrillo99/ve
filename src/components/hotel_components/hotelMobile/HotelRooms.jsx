@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 
 import HotelRoomItem from './HotelRoomItem';
 import HotelContacts from './HotelContacts';
+import BookAlert from './BookAlert';
+import { set } from 'date-fns';
+
 
 const HotelRooms = ({setOpenRooms, Establecimiento, date, options}) => {
     const [selectedRooms, setSelectedRooms]=useState(Array.from({ length: Establecimiento.Ofertas.length }, () => 0));
@@ -11,20 +14,31 @@ const HotelRooms = ({setOpenRooms, Establecimiento, date, options}) => {
     const [alertaGratuito, setAlertaGratuito]=useState(false)
     const [subtotal, setSubtotal]=useState(0);
     const [impuestos, setImpuestos]=useState(0);
+    const [mensaje, setMensaje] = useState(0);
+    const [openMensaje, setOpenMensaje] = useState(false);
     const navigate = useNavigate()
     const session = JSON.parse(localStorage.getItem("datos"));
     const nivel = session ? session.data.nivel : "visitante";
-    
-    useEffect(()=>{
-        var subTemp=0;
-        var impTemp=0;
+    var [adultos, setAdultos] = useState(0);
+    var [ninos, setNinos] = useState(0);
+    var [ninos, setNinos] = useState(0);
+    var [adultos, setAdultos] = useState(0);
+
+    useEffect(() => {
+        setAdultos(0)
+        setNinos(0);
+        var subTemp = 0;
+        var impTemp = 0;
         Establecimiento.Ofertas.forEach((item, index) => {
-            subTemp+=item.FinalSinImpuestos*selectedRooms[index]
-            impTemp+=item.Impuestos*selectedRooms[index]
+            subTemp += item.FinalSinImpuestos * selectedRooms[index];
+            impTemp += item.Impuestos * selectedRooms[index];
+            setAdultos(prevAdultos => prevAdultos + parseInt(item.Adultos) * selectedRooms[index]);
+            setNinos(prevNinos => prevNinos + parseInt((item.Ninos !== "" && item.Ninos != null) ? item.Ninos : 0) * selectedRooms[index]);
         });
         setSubtotal(subTemp);
         setImpuestos(impTemp);
-    }, [selectedRooms])
+    }, [selectedRooms]);
+
 
     const handleClickHome=()=>{
         navigate("/")
@@ -38,7 +52,37 @@ const HotelRooms = ({setOpenRooms, Establecimiento, date, options}) => {
             setAlertaGratuito(true)
         }
         if(nivel=='suscriptor'){
-            setOpenContacts(true)
+            if(options.children!=0){
+                if(ninos<options.children){
+                  if(adultos>=(options.children+options.adult)){
+                    setOpenContacts(true)
+                  }else if (options.children>options.adult){
+                    if ((ninos+adultos)>=(options.adult+options.children)){
+                        setOpenContacts(true)
+                    }if (options.adult<adultos){
+                        setOpenMensaje(true);
+                        setMensaje(`Todavia necesitas espacio para ${(options.children+options.adult)-adultos} ${((options.children+options.adult)-adultos)==1?"niño":"niños"}, selecciona más habitaciones para continuar.`)
+                    }else{
+                        setOpenMensaje(true);
+                        setMensaje(`Todavia necesitas espacio para ${options.children-ninos} ${(options.children-ninos)==1?"niño":"niños"} ${(options.adult-adultos)>0?`y ${options.adult-adultos} ${(options.adult-adultos)==1?"adulto":"adultos"}`:""}, selecciona más habitaciones para continuar. `)
+                    }
+                  }else if (options.adult<=adultos){
+                    setOpenMensaje(true);
+                    setMensaje(`Todavia necesitas espacio para ${(options.children+options.adult)-adultos} ${((options.children+options.adult)-adultos)==1?"niño":"niños"}, selecciona más habitaciones para continuar.`)
+                  }else{
+                    setOpenMensaje(true);
+                    setMensaje(`Todavia necesitas espacio para ${options.children-ninos} ${(options.children-ninos)==1?"niño":"niños"} ${(options.adult-adultos)>0?`y ${options.adult-adultos} ${(options.adult-adultos)==1?"adulto":"adultos"}`:""}, selecciona más habitaciones para continuar. `)
+                  }
+                }else if(ninos>=options.children||adultos>=options.adult){
+                    setOpenContacts(true)
+                }
+              }else if(adultos>=options.adult){
+                setOpenContacts(true)
+              }else{
+                setOpenMensaje(true);
+                setMensaje(`Todavia necesitas espacio para ${options.adult-adultos} ${(options.adult-adultos)==1?"adulto":"adultos"}, selecciona más habitaciones para continuar.`)
+              }
+            
         }
     }
 
@@ -137,6 +181,18 @@ const HotelRooms = ({setOpenRooms, Establecimiento, date, options}) => {
             {
                 openContacts
                 ?<HotelContacts setOpenContacts={setOpenContacts} Establecimiento={Establecimiento} options={options} date={date} seleccion={selectedRooms}/>
+                :<></>
+            }
+            {
+                openMensaje
+                ?<BookAlert 
+                    mensaje={mensaje} 
+                    setOpenMensaje={setOpenMensaje} 
+                    central = {Establecimiento.ContactosCentral.Whatsapp}
+                    hotel = {Establecimiento.Titulo}
+                    options={options}
+                    date = {date}>
+                </BookAlert>
                 :<></>
             }
         </div>

@@ -8,10 +8,10 @@ export const DefaultToken = async function () {
     const timestamp = new Date().getTime();
 
     // Concatena el número aleatorio y el timestamp
-    const deviceid = ramdomNum.toString() + timestamp.toString();
+    //const deviceid = ramdomNum.toString() + timestamp.toString();
     var token = false
     var params = {
-        "udid": deviceid
+        "udid": "invitadoweb"
     }
     try {
         const webService = new WebService;

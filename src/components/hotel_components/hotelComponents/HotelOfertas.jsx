@@ -4,6 +4,7 @@ import Icons from '../../../global/icons';
 import HotelConfirmation from './HotelConfirmation';
 import Alert from '../../global_components/alert/Alert';
 import { useNavigate } from 'react-router-dom';
+import { getIcon } from '../../../global/icons2';
 
 const HotelOfertas = (props) => {
   const { Establecimiento, Noches, Fechas, Opciones, clickRecomendados, SetRecomendados} = props;
@@ -12,9 +13,12 @@ const HotelOfertas = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAlertLoginOpen, setIsAlertLoginOpen] = useState(false);
   const [ofertas, setOfertas] = useState([]);
+  const [alerta, setAlerta]=useState("");
   const session = JSON.parse(localStorage.getItem("datos"));
   const nivel = session ? session.data.nivel : "visitante";
   const navigate = new useNavigate();
+  var adultos = 0;
+  var ninos = 0;
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -57,6 +61,7 @@ const HotelOfertas = (props) => {
   const [impuestos, setImpuestos] = useState(0);
 
   const handleSelectChange = (event, key) => {
+    setAlerta("");
     const newSelectedOptions = { ...selectedOptions };
     newSelectedOptions[key] = event.target.value;
     setSelectedOptions(newSelectedOptions);
@@ -80,6 +85,7 @@ const HotelOfertas = (props) => {
   };
 
   const handleClickReservar = () => {
+    setAlerta("");
     if (nivel == "suscriptor") {
       const ofertasList = [];
       for (const id in selectedOptions) {
@@ -88,10 +94,36 @@ const HotelOfertas = (props) => {
           objeto.NumOfertas = selectedOptions[id];
           objeto.TotalOfertas = (objeto.Final / objeto.Base) * selectedOptions[id];
           ofertasList.push(objeto);
+          adultos+=parseInt(objeto.Adultos)*objeto.NumOfertas
+          ninos+=parseInt((objeto.Ninos!=""&&objeto.Ninos!=null)?objeto.Ninos:0)*objeto.NumOfertas
         }
       }
       setOfertas(ofertasList);
-      setIsModalOpen(true);
+      if(Opciones.children!=0){
+        if(ninos<Opciones.children){
+          if(adultos>=(Opciones.children+Opciones.adult)){
+            setIsModalOpen(true);
+          }else if (Opciones.children>Opciones.adult){
+            if ((ninos+adultos)>=(Opciones.adult+Opciones.children)){
+              setIsModalOpen(true);
+            }if (Opciones.adult<adultos){
+              setAlerta(`Todavia necesitas espacio para ${(Opciones.children+Opciones.adult)-adultos} ${((Opciones.children+Opciones.adult)-adultos)==1?"niño":"niños"} `)
+            }else{
+              setAlerta(`Todavia necesitas espacio para ${Opciones.children-ninos} ${(Opciones.children-ninos)==1?"niño":"niños"} ${(Opciones.adult-adultos)>0?`y ${Opciones.adult-adultos} ${(Opciones.adult-adultos)==1?"adulto":"adultos"}`:""} `)
+            }
+          }else if (Opciones.adult<=adultos){
+            setAlerta(`Todavia necesitas espacio para ${(Opciones.children+Opciones.adult)-adultos} ${((Opciones.children+Opciones.adult)-adultos)==1?"niño":"niños"} `)
+          }else{
+            setAlerta(`Todavia necesitas espacio para ${Opciones.children-ninos} ${(Opciones.children-ninos)==1?"niño":"niños"} ${(Opciones.adult-adultos)>0?`y ${Opciones.adult-adultos} ${(Opciones.adult-adultos)==1?"adulto":"adultos"}`:""} `)
+          }
+        }else if(ninos>=Opciones.children||adultos>=Opciones.adult){
+          setIsModalOpen(true);
+        }
+      }else if(adultos>=Opciones.adult){
+        setIsModalOpen(true);
+      }else{
+        setAlerta(`Todavia necesitas espacio para ${Opciones.adult-adultos} ${(Opciones.adult-adultos)==1?"adulto":"adultos"}`)
+      }
     } else {
       setIsAlertLoginOpen(true);
     }
@@ -113,7 +145,7 @@ const HotelOfertas = (props) => {
     <>
       <HotelConfirmation Ofertas={ofertas} isOpen={isModalOpen} Establecimiento={Establecimiento} Fechas={Fechas} Valores={calcularTotal()} OnClose={() => handleClickCancelar()} Opciones={Opciones} />
       <Alert Titulo={"Acción no permitida"} Descripcion={nivel=="visitante"?"Debe iniciar sesión o registrarse para continuar":"La reserva con cuentas gratuitas solo está disponible en la app móvil."} isOpen={isAlertLoginOpen} Aceptar={nivel=="visitante"?handleClickLoginAlertAceptar: handleClickLoginAlertCancelar} Cancelar={handleClickLoginAlertCancelar}></Alert>
-      <div className='relative w-full'>
+      <div className='relative w-full z-0'>
         <div className='sticky top-0 z-10'>
           <div className='table-fixed w-full'>
             <table id={'tabla-ofertas'} className=" table-auto w-full">
@@ -165,7 +197,9 @@ const HotelOfertas = (props) => {
                                   <label className="text-xs font-semibold text-gray-500">No Incluye</label>
                                   {item.NoIncluye.map((itemNoIncluye, noIncluyeIndex) => (
                                     <div key={noIncluyeIndex} className="flex gap-2 items-center">
-                                      <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => itemNoIncluye.Titulo.includes(clave))] }} className="" />
+                                      {
+                                        getIcon({text:itemNoIncluye.Titulo, h:"h-5", w:"w-5", c:"text-[#3d82f5]"})
+                                      }
                                       <p dangerouslySetInnerHTML={{ __html: itemNoIncluye.Titulo }} className="my-0.5 text-xs font-light text-gray-500 leading-3"></p>
                                     </div>
                                   ))}
@@ -176,7 +210,9 @@ const HotelOfertas = (props) => {
                                   <label className="text-xs font-semibold text-gray-500">Restricciones</label>
                                   {item.Restricciones.map((itemRestricciones, restriccionesIndex) => (
                                     <div key={restriccionesIndex} className="flex gap-2 items-center">
-                                      <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => itemRestricciones.Titulo.includes(clave))] }} className="" />
+                                      {
+                                        getIcon({text:itemRestricciones.Titulo, h:"h-5", w:"w-5", c:"text-[#3d82f5]"})
+                                      }
                                       <p dangerouslySetInnerHTML={{ __html: itemRestricciones.Titulo }} className="text-sm my-0.5 text-xs leading-3 font-light text-gray-500"></p>
                                     </div>
                                   ))}
@@ -187,7 +223,9 @@ const HotelOfertas = (props) => {
                                   <label className="text-xs font-semibold text-gray-500">Sistema de Servicios</label>
                                   {item.SistemaServicios.map((itemSistemaServicios, sistemaServiciosIndex) => (
                                     <div key={sistemaServiciosIndex} className="flex gap-2 items-center">
-                                      <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => itemSistemaServicios.Titulo.includes(clave))] }} className="" />
+                                      {
+                                        getIcon({text:itemSistemaServicios.Titulo, h:"h-5", w:"w-5", c:"text-[#3d82f5]"})
+                                      }
                                       <p dangerouslySetInnerHTML={{ __html: itemSistemaServicios.Titulo }} className="text-sm my-0.5 text-xs leading-3 font-light text-gray-500"></p>
                                     </div>
                                   ))}
@@ -203,7 +241,7 @@ const HotelOfertas = (props) => {
                         <div className="flex ml-1 text-sm">
                           {
                             Array.from({ length: item.Adultos }).map((item) => (
-                              <div dangerouslySetInnerHTML={{ __html: icons.Data['Adulto'] }} className="" />
+                              <span className="icon-[solar--user-rounded-outline] h-4 w-4 text-[#3d82f5]"></span>
                             ))
                           }
                         </div>
@@ -212,7 +250,7 @@ const HotelOfertas = (props) => {
                             <label> +</label>
                             {
                               Array.from({ length: item.Ninos }).map((item) => (
-                                <div dangerouslySetInnerHTML={{ __html: icons.Data['niños'] }} className="" />
+                                <span className="icon-[solar--user-rounded-outline] h-3 w-3 text-[#3d82f5]"></span>
                               ))
                             }
                           </div>
@@ -224,6 +262,7 @@ const HotelOfertas = (props) => {
                       <div className="flex flex-col p-2 items-center justify-center">
                         <label className="font-semibold text-2xl">${item.FinalSinImpuestos}</label>
                         <label className="text-xs text-gray-500"> + ${item.Impuestos} de impuestos</label>
+                        <label className="text-[10.5px] mt-1 text-red-500 line-through">Tarifa rack ${item.Rack} </label>
                       </div>
                     </td>
                     <td className="border p-2">
@@ -265,6 +304,12 @@ const HotelOfertas = (props) => {
                           <button className="bg-greenVE-500 text-white py-1 px-2 rounded-lg border-greenVE-600 border-2" onClick={() => handleClickReservar()}>
                             Confirmar
                           </button>
+                          <label className='text-xxs text-red-500 font-medium max-w-[110px]'>{alerta}</label>
+                          {
+                            alerta!=""
+                            ?<label className='text-xxs text-blue-700 mt-5 font-medium max-w-[110px]'>Si necesitas ayuda, contáctate con nuestra central de reservas</label>
+                            :<></>
+                          }
                         </div>
                       </td>
                     )}

@@ -49,7 +49,7 @@ const HistoryItem = ({ reserva }) => {
                     <label className={reserva.Estado === "Confirmada" ? "text-xs text-greenVE-500" : reserva.Estado === "Cancelada" ? "text-xs text-red-500" : "text-xs text-yellow-500"}>{reserva.Estado}</label>
                 </div>
                 <div className="w-2/6 md:w-1/12 flex flex-col justify-center items-end">
-                    <label className="font-bold cursor-pointer">US${reserva.Total}.00</label>
+                    <label className="font-bold cursor-pointer">US${reserva.Total.toFixed(2)}</label>
                     <button className="bg-greenVE-500 px-1 py-0.5 rounded-lg mt-8 text-white text-sm font-medium">Imprimir</button>
                 </div>
             </div>

@@ -109,7 +109,7 @@ const OffersBanner = () => {
         <h6 className="text-md">En hoteles TOP, el mejor precio certificado. Pero en serio.</h6>
       </div>
       <div>
-        <Slider {...settings} spaceBetween={10}>
+        <Slider {...settings} >
           {data ? (
             data.map((oferta, index) => (
               <div key={index} className="border-4 border-white">

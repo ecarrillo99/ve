@@ -44,7 +44,7 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
                     navigate("/historial");
                 }
             } catch (e) {
-
+                
             }
         }
     };

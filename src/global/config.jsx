@@ -5,6 +5,10 @@ class Config {
         //return "http://test.visitaecuador.com/v1.7";
         //return "http://181.198.122.14:8080/v1.7";
     }
+
+    static get URL_SERVICIOS_PAGOS() {
+        return "https://dev.visitaecuador.com/";
+    }
     
     static get URL_WEB() {
         return "https://www.visitaecuador.com/";
@@ -143,7 +147,9 @@ class Config {
     }
     
     static get RECIBE_DATAFAST() {
-        return "https://visitaecuador.com/compratest/transaction/dfcv/";
+        //return "https://visitaecuador.com/compratest/transaction/dfcv/";
+        //return "https://visitaecuador.com/#/suscripcion/";
+        return "/#/bienvenida";
     }
 
     static get MENSAJE(){

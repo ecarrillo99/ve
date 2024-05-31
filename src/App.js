@@ -61,7 +61,8 @@ const Terminos = lazy(() => import('./pages/Terminos/Terminos'));
 const Certificado = lazy(() => import('./pages/Certificado/Certificado'));
 const Disney = lazy(() => import('./pages/Disney/Disney'));
 const YaGanaste = lazy(() => import('./pages/yaganaste/yaganaste'));
-const contactos = ["593986263432", "593980644467", "593981850436"]
+const Bienvenida = lazy(()=>import("./pages/Bienvenida/Bienvenida"));
+const contactos = ["593986263432", "593980644467", "593981850436"];
 
 const handleOnClick = () => {
   const contacto = contactos[Math.floor(Math.random() * contactos.length)];
@@ -101,6 +102,7 @@ function App() {
           <Route path="/disney/" element={<Suspense><Disney /></Suspense>} />
           <Route path="/yaganaste/" element={<Suspense><YaGanaste /></Suspense>} />
           <Route path="/short/:id" element={<Suspense><Short /></Suspense>} />
+          <Route path="/bienvenida" element={<Suspense><Bienvenida /></Suspense>} />
         </Routes>
       </Router>
       {!isMobile ? <div className="fixed bottom-5 right-0 bg-transparent  py-2 rounded-full cursor-pointer" onClick={() => handleOnClick()}>

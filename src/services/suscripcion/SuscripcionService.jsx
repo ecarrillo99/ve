@@ -55,9 +55,20 @@ class SuscripcionService extends GenericService{
         return await this.post(url, params);
     }
     async getInformacionCashback(params){
-        const url = `${Config.URL_SERVICIOS}${Config.VERSUS}getCashBackResumenPorCliente/`;
+        const url = `${Config.URL_SERVICIOS}${Config.VERSUS}getRedPorCliente/`;
         return await this.post(url, params);
     }
+
+    async setSolicitudPagoCashback(params){
+        const url = `${Config.URL_SERVICIOS}${Config.VERSUS}setSolicitudPagoCashback/`;
+        return await this.post(url, params);
+    }
+
+    async sendCorreoPagoCashback(params){
+        const url = `${Config.URL_SERVICIOS}${Config.VERINFO}contactanos/`;
+        return await this.post(url, params);
+    }
+
     async getInformacionAmigosCashback(params){
         const url = `${Config.URL_SERVICIOS}${Config.VERSUS}getRedPorCliente/`;
         return await this.post(url, params);

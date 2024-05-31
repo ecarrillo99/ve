@@ -315,9 +315,16 @@ const Certificado = () => {
           </View>
           {reserva.Habitaciones.map((item, index) => (
             <View key={index} style={styles.row}>
-              <View style={styles.column}>
+              <View style={{...styles.column, width:"100%"}}>
                 <Text style={{ ...styles.paragraph, fontSize: 8 }}>
-                  {item.Cantidad} x {item.Nombre} (Máximo: {item.Adultos} {item.Adultos==1?" adulto":"adultos"}{item.Ninos==0?"":", "+item.Ninos+" "+(item.Ninos==1?"niño":"niños")})
+                  {item.Cantidad} x {item.Nombre} (Máximo: {item.Adultos} {item.Adultos==1?" adulto":"adultos"}{item.Ninos==0?"":", "+item.Ninos+" "+(item.Ninos==1?"niño":"niños")}), <Text style={
+                    {
+                      ...{
+                        fontFamily: 'Montserrat-Bold',
+                        color: '#3b82f6',
+                        marginLeft: 4,
+                      }
+                    }}>* Aplica {item.AplicaEn.toLowerCase()}</Text>
                 </Text>
               </View>
               <View style={styles.column}>
@@ -369,7 +376,7 @@ const Certificado = () => {
             </View>
             <View style={styles.column}>
               <Text style={{ ...styles.paragraph, textAlign: 'right', fontSize: 8, fontFamily: 'Montserrat-Bold' }}>
-                ${reserva.Total}.00
+                ${reserva.Total}
               </Text>
             </View>
           </View>

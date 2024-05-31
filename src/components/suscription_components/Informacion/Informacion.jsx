@@ -1,0 +1,406 @@
+import React, { useEffect, useState } from 'react';
+import { getRemoteTarjetas } from '../../../controllers/pago/pagoController';
+import { Select, SelectItem } from '@tremor/react';
+
+const Informacion = ({setOpcion, persona, setPersona, setPago}) => {
+    console.log(persona);
+    const [typePayment, setTypePayment] = useState();
+    const [nombres, setNombres] = useState(persona!=null?persona.nombres:"");
+    const [cedula, setCedula] = useState(persona!=null?persona.cedula:"");
+    const [celular, setCelular] = useState(persona!=null?persona.telefono:"");
+    const [correo, setCorreo] = useState(persona!=null?persona.correo:"");
+    const [listaBancos, setListaBancos] = useState();
+    const [banco, setBanco] = useState();
+    const [listaTD, setListaTD] = useState();
+    const [tarjetaDebito, setTarjetaDebito] = useState();
+    const [tarjetaCredito, setTarjetaCredito] = useState();
+    const [botonPago, setBotonPago]=useState();
+    const [diferido, setDiferido] = useState();
+    const [errorCedula, setErrorCedula] = useState(false);
+    const [errorNombres, setErrorNombres] = useState(false);
+    const [errorCelular, setErrorCelular] = useState(false);
+    const [errorCorreo, setErrorCorreo] = useState(false);
+    const [errorTipoPago, setErrorTipoPago] = useState(false);
+    const [errorBanco, setErrorBanco] = useState(false);
+    const [errorTC, setErrorTC] = useState(false);
+    const [errorDiferido, setErrorDiferido] = useState(false);
+    const [errorTD, setErrorTD] = useState(false);
+    const [errorBotonPago, setErrorBotonPago] = useState(false);
+    const [errorCheck, setErrorCheck] = useState(false);
+    const [isChecked, setIsChecked] = useState(false);
+
+    const handleCheckboxChange = () => {
+        setIsChecked(!isChecked);
+    };
+
+
+    const handleChangeNombres=(event)=>{
+        setNombres(event.target.value)
+    }
+
+    const handleChangeCedula=(event)=>{
+        setCedula(event.target.value)
+    }
+
+    const handleChangeCelular=(event)=>{
+        setCelular(event.target.value)
+    }
+
+    const handleChangeCorreo=(event)=>{
+        setCorreo(event.target.value)
+    }
+
+    const handleChangeTypePayment = (event) => {
+        setTypePayment(event);
+        setBanco(0);
+        setTarjetaDebito(0);
+        setBotonPago(0);
+        setTarjetaCredito(0)
+        setDiferido(0);
+    };
+
+    const handleChangeBanco= (event) => {
+        setTarjetaCredito(0);
+        setDiferido(0);
+        setBanco(event);
+        
+    };
+
+    const handleChangeTD= (event) => {
+        setTarjetaDebito(event);
+    };
+
+    const handleChangeBotonPago = (event)=>{
+        setBotonPago(event)
+    }
+
+    const handleChangeTC = (event)=>{
+        setTarjetaCredito(event)
+        setDiferido(0)
+    }
+
+    const handleChangeDiferido = (event)=>{
+        setDiferido(event)
+    }
+
+    useEffect(
+        ()=>{
+            getRemoteTarjetas().then((resp)=>{
+                if(resp){
+                    setListaBancos(resp[0].ListaBancos)
+                    console.log(resp);
+                    setListaTD(resp[1].ListaBancos[0].ListaTarjetas)
+                }
+            })
+        },[]
+    )
+
+    const handleClickContinuar=()=>{
+        var error =false;
+        if(!nombres){
+            setErrorNombres(true);error=true;
+        }else{
+            setErrorNombres(false);
+        }
+        if(!cedula){
+            setErrorCedula(true);error=true;
+        }else{
+            setErrorCedula(false);
+        }
+        if(!celular){
+            setErrorCelular(true);error=true;
+        }else{
+            setErrorCelular(false);
+        }
+        if(!correo){
+            setErrorCorreo(true);error=true;
+        }else{
+            setErrorCorreo(false);
+        }
+        if(!typePayment||typePayment==0){
+            setErrorTipoPago(true);error=true;
+        }else{
+            setErrorTipoPago(false)
+        }
+        if((!banco||banco==0)&&typePayment==1){
+            setErrorBanco(true);error=true;
+        }else{
+            setErrorBanco(false);
+        }
+        if((banco||banco!=0)&&(!tarjetaCredito||tarjetaCredito==0)&&typePayment==1){
+            setErrorTC(true);error=true;
+        }else{
+            setErrorTC(false);
+        }
+        if((tarjetaCredito||tarjetaCredito!=0)&&(!diferido||diferido==0)&&typePayment==1){
+            setErrorDiferido(true);error=true;
+            console.log("ingreso")
+        }else{
+            setErrorDiferido(false);
+        }
+        if((!tarjetaDebito||tarjetaDebito==0)&&typePayment==2){
+            setErrorTD(true);error=true;
+        }else{
+            setErrorTD(false)
+        }
+        if((!botonPago||botonPago==0)&&typePayment==3){
+            setErrorBotonPago(true);error=true;
+        }else{
+            setErrorBotonPago(false)
+        }
+        /*if(!isChecked){
+            setErrorCheck(true);error=true;
+        }else{
+            setErrorCheck(false)
+        }*/
+
+        if(!error){
+            const datos = {
+                nombres: nombres,
+                cedula: cedula,
+                telefono: celular,
+                correo: correo,
+                ciudad: 256,
+            }
+            if(typePayment==1){
+                const tarjeta = listaBancos[banco-1].ListaTarjetas[tarjetaCredito-1].Nombre;
+                const tarjetaLogo = listaBancos[banco-1].ListaTarjetas[tarjetaCredito-1].Logo;
+                const bancoLogo = listaBancos[banco-1].Logo;
+                var pago = listaBancos[banco-1].ListaTarjetas[tarjetaCredito-1].ListaDiferidos[diferido-1];
+                pago.Tarjeta = tarjeta=="Visa"?"VISA":tarjeta=="MasterCard"?"MASTER":tarjeta=="Alia"?"ALIA":tarjeta=="AmericanExpress"?"AMEX":"";
+                pago.LogoBanco = bancoLogo;
+                pago.LogoTarjeta = tarjetaLogo;
+
+                setPersona(datos);
+                setPago(pago);
+                setOpcion(4);
+            }
+            if(typePayment==3){
+                var pago={
+                    IdTipoBotonPago: botonPago==1?"7":"8",
+                    botonLogo:botonPago==1?"./img/web/pp_logo.jpg":"./img/web/ja_logo.png",
+                    Meses:"1"
+                };
+                
+                console.log(pago);
+                setPersona(datos);
+                setPago(pago);
+                setOpcion(4);
+            }
+            //selMap.set("tarjeta",)
+
+            //console.log(selDif);
+        }else{
+            console.log("error")
+        }
+    }
+    return (
+        <div className='flex flex-col bg-gray-200 p-3 rounded-lg'>
+            <label className='font-semibold text-2xl'>Datos personales y de pago</label>
+            <label className='text-sm font-light text-gray-500 italic'>Ingresa tus información personal y datos de pago. Todos los datos son obligatorios</label>
+            <div className='border-b border-gray-400 my-2'></div>
+            <div>
+                <div className='flex flex-wrap gap-x-4 gap-y-4 justify-center'>
+                    <div className={`w-2/5 border ${errorCedula?"border-red-500":"border-gray-300"} bg-white flex  items-center px-3 py-1.5 gap-2`}>
+                        <span className={`icon-[material-symbols-light--id-card-outline-rounded] h-6 w-6 ${errorCedula?"text-red-500":"text-gray-600"}`}></span>
+                        <input
+                            value={cedula}
+                            onChange={handleChangeCedula}
+                            className={`text-sm w-full focus:outline-none focus:ring-0 focus:border-transparent border-0 ${errorCedula?"placeholder:text-red-500":""}`}
+                            placeholder='Documento de identidad'
+                        ></input>
+                    </div>
+                    <div className={`w-2/5 border ${errorNombres?"border-red-500":"border-gray-300"} bg-white flex  items-center px-3 py-1.5 gap-2`}>
+                        <span className={`icon-[mdi-light--account] h-6 w-6 ${errorNombres?"text-red-500":"text-gray-600"}`}></span>
+                        <input
+                            value={nombres}
+                            onChange={handleChangeNombres}
+                            className={`text-sm w-full focus:outline-none focus:ring-0 focus:border-transparent ${errorNombres?"placeholder:text-red-500":""}`}
+                            placeholder='Nombres y apellidos'
+                        ></input>
+                    </div>
+                    <div className={`w-2/5 border ${errorCelular?"border-red-500":"border-gray-300"} bg-white flex  items-center px-3 py-1.5 gap-2`}>
+                        <span className={`icon-[material-symbols-light--phone-android-outline] h-6 w-6 ${errorCelular?"text-red-500":"text-gray-600"}`}></span>
+                        <input
+                            value={celular}
+                            onChange={handleChangeCelular}
+                            className={`text-sm w-full focus:outline-none focus:ring-0 focus:border-transparent border-0 ${errorCelular?"placeholder:text-red-500":""}`}
+                            placeholder='Celular'
+                        ></input>
+                    </div>
+                    <div className={`w-2/5 border ${errorCorreo?"border-red-500":"border-gray-300"} bg-white flex  items-center px-3 py-1.5 gap-2`}>
+                        <span className={`icon-[material-symbols-light--mail-outline] h-6 w-6 ${errorCorreo?"text-red-500":"text-gray-600"}`}></span>
+                        <input
+                            value={correo}
+                            onChange={handleChangeCorreo}
+                            className={`text-sm w-full focus:outline-none focus:ring-0 focus:border-transparent border-0 ${errorCorreo?"placeholder:text-red-500":""}`}
+                            placeholder='Correo electrónico'
+                        ></input>
+                    </div>
+                    <div className={`w-2/5   bg-white flex  items-center   gap-2  border ${errorTipoPago?"border-red-400":""}`}>
+                        <Select  
+                            value={typePayment}
+                            placeholder={
+                                <div className='flex items-center'>
+                                    <span className={`icon-[f7--money-dollar] h-5 w-5 ${errorTipoPago?"text-red-500":"text-gray-600"}`}></span>
+                                    <label className={`${errorTipoPago?"text-red-500":""}`}>Seleccione tipo de pago</label>
+                                </div>
+                            }
+                            onValueChange={handleChangeTypePayment}>
+                                <SelectItem value={1}>Crédito</SelectItem>
+                                <SelectItem value={2}>Débito</SelectItem>
+                                <SelectItem value={3}>Otros / Botones de pago</SelectItem>
+                        </Select>
+                       
+                    </div>
+                    {
+                        typePayment==1 && <div className={`w-2/5   bg-white flex  items-center   gap-2 border ${errorBanco?"border-red-400":""}`}>
+                            
+                            <Select  
+                                value={banco}
+                                placeholder={
+                                    <div className='flex items-center gap-2'>
+                                        <span className={`icon-[basil--bank-outline] h-5 w-5 ${errorBanco?"text-red-500":"text-gray-600"}`}></span>
+                                        <label className={`${errorBanco?"text-red-500":""}`}>Seleccione banco emisor</label>
+                                    </div>
+                                }
+                                onValueChange={handleChangeBanco}>
+                                    {
+                                        listaBancos.map((item, index)=>(
+                                            <SelectItem value={index+1}>
+                                                <div className='flex gap-1 items-center'>
+                                                    <img src={item.Logo} className='w-5 h-5'/>
+                                                    <label>{item.Nombre}</label>
+                                                </div>
+                                            </SelectItem>
+                                    ))
+                                }
+                            </Select>
+                        </div>
+                    }
+                    {
+                        typePayment==2 && <div className={`w-2/5   bg-white flex  items-center   gap-2 border ${errorTD?"border-red-500":""}`}>
+                            
+                            <Select  
+                                value={tarjetaDebito}
+                                placeholder={
+                                    <div className='flex items-center gap-2'>
+                                        <span className={`icon-[material-symbols-light--credit-card-outline] h-5 w-5 ${errorTD?"text-red-500":"text-gray-600"}`}></span>
+                                        <label className={`${errorTD?"text-red-500":""}`}>Seleccione marca de tarjeta</label>
+                                    </div>
+                                }
+                                onValueChange={handleChangeTD}>
+                                    {
+                                        listaTD.map((item, index)=>(
+                                            <SelectItem value={index+1}>
+                                                <div className='flex gap-1 items-center'>
+                                                    <img src={item.Logo} className='w-5 h-5'/>
+                                                    <label>{item.Nombre}</label>
+                                                </div>
+                                            </SelectItem>
+                                    ))
+                                }
+                            </Select>
+                        </div>
+                    }
+                    
+                    {
+                        typePayment==3 && <div className={`w-2/5   bg-white flex  items-center   gap-2 border ${errorBotonPago?"border-red-500":""}`}>
+                            
+                            <Select  
+                                value={botonPago}
+                                placeholder={
+                                    <div className='flex items-center gap-2'>
+                                        <span className={`icon-[ph--wallet-light] h-5 w-5 ${errorBotonPago?"text-red-500":"text-gray-600"}`}></span>
+                                        <label className={`${errorBotonPago?"text-red-500":""}`}>Seleccione opción</label>
+                                    </div>
+                                }
+                                onValueChange={handleChangeBotonPago}>
+                                <SelectItem value={1}>
+                                    <div className='flex gap-1 items-center'>
+                                        <img src='./img/web/pp_logo.jpg'  className='w-5 h-5'/>
+                                        <label>PayPhone</label>
+                                    </div>
+                                </SelectItem>
+                                <SelectItem value={2}>
+                                    <div className='flex gap-1 items-center'>
+                                        <img src='./img/web/ja_logo.png'  className='w-5 h-5'/>
+                                        <label>Cooperativa Jardín Azuayo</label>
+                                    </div>
+                                </SelectItem>
+                            </Select>
+                        </div>
+                    }
+                    {
+                        (banco!=null&&banco!=0)&&<div className={`w-2/5   bg-white flex  items-center   gap-2 border ${errorTC?"border-red-500":""}`}>
+                            
+                        <Select  
+                            value={tarjetaCredito}
+                            placeholder={
+                                <div className='flex items-center gap-2'>
+                                    <span className={`icon-[material-symbols-light--credit-card-outline] h-5 w-5 ${errorTC?"text-red-500":"text-gray-600"}`}></span>
+                                    <label className={`${errorTC?"text-red-500":""}`}>Seleccione marca de tarjeta</label>
+                                </div>
+                            }
+                            onValueChange={handleChangeTC}>
+                                {
+                                    listaBancos[banco-1].ListaTarjetas.map((item, index)=>(
+                                        <SelectItem value={index+1}>
+                                            <div className='flex gap-1 items-center'>
+                                                <img src={item.Logo} className='w-5 h-5'/>
+                                                <label>{item.Nombre}</label>
+                                            </div>
+                                        </SelectItem>
+                                ))
+                            }
+                        </Select>
+                    </div>
+                    }
+                    {
+                        (banco!=null&&banco!=0
+                        &&tarjetaCredito!=null&&tarjetaCredito!=0
+                        )&&<div className={`w-2/5   bg-white flex  items-center   gap-2 border ${errorDiferido?"border-red-500":""}`}>
+                            
+                        <Select  
+                            value={diferido}
+                            placeholder={
+                                <div className='flex items-center gap-2'>
+                                    <span className={`icon-[material-symbols-light--calendar-today-outline-rounded] h-5 w-5 ${errorDiferido?"text-red-500":"text-gray-600"}`}></span>
+                                    <label className={`${errorDiferido?"text-red-500":""}`}>Seleccione meses diferido</label>
+                                </div>
+                            }
+                            onValueChange={handleChangeDiferido}>
+                                {
+                                    listaBancos[banco-1].ListaTarjetas[tarjetaCredito-1].ListaDiferidos.map((item, index)=>(
+                                        <SelectItem value={index+1}>
+                                            <div className='flex gap-1 items-center'>
+                                                <span className="icon-[material-symbols-light--calendar-today-outline-rounded] h-5 w-5 text-gray-600"></span>
+                                                <label>{item.Titulo}</label>
+                                            </div>
+                                        </SelectItem>
+                                ))
+                            }
+                        </Select>
+                    </div>
+                    }
+                </div>
+            </div>
+            <div className='px-16 text-[10px] flex justify-center items-center text-center mt-8'>
+                {/*<input 
+                    type="checkbox" 
+                    className="mr-2 cursor-pointer  "
+                    checked={isChecked}
+                onChange={handleCheckboxChange}/>*/}
+                <label className=''>Al registrarte aceptas nuestros <a className='text-blue-500 underline cursor-pointer' href='https://visitaecuador.com/#/terminos-condiciones' target='_blank'>Términos y condiciones de uso</a> y el uso de tus datos personales de acuerdo a nuestras <a className='text-blue-500 underline cursor-pointer' href='https://visitaecuador.com/#/politicas-privacidad' target='_blank'>Políticas de Privacidad</a>.  {/*errorCheck?<label className='text-red-500 text-[11px]'>* Obligatorio</label>:""*/}</label>
+            </div>
+            <div className='flex w-full items-center justify-center mt-8'>
+                <button className='bg-greenVE-500 text-white font-semibold px-3 py-1.5 rounded-full flex items-center justify-center cursor-pointer' onClick={()=>handleClickContinuar()}>
+                    <label className='cursor-pointer'>Continuar</label>
+                    <span className="icon-[ic--round-navigate-next] h-7 w-7"></span>
+                </button>
+            </div>
+        </div>
+    );
+};
+
+export default Informacion;

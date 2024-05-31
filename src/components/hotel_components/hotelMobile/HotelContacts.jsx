@@ -35,8 +35,8 @@ const HotelContacts = ({setOpenContacts, Establecimiento, options, date, selecci
             .replaceAll("{{nombre}}", nombre)
             .replaceAll("{{id}}", id)
             .replaceAll("{{hotel}}", Establecimiento.Titulo)
-            .replaceAll("{{checkin}}", formatearFecha(date[0].startDate))
-            .replaceAll("{{checkout}}", formatearFecha(date[0].endDate))
+            .replaceAll("{{checkin}}", formatearFecha({ fecha: date[0].startDate, nombreDia: true, dia: true, mes: true, anio:true}))
+            .replaceAll("{{checkout}}", formatearFecha({ fecha: date[0].endDate, nombreDia: true, dia: true, mes: true, anio:true}))
             .replaceAll("{{personas}}", personas)
             .replaceAll("{{habitaciones}}", habitaciones)
             .replaceAll("{{total}}", total);
@@ -73,13 +73,14 @@ const HotelContacts = ({setOpenContacts, Establecimiento, options, date, selecci
         return `${año}-${mes}-${dia}`;
     }
 
+
     const createCert = () => {
         if (!isCreatingcert) {
             setIsCreatingCert(true);
             var dataOfertas = [];
             var fechas = {
-                "inicio": (date[0].startDate),
-                "fin": (date[0].endDate)
+                "inicio": fechaString(date[0].startDate),
+                "fin": fechaString(date[0].endDate)
             }
 
             Establecimiento.Ofertas.forEach((item, index) => {
