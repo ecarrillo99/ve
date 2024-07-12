@@ -154,7 +154,11 @@ const HotelOfertas = (props) => {
                   <th className="border border-greenVE-600 px-2 text-gray-100 font-medium">Ofertas</th>
                   <th className="border border-greenVE-600 px-2 text-gray-100 font-medium">Personas</th>
                   <th className="border border-greenVE-600 px-2 text-gray-100 font-medium leading-4 py-1.5">
-                    Precio por {Noches} noches
+                    {
+                      Establecimiento.IdEstablecimiento=="443"
+                      ?"Precio por un día"
+                      :`Precio por ${Noches} noches`
+                    }
                   </th>
                   <th className="border border-greenVE-600 px-2 text-gray-100 font-medium">Incluye</th>
                   <th className="border border-greenVE-600 px-2 text-gray-100 font-medium">Cantidad</th>
@@ -181,10 +185,17 @@ const HotelOfertas = (props) => {
                           </div>
                         </div>
                         <label className="ml-2 text-xs font-semibold text-gray-500">Acomodación:</label>
-                        <div className="flex ml-6 text-sm items-center gap-1">
-                          <span className="icon-[material-symbols--bed-outline-rounded] text-[#3d82f5] h-5 w-5"></span>
-                          <label className="text-gray-500 text-xs ">{item.Acomodacion} </label>
-                        </div>
+                        {
+                          Establecimiento.IdEstablecimiento=="443"
+                          ?<div className="flex gap-1 ml-6 text-sm items-center">
+                            <span className="icon-[ri--prohibited-2-line] text-[#3d82f5] h-5 w-5"></span>
+                            <label className="text-gray-500 text-xs ">El establecimiento no ofrece hospedaje</label>
+                          </div>
+                          :<div className="flex gap-1 ml-6 text-sm items-center">
+                            <span className="icon-[material-symbols--bed-outline-rounded] text-[#3d82f5] h-5 w-5"></span>
+                            <label className="text-gray-500 text-xs ">{item.Acomodacion} x {item.NumOfertas} </label>
+                          </div>
+                        }
                         
                         <Accordion open={open === index + 1} icon={<Icon id={index + 1} open={open} />}>
                           <AccordionHeader className=" p-0 text-xs pl-2 border-0 w-auto font-semibold text-blue-500 mt-4" onClick={() => handleOpen(index + 1)}>

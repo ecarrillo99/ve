@@ -87,9 +87,9 @@ const Informacion = ({setOpcion, persona, setPersona, setPago}) => {
         ()=>{
             getRemoteTarjetas().then((resp)=>{
                 if(resp){
-                    setListaBancos(resp[0].ListaBancos)
+                    setListaBancos(resp[1].ListaBancos)
                     console.log(resp);
-                    setListaTD(resp[1].ListaBancos[0].ListaTarjetas)
+                    setListaTD(resp[2].ListaBancos[0].ListaTarjetas)
                 }
             })
         },[]
@@ -249,6 +249,7 @@ const Informacion = ({setOpcion, persona, setPersona, setPago}) => {
                             onValueChange={handleChangeTypePayment}>
                                 <SelectItem value={1}>Crédito</SelectItem>
                                 <SelectItem value={2}>Débito</SelectItem>
+                                <SelectItem value={4}>Transferencia / Depósito</SelectItem>
                                 <SelectItem value={3}>Otros / Botones de pago</SelectItem>
                         </Select>
                        

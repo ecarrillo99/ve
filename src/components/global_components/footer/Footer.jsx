@@ -1,4 +1,5 @@
 import Icons from "../../../global/icons";
+import LogoFooter from "./LogoFooter";
 
 const Footer = () => {
   const year = new Date().getFullYear();
@@ -77,7 +78,10 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-wrap justify-center md:gap-4 mt-5 gap-3">
+        <div className="flex justify-center pt-3 bg-greenVE-500 w-full absolute left-0 mt-2">
+          <LogoFooter/>
+        </div>
+        <div className="flex flex-wrap justify-center md:gap-4 mt-20 gap-3 ">
           <a className="bg-greenVE-500 w-6 h-6 rounded-full flex items-center justify-center" href="https://www.facebook.com/visitaecuadorcom" target="_blank"><span className="icon-[iconoir--facebook] text-white h-4 w-4"></span></a>
           <a className="bg-greenVE-500 w-6 h-6 rounded-full flex items-center justify-center" href="https://www.instagram.com/visitaecuadorcom/" target="_blank"><span className="icon-[mdi--instagram] text-white h-4 w-4"></span></a>
           <a className="bg-greenVE-500 w-6 h-6 rounded-full flex items-center justify-center" href="https://walink.co/99db0b" target="_blank"><span className="icon-[mdi--whatsapp] text-white h-4 w-4"></span></a>

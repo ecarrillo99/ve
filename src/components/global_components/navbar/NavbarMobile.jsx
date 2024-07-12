@@ -6,6 +6,7 @@ import encodePass from '../../../global/encodePass';
 import Config from '../../../global/config';
 import { endRemoteSession, loginRemote } from '../../../controllers/suscripcion/suscripcionController';
 import { Spinner } from '@material-tailwind/react';
+import MarcaPais from './MarcaPais';
 
 
 const NavbarMobile = ({ activo }) => {
@@ -202,6 +203,7 @@ const NavbarMobile = ({ activo }) => {
                 <div className="w-2/12 flex cursor-pointer" onClick={handleClickLogo}>
                     <img src="./img/web/ve_logo.svg" style={{ width: "110px", height: "auto" }} />
                 </div>
+                <MarcaPais/>
                 <div className='flex gap-3'>
                     <div onClick={() => handleClickProfile()}>
                         {
@@ -216,8 +218,10 @@ const NavbarMobile = ({ activo }) => {
                 </div>
 
             </div>
+            
             <div>
                 <div className='flex w-full items-center justify-center  gap-1 px-4 pb-2'>
+                    
                     {
                         activo == null || activo == 1 ? (
                             <button className="flex gap-1 text-white border-2 border-white rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300" onClick={handleClickInicio} >

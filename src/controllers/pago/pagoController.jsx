@@ -50,6 +50,7 @@ export const getRemoteTarjetas = async function (){
                 tipoPagoObj.ListaBancos=listaBancos
                 listaTipoPago.push(tipoPagoObj)
             }
+            console.log(listaTipoPago)
             return(listaTipoPago)
         }
     }catch(e){

@@ -9,6 +9,7 @@ import DatafastController from '../../controllers/pago/datafast/datafastControll
 import Footer from '../../components/global_components/footer/Footer';
 import { generarEsquemaSusJA } from '../../global/esquemaSuscripcionJA';
 import { generarEsquemaSusBP } from '../../global/esquemaSuscripcionBP';
+import { generarEsquemaSusPP } from '../../global/esquemaSuscripcionPP';
 
 var firstTime=true;
 const Bienvenida = () => {
@@ -63,18 +64,34 @@ const Bienvenida = () => {
                 setMsjErrorPago("Ha ocurrido un error desconocido. Si existen cargos a su tarjeta comuníquese a nuestra central de reservas.")
             }
         }else if(state!=null){
-            //console.log(state)
+            console.log(state)
             var schema;
-            switch (state.pago.tipo_pago_boton.toString()) {
-                case "7":
-                    schema = generarEsquemaSusBP(state);
-                    break;
-                case "8":
-                    schema = generarEsquemaSusJA(state);
-                    break;
-            
-                default:
-                    break;
+            if(state.pago.tipo_pago_boton!=null){
+                switch (state.pago.tipo_pago_boton.toString()) {
+                    case "7":
+                        schema = generarEsquemaSusBP(state);
+                        break;
+
+                    case "8":
+                        schema = generarEsquemaSusJA(state);
+                        break;
+                
+                    default:
+                        break;
+                }
+            }else{
+                switch (state.pago.IdTipoBotonPago.toString()) {
+                    case "4":
+                        schema = generarEsquemaSusPP(state);
+                        break;
+
+                    case "5":
+                        schema = generarEsquemaSusPP(state);
+                        break;
+                
+                    default:
+                        break;
+                }
             }
 
             gestionarSuscripcion(schema).then((result)=>{

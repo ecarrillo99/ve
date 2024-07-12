@@ -18,6 +18,10 @@ class InfoService extends GenericService{
         const url = `${Config.URL_SERVICIOS}${Config.VERINFO}destinoExpress/`;
         return await this.post(url, params);
     }
+    async obtenerBannersWeb(params){
+        const url = `${Config.URL_SERVICIOS}${Config.VERINFO}getPublicidadWebVe/`;
+        return await this.post(url, params);
+    }
 }
 
 export default InfoService

@@ -21,6 +21,7 @@ const DataSuscription = ({accountData, nombre}) => {
                 loginRemote(params)
                     .then((result) => {
                         setIsLoading(false)
+                        console.log(result)
                         if (result==true) {
                             navigate("/")
                         } 
@@ -55,9 +56,9 @@ const DataSuscription = ({accountData, nombre}) => {
                 </div>
                 <div className='flex flex-col gap-2'>
                     <label className='text-sm'>No olvides que tu suscripcion caduca el <label className='font-semibold'>{accountData.fecha_caducidad_texto}</label></label>
-                    <button className='bg-greenVE-500 text-white flex flex-col rounded-md py-1 text-lg' onClick={()=>handleClickLogin()}>
-                        <label>Disfruta de tu suscripcion ahora !!!</label>
-                        <label>Clic Aquí</label>
+                    <button className={`${isLoading?"bg-gray-500":"bg-greenVE-500"} text-white flex flex-col rounded-md py-1 text-lg`} onClick={()=>handleClickLogin()}>
+                        <label className='cursor-pointer'>Disfruta de tu suscripcion ahora !!!</label>
+                        <label className='cursor-pointer'>Clic Aquí</label>
                     </button>
                 </div>
             </div>

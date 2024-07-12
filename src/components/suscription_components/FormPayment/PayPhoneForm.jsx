@@ -68,7 +68,7 @@ const PayPhoneForm = () => {
         tarjeta === "" ? setTarjetaError(true) : setTarjetaError(false)
         cvv === "" ? setCvvError(true) : setCvvError(false)
         if (!nombresError && !tarjetaError && !cvvError) {
-
+            
         }
     }
 

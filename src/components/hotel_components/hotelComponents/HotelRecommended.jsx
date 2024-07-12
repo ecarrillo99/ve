@@ -42,7 +42,7 @@ const HotelRecommended = (props) => {
 
   return (
     <div className="border-l border-r border-t rounded-lg w-full">
-      <label className="font-semibold p-2 text-xl">Recomendado para {Adultos} {Adultos==1?"adulto":"adultos"}{Ninos==0?"":Ninos==1?`, ${Ninos} niño`:`, ${Ninos} niños`} y {Noches} {Noches==1?"noche":"noches"} </label>
+      <label className="font-semibold p-2 text-xl">Recomendado para {Adultos} {Adultos==1?"adulto":"adultos"}{Ninos==0?"":Ninos==1?`, ${Ninos} niño`:`, ${Ninos} niños`} {Establecimiento.IdEstablecimiento!="443"?`y ${Noches} ${Noches==1?"noche":"noches"}`:" y 1 día"} </label>
       <div className="border-y w-full flex flex-col-reverse lg:flex-row rounded-b-lg">
         <div className="lg:w-10/12 w-full">
           {Establecimiento.Recomendados.map((item, index) => (
@@ -63,10 +63,17 @@ const HotelRecommended = (props) => {
                   }
                 </div>
                 <label className="ml-2 text-xs font-semibold text-gray-500">Acomodación:</label>
-                <div className="flex ml-6 text-sm items-center">
-                  <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => item.Acomodacion.includes(clave))] }} className="" />
-                  <label className="text-gray-500 text-xs ">{item.Acomodacion} x {item.NumOfertas} </label>
-                </div>
+                {
+                  Establecimiento.IdEstablecimiento=="443"
+                  ?<div className="flex gap-1 ml-6 text-sm items-center">
+                    <span className="icon-[ri--prohibited-2-line] text-[#3d82f5] h-5 w-5"></span>
+                    <label className="text-gray-500 text-xs ">El estableciiento no ofrece hospedaje</label>
+                  </div>
+                  :<div className="flex gap-1 ml-6 text-sm items-center">
+                    <span className="icon-[material-symbols--bed-outline-rounded] text-[#3d82f5] h-5 w-5"></span>
+                    <label className="text-gray-500 text-xs ">{item.Acomodacion} x {item.NumOfertas} </label>
+                  </div>
+                }
                 <Accordion open={open === index + 1} icon={<Icon id={index + 1} open={open} />}>
                   <AccordionHeader className="p-0 text-xs pl-2 border-0 w-auto font-semibold text-blue-500 mt-4" onClick={() => handleOpen(index + 1)}>
                     Ver servicios y otros detalles

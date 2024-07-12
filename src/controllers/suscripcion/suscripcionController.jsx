@@ -8,8 +8,6 @@ export const loginRemote = async function (params) {
     try{
         const suscripcionService = new SuscripcionService() ;
         const res = await suscripcionService.getInformacionPerfil(params);
-        console.log("login Google");
-        console.log(res);
         if(res.estado && res.codigo == 0){
             if(res.data.fin!=null){
                 if(new Date(res.data.fin)<new Date()){
@@ -86,7 +84,7 @@ export const gestionarSuscripcion=async function (params){
         const res = await suscripcionService.registroTransaccion(params);
         console.log(res)
         if(res.estado){
-            //suscripcionService.sendNotificationSubscription({"id_suscripcion_renovacion":res.data.id_suscripcion_renovacion})
+            suscripcionService.sendNotificationSubscription({"id_suscripcion_renovacion":res.data.id_suscripcion_renovacion})
             return res;
         }
         return false;

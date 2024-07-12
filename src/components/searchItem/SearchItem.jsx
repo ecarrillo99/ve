@@ -70,9 +70,7 @@ const SearchItem = (props) => {
             <h2 className="text-greenVE-600 font-semibold hover:underline cursor-pointer" onClick={HandleClickItem}>{Establecimiento.Titulo}</h2>
             <div className="flex content-between my-1">
               {Array(+(Establecimiento.Catalogacion)).fill(null).map((item, index) => (
-                <svg key={index} height="15px" width="15px" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="fill-current text-yellow-500">
-                  <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
-                </svg>
+                <span className="icon-[fluent--star-16-filled] text-amber-500"></span>
               ))}
             </div>
           </div>
@@ -82,11 +80,15 @@ const SearchItem = (props) => {
           </div>
           <div>
           {
-            petFriendly==true?(
+            Establecimiento.IdEstablecimiento=="443"
+            &&<label className="text-xxs text-red-700">* Este establecimiento no ofrece hospedaje</label>
+          }
+          {
+            petFriendly==true&&(
             <div className="flex items-center gap-x-1 bg-greenVE-100 rounded-md w-32 justify-center mt-3 py-1">
               <div className="" dangerouslySetInnerHTML={{ __html: icons.Data.PetFriendly }} />
               <label className="text-greenVE-600 text-sm font-medium">Pet Friendly</label>
-            </div>):(<></>)
+            </div>)
           }
           </div>
           <div className="mt-3">
@@ -110,7 +112,11 @@ const SearchItem = (props) => {
                     </div>
                     <div className={`flex flex-col ${index < Establecimiento.Recomendados.length - 1 ? 'mb-2' : ''} w-full`}>
                       <label className="text-xxs font-semibold" >{item.TituloOferta}</label>
-                      <label className="text-xxs">{item.NumOfertas} cama {item.Acomodacion}</label>
+                      {
+                        item.IdEstablecimiento=="443"
+                        ?<label className="text-xxs">{item.NumOfertas} {item.NumOfertas>1?"paquetes":"paquete"} </label>
+                        :<label className="text-xxs">{item.NumOfertas} cama {item.Acomodacion}</label>
+                      }
                     </div>
                     <div className="absolute h-full bg-gray-300 w-0.5 left-2"></div>
                   </div>)
@@ -119,7 +125,11 @@ const SearchItem = (props) => {
 
                       <div className={`flex flex-col ml-3 ${index < Establecimiento.Recomendados.length - 1 ? 'mb-2' : ''} w-full`}>
                         <label className="text-xxs font-semibold">{item.TituloOferta}</label>
-                        <label className="text-xxs">{item.NumOfertas} cama {item.Acomodacion}</label>
+                        {
+                          item.IdEstablecimiento=="443"
+                          ?<label className="text-xxs">{item.NumOfertas} {item.NumOfertas>1?"paquetes":"paquete"} </label>
+                          :<label className="text-xxs">{item.NumOfertas} cama {item.Acomodacion}</label>
+                        }
                       </div>
                       <div className="absolute h-full bg-gray-300 w-0.5"></div>
                     </div>
@@ -139,7 +149,11 @@ const SearchItem = (props) => {
             </div>
           </div>
           <div className="flex flex-col items-end">
-            <label className="text-xs text-end text-gray-800">{noches} {noches > 1 ? "noches" : "noche"}, {options.adult} {options.adult > 1 ? "adultos" : "adulto"}{options.children > 0 ? (options.children > 1 ? ", " + options.children + " niños" : ", " + options.children + " niño") : ""} </label>
+            {
+              Establecimiento.IdEstablecimiento!="443"
+              ?<label className="text-xs text-end text-gray-800">{noches} {noches > 1 ? "noches" : "noche"}, {options.adult} {options.adult > 1 ? "adultos" : "adulto"}{options.children > 0 ? (options.children > 1 ? ", " + options.children + " niños" : ", " + options.children + " niño") : ""} </label>
+              :<label className="text-xs text-end text-gray-800">1 día, {options.adult} {options.adult > 1 ? "adultos" : "adulto"}</label>
+            }
             <div className="flex gap-2 justify-center items-center">
               <label className="text-sm text-red-600 line-through">US${Math.round(parseFloat(Establecimiento.Rack))}</label>
               <label className="text-xl font-semibold">US${Math.round(parseFloat(Establecimiento.PrecioSinImpuestos))}</label>

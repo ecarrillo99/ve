@@ -37,9 +37,9 @@ const StepsSuscription = () => {
                                 ?<Informacion setOpcion={setOpcion} persona={persona} setPersona={setPersona} setPago={setPago}/>
                                 :opcion==4
                                     ?pago.IdTipoBotonPago=="4"
-                                        ?<PayPhoneForm></PayPhoneForm>
+                                        ?<PayPhoneForm persona={persona} producto={producto} pago={pago} codigo={codigo}/>
                                             :pago.IdTipoBotonPago=="5"
-                                            ?<BancoAustroForm/>
+                                            ?<BancoAustroForm persona={persona} producto={producto} pago={pago} codigo={codigo}/>
                                             :pago.IdTipoBotonPago=="6"
                                             ?<DataFast persona={persona} producto={producto} pago={pago} codigo={codigo}></DataFast>
                                             :pago.IdTipoBotonPago=="7"

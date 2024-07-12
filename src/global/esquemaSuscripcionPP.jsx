@@ -1,6 +1,7 @@
 import Config from "./config";
 
 export function generarEsquemaSusPP(datos){
+    console.log("Banco Austor")
     var subtotal = parseFloat(datos.producto.PrecioProducto).toFixed(2);
     var total = (subtotal*1.12).toFixed(2);
     var iva = total-subtotal;
@@ -39,22 +40,46 @@ export function generarEsquemaSusPP(datos){
                 {
                     tipo_pago: 2,
                     id_prepago:0,
-                    tipo_pago_boton: 7,
-                    intereses:"2",
-                    diferido: "1",
+                    tipo_pago_boton: datos.pago.IdTipoBotonPago,
+                    intereses: datos.pago.Intereses,
+                    diferido: datos.pago.Meses,
                     envio:0,
                     subtotal: subtotal,
                     iva: iva,
                     total: total,
                     cuenta:{
                         nombreTitular: datos.persona.nombres,
-                        id_diferido:0,
-                        datapago:datos.pago.phone,
+                        id_diferido:datos.pago.IdDiferido,
+                        datapago: genDatacard(datos.pago.cardData),
                     },
-                    transaccion: datos.pago
+                    transaccion: datos.pago.transaccion
                 }
             ]
         },
     }
     return esquema;
+}
+
+function genDatacard(payment) {
+    console.log(payment)
+    let result = "";
+    try {
+        const key = Config.PAYMENT_DATACARD_KEY; //'.121*+75g';
+        const cadena = `2::${payment.cardNumber}::${payment.monthExpire}::${payment.yearExpire}::${payment.cvc}`;
+        let keychar = "";
+        for (let i = 0; i < cadena.length; i++) {
+            let char = cadena[i];
+            let indiceTemp = (i % key.length) - 1;
+            if (indiceTemp < 0) {
+                indiceTemp = key.length - 1;
+            }
+            keychar = key[indiceTemp];
+            const numAsc = char.charCodeAt(0) + keychar.charCodeAt(0);
+            char = String.fromCharCode(numAsc);
+            result += char;
+        }
+    } catch (e) {
+        console.log(e);
+    }
+    return btoa(result);
 }

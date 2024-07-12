@@ -136,8 +136,9 @@ const Suscription = () => {
                     src="https://visitaecuador.com/compra"
                     width="100%"
                     height="1010px"
-                >
-                </iframe>*/}
+                    >
+                </iframe>*/
+                }
                 {
                     id==null
                     ?<BuySuscription/>
@@ -154,7 +155,7 @@ const Suscription = () => {
                         <label className='text-red-600 font-medium text-lg'>{msjErrorPago}.</label>
                     </div>
                     :<DataSuscription accountData={dataSuscription} nombre={nombre}/>
-                }
+            }
             <Footer></Footer>
         </div>
     );

@@ -73,27 +73,31 @@ const Search = () => {
               localStorage.removeItem("datos");
               window.location.reload();
             } else {
-              result.Establecimientos.sort((a, b) => {
-                // Comprueba si el nombre del hotel coincide con la palabra clave
-                const aCoincide = a.Titulo.toLowerCase().includes(filtro.txtBusqueda.toLowerCase());
-                const bCoincide = b.Titulo.toLowerCase().includes(filtro.txtBusqueda.toLowerCase());
-
-                // Si uno de los hoteles coincide, ese se coloca primero
-                if (aCoincide && !bCoincide) {
-                  setCoinEncontrada(true);
-                  return -1;
-                } else if (!aCoincide && bCoincide) {
-                  return 1;
-                }
-
-                // Si ninguno coincide o ambos coinciden, ordena por catalogación
-                return b.Catalogacion - a.Catalogacion;
-              });
-              setDataFinal(result)
-              setData(result)
-              setMinPrice(parseFloat(result.PrecioMinimo))
-              setMaxPrice(parseFloat(result.PrecioMaximo))
-              setPrices([parseFloat(result.PrecioMinimo), parseFloat(result.PrecioMaximo)])
+              if(result.Establecimientos.length>0){
+                result.Establecimientos.sort((a, b) => {
+                  // Comprueba si el nombre del hotel coincide con la palabra clave
+                  const aCoincide = a.Titulo.toLowerCase().includes(filtro.txtBusqueda.toLowerCase());
+                  const bCoincide = b.Titulo.toLowerCase().includes(filtro.txtBusqueda.toLowerCase());
+  
+                  // Si uno de los hoteles coincide, ese se coloca primero
+                  if (aCoincide && !bCoincide) {
+                    setCoinEncontrada(true);
+                    return -1;
+                  } else if (!aCoincide && bCoincide) {
+                    return 1;
+                  }
+  
+                  // Si ninguno coincide o ambos coinciden, ordena por catalogación
+                  return b.Catalogacion - a.Catalogacion;
+                });
+                setDataFinal(result)
+                setData(result)
+                setMinPrice(parseFloat(result.PrecioMinimo))
+                setMaxPrice(parseFloat(result.PrecioMaximo))
+                setPrices([parseFloat(result.PrecioMinimo), parseFloat(result.PrecioMaximo)])
+              }else{
+                setSinResultados(true)
+              }
             }
           } else {
             setSinResultados(true)
@@ -307,7 +311,7 @@ const Search = () => {
               </button>
             </div>{
 
-              data ?
+              data?
                 <Suspense>
                   <BingMapsReact
                     bingMapsKey="AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z"
@@ -323,22 +327,7 @@ const Search = () => {
                       showLocateMeButton: false,
                     }}
                   />
-                </Suspense>
-
-                  /*<GoogleMap
-                  mapContainerStyle={{
-                    width: '100%', // Ajuste el ancho al 100% para que se adapte al contenedor
-                    height: '180px', // Ajuste la altura según sus necesidades
-                    borderRadius: "3%", 
-                  }}
-                  center={{
-                    lat: data.Establecimientos[0].Latitud,
-                    lng: data.Establecimientos[0].Longitud,
-                  }}
-                  zoom={16}
-                  options={{fullscreenControl: false}}
-                >
-                </GoogleMap>*/:
+                </Suspense>:
                 <div className="mb-4 relative h-44 rounded-md">
                   <img src="./img/web/map.svg" className="w-full h-full object-cover rounded-md" />
                   <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 rounded-md"></div>

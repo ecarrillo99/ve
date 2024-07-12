@@ -7,7 +7,7 @@ const NewsItem = ({ noticia }) => {
             <div className="flex justify-between">
                 <label className="text-xxs"><b>Fecha: </b>{noticia.Fecha.split(' ')[0]}</label>
                 <label className="text-xxs font-semibold"><b>Categoria: </b>{noticia.Tipo}</label>
-                <button className="text-xxs text-blue-600">Ver más</button>
+                <button className="text-xxs text-blue-600" onClick={()=>window.open(noticia.Url)}>Ver más</button>
             </div>
         </div>
     )

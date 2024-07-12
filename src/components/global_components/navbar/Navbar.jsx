@@ -8,6 +8,7 @@ import { FacebookAuthProvider, GoogleAuthProvider, signInWithPopup } from "fireb
 import { auth } from "../../../firebase";
 import encodePass from "../../../global/encodePass";
 import Config from "../../../global/config";
+import MarcaPais from "./MarcaPais";
 
 const icons = new Icons();
 
@@ -55,6 +56,7 @@ const Navbar = ({activo}) => {
   const dashboard=session ? session.data.permisos.perfil.dashboard:false;
   const foto = session ? (session.data.fotos ? session.data.fotos.m : "") : "";
   const [isLoadingAdmin, setLoadingAdmin]=useState(false);
+  const [isLoagingLogOut, setIsLoadingLogOut]=useState(false);
   const [isLoadingGoogle, setisLoadingGoogle] = useState(false)
   const [isLoadingFB, setIsLoadingFB] = useState(false)
   const gProvider = new GoogleAuthProvider();
@@ -81,8 +83,10 @@ const Navbar = ({activo}) => {
   }
 
   const handleClickLogOut = () => {
+    setIsLoadingLogOut(true);
     try {
       endRemoteSession().then((result) => {
+        setIsLoadingLogOut(false);
         if (result) {
           window.location.reload();
         }
@@ -267,7 +271,7 @@ const Navbar = ({activo}) => {
             </div>
             {
               nivel === "visitante" && (
-                <button className="flex gap-1 text-greenVE-600 bg-white rounded-full px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-500" onClick={() => handleClickLogin()}>
+                <button className="flex gap-1 text-greenVE-600 bg-white rounded-full px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-500" onClick={() => activo!=6?handleClickLogin():{}}>
                   Iniciar Sesión
                 </button>
               )
@@ -303,12 +307,17 @@ const Navbar = ({activo}) => {
                       ?<button onClick={() => handleClickDashboard()} className="hover:bg-greenVE-200 w-full px-4 text-xs py-1 flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Dashboard }}  />Dashboard</button>
                       :<></>
                     }
-                    <button onClick={() => handleClickLogOut()} className="hover:bg-greenVE-200 w-full px-4 text-xs py-1 flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Logout }}  />Cerrar sesión</button>
+                    <button onClick={() => handleClickLogOut()} className="hover:bg-greenVE-200 w-full px-4 text-xs py-1 flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Logout }}  />Cerrar sesión
+                      {
+                        isLoagingLogOut?<Spinner className="h-4 w-4" color="white"></Spinner>:<></>
+                      }
+                    </button>
                   </div>
                 </ClickAwayListener>
               )}
             </div>
           </div>
+          <div className=" flex  justify-between">
           <div className="flex gap-2 items-end mt-4 sm:mt-0">
             {
               activo==null||activo==1?(
@@ -349,6 +358,8 @@ const Navbar = ({activo}) => {
                 </button>
               )
             }
+          </div>
+            <MarcaPais/>
           </div>
         </div>
       </div>

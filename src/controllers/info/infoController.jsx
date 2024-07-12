@@ -146,3 +146,35 @@ export const getDestinoExpress = async function (lat, long){
 
     }
 }
+
+export const getBanners  = async function(){
+    try{
+        const bdStr= await checkData('datos');
+        if(bdStr){
+            var bd = JSON.parse(bdStr)
+            const infoService= new InfoService();
+            const listaBanners=[];
+            const params={
+                "token": bd['token']
+            }
+            
+            const res= await infoService.obtenerBannersWeb(params)
+            if(res['estado']&&res['codigo']==0){
+                for(const destino of res['data']){
+                    const destinoTmp = new Detalle();
+                    destinoTmp.Icono=destino['direccion_foto']
+                    destinoTmp.Valor=destino['vinculo']
+                    destinoTmp.Titulo= destino['descripcion']
+                    listaBanners.push(destinoTmp)
+                }
+            }
+            if(res['codigo']==401){
+                return 401;
+            }
+            return listaBanners;
+        }
+        return [];
+    }catch{
+
+    }
+}

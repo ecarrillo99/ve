@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'flex-start'
   },
   column: {
     flexGrow: 1,
@@ -128,41 +128,41 @@ const Certificado = () => {
               </View>
             </View>
             <View style={styles.column}>
-              <Text style={styles.title}>{(reserva.IdRes==null||reserva.IdRes=="")?"Certificado":`Certificado de ${reserva.Estado != "Confirmada" ? "Pre-Reserva" : "Reserva"}`} </Text>
+              <Text style={styles.title}>{(reserva.IdRes == null || reserva.IdRes == "") ? "Certificado" : `Certificado de ${reserva.Estado != "Confirmada" ? "Pre-Reserva" : "Reserva"}`} </Text>
               {
-                (reserva.IdRes!=null&&reserva.IdRes!="")
-                ?<View style={styles.row}>
-                  <Text style={{ ...styles.paragraph, ...{ fontFamily: 'Montserrat-Bold' } }}>
-                    NÚMERO DE RESERVA:
-                  </Text>
-                  <Text style={
-                    {
-                      ...styles.paragraph,
-                      ...{
-                        fontFamily: 'Montserrat-Bold',
-                        color: '#96c121',
-                        marginLeft: 4
-                      }
-                    }}>
-                    {reserva.IdRes}
-                  </Text>
-                </View>
-                :<View style={styles.row}>
-                  <Text style={{ ...styles.paragraph, ...{ fontFamily: 'Montserrat-Bold' } }}>
-                    FECHA DE EMISIÓN:
-                  </Text>
-                  <Text style={
-                    {
-                      ...styles.paragraph,
-                      ...{
-                        fontFamily: 'Montserrat-Bold',
-                        color: '#96c121',
-                        marginLeft: 4
-                      }
-                    }}>
-                    {reserva.fecha_reserva}
-                  </Text>
-                </View>
+                (reserva.IdRes != null && reserva.IdRes != "")
+                  ? <View style={styles.row}>
+                    <Text style={{ ...styles.paragraph, ...{ fontFamily: 'Montserrat-Bold' } }}>
+                      NÚMERO DE RESERVA:
+                    </Text>
+                    <Text style={
+                      {
+                        ...styles.paragraph,
+                        ...{
+                          fontFamily: 'Montserrat-Bold',
+                          color: '#96c121',
+                          marginLeft: 4
+                        }
+                      }}>
+                      {reserva.IdRes}
+                    </Text>
+                  </View>
+                  : <View style={styles.row}>
+                    <Text style={{ ...styles.paragraph, ...{ fontFamily: 'Montserrat-Bold' } }}>
+                      FECHA DE EMISIÓN:
+                    </Text>
+                    <Text style={
+                      {
+                        ...styles.paragraph,
+                        ...{
+                          fontFamily: 'Montserrat-Bold',
+                          color: '#96c121',
+                          marginLeft: 4
+                        }
+                      }}>
+                      {reserva.fecha_reserva}
+                    </Text>
+                  </View>
               }
               <View style={styles.row}>
                 <Text style={
@@ -260,13 +260,13 @@ const Certificado = () => {
                     ENTRADA
                   </Text>
                   <Text style={{ ...styles.paragraph, textAlign: 'center', fontSize: 20 }}>
-                    {formatDate(new Date(reserva.FechaIn+"T00:00:00"), "day")}
+                    {formatDate(new Date(reserva.FechaIn + "T00:00:00"), "day")}
                   </Text>
                   <Text style={{ ...styles.paragraph, textAlign: 'center' }}>
-                    {formatDate(new Date(reserva.FechaIn+"T00:00:00"), "month").toUpperCase()}
+                    {formatDate(new Date(reserva.FechaIn + "T00:00:00"), "month").toUpperCase()}
                   </Text>
                   <Text style={{ ...styles.paragraph, textAlign: 'center', fontSize: 7 }}>
-                    {formatDate(new Date(reserva.FechaIn+"T00:00:00"), "weekday")}
+                    {formatDate(new Date(reserva.FechaIn + "T00:00:00"), "weekday")}
                   </Text>
                   <Image src="./img/web/clock.png" style={{ height: 10, width: '100%', objectFit: 'contain' }} />
                   <Text style={{ ...styles.paragraph, textAlign: 'center', fontSize: 7 }}>
@@ -278,13 +278,13 @@ const Certificado = () => {
                     SALIDA
                   </Text>
                   <Text style={{ ...styles.paragraph, textAlign: 'center', fontSize: 20 }}>
-                    {formatDate(new Date(reserva.FechaOut+"T00:00:00"), "day")}
+                    {formatDate(new Date(reserva.FechaOut + "T00:00:00"), "day")}
                   </Text>
                   <Text style={{ ...styles.paragraph, textAlign: 'center' }}>
-                    {formatDate(new Date(reserva.FechaOut+"T00:00:00"), "month").toUpperCase()}
+                    {formatDate(new Date(reserva.FechaOut + "T00:00:00"), "month").toUpperCase()}
                   </Text>
                   <Text style={{ ...styles.paragraph, textAlign: 'center', fontSize: 7 }}>
-                    {formatDate(new Date(reserva.FechaOut+"T00:00:00"), "weekday")}
+                    {formatDate(new Date(reserva.FechaOut + "T00:00:00"), "weekday")}
                   </Text>
                   <Image src="./img/web/clock.png" style={{ height: 10, width: '100%', objectFit: 'contain' }} />
                   <Text style={{ ...styles.paragraph, textAlign: 'center', fontSize: 7 }}>
@@ -298,7 +298,7 @@ const Certificado = () => {
                   <Text style={{ ...styles.paragraph, textAlign: 'center', fontSize: 20 }}>
                     {reserva.CantidadHab} / {Math.round((new Date(reserva.FechaOut) - new Date(reserva.FechaIn)) / (1000 * 60 * 60 * 24))}
                   </Text>
-                  <Text style={{ ...styles.paragraph, textAlign: 'center', fontFamily: 'Montserrat-Bold', fontSize: 6, marginTop:10 }}>
+                  <Text style={{ ...styles.paragraph, textAlign: 'center', fontFamily: 'Montserrat-Bold', fontSize: 6, marginTop: 10 }}>
                     ADULTOS / NIÑOS
                   </Text>
                   <Text style={{ ...styles.paragraph, textAlign: 'center', fontSize: 20 }}>
@@ -315,9 +315,9 @@ const Certificado = () => {
           </View>
           {reserva.Habitaciones.map((item, index) => (
             <View key={index} style={styles.row}>
-              <View style={{...styles.column, width:"100%"}}>
+              <View style={{ ...styles.column, width: "100%" }}>
                 <Text style={{ ...styles.paragraph, fontSize: 8 }}>
-                  {item.Cantidad} x {item.Nombre} (Máximo: {item.Adultos} {item.Adultos==1?" adulto":"adultos"}{item.Ninos==0?"":", "+item.Ninos+" "+(item.Ninos==1?"niño":"niños")}), <Text style={
+                  {item.Cantidad} x {item.Nombre} (Máximo: {item.Adultos} {item.Adultos == 1 ? " adulto" : "adultos"}{item.Ninos == 0 ? "" : ", " + item.Ninos + " " + (item.Ninos == 1 ? "niño" : "niños")}), <Text style={
                     {
                       ...{
                         fontFamily: 'Montserrat-Bold',
@@ -406,8 +406,8 @@ const Certificado = () => {
             </Text>
           </View>
           <View style={{ ...styles.row, borderBottom: 0.5, borderColor: '#D0D0D0', paddingBottom: 3 }}>
-            <Text style={{ ...styles.paragraph, fontSize: 8, }}>
-            {reserva.NombreEst} gestiona todos los pagos.
+            <Text style={{ ...styles.paragraph, fontFamily: 'Montserrat', fontSize: 8, }}>
+              {reserva.NombreEst} gestiona todos los pagos.
             </Text>
           </View>
           <View style={{ ...styles.row, paddingTop: 3 }}>
@@ -415,57 +415,91 @@ const Certificado = () => {
               Información adicional
             </Text>
           </View>
-          <View style={{ ...styles.row}}>
+          <View style={{ ...styles.row }}>
             <Text style={{ ...styles.paragraph, fontSize: 8, }}>
               Los suplementos adicionales (como cama supletoria) no están incluidos en el precio total. Si no te presentas o cancelas la reserva, es posible que el alojamiento te cargue los impuestos correspondientes. Recuerda leer la información importante que aparece a continuación, ya que puede contener datos relevantes que no se mencionan aqui.
             </Text>
           </View>
-          <View style={{ ...styles.row}}>
-            <Text style={{ ...styles.paragraph, fontSize: 8 }}>
-              <Text style={{ fontFamily: 'Montserrat-Bold' }}>Servicios del establecimiento:</Text> {reserva.serviciosEst.replaceAll("-","•")}
-            </Text>
+          <View style={{ ...styles.row, paddingTop:3}}>
+            <View style={{ ...styles.column, }}>
+              <Text style={{ ...styles.paragraph, fontSize: 8 }}>
+              <Text style={{ ...styles.paragraph, fontFamily: 'Montserrat-Bold', fontSize: 8 }}>Servicios del establecimiento:</Text>
+              </Text>
+              <Text style={{ ...styles.paragraph, fontSize: 8, marginTop:-9 }}>
+                {"‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎"
+                +reserva.serviciosEst.replaceAll("-", "•")}
+              </Text>
+            </View>
           </View>
-          <View style={{ ...styles.row}}>
-            <Text style={{ ...styles.paragraph, fontSize: 8 }}>
-              <Text style={{ fontFamily: 'Montserrat-Bold' }}>Restricciones del establecimiento:</Text> {reserva.restriccionesEst.replaceAll("-","•")}
-            </Text>
+
+          <View style={{ ...styles.row, paddingTop:3}}>
+            <View style={{ ...styles.column, }}>
+              <Text style={{ ...styles.paragraph, fontSize: 8 }}>
+                <Text style={{ fontFamily: 'Montserrat-Bold' }}>Restricciones del establecimiento:</Text>
+              </Text>
+              <Text style={{ ...styles.paragraph, fontSize: 8, marginTop:-9 }}>
+              {"‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ "
+                +reserva.restriccionesEst.replaceAll("-", "•")}
+              </Text>
+            </View>
           </View>
-          <View style={{ ...styles.row, borderBottom: 0.5, borderColor: '#D0D0D0', paddingBottom: 3, marginBottom: 3 }}>
-            <Text style={{ ...styles.paragraph, fontSize: 8 }}>
-              <Text style={{ fontFamily: 'Montserrat-Bold' }}>Sistemas de servicios:</Text> {reserva.sistemaServEst.replaceAll("-","•")}
-            </Text>
+
+          <View style={{ ...styles.row, paddingTop:3, borderBottom: 0.5, borderColor: '#D0D0D0', paddingBottom: 3., marginBottom:3}}>
+            <View style={{ ...styles.column, }}>
+              <Text style={{ ...styles.paragraph, fontSize: 8 }}>
+                <Text style={{ fontFamily: 'Montserrat-Bold' }}>Sistemas de servicios:</Text>
+              </Text>
+              <Text style={{ ...styles.paragraph, fontSize: 8, marginTop:-9 }}>
+              {"‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎"
+                +reserva.sistemaServEst.replaceAll("-", "•")}
+              </Text>
+            </View>
           </View>
+          
           <View style={{ ...styles.row, borderBottom: 0.5, borderColor: '#D0D0D0', paddingBottom: 3 }}>
-            <Image src={staticMapImageUrl}  style={{ width: '100%', height: '120px' }} />
+            <Image src={staticMapImageUrl} style={{ width: '100%', height: '120px' }} />
           </View>
           {
             reserva.Habitaciones.map((item, index) => (
               <>
-                <View style={{ ...styles.row, paddingTop: 3 }}>
-                  <Text style={{ ...styles.paragraph, fontSize: 10, fontFamily: 'Montserrat-Bold' }}>
-                    {item.Nombre}
-                  </Text>
+                <View style={{ ...styles.row, paddingTop:3}}>
+                  <View style={{ ...styles.column, }}>
+                    <Text style={{ ...styles.paragraph, fontSize: 8 }}>
+                      <Text style={{ fontFamily: 'Montserrat-Bold' }}>Incluye:</Text>
+                    </Text>
+                    <Text style={{ ...styles.paragraph, fontFamily: 'Montserrat',  fontSize: 8, marginTop:-9 }}>
+                    {"‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ "
+                      +reserva.incluyeEst.replaceAll("-", "•")}
+                    </Text>
+                  </View>
                 </View>
-                <View style={{ ...styles.row, paddingTop: 2 }}>
-                  <Text style={{ ...styles.paragraph, fontSize: 8 }}>
-                    <Text style={{ fontFamily: 'Montserrat-Bold' }}>Incluye:</Text> {reserva.incluyeEst.replaceAll("-","•")}
-                  </Text>
+                <View style={{ ...styles.row, paddingTop:3}}>
+                  <View style={{ ...styles.column, }}>
+                    <Text style={{ ...styles.paragraph, fontSize: 8 }}>
+                      <Text style={{ fontFamily: 'Montserrat-Bold' }}>No incluye:</Text>
+                    </Text>
+                    <Text style={{ ...styles.paragraph, fontFamily: 'Montserrat', fontSize: 8, marginTop:-9 }}>
+                    {"‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ "
+                      +reserva.noIncluyeEst.replaceAll("-", "•")}
+                    </Text>
+                  </View>
                 </View>
-                <View style={{ ...styles.row, paddingTop: 2 }}>
-                  <Text style={{ ...styles.paragraph, fontSize: 8 }}>
-                    <Text style={{ fontFamily: 'Montserrat-Bold' }}>No incluye:</Text> {reserva.noIncluyeEst.replaceAll("-","•")}
-                  </Text>
-                </View>
-                <View style={{ ...styles.row, paddingTop: 1, borderBottom: 0.5, borderColor: '#D0D0D0', paddingBottom: 3 }}>
-                  <Text style={{ ...styles.paragraph, fontSize: 8 }}>
-                    <Text style={{ fontFamily: 'Montserrat-Bold' }}>Acomodación:</Text> {item.Acomodacion}
-                  </Text>
+                <View style={{ ...styles.row, paddingTop:3, borderBottom: 0.5, borderColor: '#D0D0D0', paddingBottom: 3., marginBottom:3}}>
+                  <View style={{ ...styles.column, }}>
+                    <Text style={{ ...styles.paragraph, fontSize: 8 }}>
+                      <Text style={{ fontFamily: 'Montserrat-Bold' }}>Acomodación:</Text>
+                    </Text>
+                    <Text style={{ ...styles.paragraph, fontFamily: 'Montserrat', fontSize: 8, marginTop:-9 }}>
+                    {"‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ "
+                      +item.Acomodacion}
+                    </Text>
+                  </View>
                 </View>
               </>
             ))
           }
           <View style={{ ...styles.row, paddingTop: 5, paddingBottom: 1 }}>
-            <Text style={{ ...styles.paragraph, fontSize: 6, fontFamily: 'Montserrat-Bold' }}>
+            <Text style={{ ...styles.paragraph, fontSize: 6, fontFamily: 'Montserrat-Bold',}}>
               Términos y condiciones:
             </Text>
           </View>
@@ -542,7 +576,7 @@ const Certificado = () => {
       {
         isMobile
           ? (
-            <PDFDownloadLink document={<MyDocument></MyDocument>} fileName={reserva.NombreSus.replaceAll("-")+"-"+reserva.IdSus+"-"+((reserva.IdRes==null||reserva.IdRes=="")?reserva.fecha_reserva:reserva.IdRes)}>
+            <PDFDownloadLink document={<MyDocument></MyDocument>} fileName={reserva.NombreSus.replaceAll("-") + "-" + reserva.IdSus + "-" + ((reserva.IdRes == null || reserva.IdRes == "") ? reserva.fecha_reserva : reserva.IdRes)}>
               {({ loading }) => (loading ? <div className='w-8 h-8 border-4 border-dashed rounded-full animate-spin mx-auto border-blue-400'></div> : <div className='bg-greenVE-500 text-white px-5 py-3 font-bold'>Descargar PDF</div>)}
             </PDFDownloadLink>
           )

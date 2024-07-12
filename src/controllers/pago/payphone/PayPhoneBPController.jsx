@@ -6,6 +6,7 @@ class PayPhoneBPController {
         try {
             const mv = new PayPhoneController();
             const trx = await mv.prepareTransaction(product, personalInfo);
+            console.log(trx);
             if (trx && trx.code == 0) {
                 return new Promise((resolve, reject) => {
                     let intervalId = setInterval(async () => {

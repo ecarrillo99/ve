@@ -7,12 +7,12 @@ class PayPhoneController {
     const _tax = 0.12; // iva ecuador
 
     try {
-      const amount = ((product.precio_producto * 100) + (product.precio_producto * 0.12 * 100)).toFixed(0);
-      const amountWithTax = (product.precio_producto * 100).toFixed(0);
-      const tax = (product.precio_producto * _tax * 100).toFixed(0);
+      const amount = ((product.PrecioProducto * 100) + (product.PrecioProducto * 0.12 * 100)).toFixed(0);
+      const amountWithTax = (product.PrecioProducto * 100).toFixed(0);
+      const tax = (product.PrecioProducto * _tax * 100).toFixed(0);
 
       const _params = {
-        cardHolder: btoa(paymentInfo.name),
+        cardHolder: btoa(paymentInfo.cardHolder),
         number: btoa(paymentInfo.cardNumber),
         expirationMonth: btoa(paymentInfo.monthExpire),
         expirationYear: btoa(paymentInfo.yearExpire),
@@ -20,11 +20,11 @@ class PayPhoneController {
         amount: amount,
         amountWithTax: amountWithTax,
         tax: tax,
-        clientTransactionId: btoa(personalInfo.dni + _date),
+        clientTransactionId: btoa(personalInfo.cedula + _date),
         currency: Config.MONEDA,
-        documentId: personalInfo.dni,
-        email: personalInfo.email,
-        phoneNumber: personalInfo.phone,
+        documentId: personalInfo.cedula,
+        email: personalInfo.correo,
+        phoneNumber: personalInfo.telefono,
         deferredType: this.genDeferredCode(diferido)
       };
 
@@ -39,10 +39,10 @@ class PayPhoneController {
     let _codigo = "";
     let bloque = ["", "", "", "", ""]; // bloque a,b,c,d,e
 
-    if (deferred['meses'] === "1") {
+    if (deferred.Meses === "1") {
       _codigo = '00000000';
-    } else if (parseInt(deferred['meses']) > 1) {
-      if (deferred['intereses'] === "2") {
+    } else if (parseInt(deferred.Meses) > 1) {
+      if (deferred.Intereses === "2") {
         bloque[0] = "PR";
         bloque[1] = "01";
       } else {
@@ -50,7 +50,7 @@ class PayPhoneController {
         bloque[1] = "02";
       }
       bloque[2] = "01";
-      bloque[3] = deferred['meses'].toString().padStart(2, '0');
+      bloque[3] = deferred.Meses.toString().padStart(2, '0');
       bloque[4] = "00";
       _codigo = bloque.join('');
     }
@@ -86,6 +86,15 @@ class PayPhoneController {
     }
     
     return {};
+  }
+
+  async sendRemotePayment(product, personalInfo, paymentInfo, diferido){
+    try{
+
+    }catch{
+
+    }
+    return{}
   }
 
   async prepareTransaction(product, personalInfo){
@@ -148,7 +157,40 @@ class PayPhoneController {
         return {"code": -1, "msg": `Cannot post to ${url}. error: ${error.message}`};
       }
   }
+
+  async pay(product, personalInfo, paymentInfo, diferido){
+    var headers={
+      'Authorization':
+          `Bearer ${Config.TOKENPP}`,
+      'Accept': 'application/json',
+      'Content-Type': 'application/json; charset=UTF-8',
+    }
+
+    var url = `${Config.URL_PAYPHONE}/Create/`;
+
+    try {       
+      const response = await fetch(url, {
+        headers:headers,
+        method: 'POST',
+        body: JSON.stringify(this.getParams(product, personalInfo, paymentInfo, diferido))
+      });
+
       
+      /*if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }         */ 
+      var data = await response.json();
+      if(data){
+        data.statusCode=3;
+        return data;
+      }
+      return {"ErrorCode": 900};
+      
+    } catch (error) {
+      console.error('Cannot post to ' + url + '. error:' + error.message);
+      return {"ErrorCode": 700};
+    }
+  }
 }
 
 export default PayPhoneController;
