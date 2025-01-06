@@ -43,7 +43,7 @@ const Productlist = ({cambioSlider, productoSeleccionado}) => {
         setcodigoValido(true)
         setIsLoading(false)
       } else {
-        CheckPromocionalCode(codigoPromocional).then((result) => {
+        CheckPromocionalCode({codigo:codigoPromocional}).then((result) => {
           if (!result) {
             setcodigoValido(true)
             setIsLoading(false)

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { PDFViewer, Document, Page, View, Text, StyleSheet, Font, Image, Svg, PDFDownloadLink } from '@react-pdf/renderer';
+import { PDFViewer, Document, Page, View, Text, StyleSheet, Font, Image, Svg, PDFDownloadLink, pdf } from '@react-pdf/renderer';
 import montserratRegular from '../../global/fonts/Montserrat/Montserrat-Regular.ttf';
 import montserratBold from '../../global/fonts/Montserrat/Montserrat-Bold.ttf';
 import { useLocation } from 'react-router-dom';
@@ -72,7 +72,6 @@ const generateStaticMapImageUrl = (latitude, longitude) => {
   const size = '1600,400'; // Tamaño de la imagen del mapa
   const markers = `${latitude},${longitude}`; // Marcador en las coordenadas dadas
   const apiUrl = `https://dev.virtualearth.net/REST/v1/Imagery/Map/Road?center=${markers}&zoomlevel=18&mapSize=${encodeURI(size)}&pushpin=${markers}&fmt=png&key=${apiKey}`;
-  console.log(apiUrl);
   return apiUrl;
 };
 
@@ -91,7 +90,6 @@ const Certificado = () => {
       reserva[key] = value;
     }
   }
-  console.log(reserva)
   const latitude = reserva.LatitudEst;
   const longitude = reserva.LongitudEst;
   const staticMapImageUrl = generateStaticMapImageUrl(latitude, longitude);
@@ -124,11 +122,11 @@ const Certificado = () => {
           <View style={styles.row}>
             <View style={styles.column}>
               <View style={styles.logoContainer}>
-                <Image src="./img/web/logo_verde.png" style={styles.logo} />
+                <Image src="https://visitaecuador.com/img/web/logo_verde.png" style={styles.logo} />
               </View>
             </View>
             <View style={styles.column}>
-              <Text style={styles.title}>{(reserva.IdRes == null || reserva.IdRes == "") ? "Certificado" : `Certificado de ${reserva.Estado != "Confirmada" ? "Pre-Reserva" : "Reserva"}`} </Text>
+              <Text style={styles.title}>{(reserva.IdRes == null || reserva.IdRes == "") ? "Certificado" : reserva.Estado == "Cotización" ? "Cotización de Reserva" : `Certificado de ${reserva.Estado != "Confirmada" ? "Pre-Reserva" : "Reserva"}`} </Text>
               {
                 (reserva.IdRes != null && reserva.IdRes != "")
                   ? <View style={styles.row}>
@@ -268,7 +266,7 @@ const Certificado = () => {
                   <Text style={{ ...styles.paragraph, textAlign: 'center', fontSize: 7 }}>
                     {formatDate(new Date(reserva.FechaIn + "T00:00:00"), "weekday")}
                   </Text>
-                  <Image src="./img/web/clock.png" style={{ height: 10, width: '100%', objectFit: 'contain' }} />
+                  <Image src="https://visitaecuador.com/img/web/clock.png" style={{ height: 10, width: '100%', objectFit: 'contain' }} />
                   <Text style={{ ...styles.paragraph, textAlign: 'center', fontSize: 7 }}>
                     desde {reserva.CheckIn}
                   </Text>
@@ -286,7 +284,7 @@ const Certificado = () => {
                   <Text style={{ ...styles.paragraph, textAlign: 'center', fontSize: 7 }}>
                     {formatDate(new Date(reserva.FechaOut + "T00:00:00"), "weekday")}
                   </Text>
-                  <Image src="./img/web/clock.png" style={{ height: 10, width: '100%', objectFit: 'contain' }} />
+                  <Image src="https://visitaecuador.com/img/web/clock.png" style={{ height: 10, width: '100%', objectFit: 'contain' }} />
                   <Text style={{ ...styles.paragraph, textAlign: 'center', fontSize: 7 }}>
                     hasta {reserva.CheckOut}
                   </Text>
@@ -314,25 +312,75 @@ const Certificado = () => {
             </Text>
           </View>
           {reserva.Habitaciones.map((item, index) => (
-            <View key={index} style={styles.row}>
-              <View style={{ ...styles.column, width: "100%" }}>
-                <Text style={{ ...styles.paragraph, fontSize: 8 }}>
-                  {item.Cantidad} x {item.Nombre} (Máximo: {item.Adultos} {item.Adultos == 1 ? " adulto" : "adultos"}{item.Ninos == 0 ? "" : ", " + item.Ninos + " " + (item.Ninos == 1 ? "niño" : "niños")}), <Text style={
-                    {
-                      ...{
-                        fontFamily: 'Montserrat-Bold',
-                        color: '#3b82f6',
-                        marginLeft: 4,
-                      }
-                    }}>* Aplica {item.AplicaEn.toLowerCase()}</Text>
-                </Text>
+            <>
+              <View key={index} style={styles.row}>
+                <View style={{ ...styles.column, width: "100%" }}>
+                  <Text style={{ ...styles.paragraph, fontSize: 8 }}>
+                    {item.Cantidad} x {item.Nombre} (Máximo: {item.Adultos} {item.Adultos == 1 ? " adulto" : "adultos"}{item.Ninos == 0 ? "" : ", " + item.Ninos + " " + (item.Ninos == 1 ? "niño" : "niños")}) <Text style={
+                      {
+                        ...{
+                          fontFamily: 'Montserrat-Bold',
+                          color: '#3b82f6',
+                          marginLeft: 4,
+                        }
+                      }}>{
+                        item.AplicaEn
+                          ? `, * Aplica ${item.AplicaEn.toLowerCase()}`
+                          : ""
+                      }</Text>
+                  </Text>
+                </View>
+                <View style={styles.column}>
+                  <Text style={{ ...styles.paragraph, textAlign: 'right', fontSize: 8 }}>
+                    ${item.Subtotal.toFixed(2)}
+                  </Text>
+                </View>
               </View>
-              <View style={styles.column}>
-                <Text style={{ ...styles.paragraph, textAlign: 'right', fontSize: 8 }}>
-                  ${item.Subtotal.toFixed(2)}
-                </Text>
-              </View>
-            </View>
+              {
+                item.NinosAdicionales &&
+                <View key={index} style={styles.row}>
+                  <View style={{ ...styles.column, width: "100%" }}>
+                    <Text style={{ ...styles.paragraph, fontSize: 8 }}>
+                      {item.NinosAdicionales} x {item.Nombre}  <Text style={
+                        {
+                          ...{
+                            fontFamily: 'Montserrat-Bold',
+                            color: '#96c121',
+                            marginLeft: 4,
+                          }
+                        }}>{`- Niño adicional`}</Text>
+                    </Text>
+                  </View>
+                  <View style={styles.column}>
+                    <Text style={{ ...styles.paragraph, textAlign: 'right', fontSize: 8 }}>
+                      ${item.SubtotalNino.toFixed(2)}
+                    </Text>
+                  </View>
+                </View>
+              }
+              {
+                item.AdultosAdicionales &&
+                <View key={index} style={styles.row}>
+                  <View style={{ ...styles.column, width: "100%" }}>
+                    <Text style={{ ...styles.paragraph, fontSize: 8 }}>
+                      {item.AdultosAdicionales} x {item.Nombre}  <Text style={
+                        {
+                          ...{
+                            fontFamily: 'Montserrat-Bold',
+                            color: '#96c121',
+                            marginLeft: 4,
+                          }
+                        }}>{`- Adulto adicional`}</Text>
+                    </Text>
+                  </View>
+                  <View style={styles.column}>
+                    <Text style={{ ...styles.paragraph, textAlign: 'right', fontSize: 8 }}>
+                      ${item.SubtotalAdulto.toFixed(2)}
+                    </Text>
+                  </View>
+                </View>
+              }
+            </>
           ))}
           <View style={{ ...styles.row, marginTop: 5 }}>
             <View style={styles.column}>
@@ -420,78 +468,78 @@ const Certificado = () => {
               Los suplementos adicionales (como cama supletoria) no están incluidos en el precio total. Si no te presentas o cancelas la reserva, es posible que el alojamiento te cargue los impuestos correspondientes. Recuerda leer la información importante que aparece a continuación, ya que puede contener datos relevantes que no se mencionan aqui.
             </Text>
           </View>
-          <View style={{ ...styles.row, paddingTop:3}}>
+          <View style={{ ...styles.row, paddingTop: 3 }}>
             <View style={{ ...styles.column, }}>
               <Text style={{ ...styles.paragraph, fontSize: 8 }}>
-              <Text style={{ ...styles.paragraph, fontFamily: 'Montserrat-Bold', fontSize: 8 }}>Servicios del establecimiento:</Text>
+                <Text style={{ ...styles.paragraph, fontFamily: 'Montserrat-Bold', fontSize: 8 }}>Servicios del establecimiento:</Text>
               </Text>
-              <Text style={{ ...styles.paragraph, fontSize: 8, marginTop:-9 }}>
+              <Text style={{ ...styles.paragraph, fontSize: 8, marginTop: -9 }}>
                 {"‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎"
-                +reserva.serviciosEst.replaceAll("-", "•")}
+                  + reserva.serviciosEst.replaceAll("-", "•")}
               </Text>
             </View>
           </View>
 
-          <View style={{ ...styles.row, paddingTop:3}}>
+          <View style={{ ...styles.row, paddingTop: 3 }}>
             <View style={{ ...styles.column, }}>
               <Text style={{ ...styles.paragraph, fontSize: 8 }}>
                 <Text style={{ fontFamily: 'Montserrat-Bold' }}>Restricciones del establecimiento:</Text>
               </Text>
-              <Text style={{ ...styles.paragraph, fontSize: 8, marginTop:-9 }}>
-              {"‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ "
-                +reserva.restriccionesEst.replaceAll("-", "•")}
+              <Text style={{ ...styles.paragraph, fontSize: 8, marginTop: -9 }}>
+                {"‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ "
+                  + reserva.restriccionesEst.replaceAll("-", "•")}
               </Text>
             </View>
           </View>
 
-          <View style={{ ...styles.row, paddingTop:3, borderBottom: 0.5, borderColor: '#D0D0D0', paddingBottom: 3., marginBottom:3}}>
+          <View style={{ ...styles.row, paddingTop: 3, borderBottom: 0.5, borderColor: '#D0D0D0', paddingBottom: 3., marginBottom: 3 }}>
             <View style={{ ...styles.column, }}>
               <Text style={{ ...styles.paragraph, fontSize: 8 }}>
                 <Text style={{ fontFamily: 'Montserrat-Bold' }}>Sistemas de servicios:</Text>
               </Text>
-              <Text style={{ ...styles.paragraph, fontSize: 8, marginTop:-9 }}>
-              {"‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎"
-                +reserva.sistemaServEst.replaceAll("-", "•")}
+              <Text style={{ ...styles.paragraph, fontSize: 8, marginTop: -9 }}>
+                {"‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎"
+                  + reserva.sistemaServEst.replaceAll("-", "•")}
               </Text>
             </View>
           </View>
-          
+
           <View style={{ ...styles.row, borderBottom: 0.5, borderColor: '#D0D0D0', paddingBottom: 3 }}>
             <Image src={staticMapImageUrl} style={{ width: '100%', height: '120px' }} />
           </View>
           {
             reserva.Habitaciones.map((item, index) => (
               <>
-                <View style={{ ...styles.row, paddingTop:3}}>
+                <View style={{ ...styles.row, paddingTop: 3 }}>
                   <View style={{ ...styles.column, }}>
                     <Text style={{ ...styles.paragraph, fontSize: 8 }}>
                       <Text style={{ fontFamily: 'Montserrat-Bold' }}>Incluye:</Text>
                     </Text>
-                    <Text style={{ ...styles.paragraph, fontFamily: 'Montserrat',  fontSize: 8, marginTop:-9 }}>
-                    {"‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ "
-                      +reserva.incluyeEst.replaceAll("-", "•")}
+                    <Text style={{ ...styles.paragraph, fontFamily: 'Montserrat', fontSize: 8, marginTop: -9 }}>
+                      {"‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ "
+                        + reserva.incluyeEst.replaceAll("-", "•")}
                     </Text>
                   </View>
                 </View>
-                <View style={{ ...styles.row, paddingTop:3}}>
+                <View style={{ ...styles.row, paddingTop: 3 }}>
                   <View style={{ ...styles.column, }}>
                     <Text style={{ ...styles.paragraph, fontSize: 8 }}>
                       <Text style={{ fontFamily: 'Montserrat-Bold' }}>No incluye:</Text>
                     </Text>
-                    <Text style={{ ...styles.paragraph, fontFamily: 'Montserrat', fontSize: 8, marginTop:-9 }}>
-                    {"‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ "
-                      +reserva.noIncluyeEst.replaceAll("-", "•")}
+                    <Text style={{ ...styles.paragraph, fontFamily: 'Montserrat', fontSize: 8, marginTop: -9 }}>
+                      {"‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ "
+                        + reserva.noIncluyeEst.replaceAll("-", "•")}
                     </Text>
                   </View>
                 </View>
-                <View style={{ ...styles.row, paddingTop:3, borderBottom: 0.5, borderColor: '#D0D0D0', paddingBottom: 3., marginBottom:3}}>
+                <View style={{ ...styles.row, paddingTop: 3, borderBottom: 0.5, borderColor: '#D0D0D0', paddingBottom: 3., marginBottom: 3 }}>
                   <View style={{ ...styles.column, }}>
                     <Text style={{ ...styles.paragraph, fontSize: 8 }}>
                       <Text style={{ fontFamily: 'Montserrat-Bold' }}>Acomodación:</Text>
                     </Text>
-                    <Text style={{ ...styles.paragraph, fontFamily: 'Montserrat', fontSize: 8, marginTop:-9 }}>
-                    {"‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ "
-                      +item.Acomodacion}
+                    <Text style={{ ...styles.paragraph, fontFamily: 'Montserrat', fontSize: 8, marginTop: -9 }}>
+                      {"‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ "
+                        + item.Acomodacion}
                     </Text>
                   </View>
                 </View>
@@ -499,7 +547,7 @@ const Certificado = () => {
             ))
           }
           <View style={{ ...styles.row, paddingTop: 5, paddingBottom: 1 }}>
-            <Text style={{ ...styles.paragraph, fontSize: 6, fontFamily: 'Montserrat-Bold',}}>
+            <Text style={{ ...styles.paragraph, fontSize: 6, fontFamily: 'Montserrat-Bold', }}>
               Términos y condiciones:
             </Text>
           </View>
@@ -554,7 +602,7 @@ const Certificado = () => {
           <View style={styles.row}>
             <View style={{ ...styles.column, width: "88%" }}>
               <View style={styles.row}>
-                <Image src="./img/web/whatsapp_cert.png" style={{ height: 40, width: 40, objectFit: 'contain' }}></Image>
+                <Image src="https://visitaecuador.com/img/web/whatsapp_cert.png" style={{ height: 40, width: 40, objectFit: 'contain' }}></Image>
                 <View style={styles.column}>
                   <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: 8 }}>CENTRAL DE RESERVAS:</Text>
                   <Text style={{ fontFamily: 'Montserrat', fontSize: 7 }}>+593 98 064 4467</Text>
@@ -565,27 +613,33 @@ const Certificado = () => {
             </View>
             <View style={styles.column}>
               <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: 8 }}>CON EL AUSPICIO DE:</Text>
-              <Image src="./img/web/patrocinadores.png" style={{ height: 26, width: 200, objectFit: 'contain' }}></Image>
+              <Image src="https://visitaecuador.com/img/web/patrocinadores.png" style={{ height: 26, width: 200, objectFit: 'contain' }}></Image>
             </View>
           </View>
         </View>
       </Page>
     </Document>)
+
+  useEffect(() => {
+    if (isMobile) {
+      const downloadPDF = async () => {
+        const blob = await pdf(<MyDocument />).toBlob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${reserva.NombreSus.replaceAll("-", "")}-${reserva.IdSus}-${((reserva.IdRes == null || reserva.IdRes == "") ? reserva.fecha_reserva : reserva.IdRes)}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url); // Limpia el URL blob creado
+      };
+      downloadPDF();
+    }
+  }, [reserva]);
+
   return (
     <div className="w-screen h-screen flex justify-center items-center">
-      {
-        isMobile
-          ? (
-            <PDFDownloadLink document={<MyDocument></MyDocument>} fileName={reserva.NombreSus.replaceAll("-") + "-" + reserva.IdSus + "-" + ((reserva.IdRes == null || reserva.IdRes == "") ? reserva.fecha_reserva : reserva.IdRes)}>
-              {({ loading }) => (loading ? <div className='w-8 h-8 border-4 border-dashed rounded-full animate-spin mx-auto border-blue-400'></div> : <div className='bg-greenVE-500 text-white px-5 py-3 font-bold'>Descargar PDF</div>)}
-            </PDFDownloadLink>
-          )
-          : (
-            <PDFViewer className="w-full h-full" >
-              <MyDocument></MyDocument>
-            </PDFViewer>
-          )
-      }
+      <PDFViewer className="w-full h-full" >
+        <MyDocument></MyDocument>
+      </PDFViewer>
     </div>
   );
 }

@@ -5,17 +5,17 @@ import { Spinner } from "@material-tailwind/react";
 
 const ProfileEdit = ({ profileData, citiesData }) => {
     const [ciudad, setCiudad] = useState();
-    const [errorCodigo, setErrorCodigo]=useState(false);
+    const [errorCodigo, setErrorCodigo] = useState(false);
     const [direccionField, setDireccionField] = useState(profileData.Direccion);
-    const [codigoField, setCodigoField]= useState(profileData.Codigo);
+    const [codigoField, setCodigoField] = useState(profileData.Codigo);
     const [cumpleaniosField, setCumpleaniosField] = useState(profileData.FechaNacimiento);
     const [contactosField, setContactosField] = useState(profileData.Contactos);
     const [fotoPerfil, setFotoPerfil] = useState(profileData.Foto);
     const [modalOpen, setModalOpen] = useState(false);
-    const [selectedProvincia, setSelectedProvincia]=useState(obtenerIndiceProvinciaPorValor(citiesData, profileData.IdLugar));
-    const [selectedCanton, setSelectedCanton]=useState(profileData.IdLugar)
+    const [selectedProvincia, setSelectedProvincia] = useState(obtenerIndiceProvinciaPorValor(citiesData, profileData.IdLugar));
+    const [selectedCanton, setSelectedCanton] = useState(profileData.IdLugar)
     const [editModes, setEditModes] = useState({
-        codigo:false,
+        codigo: false,
         ciudad: false,
         direccion: false,
         cumpleanios: false,
@@ -23,7 +23,7 @@ const ProfileEdit = ({ profileData, citiesData }) => {
     });
 
     const [loadingModes, setLoadingModes] = useState({
-        codigo:false,
+        codigo: false,
         ciudad: false,
         direccion: false,
         cumpleanios: false,
@@ -36,7 +36,7 @@ const ProfileEdit = ({ profileData, citiesData }) => {
             [section]: !prevEditModes[section],
         }));
     };
-    
+
     const handleCancel = (section) => {
         setEditModes((prevEditModes) => ({
             ...prevEditModes,
@@ -45,46 +45,43 @@ const ProfileEdit = ({ profileData, citiesData }) => {
     };
 
     const handleSave = (section) => {
-        console.log(section)
-        console.log("ingresado");
         setLoadingModes((prevLoadingModes) => ({
             ...prevLoadingModes,
             [section]: true,
         }));
-        
-        var key=""
-        var value=""
-        if((section=="ciudad")){
-            key="id_tbl_lugar";
-            value=selectedCanton;
+
+        var key = ""
+        var value = ""
+        if ((section == "ciudad")) {
+            key = "id_tbl_lugar";
+            value = selectedCanton;
         }
 
-        if((section=="direccion")){
-            key="direccion";
-            value=direccionField;
+        if ((section == "direccion")) {
+            key = "direccion";
+            value = direccionField;
         }
 
-        if((section=="cumpleanios")){
-            key="fecha_nac";
-            value=cumpleaniosField;
+        if ((section == "cumpleanios")) {
+            key = "fecha_nac";
+            value = cumpleaniosField;
         }
 
-        if((section.includes("contactos"))){
-            key="contactos";
-            value=Object.values(contactosField).map(item => ({
+        if ((section.includes("contactos"))) {
+            key = "contactos";
+            value = Object.values(contactosField).map(item => ({
                 id_tbl_tipo_contacto: item.Valor,
                 contacto: item.Titulo
-              }));
+            }));
         }
 
-        if(section=="codigo"){
-            console.log("Ingreso código")
-            changePromoCode(codigoField).then((res)=>{
-                if(res){
-                    if(res==401){
+        if (section == "codigo") {
+            changePromoCode(codigoField).then((res) => {
+                if (res) {
+                    if (res == 401) {
                         localStorage.removeItem("datos")
                         window.location.reload();
-                    }else{
+                    } else {
                         setLoadingModes((prevLoadingModes) => ({
                             ...prevLoadingModes,
                             [section]: false,
@@ -94,7 +91,7 @@ const ProfileEdit = ({ profileData, citiesData }) => {
                             [section]: false,
                         }));
                     }
-                }else{
+                } else {
                     setErrorCodigo(true);
                     setLoadingModes((prevLoadingModes) => ({
                         ...prevLoadingModes,
@@ -102,13 +99,13 @@ const ProfileEdit = ({ profileData, citiesData }) => {
                     }));
                 }
             })
-        }else{
-            updateProfileData(key, value).then((res)=>{
-                if(res){
-                    if(res==401){
+        } else {
+            updateProfileData(key, value).then((res) => {
+                if (res) {
+                    if (res == 401) {
                         localStorage.removeItem("datos");
                         window.location.reload();
-                    }else{
+                    } else {
                         setLoadingModes((prevLoadingModes) => ({
                             ...prevLoadingModes,
                             [section]: false,
@@ -118,21 +115,21 @@ const ProfileEdit = ({ profileData, citiesData }) => {
                             [section]: false,
                         }));
                     }
-                }else{
+                } else {
                     setLoadingModes((prevLoadingModes) => ({
                         ...prevLoadingModes,
                         [section]: false,
                     }));
                 }
-            })  
-        }    
+            })
+        }
     };
 
     const handleCumpleaniosChange = (event) => {
         setCumpleaniosField(event.target.value);
     };
 
-    const handleCodigoChange=(event)=>{
+    const handleCodigoChange = (event) => {
         setErrorCodigo(false);
         setCodigoField(event.target.value)
     }
@@ -141,7 +138,7 @@ const ProfileEdit = ({ profileData, citiesData }) => {
         setDireccionField(event.target.value);
     };
 
-    const handleEditPhoto=()=>{
+    const handleEditPhoto = () => {
         setModalOpen(!modalOpen);
     }
 
@@ -158,27 +155,27 @@ const ProfileEdit = ({ profileData, citiesData }) => {
         });
     };
 
-    const updateProfilePhoto=(imgSrc)=>{
+    const updateProfilePhoto = (imgSrc) => {
         setFotoPerfil(imgSrc);
     }
 
-    const closeModal=()=>{
+    const closeModal = () => {
         setModalOpen(false);
     }
 
-    const handleChangeProvincia=(event)=>{
+    const handleChangeProvincia = (event) => {
         setSelectedProvincia(event.target.value)
     }
 
-    const handleChangeCanton=(event)=>{
+    const handleChangeCanton = (event) => {
         setSelectedCanton(event.target.value)
         for (let i = 0; i < citiesData.length; i++) {
             const provincia = citiesData[i];
             const cantones = provincia.Valor;
-            
+
             for (let j = 0; j < cantones.length; j++) {
                 const canton = cantones[j];
-                
+
                 if (canton.Valor === event.target.value) {
                     setCiudad(canton.Titulo);
                 }
@@ -193,10 +190,10 @@ const ProfileEdit = ({ profileData, citiesData }) => {
             for (let i = 0; i < citiesData.length; i++) {
                 const provincia = citiesData[i];
                 const cantones = provincia.Valor;
-                
+
                 for (let j = 0; j < cantones.length; j++) {
                     const canton = cantones[j];
-                    
+
                     if (canton.Valor === profileData.IdLugar) {
                         setCiudad(canton.Titulo);
                     }
@@ -210,17 +207,17 @@ const ProfileEdit = ({ profileData, citiesData }) => {
     return (
         <div className="flex flex-col">
             {
-                modalOpen&&<ProfilePhoto closeModal={closeModal} updateProfilePhoto={updateProfilePhoto}/>
+                modalOpen && <ProfilePhoto closeModal={closeModal} updateProfilePhoto={updateProfilePhoto} />
             }
             <div className="flex justify-between items-center border-b pb-2">
                 <div className="flex flex-col">
                     <h1 className="font-semibold text-3xl">Datos personales</h1>
                     <label>Actualiza o revisa tus datos personales </label>
                 </div>
-                <div className="rounded-full bg-slate-300 h-14 w-14 border-4 border-greenVE-500 relative cursor-pointer" onClick={()=>handleEditPhoto()}>
+                <div className="rounded-full bg-slate-300 h-14 w-14 border-4 border-greenVE-500 relative cursor-pointer" onClick={() => handleEditPhoto()}>
                     <img className="rounded-full w-14 h-12" src={fotoPerfil} />
                     <div className="flex items-center justify-center absolute bottom-0 left-0 right-0 text-center bg-gray-800 text-white h-6 opacity-75 rounded-b-full">
-                    <label className="text-xxs cursor-pointer">Editar</label>
+                        <label className="text-xxs cursor-pointer">Editar</label>
                     </div>
                 </div>
             </div>
@@ -234,48 +231,51 @@ const ProfileEdit = ({ profileData, citiesData }) => {
                     </div>
                 </div>
             </div>
-            <div className="flex py-5 border-b justify-between">
-                <div className="flex w-10/12">
-                    <div className="w-3/12">
-                        <label className="text-sm font-semibold">Código promocional:</label>
+            {
+                (profileData && profileData.Codigo && profileData.Codigo != "") &&
+                <div className="flex py-5 border-b justify-between">
+                    <div className="flex w-10/12">
+                        <div className="w-3/12">
+                            <label className="text-sm font-semibold">Código promocional:</label>
+                        </div>
+                        <div className="w-7/12">
+                            {
+                                editModes.codigo ? (
+                                    <div className="flex gap-2 items-center">
+                                        <input className="border border-greenVE-500 px-2 rounded-lg focus:outline-none text-sm" value={codigoField} onChange={handleCodigoChange}></input>
+                                        {
+                                            errorCodigo && <label className="text-xxs text-red-500">El código ya está en uso</label>
+                                        }
+                                    </div>
+                                ) : (
+                                    <label className="text-sm ">{codigoField}</label>
+                                )
+                            }
+                        </div>
                     </div>
-                    <div className="w-7/12">
-                        {
-                            editModes.codigo ? (
-                                <div className="flex gap-2 items-center">
-                                    <input className="border border-greenVE-500 px-2 rounded-lg focus:outline-none text-sm" value={codigoField} onChange={handleCodigoChange}></input>
-                                    {
-                                        errorCodigo&&<label className="text-xxs text-red-500">El código ya está en uso</label>
-                                    }
-                                </div>
-                            ) : (
-                                <label className="text-sm ">{codigoField}</label>
-                            )
-                        }
-                    </div>
+                    {editModes.codigo ? (
+                        <>
+                            <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel('codigo')}>{loadingModes.codigo ? "" : "Cancelar"}</label>
+                            <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave('codigo')}>{loadingModes.codigo ? <Spinner></Spinner> : "Guardar"}</label>
+                        </>
+                    ) : (
+                        <label className="text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleToggleEdit('codigo')}>Editar</label>
+                    )}
                 </div>
-                {editModes.codigo ? (
-                    <>
-                        <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel('codigo')}>{loadingModes.codigo?"":"Cancelar"}</label>
-                        <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave('codigo')}>{loadingModes.codigo?<Spinner></Spinner>:"Guardar"}</label>
-                    </>
-                ) : (
-                    <label className="text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleToggleEdit('codigo')}>Editar</label>
-                )}
-            </div>
+            }
             <div className="flex py-5 border-b justify-between">
                 <div className="flex w-10/12">
                     <div className="w-3/12">
                         <label className="text-sm font-semibold">Ciudad:</label>
                     </div>
                     {
-                        editModes.ciudad?(
-                            <div className="flex flex-col gap-3"> 
+                        editModes.ciudad ? (
+                            <div className="flex flex-col gap-3">
                                 <div className="flex gap-3">
                                     <label htmlFor="comboBox">Provincia:</label>
                                     <select id="provincias" value={selectedProvincia} onChange={handleChangeProvincia}>
                                         {
-                                            citiesData.map((item, index)=>(
+                                            citiesData.map((item, index) => (
                                                 <option value={index} key={index}>{item.Titulo}</option>
                                             ))
                                         }
@@ -285,26 +285,26 @@ const ProfileEdit = ({ profileData, citiesData }) => {
                                     <label htmlFor="comboBox">Cantón:</label>
                                     <select id="provincias" value={selectedCanton} onChange={handleChangeCanton}>
                                         {
-                                            citiesData[selectedProvincia].Valor.map((item, index)=>(
+                                            citiesData[selectedProvincia].Valor.map((item, index) => (
                                                 <option value={item.Valor} key={item.Valor}>{item.Titulo}</option>
                                             ))
                                         }
                                     </select>
                                 </div>
                             </div>
-                        ):(
-                            
+                        ) : (
+
                             <div className="w-7/12">
                                 <label className="text-sm ">{ciudad}</label>
                             </div>
                         )
                     }
-                    
+
                 </div>
                 {editModes.ciudad ? (
                     <>
-                        <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel('ciudad')}>{loadingModes.ciudad?"":"Cancelar"}</label>
-                        <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave('ciudad')}>{loadingModes.ciudad?<Spinner></Spinner>:"Guardar"}</label>
+                        <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel('ciudad')}>{loadingModes.ciudad ? "" : "Cancelar"}</label>
+                        <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave('ciudad')}>{loadingModes.ciudad ? <Spinner></Spinner> : "Guardar"}</label>
                     </>
                 ) : (
                     <label className="text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleToggleEdit('ciudad')}>Editar</label>
@@ -327,8 +327,8 @@ const ProfileEdit = ({ profileData, citiesData }) => {
                 </div>
                 {editModes.direccion ? (
                     <>
-                        <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel('direccion')}>{loadingModes.direccion?"":"Cancelar"}</label>
-                        <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave('direccion')}>{loadingModes.direccion?<Spinner></Spinner>:"Guardar"}</label>
+                        <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel('direccion')}>{loadingModes.direccion ? "" : "Cancelar"}</label>
+                        <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave('direccion')}>{loadingModes.direccion ? <Spinner></Spinner> : "Guardar"}</label>
                     </>
                 ) : (
                     <label className="text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleToggleEdit('direccion')}>Editar</label>
@@ -352,8 +352,8 @@ const ProfileEdit = ({ profileData, citiesData }) => {
                 </div>
                 {editModes.cumpleanios ? (
                     <>
-                        <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel('cumpleanios')}>{loadingModes.cumpleanios?"":"Cancelar"}</label>
-                        <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave('cumpleanios')}>{loadingModes.cumpleanios?<Spinner></Spinner>:"Guardar"}</label>
+                        <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel('cumpleanios')}>{loadingModes.cumpleanios ? "" : "Cancelar"}</label>
+                        <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave('cumpleanios')}>{loadingModes.cumpleanios ? <Spinner></Spinner> : "Guardar"}</label>
 
                     </>
                 ) : (
@@ -378,8 +378,8 @@ const ProfileEdit = ({ profileData, citiesData }) => {
                     </div>
                     {editModes[`contactos_${index}`] ? (
                         <>
-                            <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel(`contactos_${index}`)}>{loadingModes[`contactos_${index}`]?"":"Cancelar"}</label>
-                            <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave(`contactos_${index}`)}>{loadingModes[`contactos_${index}`]?<Spinner></Spinner>:"Guardar"}</label>
+                            <label className="text-sm text-red-500 cursor-pointer hover:underline" onClick={() => handleCancel(`contactos_${index}`)}>{loadingModes[`contactos_${index}`] ? "" : "Cancelar"}</label>
+                            <label className="ml-2 text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleSave(`contactos_${index}`)}>{loadingModes[`contactos_${index}`] ? <Spinner></Spinner> : "Guardar"}</label>
                         </>
                     ) : (
                         <label className="text-sm text-greenVE-500 cursor-pointer hover:underline" onClick={() => handleToggleEdit(`contactos_${index}`)}>Editar</label>

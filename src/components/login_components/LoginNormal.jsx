@@ -54,7 +54,7 @@ const LoginNormal = () => {
                             }
                         }
                     })
-                    .catch((error) => { console.log(error) })
+                    .catch((error) => { })
 
             } catch (error) {
                 console.error("Error:", error);

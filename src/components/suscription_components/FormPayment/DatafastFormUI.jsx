@@ -25,7 +25,6 @@ const DatafastFormUI = ({trx, tarjeta, diferido}) => {
       // Inicializar jQuery y manejar clics en el botón
       jQuery(document).ready(function () {
         jQuery('body').on('click', '.wpwl-button-pay', function (e) {
-          console.log('notifica pago');
         });
       });
     };

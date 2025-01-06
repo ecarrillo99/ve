@@ -44,12 +44,10 @@ const Suscription = () => {
             setLoadingPago(true);
             const pagoValido = await datafastController.checkRemotePaymentV3(id);
             if(pagoValido){
-                console.log(pagoValido)
                 setLoadingPago(false);
                 if(!pagoValido.estado){
                     
                     gestionarSuscripcion(generarEsquemaSusDF(pagoValido.data)).then((result)=>{
-                        console.log(result);
                         if(result){
                             setNombre(pagoValido.data["customer"]["givenName"])
                             if(result.estado){
@@ -71,7 +69,6 @@ const Suscription = () => {
                 setMsjErrorPago("Ha ocurrido un error desconocido. Si existen cargos a su tarjeta comuníquese a nuestra central de reservas.")
             }
         }else{
-            console.log("ingreso else")
         }
     }
 
@@ -84,7 +81,6 @@ const Suscription = () => {
             firstTime=false;
             hadleClickCreateSuscription()
         }else{
-            console.log("no ingreso false");
         }
 
         window.addEventListener('resize', handleResize);
@@ -132,12 +128,13 @@ const Suscription = () => {
                 ?<NavbarMobile/>
                 :<Navbar/>
             }
-                {/*<iframe
-                    src="https://visitaecuador.com/compra"
-                    width="100%"
-                    height="1010px"
-                    >
-                </iframe>*/
+                {/*
+                    <iframe
+                        src="https://visitaecuador.com/compra"
+                        width="100%"
+                        height="1010px"
+                        >
+                    </iframe>*/
                 }
                 {
                     id==null

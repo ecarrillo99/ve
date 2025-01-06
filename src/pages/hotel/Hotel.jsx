@@ -33,11 +33,18 @@ const Hotel = () => {
   const searchParams = new URLSearchParams(location.search);
   const [idHotel, setIdHotel] = useState(JSON.parse(decodeURIComponent(searchParams.get('id'))));
   const [establecimiento, setEstablecimiento] = useState();
-  const [options, setOptions] = useState();
+  const [options, setOptions] = useState(
+    {
+      adult: 2,
+      children:0,
+      childrenAges:[],
+      room:1
+    }
+  );
   const [date, setDate] = useState();
   const [destination, setDestination] = useState();
   const [openMap, setOpenMap]=useState();
-  const [noches, setNoches] = useState();
+  const [noches, setNoches] = useState(1);
   const [data, setData] = useState(null);
   const session = JSON.parse(localStorage.getItem("datos"));
   const nivel = session ? session.data.nivel : "visitante";
@@ -45,7 +52,7 @@ const Hotel = () => {
   const {nombre}=useParams();
   const [clickRecomendados, setClickRecomendados]=useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Definir 768 como el punto de corte para móvil
-  console.log(options)
+  const codigo = localStorage.getItem('codigo');
 
   useEffect(() => {
     const handleResize = () => {
@@ -108,9 +115,7 @@ const Hotel = () => {
         const fechaActual = new Date();
         const fechaNueva = new Date(fechaActual);
         fechaNueva.setDate(fechaActual.getDate() + nochesCalculadas);
-        console.log(fechaActual)
-        console.log(noches);
-        console.log(fechaNueva)
+
         const dateTmp = [{
           startDate: fechaActual,
           endDate: fechaNueva,
@@ -130,6 +135,29 @@ const Hotel = () => {
         adultos: options.adult,
         ninos: options.children,
         edadninos: options.childrenAges
+      };
+      
+      getResultadoFiltro(filtro).then((result) => {
+        if (result) {
+          if(result==401){
+            localStorage.removeItem("datos");
+            window.location.reload();
+          }else{
+            setEstablecimiento(result.Establecimientos[0])
+          }
+        }
+      });
+    }else if(idHotel){
+      filtro.TipoDestino = "establecimiento";
+      filtro.IdEstablecimiento=idHotel;
+      filtro.Fechas = {
+        inicio: `${format(new Date(), "yyyy-MM-dd")}`,
+        fin: `${format(new Date().setDate(new Date().getDate() + 1), "yyyy-MM-dd")}`
+      };
+      filtro.Pax = {
+        adultos:2,
+        ninos: 0,
+        edadninos: []
       };
       
       getResultadoFiltro(filtro).then((result) => {
@@ -197,7 +225,9 @@ const Hotel = () => {
         <Suspense><Footer /></Suspense>
       </div>) : (
       <div className="h-screen w-screen flex flex-col justify-center items-center">
-        <img src="./img/web/logo_verde.png" style={{ width: "300px", height: "auto" }} />
+        {
+          !codigo&&<img src="https://visitaecuador.com/img/web/logo_verde.png" style={{ width: "300px", height: "auto" }} />
+        }
         <div className="animate-spin w-16 h-16 border-t-4 border-greenVE-500 rounded-full"></div>
       </div>
     )

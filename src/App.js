@@ -1,47 +1,5 @@
-//import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-/*import { Route, HashRouter as Router, Routes } from "react-router-dom";
-import Home from "./pages/home/Home";
-import Hotel from "./pages/hotel/Hotel";
-import Search from "./pages/search/search";
-import React, { useEffect, useState } from "react";
-import Login from "./pages/login/login";
-import Suscription from "./pages/suscription/Suscription";
-import Profile from "./pages/Profile/Profile";
-import BookHistory from "./pages/BookHistory/BookHistory";
-import Favorites from "./pages/Favorites/Favorites";
-import About from "./pages/About/About";
-import Politicas from "./pages/Politicas/Politicas";
-import Terminos from "./pages/Terminos/Terminos";
-import Certificado from "./pages/Certificado/Certificado";
-import Disney from "./pages/Disney/Disney";
-import YaGanaste from "./pages/yaganaste/yaganaste";
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route exact path="/" element={<Home />} />
-        <Route path="/nosotros/:seccion?" element={<About/>} />
-        <Route path="/busqueda/" element={<Search />} />
-        <Route path="/perfil/" element={<Profile/>} />
-        <Route path="/historial/" element={<BookHistory/>}/>
-        <Route path="/favoritos/" element={<Favorites/>}/>
-        <Route path="/suscripcion/" element={<Suscription />} />
-        <Route path="/login/" element={<Login />} />
-        <Route path="/hotel/:nombre" element={<Hotel />} />
-        <Route path="/politicas-privacidad/" element={<Politicas />} />
-        <Route path="/terminos-condiciones/" element={<Terminos />} />
-        <Route path="/certificado/" element={<Certificado />} />
-        <Route path="/disney/" element={<Disney />} />
-        <Route path="/yaganaste/" element={<YaGanaste />} />
-      </Routes>
-    </Router>
-  );
-}
-
-export default App;*/
-
 import React, { lazy, Suspense, useEffect, useState } from 'react';
-import { Route, HashRouter as Router, Routes } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
 import Short from './pages/Short/short';
 
 // Importa los componentes utilizando lazy
@@ -62,7 +20,18 @@ const Certificado = lazy(() => import('./pages/Certificado/Certificado'));
 const Disney = lazy(() => import('./pages/Disney/Disney'));
 const YaGanaste = lazy(() => import('./pages/yaganaste/yaganaste'));
 const Bienvenida = lazy(()=>import("./pages/Bienvenida/Bienvenida"));
-const contactos = ["593986263432", "593980644467", "593981850436"];
+const PayPhone = lazy(()=>import("./pages/PayPhone/PayPhone"));
+const Contacto = lazy(()=>import("./pages/Contacto/Contacto"));
+const Emprende = lazy(()=>import("./pages/Emprende/Emprende"));
+const Remate = lazy(()=>import("./pages/Remate/Remate"));
+const Pack = lazy(()=>import("./pages/Pack/Pack"));
+const Convenio = lazy(()=>import("./pages/Convenio/Convenio"));
+const NotFound = lazy(()=>import("./pages/NotFound/NotFound"));
+const contactos = ["593986263432", "593981850436"];
+const Promo = lazy(()=>import("./pages/Promo/Promo"));
+const Tips = lazy(()=>import("./pages/Tips/Tips"));
+
+
 
 const handleOnClick = () => {
   const contacto = contactos[Math.floor(Math.random() * contactos.length)];
@@ -70,9 +39,11 @@ const handleOnClick = () => {
   window.open(path, '_blank')
 }
 function App() {
+  
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Definir 768 como el punto de corte para móvil
 
   useEffect(() => {
+    
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
@@ -102,11 +73,21 @@ function App() {
           <Route path="/disney/" element={<Suspense><Disney /></Suspense>} />
           <Route path="/yaganaste/" element={<Suspense><YaGanaste /></Suspense>} />
           <Route path="/short/:id" element={<Suspense><Short /></Suspense>} />
+          <Route path="/convenio/:codigo" element={<Suspense><Convenio/></Suspense>} />
+          <Route path="/marcablanca/:codigo" element={<Suspense><Home/></Suspense>} />
           <Route path="/bienvenida" element={<Suspense><Bienvenida /></Suspense>} />
+          <Route path="/payphone" element={<Suspense><PayPhone/></Suspense>} />
+          <Route path="/contacto" element={<Suspense><Contacto/></Suspense>} />
+          <Route path="/emprende" element={<Suspense><Emprende/></Suspense>} />
+          <Route path="/remate" element={<Suspense><Remate/></Suspense>} />
+          <Route path="/pack" element={<Suspense><Pack/></Suspense>} />
+          <Route path="/promo" element={<Suspense><Promo/></Suspense>} />
+          <Route path="/tips" element={<Suspense><Tips/></Suspense>} />
+          <Route path="*" element={<Suspense><NotFound/></Suspense>} />
         </Routes>
       </Router>
       {!isMobile ? <div className="fixed bottom-5 right-0 bg-transparent  py-2 rounded-full cursor-pointer" onClick={() => handleOnClick()}>
-        <img className='h-16 md:h-32 z-50' src="./img/web/central.svg" />
+        <img className='h-16 md:h-32 z-50' src="https://visitaecuador.com/img/web/central.svg" />
       </div> : <></>
       }
     </>

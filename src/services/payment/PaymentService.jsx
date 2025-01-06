@@ -91,7 +91,6 @@ class PaymentService extends GenericService {
     /// simulacion de id
 
     testPrepareDF = async (urlData, customPar) => {
-        console.log("espera respuesta");
         const res = await new Promise((resolve) => {
             setTimeout(() => {
                 resolve({
@@ -171,8 +170,6 @@ class PaymentService extends GenericService {
 
     /// simulacion de id
     testVerificarDF = async (chekOutId) => {
-        console.log("Esperando respuesta");
-
         try {
             const response = await new Promise(resolve => setTimeout(() => {
                 resolve({

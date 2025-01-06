@@ -4,11 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { auth } from "../../../firebase";
 import encodePass from '../../../global/encodePass';
 import Config from '../../../global/config';
-import { endRemoteSession, loginRemote } from '../../../controllers/suscripcion/suscripcionController';
+import { endRemoteSession, getPermissions, loginRemote, setPermissionsAdmin } from '../../../controllers/suscripcion/suscripcionController';
 import { Spinner } from '@material-tailwind/react';
 import MarcaPais from './MarcaPais';
+import Icons from '../../../global/icons';
 
-
+const icons = new Icons();
 const NavbarMobile = ({ activo }) => {
     const navigate = new useNavigate();
     const [openMenu, setOpenMenu] = useState(false);
@@ -19,8 +20,12 @@ const NavbarMobile = ({ activo }) => {
     const fProvider = new FacebookAuthProvider();
     const session = JSON.parse(localStorage.getItem("datos"));
     const nivel = session ? session.data.nivel : "visitante";
+    const beta = session ? session.data.permisos.perfil.pruebasBeta : false;
     const nombre = session ? session.data.nombre : "";
     const foto = session ? (session.data.fotos ? session.data.fotos.m : "") : "";
+    const [openConvenios, setOpenConvenios] = useState(false);
+    const [isLoadingAdminBeta, setLoadingAdminBeta] = useState();
+    const [isLoadingAdmin, setLoadingAdmin] = useState();
     const handleClickLogo = () => {
         navigate("/");
     }
@@ -37,6 +42,7 @@ const NavbarMobile = ({ activo }) => {
     }
 
     const handleClickMenu = () => {
+        setOpenConvenios(false);
         setOpenMenu(!openMenu)
     }
 
@@ -60,20 +66,20 @@ const NavbarMobile = ({ activo }) => {
         navigate("/perfil");
     };
 
-    const handleClickBookHistory=()=>{
+    const handleClickBookHistory = () => {
         navigate("/historial");
     }
 
-    const handleClickFavorites=()=>{
+    const handleClickFavorites = () => {
         navigate("/favoritos");
     }
 
     const handleClickLogOut = () => {
         try {
             endRemoteSession().then((result) => {
-            if (result) {
-                window.location.reload();
-            }
+                if (result) {
+                    window.location.reload();
+                }
             });
         } catch (error) {
             console.error("Error:", error);
@@ -119,7 +125,7 @@ const NavbarMobile = ({ activo }) => {
                                     alert("Ha ocurrido un error, intente nuevamente")
                                 }
                             })
-                            .catch((error) => { console.log(error) })
+                            .catch((error) => { })
 
                     } catch (error) {
                         setisLoadingGoogle(false)
@@ -129,7 +135,6 @@ const NavbarMobile = ({ activo }) => {
 
                 }
             }).catch((error) => {
-                console.log(error)
             });
         }
     }
@@ -175,7 +180,7 @@ const NavbarMobile = ({ activo }) => {
                                         alert("Ha ocurrido un error, intente nuevamente")
                                     }
                                 })
-                                .catch((error) => { console.log(error) })
+                                .catch((error) => { })
 
                         } catch (error) {
                             setIsLoadingFB(false)
@@ -197,13 +202,37 @@ const NavbarMobile = ({ activo }) => {
         }
     }
 
+    const handleClickAdministradorBeta = () => {
+        if (!isLoadingAdminBeta) {
+            setLoadingAdminBeta(true);
+            setPermissionsAdmin().then((result) => {
+                if (result) {
+                    window.open("/administrador");
+                    setLoadingAdminBeta(false);
+                }
+            })
+        }
+    }
+
+    const handleClickAdministrador = () => {
+        if (!isLoadingAdmin) {
+            setLoadingAdmin(true);
+            getPermissions(session.data.id_usuario).then((result) => {
+            if (result) {
+                window.open("/ve/administrador");
+                setLoadingAdmin(false);
+            }
+            })
+        }
+    }
+
     return (
         <header className="bg-greenVE-500 ">
             <div className="flex mx-auto max-w-6xl py-2 px-4 sm:px-6 lg:px-8 justify-between items-center">
                 <div className="w-2/12 flex cursor-pointer" onClick={handleClickLogo}>
-                    <img src="./img/web/ve_logo.svg" style={{ width: "110px", height: "auto" }} />
+                    <img src="https://visitaecuador.com/img/web/ve_logo.svg" style={{ width: "110px", height: "auto" }} />
                 </div>
-                <MarcaPais/>
+                <MarcaPais />
                 <div className='flex gap-3'>
                     <div onClick={() => handleClickProfile()}>
                         {
@@ -218,49 +247,21 @@ const NavbarMobile = ({ activo }) => {
                 </div>
 
             </div>
-            
+
             <div>
                 <div className='flex w-full items-center justify-center  gap-1 px-4 pb-2'>
-                    
-                    {
-                        activo == null || activo == 1 ? (
-                            <button className="flex gap-1 text-white border-2 border-white rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300" onClick={handleClickInicio} >
-                                <img src="./img/web/homeMenu.svg" style={{ height: "18px" }}></img>
-                                <label className="flex cursor-pointer">Hospedaje</label>
-                            </button>
-                        ) : (
-                            <button className="flex gap-1 border-2 border-transparent text-white hover:border-2  rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white" onClick={handleClickInicio} >
-                                <img src="./img/web/homeMenu.svg" style={{ height: "18px" }}></img>
-                                <label className="flex cursor-pointer">Hospedaje</label>
-                            </button>
-                        )
-                    }
-                    {
-                        activo == 2 ? (
-                            <button className="flex gap-1 text-white border-2 border-white rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300" onClick={handleClickDisney}>
-                                <img src="./img/web/disneyMenu.svg" style={{ height: "18px" }}></img>
-                                <label className="flex cursor-pointer">Disney Destination Concierge</label>
-                            </button>
-                        ) : (
-                            <button className="flex gap-1 border-2 border-transparent text-white hover:border-2  rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white" onClick={handleClickDisney}>
-                                <img src="./img/web/disneyMenu.svg" style={{ height: "18px" }}></img>
-                                <label className="flex cursor-pointer ">Disney</label>
-                            </button>
-                        )
-                    }
-                    {
-                        activo == 3 ? (
-                            <button className="flex gap-1 text-white border-2 border-white rounded-full px-3 py-1 text-xs items-center hover:border-gray-300 hover:text-gray-300" onClick={handleClickInfotour}>
-                                <img src="./img/web/infotourMenu.svg" style={{ height: "18px" }}></img>
-                                <label className="flex cursor-pointer">InfoTour</label>
-                            </button>
-                        ) : (
-                            <button className="flex gap-1 border-2 border-transparent text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white" onClick={handleClickInfotour}>
-                                <img src="./img/web/infotourMenu.svg" style={{ height: "18px" }}></img>
-                                <label className="flex cursor-pointer">InfoTour</label>
-                            </button>
-                        )
-                    }
+                    <button className={`flex gap-1 border-2 ${(activo == null || activo == 1) ? "border-white" : "border-transparent"} text-white hover:border-2  rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`} onClick={handleClickInicio} >
+                        <img src="https://visitaecuador.com/img/web/homeMenu.svg" style={{ height: "18px" }}></img>
+                        <label className="flex cursor-pointer">Hospedaje</label>
+                    </button>
+                    <button className={`flex gap-1 border-2 ${activo == 2 ? "border-white" : "border-transparent"} text-white hover:border-2  rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`} onClick={handleClickDisney}>
+                        <img src="https://visitaecuador.com/img/web/disneyMenu.svg" style={{ height: "18px" }}></img>
+                        <label className="flex cursor-pointer ">Disney</label>
+                    </button>
+                    <button className={`flex gap-1 border-2 ${activo == 3 ? "border-white" : "border-transparent"} text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`} onClick={handleClickInfotour}>
+                        <img src="https://visitaecuador.com/img/web/infotourMenu.svg" style={{ height: "18px" }}></img>
+                        <label className="flex cursor-pointer">InfoTour</label>
+                    </button>
                 </div>
             </div>
             {
@@ -268,6 +269,60 @@ const NavbarMobile = ({ activo }) => {
                     ? <div className=' fixed  z-50 w-full right-0 top-0 bg-white h-full'>
                         <div onClick={() => handleClickMenu()} className='flex items-center justify-end pr-4 pt-2 text-3xl'>x</div>
                         <div className='px-6 pt-4 flex flex-col gap-6 justify-start items-start'>
+                            {
+                                (nivel === "visitante" || nivel === "gratuito") && (
+                                    <div className="bg-greenVE-500 flex flex-col items-center justify-center rounded-xl w-full cursor-pointer" onClick={() => setOpenConvenios(!openConvenios)}>
+                                        <div className="flex items-center">
+                                            <label className="px-4 py-1 w-full text-center items-center gap-2  text-white -mr-4 cursor-pointer">Convenios Especiales</label>
+                                            <span class={`${openConvenios ? "icon-[iconamoon--arrow-up-2-bold]" : "icon-[iconamoon--arrow-down-2-bold]"} h-6 w-6 text-white`}></span>
+                                        </div>
+                                        {
+                                            !openConvenios
+                                                ? <div className="flex w-full pb-2 justify-center gap-4">
+                                                    <div className="rounded-full bg-white h-9 w-9 p-1.5">
+                                                        <img src="https://visitaecuador.com/img/web/ba_logo.jpg" />
+                                                    </div>
+                                                    <div className="rounded-full bg-white h-9 w-9 p-2">
+                                                        <img src="https://visitaecuador.com/img/web/ja_logo.png" />
+                                                    </div>
+                                                    <div className="rounded-full bg-white h-9 w-9 p-1.5">
+                                                        <img src="https://visitaecuador.com/img/web/cpn_logo.jpg" />
+                                                    </div>
+                                                    <div className="rounded-full bg-white h-9 w-9 p-1 pt-2">
+                                                        <img src="https://visitaecuador.com/img/web/pp_logo.png" />
+                                                    </div>
+                                                    <div className="rounded-full bg-white h-9 w-9 ">
+                                                        <img src="https://visitaecuador.com/img/web/bp_logo.png" />
+                                                    </div>
+                                                </div>
+                                                : <div className="flex flex-col gap-2 pb-2 w-full px-2">
+                                                    <label className="px-4 text-sm py-1 w-full text-center items-center gap-2  text-white -mt-2 cursor-pointer">Continuar con...</label>
+                                                    <div className="rounded-full bg-white p-1 flex items-center w-full" onClick={(event) => { window.open("/convenio/bda", '_self'); }}>
+                                                        <img src="https://visitaecuador.com/img/web/ba_logo.jpg" className="h-7 w-7 pl-1" />
+                                                        <label className="px-1  py-1  text-left items-center cursor-pointer">Banco del Austro</label>
+                                                    </div>
+                                                    <div className="rounded-full bg-white p-1 flex w-full items-center" onClick={(event) => { window.open("/convenio/cja", "_self"); }}>
+                                                        <img src="https://visitaecuador.com/img/web/ja_logo.png" className="h-6 w-7 pl-1 object-contain" />
+                                                        <label className="px-1  py-1 text-left items-center gap-2 cursor-pointer">Coop. Jardín Azuayo</label>
+                                                    </div>
+                                                    <div className="rounded-full bg-white p-1 flex w-full items-center" onClick={(event) => { window.open("/convenio/cpn", '_self'); }}>
+                                                        <img src="https://visitaecuador.com/img/web/cpn_logo.jpg" className="h-7 w-7 pl-1" />
+                                                        <label className="px-1 py-1 text-left items-center gap-2 cursor-pointer">Coop. Policía Nacional</label>
+                                                    </div>
+                                                    <div className="rounded-full bg-white p-1 flex w-full items-center" onClick={(event) => { window.open("/convenio/pp", '_self'); }}>
+                                                        <img src="https://visitaecuador.com/img/web/pp_logo.png" className="h-7 w-7 pl-2 object-contain " />
+                                                        <label className="px-1 py-1 w-[145px] text-left items-center gap-2 cursor-pointer">PayPhone</label>
+                                                    </div>
+                                                    <div className="rounded-full bg-white p-1 flex w-full items-center" onClick={(event) => { window.open("/convenio/bp", '_self'); }}>
+                                                        <img src="https://visitaecuador.com/img/web/bp_logo.png" className="h-8 w-8 pl-1 object-contain" />
+                                                        <label className="px-1 py-1 w-[145px] text-left items-center gap-2 cursor-pointer">Banco Pichincha</label>
+                                                    </div>
+                                                </div>
+                                        }
+
+                                    </div>
+                                )
+                            }
                             {(nivel === "visitante" || nivel === "gratuito") && (
                                 <div onClick={handleClickSuscription} className='flex gap-2'>
                                     <svg className='h-6' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14" id="Shopping-Cart-2--Streamline-Flex"><desc>Shopping Cart 2 Streamline Icon: https://streamlinehq.com</desc><g id="shopping-cart-2--shopping-cart-checkout"><path id="Vector" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" d="M13.2025 3.50475c-0.1208 1.27773 -0.4527 2.36809 -0.7668 3.12459 -0.2443 0.5883 -0.7576 1.00296 -1.3828 1.12534 -0.6405 0.12539 -1.61126 0.25118 -2.9279 0.25118 -0.92651 0 -1.711 -0.06229 -2.33829 -0.1429C4.68254 7.72107 3.9039 6.81795 3.7263 5.71895l-0.51927 -3.21309H12.25c0.5523 0 1.0045 0.44906 0.9525 0.99889Z" stroke-width="1"></path><path id="Vector_2" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" d="M11.75 10.5059H6.2018c-0.981 0 -1.81718 -0.71155 -1.97421 -1.6799l-0.95518 -5.89028c-0.15703 -0.96835 -0.99322 -1.67986 -1.97421 -1.67986H0.75" stroke-width="1"></path><path id="Vector_3" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" d="M5.10352 12.7441c0.61808 0 1.11914 -0.501 1.11914 -1.1191s-0.50106 -1.1191 -1.11914 -1.1191c-0.61809 0 -1.11914 0.501 -1.11914 1.1191s0.50105 1.1191 1.11914 1.1191Z" stroke-width="1"></path><path id="Vector_4" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" d="M11.75 12.7441c0.6181 0 1.1191 -0.501 1.1191 -1.1191s-0.501 -1.1191 -1.1191 -1.1191 -1.1191 0.501 -1.1191 1.1191 0.501 1.1191 1.1191 1.1191Z" stroke-width="1"></path></g></svg>
@@ -326,6 +381,18 @@ const NavbarMobile = ({ activo }) => {
                                 <svg class='h-4 w-5' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M16.5 6a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0zM18 6A6 6 0 1 0 6 6a6 6 0 0 0 12 0zM3 23.25a9 9 0 1 1 18 0 .75.75 0 0 0 1.5 0c0-5.799-4.701-10.5-10.5-10.5S1.5 17.451 1.5 23.25a.75.75 0 0 0 1.5 0z'></path></svg>
                                 <button>Mi perfil</button>
                             </div>
+                            <button className="py-1 w-full text-start flex items-center gap-2" onClick={handleClickAdministrador}><div dangerouslySetInnerHTML={{ __html: icons.Data.Administrador }} /> Administrador
+                                {
+                                    isLoadingAdmin && <Spinner className="h-4 w-4" color="white"></Spinner>
+                                }
+                            </button>
+                            {
+                                beta && <button className="py-1 w-full text-start flex items-center gap-2" onClick={handleClickAdministradorBeta}><div dangerouslySetInnerHTML={{ __html: icons.Data.Administrador }} /> Administrador (beta)
+                                    {
+                                        isLoadingAdminBeta && <Spinner className="h-4 w-4" color="white"></Spinner>
+                                    }
+                                </button>
+                            }
                             <div onClick={handleClickBookHistory} className='flex gap-2 items-center'>
                                 <svg class='h-4 w-5' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M22.5 14.249v4.5a2.25 2.25 0 0 1-2.25 2.25H3.75a2.25 2.25 0 0 1-2.25-2.25v-9a2.25 2.25 0 0 1 2.25-2.25h16.5a2.25 2.25 0 0 1 2.25 2.25v4.5zm1.5 0v-4.5a3.75 3.75 0 0 0-3.75-3.75H3.75A3.75 3.75 0 0 0 0 9.749v9a3.75 3.75 0 0 0 3.75 3.75h16.5a3.75 3.75 0 0 0 3.75-3.75v-4.5zm-18-7.5v15a.75.75 0 0 0 1.5 0v-15a.75.75 0 0 0-1.5 0zm10.5 0v15a.75.75 0 0 0 1.5 0v-15a.75.75 0 0 0-1.5 0zm0 0v-3a2.25 2.25 0 0 0-2.25-2.25h-4.5a2.25 2.25 0 0 0-2.25 2.25v3a.75.75 0 0 0 1.5 0v-3a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v3a.75.75 0 0 0 1.5 0z'></path></svg>
                                 <button>Historial de Reservas</button>

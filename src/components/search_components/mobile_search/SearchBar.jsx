@@ -2,7 +2,6 @@ import React from 'react';
 import { calcularNoches, formatearFecha, generarPersonas } from '../../../global/formatearFecha';
 
 const SearchBar = ({filtro}) => {
-    console.log(filtro);
     return (
         <div>
             <div className='bg-greenVE-500 h-7'></div>

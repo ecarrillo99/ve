@@ -13,6 +13,7 @@ import React, { lazy, Suspense } from 'react';
 //import DestinoBanner from "../../components/home_components/destinoBanner/DestinoBanner";
 import { useEffect, useState } from "react";
 import NavbarMobile from '../../components/global_components/navbar/NavbarMobile';
+import { useLocation, useParams } from 'react-router-dom';
 const Navbar = lazy(() => import("../../components/global_components/navbar/Navbar"));
 const OffersBanner = lazy(() => import('../../components/home_components/offersBanner/OffersBanner'));
 const Footer = lazy(() => import("../../components/global_components/footer/Footer"));
@@ -40,6 +41,15 @@ const Home = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+  
+  const { codigo } = useParams(); 
+  
+  if(codigo){
+    localStorage.setItem('codigo', codigo);
+  }else{
+    localStorage.removeItem('codigo')
+  }
+  
   return (
     <main>
       {
@@ -70,7 +80,9 @@ const Home = () => {
         </div>
         <Suspense><RewardsBanner/></Suspense>
       </div>
-      <Suspense><Footer/></Suspense>
+      {
+        !codigo&&<Suspense><Footer/></Suspense>
+      }
     </main>
   )
 };

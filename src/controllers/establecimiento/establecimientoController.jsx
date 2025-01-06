@@ -1,14 +1,13 @@
-import Config from "../../global/config";
 import Contactos from "../../models/Contactos";
 import Detalle from "../../models/Detalle";
 import Establecimiento from "../../models/Establecimiento";
 import Favorito from "../../models/Favorito";
-import Filtro from "../../models/Filtro";
 import Oferta from "../../models/Oferta";
 import OfertaInicio from "../../models/OfertaInicio";
 import ResultadoBusqueda from "../../models/ResultadoBusqueda";
 import Sugerencia from "../../models/Sugerencia";
 import EstablecimientoService from "../../services/establecimiento/EstablecimientoService";
+import SuscripcionService from "../../services/suscripcion/SuscripcionService";
 import { DefaultToken } from "../web/webController";
 
 export const getRemoteOfertas = async function () {
@@ -136,7 +135,6 @@ const _getRemoteOfertas = async function () {
             return 401;
         }
     } catch (e) {
-        console.log(e)
     }
 }
 
@@ -172,7 +170,7 @@ const _getEstablecimientoDestino =async function(termino){
             return 401;
         }
     } catch (e) {
-        console.log(e)
+        
     }
 }
 
@@ -271,8 +269,6 @@ function createEstablecimientos(establecimientos, url, beneficios, centralReserv
         // Porcentaje de ahorro
         oferta.PorcentajeAhorro = Math.round(100 - (parseInt(oferta.Final) * 100) / parseInt(oferta.Rack));
 
-        // Beneficio
-        oferta.Beneficio = beneficios[ofertaTmp.idBeneficio].nombre;
 
         // Detalles
         const propiedadesObj=['Incluye', 'NoIncluye', 'Restricciones', 'SistemaServicios'];
@@ -362,7 +358,32 @@ function createEstablecimientos(establecimientos, url, beneficios, centralReserv
     });
 }
 
-export const createReservation = async function (id, adultos, ninos, cantidad, inicio, fin, edades){
+
+//Nueva forma de reserva
+
+
+export const createReservation = async function (datosReserva, listaOfertas){
+    try{
+        const establecimientoService = new EstablecimientoService();
+        var bd = JSON.parse(localStorage.getItem('datos'));
+        datosReserva.id_tbl_usuario_cliente= bd.data.id_usuario
+        var params={
+            "token":bd.token,
+            "tipo":"guardar",
+            "reserva":datosReserva,
+            "ofertas":listaOfertas
+        }
+        const res = await establecimientoService.guardarReserva(params);
+        if (res.estado && res.codigo == 0) {   // falso
+            return res
+        }
+    }catch(e){
+        ;
+    }
+    return false;
+}
+
+/*export const createReservation = async function (id, adultos, ninos, cantidad, inicio, fin, edades){
     try{
         const establecimientoService = new EstablecimientoService();
         var bd = JSON.parse(localStorage.getItem('datos'))
@@ -377,11 +398,29 @@ export const createReservation = async function (id, adultos, ninos, cantidad, i
             "edad_ninos":edades
         }
         const res = await establecimientoService.reserva(params);
+
         if (res.estado && res.codigo === 0) {
-            return res.estado;
+            return res.data;
         }
-        if(res.codigo==401){
-            return 401;
+    }catch(e){
+
+    }
+    return false;
+}*/
+
+export const sendMailReservaExpress = async function (email, idReservas){
+    try{
+        const suscripcionService = new SuscripcionService();
+        var params = {
+            "tipo": 'mailExpress',
+            "email":email,
+            "id_tbl_reserva":idReservas
+            //"reserva":idReservas
+        }
+        const res = await suscripcionService.sendCorreoPagoCashback(params);
+
+        if (res.estado && res.codigo === 0) {
+            return res;
         }
     }catch(e){
 
@@ -438,6 +477,7 @@ export const getFavoritos = async function (){
         }
         return favoritosList;
     }catch(e){
-        console.log(e)
+        
     }
 }
+

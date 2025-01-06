@@ -35,6 +35,6 @@ export const SuscripcionProducto=async function (codigo){
             }
         }
     }catch(e){
-        console.log(e)
+        
     }
 }

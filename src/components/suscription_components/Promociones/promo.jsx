@@ -1,19 +1,26 @@
 import React, { useState } from 'react';
 import { CheckPromocionalCode } from '../../../controllers/suscripcion/suscripcionCodigoPromocional';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-const Promociones = ({setProductos, setOpcion, setCodigo}) => {
+const Promociones = ({setProductos, setOpcion, setCodigo, setReferedCode, referedCode}) => {
     const [errorCode, setErrorCode] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [code, setCode] = useState();
+    const [code, setCode] = useState(localStorage.getItem('codigo')?localStorage.getItem('codigo'):null);
+    const { codigo } = useParams();
+    const navigate = useNavigate();
+
     const handleClickVerificar=()=>{
         setErrorCode(false);
         setLoading(true);
         try{
-            CheckPromocionalCode(code).then((result)=>{
+            CheckPromocionalCode({codigo:(code==null&&referedCode)?referedCode:code, convenio: codigo}).then((result)=>{
                 if(result){
+                    if(code){
+                        navigate(`?codigo=${code}`, { replace: true });
+                    }
                     setProductos(result.productos);
                     setCodigo(result.codigo);
-                    console.log(result.codigo);
+                    setReferedCode()
                     setOpcion(2)
                 }else{
                     setErrorCode(true);
@@ -25,18 +32,28 @@ const Promociones = ({setProductos, setOpcion, setCodigo}) => {
             setLoading(false);
         }
     }
+
+    useState(()=>{
+        if(referedCode!=null){
+            setCode(referedCode)
+            handleClickVerificar();
+        }
+    }, referedCode);
+
+
     const handleChangeCode=(event)=>{
         setCode(event.target.value)
     }
+
     return (
-        <div className='flex flex-col bg-gray-200 p-3 rounded-lg'>
-            <label className='font-semibold text-2xl'>Código Promocional</label>
-            <label className='text-sm font-light text-gray-500 italic'>Ingresa el código promocional, que te obsequia tiempo extra en tu suscripción.</label>
+        <div className='flex flex-col bg-gray-200 p-3 rounded-lg w-full'>
+            <label className='font-semibold text-xl md:text-2xl'>Código Promocional</label>
+            <label className='text-xs md:text-sm font-light text-gray-500 italic'>Ingresa el código promocional, que te obsequia tiempo extra en tu suscripción.</label>
             <div className='border-b border-gray-400 my-2'></div>
-            <div className='flex mt-2 items-center mb-3'>
-                <div className='flex flex-col w-7/12 gap-3'>
+            <div className='flex flex-col md:flex-row  mt-2 items-center mb-3 w-full'>
+                <div className='flex flex-col w-full md:w-7/12 gap-3 order-2 md:order-1'>
                     <label className='text-sm'>Código Promocional (Opcional)</label>
-                    <input className={`w-full border ${errorCode?"border-red-500":"border-gray-400"} px-2 py-1 rounded-md` }onChange={handleChangeCode}></input>
+                    <input value={code} className={`w-full border ${errorCode?"border-red-500":"border-gray-400"} px-2 py-1 rounded-md` }onChange={handleChangeCode}></input>
                     <label className={`text-[9px] -mt-3 ${errorCode?"text-red-500":"text-gray-200"}`}>* El código no es válido</label>
                     <button className='bg-greenVE-500 text-white rounded-md flex items-center justify-center cursor-pointer py-1 font font-semibold' onClick={()=>handleClickVerificar()}>
                         {
@@ -49,8 +66,8 @@ const Promociones = ({setProductos, setOpcion, setCodigo}) => {
                         }
                     </button>
                 </div>
-                <div className='w-5/12 px-12'>
-                    <img src='https://visitaecuador.com/img/diseno/compra/codigopromocional.png'/>
+                <div className='md:w-5/12 px-12 h-36 md:h-52 order-1 md:order-2'>
+                    <img src='https://visitaecuador.com/img/diseno/compra/codigopromocional.png' className='md:w-auto w-32'/>
                 </div>
             </div>
         </div>

@@ -18,18 +18,23 @@
     }
   </style>
   <title>VisitaEcuador.com - En hoteles TOP, el mejor precio certificado. Pero en serio. </title>
-  <link rel="icon" href="./img/web/logo_verde.png" />
+  <link rel="icon" href="https://visitaecuador.com/img/web/logo_verde.png" />
+  <script>
+    if (window.location.hash && window.location.hash.startsWith("#/")) {
+      const newUrl = window.location.href.replace("/#/", "/");
+      window.location.replace(newUrl);
+    }
+  </script>
+  <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z&callback=loadMapScenario' async defer></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PXRM7JFVDM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-PXRM7JFVDM');
+  </script>
 </head>
-<script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z&callback=loadMapScenario' async defer></script>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PXRM7JFVDM"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag() { dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', 'G-PXRM7JFVDM');
-</script>
-
 <body>
   <div id="root"></div>
 </body>

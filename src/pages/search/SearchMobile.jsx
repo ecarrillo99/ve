@@ -88,7 +88,6 @@ const SearchMobile = () => {
                         }
                     } else {
                         setSinResultados(true);
-                        console.log("falló");
                     }
                 })
         } catch (error) {

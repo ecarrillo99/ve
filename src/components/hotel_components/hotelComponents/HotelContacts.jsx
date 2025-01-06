@@ -10,7 +10,6 @@ const icons = new Icons();
 
 const HotelContacts = (props) => {
     const {Contactos, ContactosCentral} = props
-    console.log(ContactosCentral)
     function Icon({ id, open }) {
         return (
             <svg

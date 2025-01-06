@@ -10,6 +10,7 @@ import { getRemoteCities } from "../../controllers/lugares/lugaresController";
 import { sessionStatus } from "../../global/util";
 import NavbarMobile from "../../components/global_components/navbar/NavbarMobile";
 import Cashback from "../../components/profile_components/cashback/Cashback";
+import ProfileAgencia from "../../components/profile_components/ProfileAgencia";
 
 const Profile=({})=>{
     const [selectedOption, setSelectedOption]=useState(1);
@@ -32,15 +33,22 @@ const Profile=({})=>{
 
     const handleChangeOption=(option)=>{
         setSelectedOption(option)
-        if(option==1){
-            setSelectedMenu(<ProfileEdit profileData={profileData} citiesData={citiesData}/>)
+        switch (option){
+          case 1:
+            setSelectedMenu(<ProfileEdit profileData={profileData} citiesData={citiesData}/>);
+          break;
+          case 2:
+            setSelectedMenu(<ProfileAgencia  profileData={profileData}/>);
+          break;
+          case 3:
+            setSelectedMenu(<Cashback/>);
+          break;
+          case 4:
+            setSelectedMenu(<ProfilePassword/>);
+          break;
+
+
         }
-        if(option==2){
-            setSelectedMenu(<ProfilePassword/>)
-        }
-        if(option==3){
-          setSelectedMenu(<Cashback/>)
-      }
     }
 
     useEffect(() => {
@@ -63,11 +71,11 @@ const Profile=({})=>{
                                     setSelectedMenu(<ProfileEdit profileData={result1} citiesData={result2.slice().sort((a,b)=>a.Titulo.localeCompare(b.Titulo))}/>)
                                   }
                               })
-                              .catch((error) => { console.log(error) })
+                              .catch((error) => { })
                       }
                       }
                     })
-                    .catch((error) => { console.log(error) })
+                    .catch((error) => { })
             } catch (error) {
                 console.error("Error:", error);
             }
@@ -89,7 +97,7 @@ const Profile=({})=>{
               }
               <div className="flex flex-col md:flex-row mx-5 md:mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 gap-7">
                 <div className="w-full md:w-3/12">
-                  <ProfileMenu handleChangeOption={handleChangeOption} selectedOption={selectedOption} />
+                  <ProfileMenu handleChangeOption={handleChangeOption} selectedOption={selectedOption} profileData={profileData}/>
                 </div>
                 <div className="w-full md:w-9/12">
                   {selectedMenu}
@@ -99,7 +107,7 @@ const Profile=({})=>{
             </div>
           ) : (
             <div className="h-screen w-screen flex flex-col justify-center items-center">
-              <img src="./img/web/logo_verde.png" style={{ width: "300px", height: "auto" }} />
+              <img src="https://visitaecuador.com/img/web/logo_verde.png" style={{ width: "300px", height: "auto" }} />
               <div className="animate-spin w-16 h-16 border-t-4 border-greenVE-500 rounded-full"></div>
             </div>
           )

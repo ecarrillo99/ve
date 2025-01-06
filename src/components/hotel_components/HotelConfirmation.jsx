@@ -22,7 +22,7 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
     }
 
     const handleClickAceptar = async () => {
-        if (!isLoading) {
+        /*if (!isLoading) {
             setIsLoading(true)
             var correcto = true;
             try {
@@ -37,7 +37,7 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
                             } else {
                                 correcto = false;
                             }
-                        }).catch((error) => { console.log(error) });
+                        }).catch((error) => { });
                 }
                 setIsLoading(false)
                 if(correcto){
@@ -46,7 +46,7 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
             } catch (e) {
                 
             }
-        }
+        }*/
     };
 
     return (

@@ -113,7 +113,7 @@ const BancoAustroForm = ({persona, producto, pago, codigo}) => {
 
     return (
         <div className="w-full flex items-center justify-center">
-            <div className="flex flex-wrap  w-10/12 shadow-2xl rounded-xl gap-y-3 gap-x-3 items-center justify-center sm:flex-col md:flex-row">
+            <div className="flex flex-wrap  md:w-10/12 shadow-2xl rounded-xl gap-y-3 gap-x-3 items-center justify-center sm:flex-col md:flex-row">
                 <div className="bg-[#1c2b4d] w-full px-10 py-5 rounded-t-xl flex items-center justify-center">
                     <img className="h-16 object-contain" src="https://www.baustroonline.com/AppInt/BaustroOnline/bancavirtual/personas/Portals/0/LogoBancoAustro.png?"></img>
                 </div>
@@ -202,7 +202,7 @@ const BancoAustroForm = ({persona, producto, pago, codigo}) => {
                     </div>
 
                     <div className="flex items-center justify-center">
-                        <button className=" text-white bg-[#1c2b4d] rounded-lg text-sm w-20 sm:w-auto px-5 py-2.5 text-center" onClick={() => handleClickContinuar()}>Procesar</button>
+                        <button className=" text-white bg-[#1c2b4d] rounded-lg text-sm  sm:w-auto px-5 py-2.5 text-center" onClick={() => handleClickContinuar()}>Procesar</button>
                     </div>
                 </div>
 

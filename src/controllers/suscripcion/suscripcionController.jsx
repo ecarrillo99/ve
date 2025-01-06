@@ -2,7 +2,6 @@ import Config from "../../global/config";
 import SuscripcionService from "../../services/suscripcion/SuscripcionService";
 
 export const loginRemote = async function (params) {
-    console.log(params);
     const isLogged=false;
     
     try{
@@ -11,7 +10,7 @@ export const loginRemote = async function (params) {
         if(res.estado && res.codigo == 0){
             if(res.data.fin!=null){
                 if(new Date(res.data.fin)<new Date()){
-                    return <label>{"Cuenta caducada el "+res.data.fin}<br/> <a className="text-blue-500 underline cursor-pointer" href={window.location.origin+"/#/suscripcion"}>Renueva aquí</a></label>
+                    return <label>{"Cuenta caducada el "+res.data.fin}<br/> <a className="text-blue-500 underline cursor-pointer" href={window.location.origin+"/suscripcion"}>Renueva aquí</a></label>
                 }
             }
             if (Object.values(res).length > 0) {
@@ -30,7 +29,6 @@ export const getPermissions= async function(idUsuario){
         const params={
             "id_usuario":idUsuario
         }
-        console.log(params)
         const res = await suscripcionService.setAdministrador(params);
         if(res.estado){
             const expirationDate = new Date();
@@ -39,21 +37,27 @@ export const getPermissions= async function(idUsuario){
             document.cookie = `PHPSESSID=${res.data};expires=${expirationDate.toUTCString()}`;
             return res.estado;
         }
-        /*if(res.estado){s
-            sessionStorage.setItem("login", JSON.stringify(res.data))
-            for(const key in res.data){
-                sessionStorage.setItem(key, JSON.stringify(res.data[key]));
-            }
-            sessionStorage.setItem("token",  bd['token']);
-            sessionStorage.setItem("stIdEstablecimiento",  "");
-
-            const res2= await suscripcionService.setAdministrador({"permisos":res.data["stPermisosUsuario"]})  
-            console.log("Respuesta 2")
-            console.log(res2)
-        } */
         return false;
     }catch(e){
-        console.log(e)
+        
+    }
+}
+
+export const setPermissionsAdmin= async function(){
+    try{
+        const suscripcionService = new SuscripcionService();
+        var bd = JSON.parse(localStorage.getItem('datos'))
+        const params={
+            "token":bd.token
+        }
+        const res = await suscripcionService.getPermisos(params);
+        if(res.estado){
+            localStorage.setItem('permisos', JSON.stringify(res.data));
+            return res.estado;
+        }
+        return false;
+    }catch(e){
+        
     }
 }
 
@@ -64,6 +68,7 @@ export const endRemoteSession=async function (){
             "token": bd['token']
         }
         localStorage.removeItem('datos')
+        localStorage.removeItem('permisos')
         // Expirar la cookie del administrador
         document.cookie = 'PHPSESSID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
         const suscripcionService = new SuscripcionService() ;
@@ -82,7 +87,6 @@ export const gestionarSuscripcion=async function (params){
     try{
         const suscripcionService = new SuscripcionService() ;
         const res = await suscripcionService.registroTransaccion(params);
-        console.log(res)
         if(res.estado){
             suscripcionService.sendNotificationSubscription({"id_suscripcion_renovacion":res.data.id_suscripcion_renovacion})
             return res;

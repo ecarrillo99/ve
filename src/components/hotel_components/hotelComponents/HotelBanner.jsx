@@ -57,7 +57,7 @@ const HotelBanner = (props) => {
       shareHotel("insertar", window.location.href).then((result)=>{
         if(result){
           setViewShare(true);
-          setShortUrl(window.location.origin+"/#/short/"+ result);
+          setShortUrl(window.location.origin+"/short/"+ result);
           setLoadingShare(false)
         }else{
           setLoadingShare(false)

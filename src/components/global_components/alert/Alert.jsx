@@ -13,9 +13,9 @@ const Alert = ({Titulo, Descripcion, isOpen, Cancelar, Aceptar}) =>{
                             <label className="font-medium text-xs md:text-lg lg:text-xl xl:text-xl 2xl:text-2xl text-center">{Descripcion}</label>
                         </div>
                         <div className="flex w-full justify-center mt-6 mb-2 gap-2">
-                            <button className={`bg-red-600 text-white px-2 py-1 rounded-md w-full md:w-1/2`} onClick={()=>Cancelar()}>Cancelar</button>
+                            <button className={`${Titulo.toLowerCase().includes("reserva")?"bg-amber-600":"bg-red-600"} text-white px-2 py-1 rounded-md w-full md:w-1/2`} onClick={()=>Cancelar()}>{Titulo.toLowerCase().includes("reserva")?"Reserva Express":"Cancelar"}</button>
                             <button className={`bg-greenVE-500 text-white px-2 py-1 rounded-md w-full md:w-1/2 flex justify-center`} onClick={()=>Aceptar()}>
-                                Aceptar
+                            {Titulo.toLowerCase().includes("reserva")?"Iniciar sesión":"Aceptar"}
                             </button>
                         </div>
                     </div>

@@ -53,7 +53,6 @@ const PayPhoneBP = ({ persona, producto, setOpcion, codigo}) => {
             mv.loadDataPayphone(product, personalInfo).then((resp) => {
 
                 if (resp) {
-                    console.log(resp)
                     setloading(false);
                     if (resp.code == -1) {
                         setMensaje(
@@ -91,7 +90,7 @@ const PayPhoneBP = ({ persona, producto, setOpcion, codigo}) => {
     return (
         <div className='flex w-full justify-center items-center mt-4'>
             <div className='shadow-xl rounded-xl flex flex-col gap-3 pb-7 justify-center items-center'>
-                <div className="bg-[#ff6400] max-w-md w-auto px-10 py-2 rounded-t-xl">
+                <div className="bg-[#ff6400] max-w-md md:w-96 h-16 px-10 py-2 rounded-t-xl  flex items-center justify-center">
                     <img src="https://assets-global.website-files.com/66041f2aa7176fac4965cba4/6605bf7c0b772f88302329e2_logoyeii-low.svg"></img>
                 </div>
                 <label className='text-xs mt-2'>Ingresa un número de teléfono registrado en payphone.</label>
@@ -117,6 +116,7 @@ const PayPhoneBP = ({ persona, producto, setOpcion, codigo}) => {
                     <div className={`border ${errorCelular ? "border-red-500" : "border-gray-300"} bg-white flex  items-center px-3 py-1.5 gap-2 rounded-r-lg border-l-0`}>
                         <input
                             onChange={handleChangePhone}
+                            value={celular}
                             className={`text-sm w-full focus:outline-none focus:ring-0 focus:border-transparent border-0 ${errorCelular ? "placeholder:text-red-500" : ""}`}
                             placeholder='Número celular'
                         ></input>

@@ -68,7 +68,6 @@ const Search = () => {
         .then((result) => {
 
           if (result) {
-            console.log(result)
             if (result === 401) {
               localStorage.removeItem("datos");
               window.location.reload();
@@ -101,7 +100,6 @@ const Search = () => {
             }
           } else {
             setSinResultados(true)
-            console.log("falló");
           }
         })
     } catch (error) {
@@ -329,7 +327,7 @@ const Search = () => {
                   />
                 </Suspense>:
                 <div className="mb-4 relative h-44 rounded-md">
-                  <img src="./img/web/map.svg" className="w-full h-full object-cover rounded-md" />
+                  <img src="https://visitaecuador.com/img/web/map.svg" className="w-full h-full object-cover rounded-md" />
                   <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 rounded-md"></div>
                   <button
                     className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-greenVE-500 text-white px-3 py-1 rounded-full"

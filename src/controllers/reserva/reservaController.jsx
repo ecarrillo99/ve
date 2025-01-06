@@ -52,7 +52,6 @@ export const getCertificadoReserva=async function(IDs){
             "token":bd['token'],
         }        
         const res= await reservasService.getCertificadoReserva(params);
-        console.log(res);
         if(res.estado){
             const certificado= new Certificado();
             const impuestos= (parseInt(res['data'][0]['iva'])+parseInt(res['data'][0]['servicios']))/100;

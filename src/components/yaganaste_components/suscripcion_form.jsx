@@ -79,7 +79,6 @@ const SuscripcionForm = () => {
                 id_lista_precio_producto:selectedSuscripcion["IdTablaListaPrecio"],
                 id_prod_suscripcion:selectedSuscripcion["IdProductoSuscripcion"],
             }
-            console.log(generarEsquemaSus(datos));
             gestionarSuscripcion(generarEsquemaSus(datos)).then((result) => {
                 if (result) {
                     if(result["estado"]){

@@ -31,6 +31,6 @@ export const DefaultToken = async function () {
             return token;
         }
     } catch (e) {
-        console.log(e)
+        
     }
 }

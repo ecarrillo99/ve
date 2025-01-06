@@ -19,7 +19,7 @@ const HotelMap = ({Latitud, Longitud, Direccion, Titulo, PrecioSinImpuestos}) =>
               longitude: Longitud,
             },
             options: {
-                icon:"./img/web/pinMap.png",
+                icon:"https://visitaecuador.com/img/web/pinMap.png",
                  title: Titulo,
             },
         }

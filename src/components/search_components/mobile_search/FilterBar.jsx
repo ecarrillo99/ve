@@ -11,8 +11,6 @@ const FilterBar = ({ handleOrderChange, selectedFiltro, minPrice, maxPrice, pric
         setOpenOrderBy(false);
         handleOrderChange(event.target.value);
     }
-    console.log("data")
-    console.log(data&&data)
     const pinsList = data&&data.Establecimientos
       .filter(item => item.Latitud != null && item.Latitud !== "")
       .map(item => ({
@@ -30,7 +28,7 @@ const FilterBar = ({ handleOrderChange, selectedFiltro, minPrice, maxPrice, pric
           longitude: item.Longitud,
         },
         options: {
-            icon:"./img/web/pinMap.png",
+            icon:"https://visitaecuador.com/img/web/pinMap.png",
              title: item.Titulo,
         },
     }));

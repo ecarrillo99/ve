@@ -1,7 +1,7 @@
 // webpack.config.js
 
-export const output = {
+/*export const output = {
   path: path.resolve(__dirname, 'dist'),
   filename: 'bundle.js',
-  publicPath: './webnueva',
-};
+  publicPath: './beta',
+};*/

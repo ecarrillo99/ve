@@ -56,7 +56,7 @@ const LoginSocial=()=>{
                                 alert("Ha ocurrido un error, intente nuevamente")
                             }
                         })
-                        .catch((error) => { console.log(error) })
+                        .catch((error) => { })
     
                 } catch (error) {
                     setIsLoading(false)
@@ -66,7 +66,7 @@ const LoginSocial=()=>{
 
             }
         }).catch((error) => {
-            console.log(error)
+            
             const errorCode = error.code;
             const errorMessage = error.message;
             const email = error.email;
@@ -114,7 +114,7 @@ const LoginSocial=()=>{
                                     alert("Ha ocurrido un error, intente nuevamente")
                                 }
                             })
-                            .catch((error) => { console.log(error) })
+                            .catch((error) => { })
         
                     } catch (error) {
                         setIsLoadingFB(false)

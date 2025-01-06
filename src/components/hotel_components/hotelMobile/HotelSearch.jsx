@@ -4,8 +4,6 @@ import HotelRooms from './HotelRooms';
 
 const HotelSearch = ({date, options, Establecimiento}) => {
     const [openRooms,setOpenRooms]=useState()
-    console.log("fechas")
-    console.log(date)
     return (
         <div className='py-3 border-y'>
             <div className=' mx-3 flex gap-3'>

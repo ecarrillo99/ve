@@ -26,7 +26,6 @@ const ResetPassword = ({ isOpen, handleClickCloseReset }) => {
                     setCorrecto(true);
                     setMensaje(resp.msj);
                     setText("");
-                    console.log(resp)
                 } else {
                     setIsLoading(false)
                     setError(true);

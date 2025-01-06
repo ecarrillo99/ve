@@ -2,31 +2,33 @@ import Icons from "../../../global/icons";
 import LogoFooter from "./LogoFooter";
 
 const Footer = () => {
+  const codigo = localStorage.getItem('codigo');
   const year = new Date().getFullYear();
   const icons = new Icons()
   return (
+    !codigo&&
     <footer className="bg-footerColor mt-20 md:px-0 px-5">
       <div className="mx-auto max-w-6xl py-10 sm:px-6 lg:px-8">
         <div className="flex flex-wrap gap-y-5">
           <div className="w-1/2 md:w-1/4">
             <h3 className="text-greenVE-700 font-bold text-sm">Nosotros</h3>
             <div>
-              <a href="/#/nosotros" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Quienes somos</a>
+              <a href="/nosotros" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Quienes somos</a>
             </div>
             <div>
-              <a href="" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Remate y consulta</a>
+              <a href="/remate" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Remate y consulta</a>
             </div>
             <div>
-              <a href="" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Emprende con nosotros</a>
+              <a href="/emprende" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Emprende con nosotros</a>
             </div>
           </div>
           <div className="w-1/2 md:w-1/4">
             <h3 className="text-greenVE-700 font-bold text-sm">Servicio Premium</h3>
             <div>
-              <a href="" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Disney Destinations Concierge</a>
+              <a href="/disney" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Disney Destinations Concierge</a>
             </div>
             <div>
-              <a href="" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Remate y consulta</a>
+              <a href="/remate" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Remate y consulta</a>
             </div>
           </div>
           <div className="w-1/2 md:w-1/4">
@@ -50,7 +52,7 @@ const Footer = () => {
           <div className="w-1/2 md:w-1/4">
             <h3 className="text-greenVE-700 font-bold text-sm">Contáctanos</h3>
             <div>
-              <a href="" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Formulario de consulta</a>
+              <a href="/contacto" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Formulario de consulta</a>
             </div>
           </div>
           <div className="w-1/2 md:w-1/4">
@@ -62,19 +64,19 @@ const Footer = () => {
           <div className="w-1/2 md:w-1/4">
             <h3 className="text-greenVE-700 font-bold text-sm">Suscripciones</h3>
             <div>
-              <a href="/#/suscripcion" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Comprar suscripción</a>
+              <a href="/suscripcion" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Comprar suscripción</a>
             </div>
             <div>
-              <a href="/#/activacion" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Activar suscripción</a>
+              <a href="/activacion" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Activar suscripción</a>
             </div>
           </div>
           <div className="w-1/2 md:w-1/4">
             <h3 className="text-greenVE-700 font-bold text-sm">Legal</h3>
             <div>
-              <a href="/#/politicas-privacidad" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Políticas de privacidad</a>
+              <a href="/politicas-privacidad" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Políticas de privacidad</a>
             </div>
             <div>
-              <a href="/#/terminos-condiciones" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Términos y condiciones</a>
+              <a href="/terminos-condiciones" className="text-greenVE-700 font-normal hover:text-greenVE-500 text-xs">Términos y condiciones</a>
             </div>
           </div>
         </div>

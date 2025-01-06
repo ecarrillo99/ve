@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ProductItem from './ProductItem';
 import ProductItemSelect from './ProductItemSelect';
+import { useLocation } from 'react-router-dom';
 
 const Suscripciones = ({productos, setOpcion, setProducto}) => {
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const producto = productos.find(map => map.IdProducto === searchParams.get("producto"));
     var firstProducts=productos.slice(0, 3);
     var secondProducts =productos.slice(3, productos.length)
+    
+    useEffect(()=>{
+        if(producto){
+            setProducto(producto);
+            setOpcion(3);
+        }
+    }, [producto])
+
     return (
         <div className='flex flex-col bg-gray-200 p-3 rounded-lg'>
-            <label className='font-semibold text-2xl'>Elige</label>
-            <label className='text-sm font-light text-gray-500 italic'>Escoge uno de nuestros productos.</label>
+            <label className='font-semibold text-xl md:text-2xl'>Elige</label>
+            <label className='text-xs md:text-sm font-light text-gray-500 italic'>Escoge uno de nuestros productos.</label>
             <div className='border-b border-gray-400 my-2'></div>
             <div  className='flex flex-col gap-2'>
                 {

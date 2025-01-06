@@ -10,15 +10,13 @@ class JardinAzuayoController {
             "desc_producto": nomProd,
             "precio": precio,
         };
-        console.log(params);
         try {
             var _res = await this._paymentService.validarCuentaJA(params);
             //Map _res = await this._paymentService.testVerificarDF(id); // desarrollo
-            console.log("consulta ws JARDIN AZUAYO pago");
-            console.log(_res);
+
             return _res;
         } catch (e) {
-            console.log(e)
+            
         }
     }
 
@@ -39,9 +37,7 @@ class JardinAzuayoController {
             };
             var _res = await this._paymentService.validarCuentaJA(params);
             //Map _res = await this._paymentService.testVerificarDF(id); // desarrollo
-            console.log("consulta ws JARDIN AZUAYO pago");
             _res.data=params
-            console.log(_res);
             return _res;
         } catch (e) {
 

@@ -8,7 +8,7 @@ const CashbackTotal = ({setHistorial, setTitle, cambiar, fechas}) => {
     const [hist, setHist] = useState();
 
     const handleClickTotal=()=>{
-        setHistorial(hist);console.log(hist)
+        setHistorial(hist);
         setTitle("Ventas totales");
     }
     useEffect(() => {
@@ -17,7 +17,6 @@ const CashbackTotal = ({setHistorial, setTitle, cambiar, fechas}) => {
                 setTotal(resp.total)
                 setHist(resp.historial)
             }
-            console.log(resp)
         });
     }, [cambiar])
 

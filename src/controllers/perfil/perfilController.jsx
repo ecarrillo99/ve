@@ -169,9 +169,7 @@ export const setSolicitudCashback = async function(ids){
             "token":bd['token'],
             "ids_red":ids,
         }
-        console.log(params);
         const res = await suscripcionService.setSolicitudPagoCashback(params);
-        console.log(res);
         if(res.estado){
             suscripcionService.sendCorreoPagoCashback(res.data);
             return res.estado;

@@ -45,7 +45,7 @@ const JardinAzuayo = ({ persona, producto, setOpcion, codigo }) => {
 
             pagoJa.checkCuenta(cedula, cuenta, producto.Titulo, (producto.PrecioProducto * 1.12).toFixed(2)).then((resp) => {
                 if (resp) {
-                    if (!resp.estado) {
+                    if (resp.estado) {
                         setSiguiente(true);
                     } else {
                         var mensaje = resp.msj.split(" ")[1].replaceAll("_", " ")
@@ -73,7 +73,7 @@ const JardinAzuayo = ({ persona, producto, setOpcion, codigo }) => {
             var pagoJa = new JardinAzuayoController();
             pagoJa.checkOtp(cedula, cuenta, producto.Titulo, (producto.PrecioProducto * 1.12).toFixed(2), codigoOPT).then((resp)=>{
                 if(resp){
-                    if (!resp.estado) {
+                    if (resp.estado) {
                         var pago=resp.data;
                         pago.tipo_pago_boton=8;
                         navigate('/bienvenida', { state: { persona, producto, codigo, pago } });
@@ -92,7 +92,7 @@ const JardinAzuayo = ({ persona, producto, setOpcion, codigo }) => {
     return (
         <div className='flex w-full justify-center items-center mt-4'>
             <div className='shadow-xl rounded-xl flex flex-col gap-3 pb-7 justify-center items-center'>
-                <div className="bg-[#f7f9f3] max-w-md w-auto px-10 py-4 rounded-t-xl">
+                <div className="bg-[#f7f9f3] max-w-md md:w-[400px] h-16 flex items-center justify-center px-10 py-4 rounded-t-xl">
                     <img src="https://www.jardinazuayo.fin.ec/wp-content/uploads/2023/09/Frame-3.png"></img>
                 </div>
                 {

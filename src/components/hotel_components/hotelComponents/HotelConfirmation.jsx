@@ -9,7 +9,6 @@ import HotelConfirmationDetail from "./HotelConfirmationDetail";
 const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, OnClose, Opciones }) => {
     const contactosHotel = Establecimiento.Contactos;
     const contactosCentral = Establecimiento.ContactosCentral;
-    console.log(contactosCentral);
     const user = JSON.parse(localStorage.getItem('datos'));
     const id = user != null ? user.data.codigo : "";
     const nombre = user != null ? user.data.nombre : "";
@@ -38,7 +37,6 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
     }
 
     const fechaString = (fecha) => {
-        console.log(fecha)
         // Obtener el año, mes y día de la fecha
         const año = fecha.getFullYear();
         const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Sumar 1 al mes ya que los meses van de 0 a 11
@@ -76,7 +74,7 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
             ).then((result) => {
                 setIsCreatingCert(false);
                 if (result) {
-                    window.open(window.location.origin+"#/certificado?" + result, '_blank');
+                    window.open("/certificado?" + result, '_blank');
                 }
             });
         }
@@ -108,16 +106,44 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
     }
 
     const handleClickEmail = async (email) => {
-        console.log("mailto:" + email + "?subject=Reserva" + "&body=" + mensaje().replaceAll(" ", "%20").replaceAll("\n", "%0A"));
+        window.open("mailto:" + email + "?subject=Reserva" + "&body=" + mensaje().replaceAll(" ", "%20").replaceAll("\n", "%0A"));
     }
 
     const handleClickAceptar = async () => {
         if (!isLoading) {
             setIsLoading(true)
-            var correcto = true;
+            var total = 0;
             try {
+                var datosReserva={
+                    id_tbl_estado_reserva:1,
+                    id_empresa:1,
+                }
+
+                var listaOfertas=[];
+                
                 for (const oferta of Ofertas) {
-                    await createReservation(oferta.Id, Opciones.adult, Opciones.children, oferta.TotalOfertas, formatDateToAAAAMMDD(Fechas[0].startDate), formatDateToAAAAMMDD(Fechas[0].endDate), Opciones.childrenAges)
+                    listaOfertas.push({
+                        "id_tbl_establecimiento": oferta.IdEstablecimiento,
+                        "id_tbl_info_indice_oferta": oferta.Id,
+                        "adultos": oferta.Adultos,
+                        "ninos": oferta.Ninos?oferta.Ninos:"0",
+                        "cantidad_ofertas": oferta.NumOfertas,
+                        "fecha_inicio": formatDateToAAAAMMDD(Fechas[0].startDate),
+                        "fecha_fin": formatDateToAAAAMMDD(Fechas[0].endDate),
+                        "precio_total": oferta.Final*parseInt(oferta.NumOfertas),
+                        "edades_ninos": Opciones.childrenAges.join(",")
+                    });
+                    total+=oferta.Final*parseInt(oferta.NumOfertas);
+                }
+                datosReserva.total_reserva=total;
+
+                createReservation(datosReserva,listaOfertas).then((res)=>{
+                    setIsLoading(false)
+                    if(res){
+                        navigate("/historial");
+                    }
+                });
+                    /*await createReservation(oferta.Id, Opciones.adult, Opciones.children, oferta.TotalOfertas, formatDateToAAAAMMDD(Fechas[0].startDate), formatDateToAAAAMMDD(Fechas[0].endDate), Opciones.childrenAges)
                         .then((res) => {
                             if (res) {
                                 if (res == 401) {
@@ -127,14 +153,13 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
                             } else {
                                 correcto = false;
                             }
-                        }).catch((error) => { console.log(error) });
+                        }).catch((error) => { });
                 }
                 setIsLoading(false)
                 if (correcto) {
-                    navigate("/historial");
-                }
+                    
+                }*/
             } catch (e) {
-
             }
         }
     };

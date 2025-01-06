@@ -82,11 +82,25 @@ const PayPhoneForm = ({persona, producto, pago, codigo}) => {
     }; 
 
     const handleClickContinuar = () => {
-        setErrorPago(false);
-        nombres === "" ? setNombresError(true) : setNombresError(false)
-        tarjeta === "" ? setTarjetaError(true) : setTarjetaError(false)
-        cvv === "" ? setCvvError(true) : setCvvError(false)
-        if (!nombresError && !tarjetaError && !cvvError) {
+        setNombresError(false);
+        setTarjetaError(false);
+        setCvvError(false);
+        var error=false;
+
+        if(nombres==""){
+            setNombresError(true);
+            error=true;
+        }
+        if(tarjeta==""){
+            setTarjetaError(true);
+            error=true;
+        }
+        if(cvv==""){
+            setCvvError(true);
+            error=true;
+        }
+
+        if (!error) {
             setIsLoading(true);
             const cardData ={
                 cardHolder: nombres,
@@ -102,7 +116,15 @@ const PayPhoneForm = ({persona, producto, pago, codigo}) => {
             mv.pay(producto,persona, cardData, pago ).then((resp)=>{
                 setIsLoading(false);
                 if(resp){
-                    if(resp.statusCode){
+                    if(resp.errorCode){
+                        if(resp.errorCode==800){
+                            setErrorPago(true);
+                            setMsjErrorPago("Datos de tarjeta inválidos")
+                        }else{
+                            setErrorPago(true);
+                            setMsjErrorPago("Ha ocurrido un error desconocido")
+                        }
+                    }else if(resp.statusCode){
                         if(resp.statusCode==1){
                             setErrorPago(true);
                             setMsjErrorPago("Su pago está pendinte,\ncomuniquese con nosotros.")
@@ -113,17 +135,7 @@ const PayPhoneForm = ({persona, producto, pago, codigo}) => {
                         }
                         if(resp.statusCode==3){
                             pago.transaccion=resp;
-                            //console.log(generarEsquemaSusPP({ persona, producto, codigo, pago }))
                             navigate('/bienvenida', { state: { persona, producto, codigo, pago } });
-                        }
-                    }
-                    if(resp.errorCode){
-                        if(resp.errorCode==800){
-                            setErrorPago(true);
-                            setMsjErrorPago("Datos de tarjeta inválidos")
-                        }else{
-                            setErrorPago(true);
-                            setMsjErrorPago("Ha ocurrido un error desconocido")
                         }
                     }
                 }else{
@@ -131,7 +143,6 @@ const PayPhoneForm = ({persona, producto, pago, codigo}) => {
                     setMsjErrorPago("Ha ocurrido un error desconocido")
                 }
             })
-            //console.log(pago);
             
         }
     }
@@ -141,7 +152,7 @@ const PayPhoneForm = ({persona, producto, pago, codigo}) => {
     return (
         <>
         <div className="w-full flex items-center justify-center">
-            <div className="flex flex-wrap  w-10/12 shadow-2xl rounded-xl gap-y-3 gap-x-3 items-center justify-center sm:flex-col md:flex-row">
+            <div className="flex flex-wrap  md:w-10/12 shadow-2xl rounded-xl gap-y-3 gap-x-3 items-center justify-center sm:flex-col md:flex-row">
                 <div className="bg-[#ff6400] w-full px-10 py-2 rounded-t-xl flex items-center justify-center">
                     <img className="h-20" src="https://assets-global.website-files.com/66041f2aa7176fac4965cba4/6605bf7c0b772f88302329e2_logoyeii-low.svg"></img>
                 </div>
@@ -222,9 +233,8 @@ const PayPhoneForm = ({persona, producto, pago, codigo}) => {
                         </div>
                     </div>
                     </div>
-
                     <div className="flex items-center justify-center">
-                        <button className=" text-white bg-greenVE-500 rounded-lg text-sm w-20 sm:w-auto px-5 py-2.5 text-center" onClick={() => handleClickContinuar()}>{isLoading?<span className="icon-[line-md--loading-twotone-loop] -my-2 h-7 w-7 px-[30.5px]"></span>:"Procesar"}</button>
+                        <button className=" text-white bg-greenVE-500 rounded-lg text-sm  sm:w-auto px-5 py-2.5 text-center" onClick={() => handleClickContinuar()}>{isLoading?<span className="icon-[line-md--loading-twotone-loop] -my-2 h-7 w-7 px-[30.5px]"></span>:"Procesar"}</button>
                     </div>
                 </div>
 

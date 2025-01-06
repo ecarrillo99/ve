@@ -22,13 +22,13 @@ const Disney=()=>{
         <div>
             {
                 isMobile
-                ?<NavbarMobile/>
+                ?<NavbarMobile activo={2}/>
                 :<Navbar activo={2}/>
             }
                 <iframe
                     src="https://visitaecuador.com/disney"
                     width="100%"
-                    height="2800px"
+                    height="3000px"
                 >
                 </iframe>
             <Footer></Footer>

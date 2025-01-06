@@ -17,7 +17,7 @@ export function dateFormatOnly(d) {
     const dateStr = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
     return dateStr;
   } catch (e) {
-    console.log(e);
+    ;
   }
   return "";
 }
@@ -29,7 +29,7 @@ export function dateFormat({ d, b = "" }) {
     const hourStr = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:${d.getSeconds().toString().padStart(2, '0')}`;
     return dateStr + b + hourStr;
   } catch (e) {
-    console.log(e);
+    ;
   }
   return "";
 }
@@ -39,7 +39,7 @@ export function encodeURI(uri) {
   try {
     return encodeURIComponent(uri);
   } catch (e) {
-    console.log(e);
+    ;
   }
   return "";
 }
@@ -51,7 +51,7 @@ export function encodeURI(uri) {
     const str64 = bytes.toString('base64');
     return str64;
   } catch (e) {
-    console.log(e);
+    ;
   }
   return "";
 }*/
@@ -62,7 +62,7 @@ export function base64ToStr(encoded) {
     const decoded = Buffer.from(encoded, 'base64').toString('binary');
     return decoded;
   } catch (e) {
-    console.log(e);
+    ;
   }
   return "";
 }
@@ -86,7 +86,6 @@ export function validarCedula(cedula) {
       return true;
     }
   } catch (e) {
-    console.log("Error al validar la cedula. " + e.toString());
   }
   return false;
 }

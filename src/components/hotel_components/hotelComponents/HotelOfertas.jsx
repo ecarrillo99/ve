@@ -5,15 +5,21 @@ import HotelConfirmation from './HotelConfirmation';
 import Alert from '../../global_components/alert/Alert';
 import { useNavigate } from 'react-router-dom';
 import { getIcon } from '../../../global/icons2';
+import HotelExpress from './HotelExpress';
+import HotelExpressConfirmacion from './HotelExpressConfirmacion';
+import AlertExpress from '../../global_components/alert/AlertExpress';
 
 const HotelOfertas = (props) => {
   const { Establecimiento, Noches, Fechas, Opciones, clickRecomendados, SetRecomendados} = props;
   const icons = new Icons();
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isExpressOpen, setIsExpressOpen]=useState(false);
   const [isAlertLoginOpen, setIsAlertLoginOpen] = useState(false);
   const [ofertas, setOfertas] = useState([]);
+  const [desExpress, setDescExpress]=useState();
   const [alerta, setAlerta]=useState("");
+  const [correcto, setCorrecto]=useState();
   const session = JSON.parse(localStorage.getItem("datos"));
   const nivel = session ? session.data.nivel : "visitante";
   const navigate = new useNavigate();
@@ -86,26 +92,29 @@ const HotelOfertas = (props) => {
 
   const handleClickReservar = () => {
     setAlerta("");
-    if (nivel == "suscriptor") {
+    var descuento=0;
+    if (nivel == "suscriptor"||(nivel == "visitante"||nivel == "express")||nivel == "gratuito") {
       const ofertasList = [];
       for (const id in selectedOptions) {
         if (selectedOptions[id] != 0) {
           const objeto = Establecimiento.Ofertas.find((oferta) => oferta.Id.toString() === id.toString());
           objeto.NumOfertas = selectedOptions[id];
-          objeto.TotalOfertas = (objeto.Final / objeto.Base) * selectedOptions[id];
+          objeto.TotalOfertas = (objeto.Final / ((nivel == "visitante"||nivel == "express"||nivel == "gratis")?objeto.Base+10:objeto.Base)) * selectedOptions[id];
+          descuento+=10*objeto.NumOfertas;
           ofertasList.push(objeto);
           adultos+=parseInt(objeto.Adultos)*objeto.NumOfertas
           ninos+=parseInt((objeto.Ninos!=""&&objeto.Ninos!=null)?objeto.Ninos:0)*objeto.NumOfertas
         }
       }
       setOfertas(ofertasList);
+      setDescExpress(descuento*Noches)
       if(Opciones.children!=0){
         if(ninos<Opciones.children){
           if(adultos>=(Opciones.children+Opciones.adult)){
-            setIsModalOpen(true);
+            (nivel == "visitante"||nivel == "express"||nivel == "gratuito")?setIsAlertLoginOpen(true):setIsModalOpen(true);
           }else if (Opciones.children>Opciones.adult){
             if ((ninos+adultos)>=(Opciones.adult+Opciones.children)){
-              setIsModalOpen(true);
+              (nivel == "visitante"||nivel == "express"||nivel == "gratuito")?setIsAlertLoginOpen(true):setIsModalOpen(true);
             }if (Opciones.adult<adultos){
               setAlerta(`Todavia necesitas espacio para ${(Opciones.children+Opciones.adult)-adultos} ${((Opciones.children+Opciones.adult)-adultos)==1?"niño":"niños"} `)
             }else{
@@ -117,10 +126,10 @@ const HotelOfertas = (props) => {
             setAlerta(`Todavia necesitas espacio para ${Opciones.children-ninos} ${(Opciones.children-ninos)==1?"niño":"niños"} ${(Opciones.adult-adultos)>0?`y ${Opciones.adult-adultos} ${(Opciones.adult-adultos)==1?"adulto":"adultos"}`:""} `)
           }
         }else if(ninos>=Opciones.children||adultos>=Opciones.adult){
-          setIsModalOpen(true);
+          (nivel == "visitante"||nivel == "express"||nivel == "gratuito")?setIsAlertLoginOpen(true):setIsModalOpen(true);
         }
       }else if(adultos>=Opciones.adult){
-        setIsModalOpen(true);
+        (nivel == "visitante"||nivel == "express"||nivel == "gratuito")?setIsAlertLoginOpen(true):setIsModalOpen(true);
       }else{
         setAlerta(`Todavia necesitas espacio para ${Opciones.adult-adultos} ${(Opciones.adult-adultos)==1?"adulto":"adultos"}`)
       }
@@ -131,20 +140,50 @@ const HotelOfertas = (props) => {
 
   const handleClickCancelar = () => {
     setIsModalOpen(false);
+    setIsExpressOpen(false);
+  };
+
+  const handleClickBack = () => {
+    setIsExpressOpen(false);
+    setIsAlertLoginOpen(true);
   };
 
   const handleClickLoginAlertAceptar = () => {
     setIsAlertLoginOpen(false);
     navigate("/login");
   };
+
   const handleClickLoginAlertCancelar = () => {
     setIsAlertLoginOpen(false);
   };
 
+  const handleClickReservaExpress= () => {
+    setIsAlertLoginOpen(false);
+    setIsExpressOpen(true);
+  };
+
   return (
     <>
+      <HotelExpressConfirmacion isOpen={correcto} OnClose={()=>setCorrecto(false)}/>
       <HotelConfirmation Ofertas={ofertas} isOpen={isModalOpen} Establecimiento={Establecimiento} Fechas={Fechas} Valores={calcularTotal()} OnClose={() => handleClickCancelar()} Opciones={Opciones} />
-      <Alert Titulo={"Acción no permitida"} Descripcion={nivel=="visitante"?"Debe iniciar sesión o registrarse para continuar":"La reserva con cuentas gratuitas solo está disponible en la app móvil."} isOpen={isAlertLoginOpen} Aceptar={nivel=="visitante"?handleClickLoginAlertAceptar: handleClickLoginAlertCancelar} Cancelar={handleClickLoginAlertCancelar}></Alert>
+      <HotelExpress Ofertas={ofertas} isOpen={isExpressOpen} Establecimiento={Establecimiento} Fechas={Fechas} Valores={calcularTotal()} OnClose={() => handleClickCancelar()} OnBack={()=>handleClickBack()} Opciones={Opciones} setCorrecto={setCorrecto} correcto={correcto} />
+      {
+        (nivel=="visitante"||nivel=="express"||nivel=="gratuito")
+        ?<AlertExpress 
+          Titulo={"Nueva Reserva"} 
+          Descripcion={"La reserva con cuentas gratuitas solo está disponible en la app móvil."} 
+          isOpen={isAlertLoginOpen} Aceptar={handleClickLoginAlertCancelar} 
+          Cancelar={handleClickReservaExpress}
+          Subtotal={calcularTotal().SinImpuestos}
+          Impuestos={calcularTotal().Impuestos}
+          Descuento={desExpress}/>
+        :<AlertExpress 
+        Titulo={"Acción no permitida"} 
+        Descripcion={"La reserva con cuentas gratuitas solo está disponible en la app móvil."} 
+        isOpen={isAlertLoginOpen} Aceptar={handleClickLoginAlertCancelar} 
+        Cancelar={handleClickLoginAlertCancelar}/>
+      }
+      
       <div className='relative w-full z-0'>
         <div className='sticky top-0 z-10'>
           <div className='table-fixed w-full'>
@@ -174,7 +213,7 @@ const HotelOfertas = (props) => {
                         {
                           item.Ganga?(<div className="ml-5 flex items-center text-xs text-orange-600  bg-orange-100 rounded-md px-2 gap-1.5 py-0.5 mb-2 w-36 border border-orange-200">
                           <span className="icon-[ic--outline-local-offer] rotate-90 h-5 w-5"></span>
-                        <label className="text-orange-500 text-xs font-medium">Precio ganga</label>
+                          <label className="text-orange-500 text-xs font-medium">Precio ganga</label>
                         </div>):(<></>)
                         }
                         <label className="ml-2 text-xs font-semibold text-gray-500">Aplica:</label>
@@ -193,7 +232,7 @@ const HotelOfertas = (props) => {
                           </div>
                           :<div className="flex gap-1 ml-6 text-sm items-center">
                             <span className="icon-[material-symbols--bed-outline-rounded] text-[#3d82f5] h-5 w-5"></span>
-                            <label className="text-gray-500 text-xs ">{item.Acomodacion} x {item.NumOfertas} </label>
+                            <label className="text-gray-500 text-xs ">{item.Acomodacion}</label>
                           </div>
                         }
                         

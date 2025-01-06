@@ -28,15 +28,10 @@ const MapScreen = ({ isOpen, onClose, data, destination, date, options }) => {
           longitude: item.Longitud,
         },
         options: {
-            icon:"./img/web/pinMap.png",
+            icon:"https://visitaecuador.com/img/web/pinMap.png",
              title: item.Titulo,
         },
     }));
-
-    const handleClickpin = (item) => {
-        console.log("Pin clickeado:", item);
-        // Aquí puedes hacer lo que necesites con el pin clickeado
-    }
 
     if (!isOpen) {
         return null;

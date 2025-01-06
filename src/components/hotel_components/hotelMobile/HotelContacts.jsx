@@ -103,7 +103,7 @@ const HotelContacts = ({setOpenContacts, Establecimiento, options, date, selecci
             ).then((result) => {
                 setIsCreatingCert(false);
                 if (result) {
-                    window.open(window.location.origin+"#/certificado?" + result, '_blank');
+                    window.open(window.location.origin+"certificado?" + result, '_blank');
                 }
             });
         }

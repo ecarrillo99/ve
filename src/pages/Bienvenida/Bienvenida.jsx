@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { gestionarSuscripcion } from '../../controllers/suscripcion/suscripcionController';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import NavbarMobile from '../../components/global_components/navbar/NavbarMobile';
 import Navbar from '../../components/global_components/navbar/Navbar';
 import DataSuscription from '../../components/suscription_components/data_suscription';
@@ -10,6 +10,7 @@ import Footer from '../../components/global_components/footer/Footer';
 import { generarEsquemaSusJA } from '../../global/esquemaSuscripcionJA';
 import { generarEsquemaSusBP } from '../../global/esquemaSuscripcionBP';
 import { generarEsquemaSusPP } from '../../global/esquemaSuscripcionPP';
+import { generarEsquemaSusPayPal } from '../../global/esquemaSuscripcionPayPal';
 
 var firstTime=true;
 const Bienvenida = () => {
@@ -31,6 +32,7 @@ const Bienvenida = () => {
     // Parsea los parámetros de consulta de la URL
     const queryParams = new URLSearchParams(location.search);
     const id = queryParams.get('id');
+    const navigate = useNavigate();
 
 
     const hadleClickCreateSuscription=async ()=>{
@@ -40,7 +42,6 @@ const Bienvenida = () => {
             if(pagoValido){
                 setLoadingPago(false);
                 if(pagoValido.estado){
-                    console.log(generarEsquemaSusDF(pagoValido.data))
                     gestionarSuscripcion(generarEsquemaSusDF(pagoValido.data)).then((result)=>{
                         firstTime=true;
                         if(result){
@@ -64,7 +65,6 @@ const Bienvenida = () => {
                 setMsjErrorPago("Ha ocurrido un error desconocido. Si existen cargos a su tarjeta comuníquese a nuestra central de reservas.")
             }
         }else if(state!=null){
-            console.log(state)
             var schema;
             if(state.pago.tipo_pago_boton!=null){
                 switch (state.pago.tipo_pago_boton.toString()) {
@@ -75,7 +75,10 @@ const Bienvenida = () => {
                     case "8":
                         schema = generarEsquemaSusJA(state);
                         break;
-                
+
+                    case "9":
+                        schema = generarEsquemaSusPayPal(state);
+                        break;
                     default:
                         break;
                 }
@@ -100,6 +103,7 @@ const Bienvenida = () => {
                     setNombre(state.persona.nombres)
                     if(result.estado){
                         setDataSuscription(result.data)
+                        navigate(location.pathname, { replace: true, state: null });
                     }else{
                         setErrorCuenta(true);
                         setMsjErrorCuenta("Ha ocurrido un error al crear tu cuenta, comunicate con nuestra central de reservas");
@@ -109,7 +113,6 @@ const Bienvenida = () => {
                     setMsjErrorCuenta("Ha ocurrido un error al crear tu cuenta, comunicate con nuestra central de reservas");
                 }
             })
-            console.log(schema);
         }
     }
 

@@ -63,8 +63,7 @@ const HotelMobile = () => {
             const fechaActual = new Date();
             const fechaNueva = new Date(fechaActual);
             fechaNueva.setDate(fechaActual.getDate() + nochesCalculadas);
-            console.log(fechaActual)
-            console.log(fechaNueva)
+
             const dateTmp = [{
               startDate: fechaActual,
               endDate: fechaNueva,
@@ -137,7 +136,7 @@ const HotelMobile = () => {
         </div>
         :
           <div className="h-screen w-screen flex flex-col justify-center items-center">
-            <img src="./img/web/logo_verde.png" style={{ width: "200px", height: "auto" }} />
+            <img src="https://visitaecuador.com/img/web/logo_verde.png" style={{ width: "200px", height: "auto" }} />
             <div className="animate-spin w-14 h-14 border-t-4 border-greenVE-500 rounded-full"></div>
           </div>
     );

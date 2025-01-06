@@ -58,7 +58,7 @@ class DatafastController {
         );
         return res;
     }catch(e){
-        console.log(e);
+        ;
     }
     return {}
   }

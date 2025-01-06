@@ -17,7 +17,7 @@ const ActivityBanner=()=>{
                             setData(result)
                         }
                     })
-                    .catch((error) => { console.log(error) })
+                    .catch((error) => {})
             } catch (error) {
                 console.error("Error:", error);
             }

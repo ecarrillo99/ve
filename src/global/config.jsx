@@ -1,8 +1,8 @@
 class Config {
     // App config
     static get URL_SERVICIOS() {
+        //return "https://apidev.visitaecuador.com/v1.8";
         return "https://apidev.visitaecuador.com/v1.7";
-        //return "http://test.visitaecuador.com/v1.7";
         //return "http://181.198.122.14:8080/v1.7";
     }
 
@@ -29,6 +29,14 @@ class Config {
     static get METODO_EX_FB() {
         return "facebook";
     }
+
+    static get METODO_EXPRESS() {
+        return "express";
+    }
+
+    static get IDMETODO_EXPRESS() {
+        return "45";
+    }
     
     static get IDMETODO_EX_FB() {
         return "2";
@@ -44,6 +52,14 @@ class Config {
     
     static get IDMETODO_EMAIL() {
         return "29";
+    }
+
+    static get METODO_EXPRESS() {
+        return "express";
+    }
+    
+    static get IDMETODO_EXPRESS() {
+        return "45";
     }
     
     static get METODO_EX_APPLE() {
@@ -137,6 +153,14 @@ class Config {
     static get VERPAY() {
         return "/pay/";
     }
+
+    static get ADMIN() {
+        return "/adm";
+    }
+
+    static get RESERVAS() {
+        return "/res/";
+    }
     
     static get TOKENPP() {
         return "jvAtIRktHfYT90uEZ1mp5A7fIgD0S40g2eYrS7IHvEFy7ZCVflXxPDZbjsVssdjRjPsfbIPg968yyp6pGSeRDgk49I31Q9xNDUZnZbWjI-zAxu3rGM4SE1ZkOi8oncLbYJrQu0by526kkcLuQ3gevQoAylkR0Mplxc5KeAcK00ShHeM_mKPRA4vI1pe6ssCKahJxpYRrWTdoI7VqPmlqGfIE8KV5YJzP1fcXWRJjV-Hj7mL7HRK2L-Nfy0nAAioiRb22TgWnL-0KptvdGCUi2HGXaICwLe5KYLCZJ7j2s7JW50M8OPhevz5m3zpI6jgOCkR2VA";
@@ -148,8 +172,8 @@ class Config {
     
     static get RECIBE_DATAFAST() {
         //return "https://visitaecuador.com/compratest/transaction/dfcv/";
-        //return "https://visitaecuador.com/#/suscripcion/";
-        return "/#/bienvenida";
+        //return "https://visitaecuador.com/suscripcion/";
+        return "/bienvenida";
     }
 
     static get MENSAJE(){

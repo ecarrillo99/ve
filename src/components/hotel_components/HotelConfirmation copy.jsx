@@ -37,7 +37,7 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
                             } else {
                                 correcto = false;
                             }
-                        }).catch((error) => { console.log(error) });
+                        }).catch((error) => { });
                 }
                 setIsLoading(false)
                 if(correcto){

@@ -6,7 +6,6 @@ const DataFast = ({persona, producto, pago, codigo}) => {
 
 
     const [trx, setTrx] = useState();
-    console.log(codigo);
     const Persona = {
         "dni": persona.cedula,
         "address": "Cuenca",
@@ -30,8 +29,6 @@ const DataFast = ({persona, producto, pago, codigo}) => {
         "tipo_pago_boton":pago.IdTipoBotonPago,
         "id_diferido":pago.IdDiferido,
     };
-
-    console.log(Producto);
 
     const datafastController = new DatafastController({ persona: Persona, product: Producto });
     const [html, setHtml] = useState();
@@ -161,7 +158,6 @@ const DataFast = ({persona, producto, pago, codigo}) => {
                     template = template.replace("{{CHECKOUTID}}", result.id);
                     template = template.replace("{{CARDTYPE}}", cardType);
                     template = template.replace("{{DEFERRED}}", getTemplateDiferido(pago.Intereses=="1"?1:0,pago.Meses=="1"?0:parseInt(pago.Meses)));
-                    console.log(template);
                     setHtml(template);
                     /*if (webViewRef.current) { // Verifica que webViewRef.current no sea null
                         webViewRef.current.loadUrl(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`);
@@ -179,7 +175,8 @@ const DataFast = ({persona, producto, pago, codigo}) => {
     
 
     return (
-        <div className='shadow-xl rounded-xl flex items-center justify-center'>
+        <div className='shadow-xl rounded-xl flex flex-col items-center justify-center'>
+            <div className='rounded-t-xl w-full flex justify-center items-center bg-[#04ab91] h-20'><img src='https://www.datafast.com.ec/images/logo.png' className='h-16'/></div>
             {html != null ? (
                 <iframe
                     className='w-full h-[450px]'

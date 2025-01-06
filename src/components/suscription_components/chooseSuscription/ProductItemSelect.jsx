@@ -53,7 +53,7 @@ const ProductItemSelect = ({ listaProductos, cambioSlider }) => {
       </select>
       <div className="flex w-96 border rounded-md px-3 py-1">
         <div className="w-1/3">
-          <img className="h-20" src="./img/web/suscription_card.png"></img>
+          <img className="h-20" src="https://visitaecuador.com/img/web/suscription_card.png"></img>
         </div>
         <div className="w-2/3 flex flex-col justify-center items-end text-end gap-1">
           <label className="text-xs text-greenVE-600 font-medium">{selectedItem.Titulo}</label>
