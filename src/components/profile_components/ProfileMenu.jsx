@@ -34,7 +34,12 @@ const ProfileMenu = ({ handleChangeOption, selectedOption, profileData }) => {
                 </div>
                 <label className={`${selectedOption==4?"text-greenVE-500":""} font-medium cursor-pointer text-sm `}>Seguridad</label>
             </div>
-            
+            <div className="flex items-center gap-3 px-4 py-2 cursor-pointer hover:text-greenVE-500" onClick={() => handleChangeOption(5)}>
+                <div className="bg-gray-100 h-9 w-9 rounded-full flex items-center justify-center">
+                    <span className={`${selectedOption == 5?"text-greenVE-500":""} icon-[material-symbols--admin-panel-settings-outline] h-8 w-8`}></span>
+                </div>
+                <label className={`${selectedOption==5?"text-greenVE-500":""} font-medium cursor-pointer text-sm `}>Administración</label>
+            </div>
         </div>
     );
 }

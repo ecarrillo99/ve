@@ -22,6 +22,11 @@ class InfoService extends GenericService{
         const url = `${Config.URL_SERVICIOS}${Config.VERINFO}getPublicidadWebVe/`;
         return await this.post(url, params);
     }
+
+    async obtenerOperador(){
+        const url = `${Config.URL_SERVICIOS}${Config.VERAPP}getOperadorCallcenter/`;
+        return await this.post(url, {});
+    }
 }
 
 export default InfoService

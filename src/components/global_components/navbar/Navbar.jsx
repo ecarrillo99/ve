@@ -397,18 +397,22 @@ const Navbar = ({ activo }) => {
           </div>
           <div className=" flex  justify-between">
             <div className="flex gap-2 items-end mt-4 sm:mt-0">
-              <button className={`flex gap-1 border-2 ${(activo == null || activo == 1 ? "border-white" : "border-transparent")} text-white hover:border-2  rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`} onClick={handleClickInicio} >
-                <img src="https://visitaecuador.com/img/web/homeMenu.svg" style={{ height: "25px" }}></img>
-                <label className="hidden md:flex cursor-pointer">Hospedaje</label>
-              </button>
-              <button className={`flex gap-1 border-2 ${activo == 2 ? "border-white" : "border-transparent"} text-white hover:border-2  rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`} onClick={handleClickDisney}>
-                <img src="https://visitaecuador.com/img/web/disneyMenu.svg" style={{ height: "25px" }}></img>
-                <label className="hidden md:flex cursor-pointer">Disney Destination Concierge</label>
-              </button>
-              <button className={`flex gap-1 border-2 ${activo == 3 ? "border-white" : "border-transparent"} text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`} onClick={handleClickInfotour}>
-                <img src="https://visitaecuador.com/img/web/infotourMenu.svg" style={{ height: "25px" }}></img>
-                <label className="hidden md:flex cursor-pointer">InfoTour</label>
-              </button>
+              {activo > 0 && (
+                <>
+                  <button className={`flex gap-1 border-2 ${(activo == 1 ? "border-white" : "border-transparent")} text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`} onClick={handleClickInicio} >
+                    <img src="https://visitaecuador.com/img/web/homeMenu.svg" style={{ height: "25px" }}></img>
+                    <label className="hidden md:flex cursor-pointer">Hospedaje</label>
+                  </button>
+                  <button className={`flex gap-1 border-2 ${(activo == 2 ? "border-white" : "border-transparent")} text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`} onClick={handleClickDisney}>
+                    <img src="https://visitaecuador.com/img/web/disneyMenu.svg" style={{ height: "25px" }}></img>
+                    <label className="hidden md:flex cursor-pointer">Disney Destination Concierge</label>
+                  </button>
+                  <button className={`flex gap-1 border-2 ${(activo == 3 ? "border-white" : "border-transparent")} text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`} onClick={handleClickInfotour}>
+                    <img src="https://visitaecuador.com/img/web/infotourMenu.svg" style={{ height: "25px" }}></img>
+                    <label className="hidden md:flex cursor-pointer">InfoTour</label>
+                  </button>
+                </>
+              )}
               <button className={`flex gap-1 border-2 ${activo == 4 ? "border-white" : "border-transparent"} text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`} onClick={() => navigate("/nosotros")} onMouseOver={() => setOpenNosotros(true)} onMouseOut={() => setOpenNosotros(false)}>
                 <img src="https://visitaecuador.com/img/web/nosotrosMenu.svg" style={{ height: "25px" }}></img>
                 <label className="hidden md:flex cursor-pointer">Nosotros</label>

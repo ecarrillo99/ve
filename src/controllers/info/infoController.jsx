@@ -178,3 +178,20 @@ export const getBanners  = async function(){
 
     }
 }
+
+export const getOperador  = async function(){
+    try{
+            const infoService= new InfoService();
+            
+            const res= await infoService.obtenerOperador()
+            if(res['estado']&&res['codigo']==0){
+                return res['data']
+            }
+            if(res['codigo']==401){
+                return 401;
+            }
+            return [];
+    }catch{
+
+    }
+}

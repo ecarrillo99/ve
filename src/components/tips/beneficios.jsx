@@ -16,7 +16,7 @@ const Beneficios = ({suscribirse}) => {
     return (
         <>
             <div className='mx-auto max-w-6xl sm:px-6 lg:px-8 '  id="conocemas">
-                <div className='flex items-center h-14 md:h-14 bg-greenVE-600 relative mx-3 rounded-t-2xl text-white text-xs md:text-2xl justify-between gap-6'>
+                <div className='flex items-center h-14 md:h-14 bg-greenVE-500 relative mx-3 rounded-t-2xl text-white text-xs md:text-2xl justify-between gap-6'>
                     <div className='flex items-center justify-center w-full font-semibold'>
                         <h1 >PREGUNTAS Y TIPS</h1>
                     </div>

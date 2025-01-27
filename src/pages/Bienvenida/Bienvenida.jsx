@@ -62,7 +62,7 @@ const Bienvenida = () => {
             }else{
                 setLoadingPago(false);
                 setErrorPago(true);
-                setMsjErrorPago("Ha ocurrido un error desconocido. Si existen cargos a su tarjeta comuníquese a nuestra central de reservas.")
+                setMsjErrorPago("Ha ocurrido un error desconocido. Si existen cargos a su tarjeta comuníquese a nuestra central de reservas. 1")
             }
         }else if(state!=null){
             var schema;
@@ -99,18 +99,13 @@ const Bienvenida = () => {
 
             gestionarSuscripcion(schema).then((result)=>{
                 firstTime=true;
-                if(result){
+                if(result && result.estado){
                     setNombre(state.persona.nombres)
-                    if(result.estado){
-                        setDataSuscription(result.data)
-                        navigate(location.pathname, { replace: true, state: null });
-                    }else{
-                        setErrorCuenta(true);
-                        setMsjErrorCuenta("Ha ocurrido un error al crear tu cuenta, comunicate con nuestra central de reservas");
-                    }
+                    setDataSuscription(result.data)
+                    navigate(location.pathname, { replace: true, state: null });
                 }else{
                     setErrorCuenta(true);
-                    setMsjErrorCuenta("Ha ocurrido un error al crear tu cuenta, comunicate con nuestra central de reservas");
+                    setMsjErrorCuenta("Ha ocurrido un error al crear tu cuenta, comunicate con nuestra central de reservas 2");
                 }
             })
         }

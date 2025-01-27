@@ -11,6 +11,7 @@ import { sessionStatus } from "../../global/util";
 import NavbarMobile from "../../components/global_components/navbar/NavbarMobile";
 import Cashback from "../../components/profile_components/cashback/Cashback";
 import ProfileAgencia from "../../components/profile_components/ProfileAgencia";
+import ProfileAdmin from "../../components/profile_components/ProfileAdmin";
 
 const Profile=({})=>{
     const [selectedOption, setSelectedOption]=useState(1);
@@ -46,7 +47,9 @@ const Profile=({})=>{
           case 4:
             setSelectedMenu(<ProfilePassword/>);
           break;
-
+          case 5:
+            setSelectedMenu(<ProfileAdmin/>);
+          break;
 
         }
     }
