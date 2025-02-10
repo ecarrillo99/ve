@@ -261,68 +261,22 @@ const Navbar = ({ activo }) => {
               Registrar alojamiento
             </a>
             <div className="flex justify-center">
-              {(nivel === "visitante" || nivel === "gratuito") && (
+              {/* {(nivel === "visitante" || nivel === "gratuito") && (
                 <button className="flex gap-1 text-greenVE-600 bg-white rounded-full px-5 py-1 text-xs hover:border-gray-300 hover:text-gray-500" onClick={handleClickSuscribing}>
                   Suscribirse
                 </button>
-              )}
+              )} */}
+              <button className="flex gap-1 text-greenVE-600 bg-white rounded-full px-5 py-1 text-xs hover:border-gray-300 hover:text-gray-500" onClick={handleClickSuscribing}>
+                  Suscribirse
+                </button>
               {
                 (openSuscription) && (
                   <ClickAwayListener onClickAway={handleClickSuscribing}>
-                    <div className="md:absolute z-50 bg-white flex flex-col items-start py-2 top-10  gap-2 shadow-2xl rounded-md ">
+                    <div className="md:absolute z-50 bg-white flex flex-col items-start py-2 top-12  gap-2 shadow-2xl rounded-md ">
                       {
-                        (nivel === "visitante") && (
+                         (
                           <>
-                            <div className="bg-greenVE-500 flex flex-col items-center justify-center rounded-xl w-[250px] mx-4 mt-2 cursor-pointer" onClick={()=>setOpenConvenios(!openConvenios)}>
-                              <div className="flex items-center">
-                                <label className="px-4 text-xs py-1 w-full text-center items-center gap-2  text-white -mr-4 cursor-pointer">Convenios Especiales</label>
-                                <span class={`${openConvenios?"icon-[iconamoon--arrow-up-2-bold]":"icon-[iconamoon--arrow-down-2-bold]"} h-5 w-5 text-white`}></span>
-                              </div>
-                              {
-                                !openConvenios
-                                  ? <div className="flex w-full px-6 pb-2 justify-between">
-                                    <div className="rounded-full bg-white h-7 w-7 p-1">
-                                      <img src="https://visitaecuador.com/img/web/ba_logo.jpg" />
-                                    </div>
-                                    <div className="rounded-full bg-white h-7 w-7 p-1.5">
-                                      <img src="https://visitaecuador.com/img/web/ja_logo.png" />
-                                    </div>
-                                    <div className="rounded-full bg-white h-7 w-7 p-1">
-                                      <img src="https://visitaecuador.com/img/web/cpn_logo.jpg" />
-                                    </div>
-                                    <div className="rounded-full bg-white h-7 w-7 p-1 pt-2">
-                                      <img src="https://visitaecuador.com/img/web/pp_logo.png" />
-                                    </div>
-                                    <div className="rounded-full bg-white h-7 w-7">
-                                      <img src="https://visitaecuador.com/img/web/bp_logo.png" />
-                                    </div>
-                                  </div>
-                                  :<div className="flex flex-col gap-2 pb-2">
-                                    <label className="px-4 text-xxs py-1 w-full text-center items-center gap-2  text-white -mt-2 cursor-pointer">Continuar con...</label>
-                                    <div className="rounded-full bg-white p-1 flex  items-center w-full" onClick={(event)=>{window.open("/convenio/bda", '_self'); }}>
-                                      <img src="https://visitaecuador.com/img/web/ba_logo.jpg" className="h-6 w-6 pl-1" />
-                                      <label className="px-1 text-xs py-1 w-full text-left items-center cursor-pointer">Banco del Austro</label>
-                                    </div>
-                                    <div className="rounded-full bg-white p-1 flex w-full items-center" onClick={(event)=>{window.open("/convenio/cja", "_self");}}>
-                                      <img src="https://visitaecuador.com/img/web/ja_logo.png" className="h-5 w-6 pl-1 object-contain" />
-                                      <label className="px-1 text-xs py-1  text-left items-center gap-2 cursor-pointer">Coop. Jardín Azuayo</label>
-                                    </div>
-                                    <div className="rounded-full bg-white p-1 flex w-full items-center" onClick={(event)=>{window.open("/convenio/cpn", '_self');}}>
-                                      <img src="https://visitaecuador.com/img/web/cpn_logo.jpg" className="h-6 w-6 pl-1" />
-                                      <label className="px-1 text-xs py-1  text-left items-center gap-2 cursor-pointer">Coop. Policía Nacional</label>
-                                    </div>
-                                    <div className="rounded-full bg-white p-1 flex w-full items-center" onClick={(event)=>{window.open("/convenio/pp", '_self');}}>
-                                      <img src="https://visitaecuador.com/img/web/pp_logo.png" className="h-6 w-6 pl-2 object-contain " />
-                                      <label className="px-1 text-xs py-1 text-left items-center gap-2 cursor-pointer">PayPhone</label>
-                                    </div>
-                                    <div className="rounded-full bg-white p-1 flex w-full items-center" onClick={(event)=>{window.open("/convenio/bp", '_self');}}>
-                                      <img src="https://visitaecuador.com/img/web/bp_logo.png" className="h-6 w-6 object-contain " />
-                                      <label className="px-1 text-xs py-1 w-[200px] text-left items-center gap-2 cursor-pointer">Banco Pichincha</label>
-                                    </div>
-                                  </div>
-                              }
-                            </div>
-                            <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickSuscription}><div dangerouslySetInnerHTML={{ __html: icons.Data.Buy }} />Comprar suscripción</button>
+                            <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2 " onClick={handleClickSuscription}><div dangerouslySetInnerHTML={{ __html: icons.Data.Buy }} />Comprar suscripción</button>
                             <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickPack}><div dangerouslySetInnerHTML={{ __html: icons.Data.Gift }} />Activar VisitaPack</button>
                             <label className="text-xs font-medium text-center w-full">Prueba gratis con:</label>
                             <div className="flex justify-center items-center w-full gap-2  pb-3">

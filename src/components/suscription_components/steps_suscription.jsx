@@ -36,7 +36,7 @@ const StepsSuscription = () => {
                         opcion == 1
                             ? <Promociones setCodigo={setCodigo} setOpcion={setOpcion} setProductos={setProductos} setReferedCode={setReferedCode} referedCode={referedCode}/>
                             : opcion == 2
-                                ? <Suscripciones productos={productos} setProducto={setProducto} setOpcion={setOpcion}></Suscripciones>
+                                ? <Suscripciones productos={productos} setProducto={setProducto} setOpcion={setOpcion} codigo={codigo} setCodigo={setCodigo}></Suscripciones>
                                 : opcion == 3
                                     ? <Informacion setOpcion={setOpcion} persona={persona} setPersona={setPersona} setPago={setPago} />
                                     : opcion == 4

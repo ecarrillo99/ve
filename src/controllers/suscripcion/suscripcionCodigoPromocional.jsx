@@ -11,6 +11,15 @@ export const CheckPromocionalCode = async function({codigo, convenio=""}) {
             "codigo": codigo
         };
 
+        const checkPermission=()=>{
+            const data = JSON.parse(localStorage.getItem("datos"));
+            if(data){
+                if(data.data.permisos.perfil.suscripcionPersonalizada){
+                    return true;
+            }}else{
+                return false;
+        }}
+
         const res = await contactoService.verificarCodigo(params);
 
         if (res.estado) {
@@ -100,7 +109,12 @@ export const CheckPromocionalCode = async function({codigo, convenio=""}) {
                     //res.data.vendedor.id_usuario_vendedor=88627;
                     break;
                 default:
-                    idCodigo=res.data.id_codigo_promocional;
+                    if(checkPermission()){
+                        idCodigo=4;
+                    }else{
+                        idCodigo=res.data.id_codigo_promocional;
+                    }
+                    
                     break;
             }
             const result = await SuscripcionProducto(idCodigo);

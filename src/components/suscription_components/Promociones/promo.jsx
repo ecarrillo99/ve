@@ -20,6 +20,7 @@ const Promociones = ({setProductos, setOpcion, setCodigo, setReferedCode, refere
                     }
                     setProductos(result.productos);
                     setCodigo(result.codigo);
+                    console.log(result.codigo)
                     setReferedCode()
                     setOpcion(2)
                 }else{

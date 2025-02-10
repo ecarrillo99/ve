@@ -3,15 +3,36 @@ import ProductItem from './ProductItem';
 import ProductItemSelect from './ProductItemSelect';
 import { useLocation } from 'react-router-dom';
 
-const Suscripciones = ({productos, setOpcion, setProducto}) => {
+const Suscripciones = ({productos, setOpcion, setProducto, codigo, setCodigo}) => {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const producto = productos.find(map => map.IdProducto === searchParams.get("producto"));
+    const precio=searchParams.get("value")
+    const tiempoAdicional=searchParams.get("time")
     var firstProducts=productos.slice(0, 3);
     var secondProducts =productos.slice(3, productos.length)
     
     useEffect(()=>{
         if(producto){
+            if(precio){
+                producto.PrecioProducto=precio;
+            }
+            if(tiempoAdicional>0){
+                if (!producto.Titulo.includes("+")) {
+                    producto.Titulo+=" + "+tiempoAdicional+" mes(es) adicionales";
+                }
+                const porcentajeAdicional = ((tiempoAdicional/12) / producto.Tiempo) * 100;
+
+                if(codigo.beneficio[0]&&codigo.beneficio[0].length>0){
+                    codigo.beneficio[0].cantidad = porcentajeAdicional;
+                    setCodigo(codigo);
+                }
+            }else{
+                if(codigo.beneficio[0]&&codigo.beneficio[0].length>0){
+                    codigo.beneficio[0].cantidad = 0;
+                    setCodigo(codigo);
+                }
+            }
             setProducto(producto);
             setOpcion(3);
         }
@@ -25,12 +46,12 @@ const Suscripciones = ({productos, setOpcion, setProducto}) => {
             <div  className='flex flex-col gap-2'>
                 {
                     firstProducts.map((item)=>(
-                        <ProductItem Producto={item} setOpcion={setOpcion} setProducto={setProducto}></ProductItem>
+                        <ProductItem Producto={item} setOpcion={setOpcion} setProducto={setProducto} codigo={codigo} setCodigo={setCodigo}></ProductItem>
                     ))
                 }
                 {
                     secondProducts.length>0
-                    ?<ProductItemSelect setOpcion={setOpcion} listaProductos={secondProducts} setProducto={setProducto}></ProductItemSelect>
+                    ?<ProductItemSelect setOpcion={setOpcion} listaProductos={secondProducts} setProducto={setProducto} codigo={codigo} setCodigo={setCodigo}></ProductItemSelect>
                     :<></>
                 }
             </div>

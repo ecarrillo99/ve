@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-const ProductItemSelect = ({ listaProductos, setOpcion, setProducto }) => {
+const ProductItemSelect = ({ listaProductos, setOpcion, setProducto, codigo, setCodigo }) => {
   const [selectedItem, setSelectedItem] = useState(listaProductos[0]);
   const [copiado, setCopiado] = useState(false);
+  const [tiempoAdicional, setTiempoAdicional]=useState(0);
 
   useEffect(() => {
     setSelectedItem(listaProductos[0]);
@@ -36,7 +37,25 @@ const ProductItemSelect = ({ listaProductos, setOpcion, setProducto }) => {
   const handleClick = () => {
     setOpcion(3)
     setProducto(selectedItem);
+    if(checkPermission()){
+      changeTiempoAdicional();
+    }
   }
+
+  const changeTiempoAdicional=()=>{
+    if(tiempoAdicional>0){
+        const porcentajeAdicional = ((tiempoAdicional/12) / selectedItem.Tiempo) * 100;
+        if(codigo.beneficio[0].length>0){
+            codigo.beneficio[0].cantidad = porcentajeAdicional;
+            setCodigo(codigo);
+        }
+    }else{
+        if(codigo.beneficio[0].length>0){
+            codigo.beneficio[0].cantidad = 0;
+            setCodigo(codigo);
+        }
+    }
+}
 
   const handleCLickShare = () => {
     let currentUrl = new URL(window.location.href);
@@ -48,6 +67,19 @@ const ProductItemSelect = ({ listaProductos, setOpcion, setProducto }) => {
       }, 2000);
     })
   }
+
+  const handleChangePrice=(event)=>{
+    selectedItem.PrecioProducto = (event.target.value / 1.12).toFixed(2);
+}
+
+  const checkPermission=()=>{
+    const data = JSON.parse(localStorage.getItem("datos"));
+    if(data){
+        if(data.data.permisos.perfil.suscripcionPersonalizada){
+            return true;
+    }}else{
+        return false;
+}}
 
   return (
     <div className="flex flex-col justify-center items-center bg-white">
@@ -65,6 +97,20 @@ const ProductItemSelect = ({ listaProductos, setOpcion, setProducto }) => {
               {selectedItem.TiempoVendido + " " + getTiempo(selectedItem.TipoTiempo) + " de suscripción"}
             </label>
           </div>
+          {
+                    checkPermission()?
+                    <div className="flex flex-col text-center gap-3 w-2/3">
+                        <div className="flex  items-center gap-2">
+                            <label className="text-xxs md:text-xs">Nuevo precio:</label>
+                            <input className="w-20" type="number" defaultValue={(selectedItem.PrecioProducto*1.12).toFixed(2)}  onChange={handleChangePrice}></input>
+                        </div>
+                        <div className="flex  items-center gap-2">
+                            <label className="text-xxs md:text-xs">Meses regalo:</label>
+                            <input className="w-20"   type="number" value={tiempoAdicional} onChange={(event)=>{setTiempoAdicional(event.target.value)}}></input>
+                        </div>
+                    </div>
+                    :<></>
+                }
           <div className="flex flex-col">
             <select
               onChange={(event) => handleChange(event)}
