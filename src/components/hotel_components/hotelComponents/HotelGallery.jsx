@@ -1,77 +1,152 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Galleria } from 'primereact/galleria';
-import { RadioButton } from 'primereact/radiobutton';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
-const HotelGallery= (props)=> {
-    const [position, setPosition] = useState('bottom');
-    const {Galeria}=props;
-    const positionOptions = [
-        {
-            label: 'Bottom',
-            value: 'bottom'
-        },
-        {
-            label: 'Top',
-            value: 'top'
-        },
-        {
-            label: 'Left',
-            value: 'left'
-        },
-        {
-            label: 'Right',
-            value: 'right'
-        }
-    ];
-    var images= []
-    Galeria.forEach((item)=>{
-        images.push(
-            {
-                itemImageSrc: item["Valor"],
-                thumbnailImageSrc: item["Valor"],
-                alt: 'Description for Image 1',
-                title: 'Title 1'
-            },
-        );
-    });
+const HotelGallery = (props) => {
+    const { Galeria } = props;
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    const [activeIndex, setActiveIndex] = useState(0);
 
-    
-    const responsiveOptions = [
-        {
-            breakpoint: '1024px',
-            numVisible: 5
-        },
-        {
-            breakpoint: '960px',
-            numVisible: 4
-        },
-        {
-            breakpoint: '768px',
-            numVisible: 3
-        },
-        {
-            breakpoint: '560px',
-            numVisible: 1
+    const images = Galeria.map(item => ({
+        itemImageSrc: item["Valor"],
+        thumbnailImageSrc: item["Valor"],
+        alt: 'Gallery Image',
+        title: 'Gallery Image'
+    }));
+
+    const handleBackgroundClick = (e) => {
+        if (e.target === e.currentTarget) {
+            setIsFullscreen(false);
         }
-    ];
+    };
+
+    const handleNavigation = (direction) => {
+        if (direction === 'prev') {
+            setActiveIndex(prev => prev > 0 ? prev - 1 : images.length - 1);
+        } else {
+            setActiveIndex(prev => prev < images.length - 1 ? prev + 1 : 0);
+        }
+    };
 
     const itemTemplate = (item) => {
-        return <img className='w-[1000px] object-cover h-[350px]' src={item.itemImageSrc} />
+        return (
+            <div
+                onClick={() => setIsFullscreen(true)}
+                className="cursor-pointer relative w-full h-[500px] overflow-hidden"
+            >
+                <img
+                    className="absolute inset-0 w-full h-full object-contain"
+                    src={item.itemImageSrc}
+                    alt={item.alt}
+                />
+            </div>
+        );
     }
 
     const thumbnailTemplate = (item) => {
-        return <img className='w-36 object-cover h-20 p-1'  src={item.thumbnailImageSrc} />
+        return (
+            <div className="w-36 h-20 overflow-hidden">
+                <img
+                    className="w-full h-full object-cover"
+                    src={item.thumbnailImageSrc}
+                    alt={item.alt}
+                />
+            </div>
+        );
+    }
+
+    const fullscreenItemTemplate = (item) => {
+        return (
+            <div className="flex flex-col justify-center items-center min-h-screen" onClick={handleBackgroundClick}>
+                <div className="relative max-w-7xl mx-auto">
+                    <button
+                        onClick={() => setIsFullscreen(false)}
+                        className="absolute top-4 right-4 z-50 text-white hover:text-gray-300 transition-colors"
+                        aria-label="Close"
+                    >
+                        <X size={24} />
+                    </button>
+
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleNavigation('prev');
+                        }}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors"
+                        aria-label="Previous"
+                    >
+                        <ChevronLeft size={40} />
+                    </button>
+
+                    <img
+                        src={images[activeIndex].itemImageSrc}
+                        alt={images[activeIndex].alt}
+                        className="max-h-[90vh] max-w-[90vw] object-contain"
+                        onClick={(e) => e.stopPropagation()}
+                    />
+
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleNavigation('next');
+                        }}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors"
+                        aria-label="Next"
+                    >
+                        <ChevronRight size={40} />
+                    </button>
+                </div>
+
+                <div className="mt-4 flex gap-2 overflow-x-auto max-w-[90vw] p-2" onClick={(e) => e.stopPropagation()}>
+                    {images.map((img, idx) => (
+                        <img
+                            key={idx}
+                            src={img.thumbnailImageSrc}
+                            alt={`Thumbnail ${idx + 1}`}
+                            onClick={() => setActiveIndex(idx)}
+                            className={`w-20 h-20 object-cover cursor-pointer transition-opacity
+                                ${activeIndex === idx ? 'opacity-100' : 'opacity-50'} 
+                                hover:opacity-100`}
+                        />
+                    ))}
+                </div>
+            </div>
+        );
     }
 
     return (
-        <Galleria value={images} numVisible={5} item={itemTemplate} thumbnailsPosition={"bottom"} thumbnail={thumbnailTemplate} 
-        circular autoPlay transitionInterval={3000}/>
-    )
+        <div className="w-full">
+            <Galleria
+                value={images}
+                numVisible={5}
+                item={itemTemplate}
+                thumbnailsPosition="bottom"
+                thumbnail={thumbnailTemplate}
+                circular
+                autoPlay={!isFullscreen}
+                transitionInterval={3000}
+                activeIndex={activeIndex}
+                onItemChange={(e) => !isFullscreen && setActiveIndex(e.index)}
+                className="w-full"
+                style={{ maxWidth: '100%' }}
+            />
+
+            {isFullscreen && (
+                <div
+                    className="fixed inset-0 z-50 bg-black bg-opacity-80"
+                    onClick={handleBackgroundClick}
+                >
+                    <div onClick={(e) => e.stopPropagation()}>
+                        {fullscreenItemTemplate(images[activeIndex])}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
 }
 
 export default HotelGallery;
-        
+
 
 /*import React, { Component } from 'react';
 import { useState } from "react";
@@ -105,7 +180,7 @@ const HotelGallery = (props) => {
                       }}
                       speed={1000}
                     >
-                    
+
                     {Galeria.map((img, index) => (
                         <SwiperSlide key={index}>
                             <img

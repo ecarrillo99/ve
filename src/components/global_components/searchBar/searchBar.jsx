@@ -163,11 +163,11 @@ const SearchBar = (props) => {
 
   return (
     type===0||type===1?
-    <div>
+    <div className="relative">
       <>
-        <div className="bottom-[0px] bg-greenVE-600 relative rounded-sm w-full">
+        <div className="bottom-[0px] bg-greenVE-600 relative rounded-sm w-full mt-10">
           <div className="grid lg:grid-cols-12 md:grid-cols-12 grid-flow-row">
-            <div className="gap-3 col-span-4 max-sm:col-span-1  bg-white flex items-center justify-center m-0.5 rounded-sm pl-4">
+            <div className="gap-3 col-span-4 max-sm:col-span-1  bg-white flex items-center justify-center m-0.5 rounded-sm pl-4 relative">
               <div dangerouslySetInnerHTML={{ __html: icons.Data.Bed }} />
               <input
                 type="text"
@@ -181,10 +181,11 @@ const SearchBar = (props) => {
                 <ClickAwayListener onClickAway={handleClickAway}>
                   <div className=" absolute top-12 max-h-[17rem] w-[24rem] bg-white z-50 shadow-2xl p-2 overflow-y-auto  rounded-lg">
                     {
-                      suggestion ? (
                         suggestion.map((item, key) => (
-                          <div key={key} className={`flex items-center p-1 ${key !== suggestion.length - 1 ? 'border-b' : ''} cursor-pointer gap-2`} onClick={() => (setDestination(item), setSuggestion(null))}>
-                            {item.Tipo === "destino" ? (<div dangerouslySetInnerHTML={{ __html: icons.Data.MapPin }} />)
+                          <div key={key} className={`flex items-center p-1 ${key !== suggestion.length - 1 ? 'border-b' : ''} cursor-pointer gap-2`}
+                               onClick={() => (setDestination(item), setSuggestion(null))}>
+                            {item.Tipo === "destino" ?
+                                (<div dangerouslySetInnerHTML={{ __html: icons.Data.MapPin }} />)
                               : (<div dangerouslySetInnerHTML={{ __html: icons.Data.Bed }} />)}
                             <div className="flex flex-col p-1 cursor-pointer" >
                               <label key={key} className="text-sm font-semibold cursor-pointer" >
@@ -195,14 +196,12 @@ const SearchBar = (props) => {
                               </label>
                             </div>
                           </div>
-                        ))
-                      ) : (<p></p>)
-                    }
+                            ))}
                   </div>
                 </ClickAwayListener>
               )}
             </div>
-            <div className="gap-3 col-span-3 max-sm:col-span-1 bg-white flex items-center justify-center m-0.5 rounded-sm">
+            <div className="gap-3 col-span-3 max-sm:col-span-1 bg-white flex items-center justify-center m-0.5 rounded-sm relative">
               <div dangerouslySetInnerHTML={{ __html: icons.Data.Calendar }} />
               <span 
                 onClick={() => setOpenDate(!openDate)}
@@ -218,7 +217,7 @@ const SearchBar = (props) => {
                     locale={es}
                     months={2}
                     direction="horizontal"
-                    className="absolute mt-100 shadow-xl z-50"
+                    className=" shadow-xl "
                     rangeColors={["#96c121"]}
                     minDate={new Date()}
                   />
