@@ -14,6 +14,8 @@ import React, { lazy, Suspense } from 'react';
 import { useEffect, useState } from "react";
 import NavbarMobile from '../../components/global_components/navbar/NavbarMobile';
 import { useLocation, useParams } from 'react-router-dom';
+import { BannerSkeleton, NavbarSkeleton, SearchBarSkeleton, ContentSkeleton, OffersBannerSkeleton } from '../../components/global_components/Skeleton/Loadingkeleton'
+
 const Navbar = lazy(() => import("../../components/global_components/navbar/Navbar"));
 const OffersBanner = lazy(() => import('../../components/home_components/offersBanner/OffersBanner'));
 const Footer = lazy(() => import("../../components/global_components/footer/Footer"));
@@ -29,6 +31,7 @@ const DestinoBanner = lazy(() => import("../../components/home_components/destin
 
 const Home = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Definir 768 como el punto de corte para móvil
+  const {codigo} = useParams();
 
   useEffect(() => {
     const handleResize = () => {
@@ -37,54 +40,89 @@ const Home = () => {
 
     window.addEventListener('resize', handleResize);
 
+
+    if(codigo) {
+      localStorage.setItem('codigo', codigo);
+    } else {
+      localStorage.removeItem('codigo');
+    }
+
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
-  
-  const { codigo } = useParams(); 
-  
-  if(codigo){
-    localStorage.setItem('codigo', codigo);
-  }else{
-    localStorage.removeItem('codigo')
-  }
-  
+  }, [codigo]);
+
+
   return (
-    <main>
-      {
-        isMobile
-        ?<Suspense><NavbarMobile activo={1}/></Suspense>
-        :<Suspense><Navbar activo={1}/></Suspense>
-      }
-      <Suspense><MainBanner/></Suspense>
-      <div className="mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 -m-12">
-        {
-          isMobile
-          ?<div className="pt-4">
-            <Suspense><SearchBar type={3}/></Suspense>
+      <main>
+        {isMobile ? (
+            <Suspense fallback={<NavbarSkeleton />}>
+              <NavbarMobile activo={1}/>
+            </Suspense>
+        ) : (
+            <Suspense fallback={<NavbarSkeleton />}>
+              <Navbar activo={1}/>
+            </Suspense>
+        )}
+
+        <Suspense fallback={<BannerSkeleton />}>
+          <MainBanner/>
+        </Suspense>
+
+        <div className="mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 -m-12">
+          {isMobile ? (
+              <div className="pt-4">
+                <Suspense fallback={<SearchBarSkeleton />}>
+                  <SearchBar type={3}/>
+                </Suspense>
+              </div>
+          ) : (
+              <Suspense fallback={<SearchBarSkeleton />}>
+                <SearchBar type={0}/>
+              </Suspense>
+          )}
+
+          <Suspense fallback={<OffersBannerSkeleton />}>
+            <OffersBanner/>
+          </Suspense>
+
+          <Suspense fallback={<ContentSkeleton />}>
+            <VideosBanner/>
+          </Suspense>
+
+          <Suspense fallback={<ContentSkeleton />}>
+            <HotelsBanner/>
+          </Suspense>
+
+          <Suspense fallback={<ContentSkeleton />}>
+            <DestinoBanner/>
+          </Suspense>
+
+          <div className="flex mt-10 gap-6 md:flex-row flex-col md:mx-0 mx-5">
+            <div className="md:w-2/3">
+              <Suspense fallback={<ContentSkeleton />}>
+                <NewsBanner/>
+              </Suspense>
             </div>
-          :<Suspense><SearchBar type={0}/></Suspense>
-        }
-        <Suspense><OffersBanner/></Suspense>
-        <Suspense><VideosBanner/></Suspense>
-        <Suspense><HotelsBanner/></Suspense>
-        <Suspense><DestinoBanner/></Suspense>
-        <div className="flex mt-10 gap-6 md:flex-row flex-col md:mx-0 mx-5">
-          <div className="md:w-2/3">
-          <Suspense><NewsBanner/></Suspense>
+            <div className="md:w-1/3 md:border-l-2 md:pl-4">
+              <Suspense fallback={<ContentSkeleton />}>
+                <ActivityBanner/>
+              </Suspense>
+            </div>
           </div>
-          <div className="md:w-1/3 md:border-l-2 md:pl-4">
-          <Suspense><ActivityBanner/></Suspense>
-          </div>
+
+          <Suspense fallback={<ContentSkeleton />}>
+            <RewardsBanner/>
+          </Suspense>
         </div>
-        <Suspense><RewardsBanner/></Suspense>
-      </div>
-      {
-        !codigo&&<Suspense><Footer/></Suspense>
-      }
-    </main>
-  )
+
+        {!codigo && (
+            <Suspense fallback={<ContentSkeleton />}>
+              <Footer/>
+            </Suspense>
+        )}
+      </main>
+  );
 };
 
 export default Home;
