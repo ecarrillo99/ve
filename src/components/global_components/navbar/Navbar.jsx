@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import Icons from "../../../global/icons";
 import { useState } from "react";
 import { endRemoteSession, getPermissions, loginRemote, setPermissionsAdmin } from "../../../controllers/suscripcion/suscripcionController";
@@ -15,6 +15,7 @@ const icons = new Icons();
 const Navbar = ({ activo }) => {
   const codigo = localStorage.getItem('codigo');
   const navigate = new useNavigate();
+  const location = useLocation();
   const [openProfile, setOpenProfile] = useState(false);
   const [openSuscription, setOpenSuscription] = useState(false);
   const [openNosotros, setOpenNosotros] = useState(false);
@@ -39,7 +40,13 @@ const Navbar = ({ activo }) => {
   };
 
   const handleClickSuscription = () => {
-    navigate("/suscripcion");
+    setOpenSuscription(false);
+    navigate("/suscripcion", {
+      state: { showMenu: true }
+    });
+  };
+  const handleClickNosotros = () => {
+    navigate("/nosotros");
   };
 
   const handleClickProfileSet = () => {
@@ -260,7 +267,7 @@ const Navbar = ({ activo }) => {
             <a className="flex gap-1 text-white border-white rounded-full border-2 px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-300" href="/smart/">
               Registrar alojamiento
             </a>
-            <div className="flex justify-center">
+            <div className="flex justify-center relative">
               {/* {(nivel === "visitante" || nivel === "gratuito") && (
                 <button className="flex gap-1 text-greenVE-600 bg-white rounded-full px-5 py-1 text-xs hover:border-gray-300 hover:text-gray-500" onClick={handleClickSuscribing}>
                   Suscribirse
@@ -270,14 +277,15 @@ const Navbar = ({ activo }) => {
                   Suscribirse
                 </button>
               {
-                (openSuscription) && (
+                openSuscription && (
                   <ClickAwayListener onClickAway={handleClickSuscribing}>
-                    <div className="md:absolute z-50 bg-white flex flex-col items-start py-2 top-12  gap-2 shadow-2xl rounded-md ">
-                      {
-                         (
-                          <>
-                            <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2 " onClick={handleClickSuscription}><div dangerouslySetInnerHTML={{ __html: icons.Data.Buy }} />Comprar suscripción</button>
-                            <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickPack}><div dangerouslySetInnerHTML={{ __html: icons.Data.Gift }} />Activar VisitaPack</button>
+                    <div className="absolute z-50 bg-white flex flex-col items-start py-2 top-12  gap-2 shadow-2xl rounded-md ">
+                            <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2 " onClick={handleClickSuscription}>
+                              <div dangerouslySetInnerHTML={{ __html: icons.Data.Buy }} />Comprar suscripción
+                            </button>
+                            <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickPack}>
+                              <div dangerouslySetInnerHTML={{ __html: icons.Data.Gift }} />Activar VisitaPack
+                            </button>
                             <label className="text-xs font-medium text-center w-full">Prueba gratis con:</label>
                             <div className="flex justify-center items-center w-full gap-2  pb-3">
                               {
@@ -291,16 +299,14 @@ const Navbar = ({ activo }) => {
                                   : <a dangerouslySetInnerHTML={{ __html: icons.Data['LoginFacebookSM'] }} className='border p-2 rounded-md hover:border-greenVE-500' onClick={() => handleClickFacebook()} />
                               }
                             </div>
-                          </>
-                        )
-                      }
                     </div>
-                  </ClickAwayListener>)
+                  </ClickAwayListener>
+                  )
               }
             </div>
             {
               nivel === "visitante" && (
-                <button className="flex gap-1 text-greenVE-600 bg-white rounded-full px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-500" onClick={() => activo != 6 ? handleClickLogin() : {}}>
+                <button className="flex gap-1 text-greenVE-600 bg-white rounded-full px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-500" onClick={() => activo != 6 ?   handleClickLogin() : {}}>
                   Iniciar Sesión
                 </button>
               )
@@ -349,11 +355,11 @@ const Navbar = ({ activo }) => {
               )}
             </div>
           </div>
-          <div className=" flex  justify-between">
+          <div className=" flex  justify-between relative z-0">
             <div className="flex gap-2 items-end mt-4 sm:mt-0">
-              {activo > 0 && (
+              {(activo > 0 || location.pathname === '/suscripcion ||' || location.pathname.includes('/busqueda')) && (
                 <>
-                  <button className={`flex gap-1 border-2 ${(activo == 1 ? "border-white" : "border-transparent")} text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`} onClick={handleClickInicio} >
+                  <button className={`flex gap-1 border-2 ${(activo == 1 ? "border-white" : "border-transparent ")} text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white `} onClick={handleClickInicio} >
                     <img src="https://visitaecuador.com/img/web/homeMenu.svg" style={{ height: "25px" }}></img>
                     <label className="hidden md:flex cursor-pointer">Hospedaje</label>
                   </button>
@@ -365,15 +371,13 @@ const Navbar = ({ activo }) => {
                     <img src="https://visitaecuador.com/img/web/infotourMenu.svg" style={{ height: "25px" }}></img>
                     <label className="hidden md:flex cursor-pointer">InfoTour</label>
                   </button>
-                </>
-              )}
-              <button className={`flex gap-1 border-2 ${activo == 4 ? "border-white" : "border-transparent"} text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`} onClick={() => navigate("/nosotros")} onMouseOver={() => setOpenNosotros(true)} onMouseOut={() => setOpenNosotros(false)}>
-                <img src="https://visitaecuador.com/img/web/nosotrosMenu.svg" style={{ height: "25px" }}></img>
-                <label className="hidden md:flex cursor-pointer">Nosotros</label>
-                {openNosotros && (
-                  <ClickAwayListener onClickAway={() => setOpenNosotros(false)}>
-                    <div className="md:absolute z-50  pt-2 top-[80px] -ml-12 ">
-                      <div className="bg-white flex flex-col items-start py-2  gap-2 shadow-2xl rounded-md text-black">
+                  <button className={`flex gap-1 border-2 ${(activo == 4 ? "border-white" : "border-transparent")} text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`} onClick={handleClickNosotros} onMouseOver={() => setOpenNosotros(true)} onMouseOut={() => setOpenNosotros(false)}>
+                    <img src="https://visitaecuador.com/img/web/nosotrosMenu.svg" style={{ height: "25px" }}></img>
+                    <label className="hidden md:flex cursor-pointer">Nosotros</label>
+                       {openNosotros && (
+                         <ClickAwayListener onClickAway={() => setOpenNosotros(false)}>
+                            <div className="md:absolute z-50  pt-2 top-[80px] -ml-12 ">
+                               <div className="bg-white flex flex-col items-start py-2  gap-2 shadow-2xl rounded-md text-black">
                         <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={(event) => { navigate("/nosotros"); event.stopPropagation(); }}><span className="icon-[ph--user-circle-check] h-4 w-4"></span> Quienes somos</button>
                         <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={(event) => { window.open("https://visitaecuador.page.link/XktS"); event.stopPropagation(); }}><span className="icon-[material-symbols--download-for-offline-outline-rounded] h-4 w-4"></span> Descarga la App</button>
                         <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={(event) => { navigate("/contacto"); event.stopPropagation(); }}><span className="icon-[fluent--form-48-regular] h-4 w-4"></span> Contáctanos</button>
@@ -384,15 +388,15 @@ const Navbar = ({ activo }) => {
                   </ClickAwayListener>
                 )}
               </button>
+                </>
+            )}
             </div>
-            {
-              !codigo && <MarcaPais />
-            }
+            {!codigo && <MarcaPais />}
           </div>
         </div>
       </div>
     </header>
-  )
+  );
 };
 
 export default Navbar;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+    import React, { useState } from 'react';
 import Promociones from './Promociones/promo';
 import Suscripciones from './Suscripciones/Suscripciones';
 import Informacion from './Informacion/Informacion';
