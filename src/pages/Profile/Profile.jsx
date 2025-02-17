@@ -98,24 +98,26 @@ const Profile=({})=>{
                 ?<NavbarMobile/>
                 :<Navbar />
               }
-              <div className="flex flex-col md:flex-row mx-5 md:mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 gap-7">
-                <div className="w-full md:w-3/12">
-                  <ProfileMenu handleChangeOption={handleChangeOption} selectedOption={selectedOption} profileData={profileData}/>
+                <div className="flex flex-col mx-5 md:mx-auto max-w-6xl py-6 sm:px-6 lg:px-8">
+                    <ProfileMenu
+                        handleChangeOption={handleChangeOption}
+                        selectedOption={selectedOption}
+                        profileData={profileData}
+                    />
+                    <div className="mt-6">
+                        {selectedMenu}
+                    </div>
                 </div>
-                <div className="w-full md:w-9/12">
-                  {selectedMenu}
-                </div>
-              </div>
-              <Footer />
+                <Footer/>
             </div>
-          ) : (
+        ) : (
             <div className="h-screen w-screen flex flex-col justify-center items-center">
-              <img src="https://visitaecuador.com/img/web/logo_verde.png" style={{ width: "300px", height: "auto" }} />
-              <div className="animate-spin w-16 h-16 border-t-4 border-greenVE-500 rounded-full"></div>
+                <img src="https://visitaecuador.com/img/web/logo_verde.png" style={{width: "300px", height: "auto"}}/>
+                <div className="animate-spin w-16 h-16 border-t-4 border-greenVE-500 rounded-full"></div>
             </div>
-          )
-      ):(
-        <Navigate to="/"/>
+        )
+      ) : (
+          <Navigate to="/"/>
       )
     );
 }
