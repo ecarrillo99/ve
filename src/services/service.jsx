@@ -1,6 +1,4 @@
-// clase generica para el consumo de APIS
-
-import axios from 'axios'; // Importa la biblioteca axios si no la tienes instalada
+import axios from 'axios';
 import Config from '../global/config';
 
 class GenericService {
@@ -15,10 +13,11 @@ class GenericService {
         }
     }
 
-    async post(url, params) {
-      var headers={
+    async post(url, params, customHeaders = {}) {
+      const headers={
         "Autorization": "bearer " +Config.DEVELOPER_TOKEN,
-        'Content-Type': 'application/json; charset=utf-8'
+        'Content-Type': 'application/json; charset=utf-8',
+          ...customHeaders
       }
       
         try {       

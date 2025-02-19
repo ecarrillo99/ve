@@ -256,7 +256,7 @@ const Navbar = ({ activo }) => {
 
   return (
     <header className="bg-greenVE-500">
-      <div className="flex mx-auto max-w-6xl py-2 px-4 sm:px-6 lg:px-8">
+      <div className="flex mx-auto max-w-6xl py-2 px-4 sm:px-6 lg:px-8 ">
         {
           !codigo && <div className="w-2/12 flex cursor-pointer" onClick={handleClickLogo}>
             <img src="https://visitaecuador.com/img/web/ve_logo.svg" style={{ width: "110px", height: "auto" }} />
