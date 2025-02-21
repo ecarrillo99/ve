@@ -10,12 +10,9 @@ class PackService extends GenericService {
                 codigo: code
             };
 
-            const customHeaders = {
-                'Origin': window.location.origin,
 
-            };
 
-            const data = await this.post(url, params, customHeaders);
+            const data = await this.post(url, params);
 
             if (data.estado === true && data.codigo === 0) {
                 return {
@@ -24,11 +21,11 @@ class PackService extends GenericService {
                     message: data.msg
                 };
             } else {
-                throw new Error(data.msg || 'Código inválido');
+                throw new Error(data.msj || data.msg || 'Código inválido');
             }
         } catch (error) {
-            throw new Error(error.message || 'Error en la validación del código');
-        }
+
+            throw error;  }
     }
 }
 

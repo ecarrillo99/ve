@@ -13,17 +13,17 @@ class GenericService {
         }
     }
 
-    async post(url, params, customHeaders = {}) {
+    async post(url, params ) {
       const headers={
         "Autorization": "bearer " +Config.DEVELOPER_TOKEN,
         'Content-Type': 'application/json; charset=utf-8',
-          ...customHeaders
+
       }
       
         try {       
-          const response = await fetch(url, {
-            headers:headers,
-            method: 'POST',
+          const response = await fetch(url,  {
+              method: 'POST',
+              headers:headers,
             body: JSON.stringify(params)
           });
     
