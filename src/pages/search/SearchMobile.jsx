@@ -211,7 +211,7 @@ const SearchMobile = () => {
             if (dataFinal) {
                 const ofertasTmp = dataFinal.Establecimientos;
 
-                // Verifica si la lista de servicios está vacía y muestra la data completa
+                // Verifica si la lista de servicios.jsx está vacía y muestra la data completa
                 if (servicios.length === 0) {
                     const dataClone = { ...data };
                     dataClone.Establecimientos = ofertasTmp;
@@ -224,11 +224,11 @@ const SearchMobile = () => {
                     const serviciosValidos = Array.isArray(establecimiento.Servicios) &&
                         establecimiento.Servicios.some(servicio => servicios.includes(servicio.Valor));
 
-                    // Verifica si establecimiento.Incluye es un valor válido y está en la lista de servicios
+                    // Verifica si establecimiento.Incluye es un valor válido y está en la lista de servicios.jsx
                     const incluyeValidos = Array.isArray(establecimiento.Incluye) &&
                         establecimiento.Incluye.some(servicio => servicios.includes(servicio.Valor));
 
-                    // Verifica si establecimiento.ServiciosHab es un valor válido y está en la lista de servicios
+                    // Verifica si establecimiento.ServiciosHab es un valor válido y está en la lista de servicios.jsx
                     const serviciosHabValidos = Array.isArray(establecimiento.ServiciosHab) &&
                         establecimiento.ServiciosHab.some(servicio => servicios.includes(servicio.Valor));
 

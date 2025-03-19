@@ -1,6 +1,6 @@
 const Objetivos=()=>{
     return(
-        <div className="text-justify flex flex-col gap-3 text-xs">
+        <div className="text-justify flex flex-col gap-3 text-xs mt-5">
             <h1 className="text-2xl font-semibold text-[#ffa30f]">Objetivos</h1>
             <p className="pl-4">* Satisfacer con calidad y profesionalismo los requisitos de nuestros clientes.</p>
             <p className="pl-4">* Mejora continua de los procesos del sistema de gestión de calidad.</p>

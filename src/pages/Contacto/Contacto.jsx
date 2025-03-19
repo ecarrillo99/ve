@@ -66,6 +66,7 @@ const Contacto = () => {
     ];
 
     const ContactForm = () => (
+
         <div className="max-w-4xl mx-auto p-6 border border-green-200 rounded-md">
             <div className="mb-8">
                 <div className="flex items-center text-blue-500 mb-4">
@@ -354,8 +355,10 @@ const Contacto = () => {
 
     return (
         <>
-            {isMobile ? <NavbarMobile /> : <Navbar />}
-
+            {isMobile
+                ? <Suspense fallback={<div>Cargando...</div>}><NavbarMobile activo={1}/></Suspense>
+                : <Suspense fallback={<div>Cargando...</div>}><Navbar activo={1}/></Suspense>
+            }
             <div className="container mx-auto py-8">
                 <div className="flex justify-center mb-8">
                     <nav className="flex space-x-8">

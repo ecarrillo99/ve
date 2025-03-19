@@ -65,7 +65,7 @@ export function getIcon({text, h="", w="", c=""}) {
     ?<span className={`icon-[icons8--airport] ${h} ${w} ${c}`}></span>
     :text.toLowerCase().includes("uso de instalaciones")
     ?<span className={`icon-[material-symbols-light--park-outline] ${h} ${w} ${c}`}></span>
-    :text.toLowerCase().includes("10% servicios")
+    :text.toLowerCase().includes("10% servicios.jsx")
     ?<span className={`icon-[iconoir--percent-rotate-out] ${h} ${w} ${c}`}></span>
     :text.toLowerCase().includes("iva")
     ?<span className={`icon-[iconoir--percent-rotate-out] ${h} ${w} ${c}`}></span>

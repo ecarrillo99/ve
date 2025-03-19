@@ -49,6 +49,7 @@ const Navbar = ({ activo }) => {
     navigate("/nosotros");
   };
 
+
   const handleClickProfileSet = () => {
     navigate("/perfil");
   };
@@ -130,6 +131,10 @@ const Navbar = ({ activo }) => {
   const handleClickDisney = () => {
     navigate("/disney");
   }
+
+  const handleClickApp = () => {
+    navigate("/app")
+  };
 
   const handleClickInicio = () => {
     navigate("/");
@@ -255,7 +260,7 @@ const Navbar = ({ activo }) => {
 
 
   return (
-    <header className="bg-greenVE-500">
+    <header className="bg-greenVE-500" >
       <div className="flex mx-auto max-w-6xl py-2 px-4 sm:px-6 lg:px-8 ">
         {
           !codigo && <div className="w-2/12 flex cursor-pointer" onClick={handleClickLogo}>
@@ -355,43 +360,88 @@ const Navbar = ({ activo }) => {
               )}
             </div>
           </div>
-          <div className=" flex  justify-between relative z-0">
+          <div className=" flex  justify-between relative z-0 ml-12">
             <div className="flex gap-2 items-end mt-4 sm:mt-0">
               {(activo > 0 || location.pathname === '/suscripcion ||' || location.pathname.includes('/busqueda')) && (
-                <>
-                  <button className={`flex gap-1 border-2 ${(activo == 1 ? "border-white" : "border-transparent ")} text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white `} onClick={handleClickInicio} >
-                    <img src="https://visitaecuador.com/img/web/homeMenu.svg" style={{ height: "25px" }}></img>
-                    <label className="hidden md:flex cursor-pointer">Hospedaje</label>
-                  </button>
-                  <button className={`flex gap-1 border-2 ${(activo == 2 ? "border-white" : "border-transparent")} text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`} onClick={handleClickDisney}>
-                    <img src="https://visitaecuador.com/img/web/disneyMenu.svg" style={{ height: "25px" }}></img>
-                    <label className="hidden md:flex cursor-pointer">Disney Destination Concierge</label>
-                  </button>
-                  <button className={`flex gap-1 border-2 ${(activo == 3 ? "border-white" : "border-transparent")} text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`} onClick={handleClickInfotour}>
-                    <img src="https://visitaecuador.com/img/web/infotourMenu.svg" style={{ height: "25px" }}></img>
-                    <label className="hidden md:flex cursor-pointer">InfoTour</label>
-                  </button>
-                  <button className={`flex gap-1 border-2 ${(activo == 4 ? "border-white" : "border-transparent")} text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`} onClick={handleClickNosotros} onMouseOver={() => setOpenNosotros(true)} onMouseOut={() => setOpenNosotros(false)}>
-                    <img src="https://visitaecuador.com/img/web/nosotrosMenu.svg" style={{ height: "25px" }}></img>
-                    <label className="hidden md:flex cursor-pointer">Nosotros</label>
-                       {openNosotros && (
-                         <ClickAwayListener onClickAway={() => setOpenNosotros(false)}>
-                            <div className="md:absolute z-50  pt-2 top-[80px] -ml-12 ">
-                               <div className="bg-white flex flex-col items-start py-2  gap-2 shadow-2xl rounded-md text-black">
-                        <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={(event) => { navigate("/nosotros"); event.stopPropagation(); }}><span className="icon-[ph--user-circle-check] h-4 w-4"></span> Quienes somos</button>
-                        <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={(event) => { window.open("https://visitaecuador.page.link/XktS"); event.stopPropagation(); }}><span className="icon-[material-symbols--download-for-offline-outline-rounded] h-4 w-4"></span> Descarga la App</button>
-                        <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={(event) => { navigate("/contacto"); event.stopPropagation(); }}><span className="icon-[fluent--form-48-regular] h-4 w-4"></span> Contáctanos</button>
-                        <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={(event) => { navigate("/politicas-privacidad"); event.stopPropagation(); }}><span className="icon-[carbon--vpn-policy] h-4 w-4"></span> Políticas de privacidad</button>
-                        <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={(event) => { navigate("/terminos-condiciones"); event.stopPropagation(); }}><span className="icon-[iconoir--privacy-policy] h-4 w-4"></span> Términos y condiciones</button>
-                      </div>
-                    </div>
-                  </ClickAwayListener>
-                )}
-              </button>
-                </>
-            )}
+                  <>
+                    <button
+                        className={`flex  gap-1 border-2 ${(activo == 1 ? "border-white" : "border-transparent")} text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white  `}
+                        onClick={handleClickInicio}>
+                      <img src="https://visitaecuador.com/img/web/homeMenu.svg" style={{height: "25px"}}></img>
+                      <label className="hidden md:flex cursor-pointer">Hospedaje</label>
+                    </button>
+                    <button
+                        className={`flex gap-1 border-2 ${(activo == 2 ? "border-white" : "border-transparent")} text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`}
+                        onClick={handleClickDisney}>
+                      <img src="https://visitaecuador.com/img/web/disneyMenu.svg" style={{height: "25px"}}></img>
+                      <label className="hidden md:flex cursor-pointer">Disney Concierge</label>
+                    </button>
+                    <button
+                        className={`flex gap-1 border-2 ${(activo == 3 ? "border-white" : "border-transparent")} text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`}
+                        onClick={handleClickInfotour}>
+                      <img src="https://visitaecuador.com/img/web/infotourMenu.svg" style={{height: "25px"}}></img>
+                      <label className="hidden md:flex cursor-pointer">InfoTour</label>
+                    </button>
+
+                    <button
+                        className={`flex gap-1 border-2 ${(activo == 4 ? "border-white" : "border-transparent")} text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`}
+                        onClick={handleClickNosotros} onMouseOver={() => setOpenNosotros(true)}
+                        onMouseOut={() => setOpenNosotros(false)}>
+                      <img src="https://visitaecuador.com/img/web/nosotrosMenu.svg" style={{height: "25px"}}></img>
+                      <label className="hidden md:flex cursor-pointer">Nosotros</label>
+                      {openNosotros && (
+                          <ClickAwayListener onClickAway={() => setOpenNosotros(false)}>
+                            <div className="md:absolute z-50   top-[40px] -ml-12 ">
+                              <div
+                                  className="bg-white flex flex-col items-start py-2  gap-2 shadow-2xl rounded-md text-black">
+                                <button
+                                    className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"
+                                    onClick={(event) => {
+                                      navigate("/nosotros");
+                                      event.stopPropagation();
+                                    }}><span className="icon-[ph--user-circle-check] h-4 w-4"></span> Quienes somos
+                                </button>
+                                <button
+                                    className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"
+                                    onClick={(event) => {
+                                      navigate("/app");
+                                      event.stopPropagation();
+                                    }}><span
+                                    className="icon-[material-symbols--download-for-offline-outline-rounded] h-4 w-4"></span> Descarga
+                                  la App
+                                </button>
+                                <button
+                                    className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"
+                                    onClick={(event) => {
+                                      navigate("/contacto");
+                                      event.stopPropagation();
+                                    }}><span className="icon-[fluent--form-48-regular] h-4 w-4"></span> Contáctanos
+                                </button>
+                                <button
+                                    className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"
+                                    onClick={(event) => {
+                                      navigate("/politicas-privacidad");
+                                      event.stopPropagation();
+                                    }}><span className="icon-[carbon--vpn-policy] h-4 w-4"></span> Políticas de
+                                  privacidad
+                                </button>
+                                <button
+                                    className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"
+                                    onClick={(event) => {
+                                      navigate("/terminos-condiciones");
+                                      event.stopPropagation();
+                                    }}><span className="icon-[iconoir--privacy-policy] h-4 w-4"></span> Términos y
+                                  condiciones
+                                </button>
+                              </div>
+                            </div>
+                          </ClickAwayListener>
+                      )}
+                    </button>
+                  </>
+              )}
             </div>
-            {!codigo && <MarcaPais />}
+            {!codigo && <MarcaPais/>}
           </div>
         </div>
       </div>

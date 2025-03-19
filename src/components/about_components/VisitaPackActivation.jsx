@@ -36,7 +36,6 @@ const VisitaPackActivation = () => {
             const result = await controller.validateCode(code);
 
             if (result.success) {
-                const extractedPackInfo = controller.extractPackInfo(result.data);
                 setPackInfo(result.data);
                 setActiveStep(2);
             } else {
@@ -72,28 +71,6 @@ const VisitaPackActivation = () => {
             return;
         }
 
-
-        const requiredFields = {
-            'cédula': formData.ci,
-            'nombres': formData.nombres,
-            'celular': formData.celular,
-            'email': formData.email
-        };
-
-        for (const [field, value] of Object.entries(requiredFields)) {
-            if (!value.trim()) {
-                setError(`El campo ${field} es obligatorio`);
-                setIsLoading(false);
-                return;
-            }
-        }
-
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
-            setError('El formato del email no es válido');
-            setIsLoading(false);
-            return;
-        }
-
         const params = {
             id_prepago: packInfo.id_prepago,
             ci: formData.ci.trim(),
@@ -105,6 +82,7 @@ const VisitaPackActivation = () => {
             direccion: formData.direccion.trim() || '',
             id_suscripcion: packInfo.vendedor?.id_suscripcion
         };
+
         console.log('Submitting form with params:', params);
         const controller = new PackController();
 
@@ -112,7 +90,6 @@ const VisitaPackActivation = () => {
             const result = await controller.registroTransaccion(params);
             console.log('Form submission result:', result);
             if (result.success) {
-
                 setActivationSuccess(true);
 
                 setUserData({

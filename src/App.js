@@ -13,11 +13,12 @@ const Suscription = lazy(() => import('./pages/suscription/Suscription'));
 const Profile = lazy(() => import('./pages/Profile/Profile'));
 const BookHistory = lazy(() => import('./pages/BookHistory/BookHistory'));
 const Favorites = lazy(() => import('./pages/Favorites/Favorites'));
-const About = lazy(() => import('./pages/About/About'));
+const About = lazy(() => import('./pages/About/About3'));
 const Politicas = lazy(() => import('./pages/Politicas/Politicas'));
 const Terminos = lazy(() => import('./pages/Terminos/Terminos'));
 const Certificado = lazy(() => import('./pages/Certificado/Certificado'));
 const Disney = lazy(() => import('./pages/Disney/Disney'));
+const Appk = lazy(() => import('./pages/App/Appk') );
 const YaGanaste = lazy(() => import('./pages/yaganaste/yaganaste'));
 const Bienvenida = lazy(()=>import("./pages/Bienvenida/Bienvenida"));
 const PayPhone = lazy(()=>import("./pages/PayPhone/PayPhone"));
@@ -71,6 +72,7 @@ function App() {
           <Route path="/terminos-condiciones/" element={<Suspense><Terminos /></Suspense>} />
           <Route path="/certificado/" element={<Suspense><Certificado /></Suspense>} />
           <Route path="/disney/" element={<Suspense><Disney /></Suspense>} />
+          <Route path="/app/" element={<Suspense><Appk/></Suspense>}/>
           <Route path="/yaganaste/" element={<Suspense><YaGanaste /></Suspense>} />
           <Route path="/short/:id" element={<Suspense><Short /></Suspense>} />
           <Route path="/convenio/:codigo" element={<Suspense><Convenio/></Suspense>} />

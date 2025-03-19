@@ -19,7 +19,7 @@ const ReconocimientosMinisterio=()=>{
     }
     return(
         <div>
-            <h1 className="text-2xl font-semibold text-[#006b68]">Reconocimientos Ministerios</h1>
+            <h1 className="text-2xl font-semibold text-[#7accc7]">Reconocimientos Ministerios</h1>
             <div className="flex flex-col w-full">
                 <div className="flex pt-10 gap-x-4">
                     <div className="w-1/3 flex flex-col items-center">
