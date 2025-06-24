@@ -30,6 +30,7 @@ const NotFound = lazy(()=>import("./pages/NotFound/NotFound"));
 const contactos = ["593986263432", "593981850436"];
 const Promo = lazy(()=>import("./pages/Promo/Promo"));
 const Tips = lazy(()=>import("./pages/Tips/Tips"));
+const Suscribete = lazy(()=>import("./pages/Suscribete/Suscribete"));
 
 
 
@@ -83,6 +84,7 @@ function App() {
           <Route path="/pack" element={<Suspense><Pack/></Suspense>} />
           <Route path="/promo" element={<Suspense><Promo/></Suspense>} />
           <Route path="/tips" element={<Suspense><Tips/></Suspense>} />
+          <Route path="/suscribete" element={<Suspense><Suscribete/></Suspense>} />
           <Route path="*" element={<Suspense><NotFound/></Suspense>} />
         </Routes>
       </Router>

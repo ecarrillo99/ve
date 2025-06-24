@@ -10,6 +10,7 @@ const Informacion = ({ setOpcion, persona, setPersona, setPago }) => {
     const [cedula, setCedula] = useState(persona != null ? persona.cedula : "");
     const [celular, setCelular] = useState(persona != null ? persona.telefono : "");
     const [correo, setCorreo] = useState(persona != null ? persona.correo : "");
+    const [listaBancosTransferencia, setListaBancosTransferencia] = useState();
     const [listaBancos, setListaBancos] = useState();
     const [banco, setBanco] = useState();
     const [listaTD, setListaTD] = useState();
@@ -33,7 +34,7 @@ const Informacion = ({ setOpcion, persona, setPersona, setPago }) => {
     const [showBancos, setShowBancos] = useState(true);
     const [showBotonesPago, setShowBotonesPago] = useState(true);
     const [showOtrosPago, setShowOtrosPago] = useState(true);
-    const [showTransferencia, setShowTransferencia] = useState(false);
+    const [showTransferencia, setShowTransferencia] = useState(true);
     const [showMarcaTarjeta, setShowMarcaTarjeta] = useState(true);
 
 
@@ -111,6 +112,7 @@ const Informacion = ({ setOpcion, persona, setPersona, setPago }) => {
                 if (resp) {
                     setListaBancos(resp[1].ListaBancos)
                     setListaTD(resp[2].ListaBancos[0].ListaTarjetas)
+                    setListaBancosTransferencia(resp[0].ListaBancos)
                 }
             })
 
