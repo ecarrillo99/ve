@@ -95,8 +95,8 @@ const Profile=({})=>{
             <div>
               {
                 isMobile
-                ?<NavbarMobile/>
-                :<Navbar />
+                ?<NavbarMobile activo={2}/>
+                :<Navbar activo={2} />
               }
               <div className="flex flex-col md:flex-row mx-5 md:mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 gap-7">
                 <div className="w-full md:w-3/12">
