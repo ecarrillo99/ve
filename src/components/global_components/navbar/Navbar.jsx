@@ -551,7 +551,7 @@ const Navbar = ({ activo }) => {
             </div>
           </div>
           <div className=" flex  justify-center gap-52 relative z-0">
-            <div className="flex gap-6 items-end mt-4 sm:mt-0">
+            <div className="flex gap-6 items-end  mt-4 sm:mt-0">
               {(activo > 0 ||
                 location.pathname === "/suscripcion ||" ||
                 location.pathname.includes("/busqueda")) && (

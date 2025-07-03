@@ -3,7 +3,7 @@ import React from 'react';
 
 
 const MarcaPais = () => (
-     <svg className='h-6 md:h-8 pr-2' version="1.1" id="Livello_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+     <svg className='h-6 md:h-8 pl-14' version="1.1" id="Livello_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
           viewBox="0 0 604.8 95" style={{ enableBackground: "new 0 0 604.8 95" }} xmlSpace="preserve">
           <style type="text/css">
                {`
@@ -31,7 +31,7 @@ const MarcaPais = () => (
                     <path class="st0" d="M127.5,77.8h4.7c1.4,0,2.6,1.2,2.6,2.6v12c0,1.4-1.2,2.6-2.6,2.6h-4.7c-1.4,0-2.6-1.2-2.6-2.6v-12
 			C124.9,79,126.1,77.8,127.5,77.8"/>
                </g>
-               <g>
+               <g className="md:hidden">
                     <path class="st0" d="M222.2,90.7V45.1c0-1.5,1.2-2.6,2.6-2.6H265c1.5,0,2.6,1.2,2.6,2.6v5.1c0,1.5-1.2,2.6-2.6,2.6h-28.4
 			c-1.5,0-2.6,1.2-2.6,2.6v4.7c0,1.5,1.2,2.6,2.6,2.6h22c1.5,0,2.6,1.2,2.6,2.6v3.8c0,1.5-1.2,2.6-2.6,2.6h-22
 			c-1.5,0-2.6,1.2-2.6,2.6v5.7c0,1.5,1.2,2.6,2.6,2.6H265c1.5,0,2.6,1.2,2.6,2.6v5.2c0,1.5-1.2,2.6-2.6,2.6h-40.2

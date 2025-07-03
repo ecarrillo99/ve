@@ -50,6 +50,9 @@ const Profile=({})=>{
           case 5:
             setSelectedMenu(<ProfileAdmin/>);
           break;
+            case 6:
+                setSelectedMenu(<ProfileAdmin/>);
+            break;
 
         }
     }
