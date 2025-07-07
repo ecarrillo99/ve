@@ -5,6 +5,8 @@
   "private": true,
   "dependencies": {
     "@babel/core": "^7.16.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
     "@fortawesome/free-regular-svg-icons": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
@@ -16,6 +18,8 @@
     "@iconify/tailwind": "^0.1.4",
     "@material-tailwind/react": "^2.1.4",
     "@material-ui/core": "^4.12.4",
+    "@mui/material": "^6.0.2",
+    "@mui/x-data-grid": "^7.15.0",
     "@paypal/react-paypal-js": "^8.7.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
     "@react-google-maps/api": "^2.19.2",
@@ -65,7 +69,7 @@
     "mini-css-extract-plugin": "^2.4.5",
     "postcss": "^8.4.4",
     "postcss-flexbugs-fixes": "^5.0.2",
-    "postcss-loader": "^6.2.1",
+    "postcss-loader": "^8.1.1",
     "postcss-normalize": "^10.0.1",
     "postcss-preset-env": "^7.0.1",
     "primereact": "^10.5.3",
@@ -105,7 +109,8 @@
     "webpack": "^5.91.0",
     "webpack-dev-server": "^4.6.0",
     "webpack-manifest-plugin": "^4.0.2",
-    "workbox-webpack-plugin": "^6.4.1"
+    "workbox-webpack-plugin": "^6.4.1",
+    "react-paginate": "^8.2.0"
   },
   "scripts": {
     "start": "node scripts/start.js",
@@ -185,6 +190,7 @@
     ]
   },
   "devDependencies": {
+    "@iconify-json/hugeicons": "^1.2.5",
     "@tailwindcss/forms": "^0.5.7",
     "lucide-react": "^0.475.0"
   }

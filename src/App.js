@@ -31,6 +31,7 @@ const contactos = ["593986263432", "593981850436"];
 const Promo = lazy(()=>import("./pages/Promo/Promo"));
 const Tips = lazy(()=>import("./pages/Tips/Tips"));
 const Suscribete = lazy(()=>import("./pages/Suscribete/Suscribete"));
+const VisasConcierge = lazy(() => import('./pages/VisasConcierge/VisasConcierge'));
 
 
 
@@ -86,6 +87,8 @@ function App() {
           <Route path="/tips" element={<Suspense><Tips/></Suspense>} />
           <Route path="/suscribete" element={<Suspense><Suscribete/></Suspense>} />
           <Route path="*" element={<Suspense><NotFound/></Suspense>} />
+          <Route path="/:codigo" element={<Suspense><Home /></Suspense>} />
+          <Route path="/visas-concierge" element={<Suspense><VisasConcierge /></Suspense>} />
         </Routes>
       </Router>
       {!isMobile ? <div className="fixed bottom-5 right-0 bg-transparent  py-2 rounded-full cursor-pointer" onClick={() => handleOnClick()}>

@@ -137,6 +137,10 @@ const Navbar = ({ activo }) => {
     navigate("/disney");
   };
 
+  const handleClickVisas = () => {
+    navigate("/visas-concierge");
+  };
+
   const handleClickInicio = () => {
     navigate("/");
   };
@@ -263,84 +267,84 @@ const Navbar = ({ activo }) => {
       <div className="bg-[#8eb934]">
         <div className="flex justify-end gap-3 align-middle mx-auto max-w-6xl py-2 px-4 sm:px-6 lg:px-8 ">
           <button
-              className={`flex  ${
-                  activo == 3 ? "border-white" : "border-transparent"
-              }   text-xs items-center `}
-              onClick={handleClickNosotros}
+            className={`flex  ${
+              activo == 3 ? "border-white" : "border-transparent"
+            }   text-xs items-center `}
+            onClick={handleClickNosotros}
           >
             <img
-                src="https://visitaecuador.com/img/web/nosotrosMenu.svg"
-                style={{height: "25px"}}
+              src="https://visitaecuador.com/img/web/nosotrosMenu.svg"
+              style={{ height: "25px" }}
             ></img>
           </button>
-            <a
-                className=" w-6 h-6 rounded-full flex items-center justify-center"
-                href="https://www.facebook.com/visitaecuadorcom"
-                target="_blank"
-            >
-              <span className="icon-[iconoir--facebook] text-white h-4 w-4"></span>
-            </a>
-            <a
-                className=" w-6 h-6 rounded-full flex items-center justify-center"
-                href="https://www.instagram.com/visitaecuadorcom/"
-                target="_blank"
-            >
-              <span className="icon-[mdi--instagram] text-white h-4 w-4"></span>
-            </a>
-            <a
-                className=" w-6 h-6 rounded-full flex items-center justify-center"
-                href="https://walink.co/99db0b"
-                target="_blank"
-            >
-              <span className="icon-[mdi--whatsapp] text-white h-4 w-4"></span>
-            </a>
-            <a
-                className=" w-6 h-6 rounded-full flex items-center justify-center"
-                href="https://www.tiktok.com/@visitaecuador.com"
-                target="_blank"
-            >
-              <span className="icon-[ph--tiktok-logo] text-white h-4 w-4"></span>
-            </a>
-            <a
-                className="w-6 h-6 rounded-full flex items-center justify-center"
-                href="https://www.youtube.com/@VisitaEcuador-com"
-                target="_blank"
-            >
-              <span className="icon-[ph--youtube-logo-bold] text-white h-4 w-4"></span>
-            </a>
-            <a
-                className="w-6 h-6 rounded-full flex items-center justify-center"
-                href="https://www.linkedin.com/in/visita-ecuador-44411353"
-                target="_blank"
-            >
-              <span className="icon-[uil--linkedin-alt] h-4 w-4 text-white"></span>
-            </a>
-            <a
-                className=" w-6 h-6 rounded-full flex items-center justify-center"
-                href="https://x.com/clubvisita"
-                target="_blank"
-            >
-              <span className="icon-[flowbite--x-company-solid] text-white h-3 w-3"></span>
-            </a>
+          <a
+            className=" w-6 h-6 rounded-full flex items-center justify-center"
+            href="https://www.facebook.com/visitaecuadorcom"
+            target="_blank"
+          >
+            <span className="icon-[iconoir--facebook] text-white h-4 w-4"></span>
+          </a>
+          <a
+            className=" w-6 h-6 rounded-full flex items-center justify-center"
+            href="https://www.instagram.com/visitaecuadorcom/"
+            target="_blank"
+          >
+            <span className="icon-[mdi--instagram] text-white h-4 w-4"></span>
+          </a>
+          <a
+            className=" w-6 h-6 rounded-full flex items-center justify-center"
+            href="https://walink.co/99db0b"
+            target="_blank"
+          >
+            <span className="icon-[mdi--whatsapp] text-white h-4 w-4"></span>
+          </a>
+          <a
+            className=" w-6 h-6 rounded-full flex items-center justify-center"
+            href="https://www.tiktok.com/@visitaecuador.com"
+            target="_blank"
+          >
+            <span className="icon-[ph--tiktok-logo] text-white h-4 w-4"></span>
+          </a>
+          <a
+            className="w-6 h-6 rounded-full flex items-center justify-center"
+            href="https://www.youtube.com/@VisitaEcuador-com"
+            target="_blank"
+          >
+            <span className="icon-[ph--youtube-logo-bold] text-white h-4 w-4"></span>
+          </a>
+          <a
+            className="w-6 h-6 rounded-full flex items-center justify-center"
+            href="https://www.linkedin.com/in/visita-ecuador-44411353"
+            target="_blank"
+          >
+            <span className="icon-[uil--linkedin-alt] h-4 w-4 text-white"></span>
+          </a>
+          <a
+            className=" w-6 h-6 rounded-full flex items-center justify-center"
+            href="https://x.com/clubvisita"
+            target="_blank"
+          >
+            <span className="icon-[flowbite--x-company-solid] text-white h-3 w-3"></span>
+          </a>
         </div>
       </div>
       <div className="flex mx-auto max-w-6xl py-2 px-4 sm:px-6 lg:px-8">
         {!codigo && (
-            <div className="w-2/12 flex cursor-pointer" onClick={handleClickLogo}>
-              <img
-                  src="https://visitaecuador.com/img/web/ve_logo.svg"
-                  style={{width: "110px", height: "auto"}}
-              />
-            </div>
+          <div className="w-2/12 flex cursor-pointer" onClick={handleClickLogo}>
+            <img
+              src="https://visitaecuador.com/img/web/ve_logo.svg"
+              style={{ width: "110px", height: "auto" }}
+            />
+          </div>
         )}
         <div
-            className={`flex flex-col  ${
-                codigo ? "w-full" : "w-10/12"
-            } justify-between `}
+          className={`flex flex-col  ${
+            codigo ? "w-full" : "w-10/12"
+          } justify-between `}
         >
           <div className="flex gap-2 justify-end items-center">
             <a
-                className="flex gap-1 text-white border-white rounded-full border-2 px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-300"
+              className="flex gap-1 text-white border-white rounded-full border-2 px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-300"
               href="/smart/"
             >
               Registrar alojamiento
@@ -551,58 +555,78 @@ const Navbar = ({ activo }) => {
             </div>
           </div>
           <div className=" flex  justify-center gap-52 relative z-0">
-            <div className="flex gap-6 items-end  mt-4 sm:mt-0">
+            <div className="flex w-11/12 gap-2 items-end  mt-4 sm:mt-0">
               {(activo > 0 ||
                 location.pathname === "/suscripcion ||" ||
                 location.pathname.includes("/busqueda")) && (
-                  <>
-                    <button
-                        className={`flex gap-1 border-2 ${
-                            activo == 1 ? "border-white" : "border-transparent "
-                        } text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white `}
-                        onClick={handleClickInicio}
-                    >
-                      <img
-                          src="https://visitaecuador.com/img/web/homeMenu.svg"
-                          style={{height: "25px"}}
-                      ></img>
-                      <label className="hidden md:flex cursor-pointer">
-                        Hospedaje
-                      </label>
-                    </button>
+                <>
+                  <button
+                    className={`flex gap-1 border-2 ${
+                      activo == 1 ? "border-white" : "border-transparent "
+                    } text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white `}
+                    onClick={handleClickInicio}
+                  >
+                    <img
+                      src="https://visitaecuador.com/img/web/homeMenu.svg"
+                      style={{ height: "25px" }}
+                    ></img>
+                    <label className="hidden md:flex cursor-pointer">
+                      Hospedaje
+                    </label>
+                  </button>
 
-                    <button
-                        className={`flex gap-1 border-2 ${
-                            activo == 3 ? "border-white" : "border-transparent"
-                        } text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`}
-                        onClick={handleClickInfotour}
+                  <button
+                    className={`flex gap-1 border-2 ${
+                      activo == 3 ? "border-white" : "border-transparent"
+                    } text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`}
+                    onClick={handleClickInfotour}
+                  >
+                    <img
+                      src="https://visitaecuador.com/img/web/infotourMenu.svg"
+                      style={{ height: "25px" }}
+                    ></img>
+                    <label className="hidden md:flex cursor-pointer">
+                      InfoTour
+                    </label>
+                  </button>
+                  <button
+                    className={`flex gap-1 border-2 ${
+                      activo == 2 ? "border-white" : "border-transparent"
+                    } text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`}
+                    onClick={handleClickDisney}
+                  >
+                    <img
+                      src="https://visitaecuador.com/img/web/disneyMenu.svg"
+                      style={{ height: "25px" }}
+                    ></img>
+                    <label className="hidden md:flex cursor-pointer">
+                      Disney Concierge
+                    </label>
+                  </button>
+                  <button
+                    className={`flex gap-1 border-2 ${
+                      activo == 4 ? "border-white" : "border-transparent"
+                    } text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`}
+                    onClick={handleClickVisas}
+                  >
+                    <div
+                      className="rounded-full bg-white p-1"
+                      style={{ height: "25px", width: "25px" }}
                     >
                       <img
-                          src="https://visitaecuador.com/img/web/infotourMenu.svg"
-                          style={{height: "25px"}}
+                        src="https://visitaecuador.com/img/web/visas-concierge.jpeg"
+                        className="rounded-full"
+                        style={{ height: "100%", width: "100%" }}
                       ></img>
-                      <label className="hidden md:flex cursor-pointer">
-                        InfoTour
-                      </label>
-                    </button>
-                    <button
-                        className={`flex gap-1 border-2 ${
-                            activo == 2 ? "border-white" : "border-transparent"
-                        } text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`}
-                        onClick={handleClickDisney}
-                    >
-                      <img
-                          src="https://visitaecuador.com/img/web/disneyMenu.svg"
-                          style={{height: "25px"}}
-                      ></img>
-                      <label className="hidden md:flex cursor-pointer">
-                        Disney Concierge
-                      </label>
-                    </button>
-                  </>
+                    </div>
+                    <label className="hidden md:flex cursor-pointer">
+                      Visas
+                    </label>
+                  </button>
+                </>
               )}
             </div>
-            {!codigo && <MarcaPais/>}
+            {!codigo && <MarcaPais />}
           </div>
         </div>
       </div>

@@ -236,6 +236,10 @@ const NavbarMobile = ({ activo }) => {
     }
   };
 
+  const handleClickVisas = () => {
+    navigate("/visas-concierge");
+  };
+
   return (
     <header className="bg-greenVE-500 ">
       <div className="bg-[#8eb934]">
@@ -372,8 +376,8 @@ const NavbarMobile = ({ activo }) => {
         </div>
       </div>
 
-      <div>
-        <div className="flex w-full items-center justify-center  gap-1 px-4 pb-2">
+      <div className="w-full">
+        <div className="flex w-full items-center justify-center  gap-1 pb-2">
           <button
             className={`flex gap-1 border-2 ${
               activo == null || activo == 1
@@ -411,6 +415,24 @@ const NavbarMobile = ({ activo }) => {
               style={{ height: "18px" }}
             ></img>
             <label className="flex cursor-pointer">InfoTour</label>
+          </button>
+          <button
+            className={`flex gap-1 border-2 ${
+              activo == 4 ? "border-white" : "border-transparent"
+            } text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`}
+            onClick={handleClickVisas}
+          >
+            <div
+              className="rounded-full bg-white p-1"
+              style={{ height: "25px", width: "25px" }}
+            >
+              <img
+                src="https://visitaecuador.com/img/web/visas-concierge.jpeg"
+                className="rounded-full"
+                style={{ height: "100%", width: "100%" }}
+              ></img>
+            </div>
+            <label className="flex cursor-pointer">Visas</label>
           </button>
         </div>
       </div>
