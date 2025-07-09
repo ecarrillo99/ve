@@ -43,6 +43,8 @@ const Navbar = ({ activo }) => {
   const [isLoadingFB, setIsLoadingFB] = useState(false);
   const gProvider = new GoogleAuthProvider();
   const fProvider = new FacebookAuthProvider();
+  const isExposedRoute = location.pathname === '/disney';
+
 
   const handleClickLogin = () => {
     navigate("/login");
@@ -264,7 +266,9 @@ const Navbar = ({ activo }) => {
 
   return (
     <header className="bg-greenVE-500">
+      {!isExposedRoute && (
       <div className="bg-[#8eb934]">
+
         <div className="flex justify-end gap-3 align-middle mx-auto max-w-6xl py-2 px-4 sm:px-6 lg:px-8 ">
           <button
             className={`flex  ${
@@ -328,20 +332,24 @@ const Navbar = ({ activo }) => {
           </a>
         </div>
       </div>
+      )}
       <div className="flex mx-auto max-w-6xl py-2 px-4 sm:px-6 lg:px-8">
         {!codigo && (
-          <div className="w-2/12 flex cursor-pointer" onClick={handleClickLogo}>
+
+          <div className="w-2/12 flex cursor-pointer" onClick={handleClickLogo}>{!isExposedRoute && (
             <img
               src="https://visitaecuador.com/img/web/ve_logo.svg"
               style={{ width: "110px", height: "auto" }}
-            />
+            />  )}
           </div>
+
         )}
         <div
           className={`flex flex-col  ${
             codigo ? "w-full" : "w-10/12"
           } justify-between `}
         >
+          {!isExposedRoute && (
           <div className="flex gap-2 justify-end items-center">
             <a
               className="flex gap-1 text-white border-white rounded-full border-2 px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-300"
@@ -554,6 +562,7 @@ const Navbar = ({ activo }) => {
               )}
             </div>
           </div>
+          )}
           <div className=" flex  justify-center gap-52 relative z-0">
             <div className="flex w-11/12 gap-2 items-end  mt-4 sm:mt-0">
               {(activo > 0 ||

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Footer from "../../components/global_components/footer/Footer";
 import Navbar from "../../components/global_components/navbar/Navbar";
-import {Navigate } from 'react-router-dom';
+import {Navigate, useNavigate} from 'react-router-dom';
 import ProfileMenu from "../../components/profile_components/ProfileMenu";
 import ProfileEdit from "../../components/profile_components/ProfileEdit";
 import ProfilePassword from "../../components/profile_components/ProfilePassword";
@@ -19,7 +19,7 @@ const Profile=({})=>{
     const [citiesData, setCitiesData]=useState();
     const [selectedMenu, setSelectedMenu]=useState(<ProfileEdit profileData={profileData} citiesData={citiesData}/>);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Definir 768 como el punto de corte para móvil
-
+    const navigate = useNavigate();
     useEffect(() => {
         const handleResize = () => {
         setIsMobile(window.innerWidth < 768);
@@ -31,7 +31,9 @@ const Profile=({})=>{
         window.removeEventListener('resize', handleResize);
         };
     }, []);
-
+    const handleClickVeSites = () => {
+        window.open("http://visitaecuador.com/biosite");
+    };
     const handleChangeOption=(option)=>{
         setSelectedOption(option)
         switch (option){
@@ -51,7 +53,7 @@ const Profile=({})=>{
             setSelectedMenu(<ProfileAdmin/>);
           break;
             case 6:
-                setSelectedMenu(<ProfileAdmin/>);
+                setSelectedMenu(handleClickVeSites);
             break;
 
         }

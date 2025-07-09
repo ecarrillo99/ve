@@ -59,13 +59,17 @@ const ProfileMenu = ({ handleChangeOption, selectedOption, profileData }) => {
                     className={`${selectedOption == 5 ? "text-greenVE-500" : ""} font-medium cursor-pointer text-sm `}>Administración</label>
             </div>
             <div className="flex items-center gap-3 px-4 py-2 cursor-pointer hover:text-greenVE-500"
-                 onClick={() => handleChangeOption(6)}>
+                 onClick={() => handleChangeOption(6) }>
                 <div className="bg-gray-100 h-9 w-9 rounded-full flex items-center justify-center">
                     <span
-                        className={`${selectedOption == 6 ? "text-greenVE-500" : ""} icon-[material-symbols--admin-panel-settings-outline] h-8 w-8`}></span>
+                        className={`${selectedOption == 6 ? "text-greenVE-500" : ""} px-1  h-8 w-8`}><svg
+                        xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path
+                        d="M0 0h24v24H0z" fill="none"/><path
+                        d="M4 6h18V4H4c-1.1 0-2 .9-2 2v11H0v3h14v-3H4V6zm19 2h-6c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 9h-4v-7h4v7z"/></svg></span>
                 </div>
                 <label
-                    className={`${selectedOption == 6 ? "text-greenVE-500" : ""} font-medium cursor-pointer text-sm `}>My Biosite</label>
+                    className={`${selectedOption == 6 ? "text-greenVE-500" : ""} font-medium cursor-pointer text-sm `}>My
+                    Biosite</label>
             </div>
         </div>
     );
