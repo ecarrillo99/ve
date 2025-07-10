@@ -69,7 +69,7 @@ const ProfileMenu = ({ handleChangeOption, selectedOption, profileData }) => {
                 </div>
                 <label
                     className={`${selectedOption == 6 ? "text-greenVE-500" : ""} font-medium cursor-pointer text-sm `}>My
-                    Biosite</label>
+                    VeSite</label>
             </div>
         </div>
     );
