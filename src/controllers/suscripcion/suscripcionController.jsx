@@ -1,5 +1,6 @@
 import Config from "../../global/config";
 import SuscripcionService from "../../services/suscripcion/SuscripcionService";
+import Cookie from "js-cookie";
 
 export const loginRemote = async function (params) {
   const isLogged = false;
@@ -7,10 +8,31 @@ export const loginRemote = async function (params) {
   try {
     const suscripcionService = new SuscripcionService();
     const res = await suscripcionService.getInformacionPerfil(params);
-    await suscripcionService.getInformacionBiosite({
+    const responseData = await suscripcionService.getInformacionBiosite({
       email: params.id,
       password: params.pass,
     });
+
+    if (responseData.statusCode == 200) {
+      const { accessToken, refreshToken, userId, roleName, biositeId } =
+        responseData;
+
+      const userRole = roleName.toString();
+
+      const accessExpirationDate = new Date();
+      const refreshExpirationDate = new Date();
+      accessExpirationDate.setDate(accessExpirationDate.getDate() + 2);
+      refreshExpirationDate.setDate(refreshExpirationDate.getDate() + 7);
+
+      Cookie.set("accessToken", accessToken, { expires: accessExpirationDate });
+      Cookie.set("refreshToken", refreshToken, {
+        expires: refreshExpirationDate,
+      });
+      Cookie.set("userId", userId, { expires: refreshExpirationDate });
+      Cookie.set("roleName", userRole, { expires: refreshExpirationDate });
+      Cookie.set("biositeId", biositeId, { expires: refreshExpirationDate });
+    }
+
     if (res.estado && res.codigo == 0) {
       if (res.data.fin != null) {
         if (new Date(res.data.fin) < new Date()) {
