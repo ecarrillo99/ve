@@ -79,7 +79,7 @@ const ProfileAdmin = () => {
           <h1 className="font-semibold text-3xl">
             Administración de descargas
           </h1>
-          <label>Administra tus descargars</label>
+          <label>Administra tus descargas</label>
         </div>
       </div>
       {loading ? (

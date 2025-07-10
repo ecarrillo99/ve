@@ -10,6 +10,10 @@ class Config {
     return "https://api.visitaecuador.com/v1.7";
   }
 
+  static get URL_BIOSITE() {
+    return "https://visitaecuador.com/bio-api";
+  }
+
   static get CRM_TOKEN() {
     return "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3Njc4MDE2NTcsImF1ZCI6IjI1NGMyOTA1OTg1MmRkN2I4MjI3OTk3MTY5ZTMzOTJlNzUxZWU0ZjYiLCJkYXRhIjp7ImNvZGlnbyI6InZpc2l0YWVjdWFkb3IiLCJub21icmVzIjoiVmlzaXRhRWN1YWRvci5jb20iLCJpZF91c3VhcmlvIjoiMCIsImlkX3NlcnZpY2lvIjoyNTUsIm1ldG9kbyI6bnVsbCwib3JpZ2VuIjoiYXBwIiwiaWRfY2FuYWwiOm51bGwsImlkX3VzdWFyaW9fY3JtIjoiMTcxNyJ9fQ.1KQLvxoCha0hl20NgYqOeXEWvAzD_93Q9QaM40i_Ob8";
   }
