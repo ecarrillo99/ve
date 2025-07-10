@@ -12,7 +12,7 @@ class SuscripcionService extends GenericService {
   }
   async getInformacionBiosite(params) {
     const url = `${Config.URL_BIOSITE}/auth/login`;
-    return await this.post(url, params);
+    return await this.postBiosite(url, params);
   }
   async getPermisos(params) {
     const url = `${Config.URL_SERVICIOS}${Config.VERSUS}obtenerPermisos/`;
