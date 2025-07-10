@@ -19,10 +19,12 @@ const Profile = ({}) => {
   const [profileData, setProfileData] = useState();
   const [citiesData, setCitiesData] = useState();
   const [selectedMenu, setSelectedMenu] = useState(
-    <ProfileEdit profileData={profileData} citiesData={citiesData} />
+      <ProfileEdit profileData={profileData} citiesData={citiesData} />
   );
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Definir 768 como el punto de corte para móvil
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // Estado para controlar el menú hamburguesa
   const navigate = useNavigate();
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -34,15 +36,18 @@ const Profile = ({}) => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
   const handleClickVeSites = () => {
     window.open("http://visitaecuador.com/biosite");
   };
+
   const handleChangeOption = (option) => {
     setSelectedOption(option);
+    setIsMenuOpen(false); // Cerrar el menú al seleccionar una opción
     switch (option) {
       case 1:
         setSelectedMenu(
-          <ProfileEdit profileData={profileData} citiesData={citiesData} />
+            <ProfileEdit profileData={profileData} citiesData={citiesData} />
         );
         break;
       case 2:
@@ -63,40 +68,44 @@ const Profile = ({}) => {
     }
   };
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   useEffect(() => {
     async function fetchData() {
       try {
         getProfileData()
-          .then((result1) => {
-            if (result1 == 401) {
-              localStorage.removeItem("Datos");
-              window.location.reload();
-            } else {
-              if (result1) {
-                getRemoteCities()
-                  .then((result2) => {
-                    if (result2) {
-                      setProfileData(result1);
-                      setCitiesData(
-                        result2
-                          .slice()
-                          .sort((a, b) => a.Titulo.localeCompare(b.Titulo))
-                      );
-                      setSelectedMenu(
-                        <ProfileEdit
-                          profileData={result1}
-                          citiesData={result2
-                            .slice()
-                            .sort((a, b) => a.Titulo.localeCompare(b.Titulo))}
-                        />
-                      );
-                    }
-                  })
-                  .catch((error) => {});
+            .then((result1) => {
+              if (result1 == 401) {
+                localStorage.removeItem("Datos");
+                window.location.reload();
+              } else {
+                if (result1) {
+                  getRemoteCities()
+                      .then((result2) => {
+                        if (result2) {
+                          setProfileData(result1);
+                          setCitiesData(
+                              result2
+                                  .slice()
+                                  .sort((a, b) => a.Titulo.localeCompare(b.Titulo))
+                          );
+                          setSelectedMenu(
+                              <ProfileEdit
+                                  profileData={result1}
+                                  citiesData={result2
+                                      .slice()
+                                      .sort((a, b) => a.Titulo.localeCompare(b.Titulo))}
+                              />
+                          );
+                        }
+                      })
+                      .catch((error) => {});
+                }
               }
-            }
-          })
-          .catch((error) => {});
+            })
+            .catch((error) => {});
       } catch (error) {
         console.error("Error:", error);
       }
@@ -106,36 +115,70 @@ const Profile = ({}) => {
   }, []);
 
   return sessionStatus() ? (
-    citiesData != null && citiesData != null ? (
-      <div>
-        {isMobile ? <NavbarMobile activo={2} /> : <Navbar activo={2} />}
-        <div
-          className={`flex flex-col md:flex-row mx-5 md:mx-auto py-6 sm:px-6 lg:px-8 gap-7 ${
-            selectedOption !== 6 ? "max-w-6xl" : ""
-          }`}
-        >
-          <div className="w-full md:w-3/12">
-            <ProfileMenu
-              handleChangeOption={handleChangeOption}
-              selectedOption={selectedOption}
-              profileData={profileData}
-            />
+      citiesData != null && citiesData != null ? (
+          <div>
+            {isMobile ? <NavbarMobile activo={2} /> : <Navbar activo={2} />}
+            <div
+                className={`flex flex-col md:flex-row mx-5 md:mx-auto py-6 sm:px-6 lg:px-8 gap-7 ${
+                    selectedOption !== 6 ? "max-w-6xl" : ""
+                }`}
+            >
+              {/* Menú hamburguesa para opción 6 */}
+              {selectedOption === 6 && (
+                  <div className="fixed top-20 left-5 z-50">
+                    <button
+                        onClick={toggleMenu}
+                        className="bg-white border border-gray-300 rounded-lg p-3 shadow-lg hover:shadow-xl transition-shadow duration-200"
+                    >
+                      <div className="space-y-1">
+                        <div className="w-6 h-0.5 bg-gray-600"></div>
+                        <div className="w-6 h-0.5 bg-gray-600"></div>
+                        <div className="w-6 h-0.5 bg-gray-600"></div>
+                      </div>
+                    </button>
+
+                    {/* Menú desplegable */}
+                    {isMenuOpen && (
+                        <div className="absolute top-full left-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-xl min-w-[250px] overflow-hidden">
+                          <ProfileMenu
+                              handleChangeOption={handleChangeOption}
+                              selectedOption={selectedOption}
+                              profileData={profileData}
+                          />
+                        </div>
+                    )}
+                  </div>
+              )}
+
+              {/* Menú normal para otras opciones */}
+              {selectedOption !== 6 && (
+                  <div className="w-full md:w-3/12">
+                    <ProfileMenu
+                        handleChangeOption={handleChangeOption}
+                        selectedOption={selectedOption}
+                        profileData={profileData}
+                    />
+                  </div>
+              )}
+
+              {/* Contenido principal */}
+              <div className={`w-full ${selectedOption !== 6 ? "md:w-9/12" : ""}`}>
+                {selectedMenu}
+              </div>
+            </div>
+            <Footer />
           </div>
-          <div className="w-full md:w-9/12">{selectedMenu}</div>
-        </div>
-        <Footer />
-      </div>
-    ) : (
-      <div className="h-screen w-screen flex flex-col justify-center items-center">
-        <img
-          src="https://visitaecuador.com/img/web/logo_verde.png"
-          style={{ width: "300px", height: "auto" }}
-        />
-        <div className="animate-spin w-16 h-16 border-t-4 border-greenVE-500 rounded-full"></div>
-      </div>
-    )
+      ) : (
+          <div className="h-screen w-screen flex flex-col justify-center items-center">
+            <img
+                src="https://visitaecuador.com/img/web/logo_verde.png"
+                style={{ width: "300px", height: "auto" }}
+            />
+            <div className="animate-spin w-16 h-16 border-t-4 border-greenVE-500 rounded-full"></div>
+          </div>
+      )
   ) : (
-    <Navigate to="/" />
+      <Navigate to="/" />
   );
 };
 
