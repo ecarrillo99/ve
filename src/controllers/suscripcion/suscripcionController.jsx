@@ -13,8 +13,6 @@ export const loginRemote = async function (params) {
       password: params.pass,
     });
 
-    console.log("Response from Biosite:", responseData);
-
     if (responseData.code != -1) {
       const { accessToken, refreshToken, userId, roleName, biositeId } =
         responseData;
