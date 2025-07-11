@@ -13,7 +13,7 @@ export const loginRemote = async function (params) {
       password: params.pass,
     });
 
-    if (responseData.statusCode == 200) {
+    if (responseData.statusCode != 401) {
       const { accessToken, refreshToken, userId, roleName, biositeId } =
         responseData;
 

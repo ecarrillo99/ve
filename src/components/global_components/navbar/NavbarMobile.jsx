@@ -47,7 +47,7 @@ const NavbarMobile = ({ activo }) => {
   };
 
   const handleClickInfotour = () => {
-    window.open("https://infotour.app/");
+    window.open("https://www.infotour.app/");
   };
 
   const handleClickMenu = () => {
