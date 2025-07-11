@@ -13,7 +13,9 @@ export const loginRemote = async function (params) {
       password: params.pass,
     });
 
-    if (responseData.statusCode != 401) {
+    console.log("Response from Biosite:", responseData);
+
+    if (responseData.code != -1) {
       const { accessToken, refreshToken, userId, roleName, biositeId } =
         responseData;
 
