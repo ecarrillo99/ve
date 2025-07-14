@@ -15,14 +15,16 @@ import ProfileAdmin from "../../components/profile_components/ProfileAdmin";
 import ProfileBiosite from "../../components/profile_components/ProfileBiosite";
 
 const Profile = ({}) => {
-    const [selectedOption, setSelectedOption] = useState(1);
+    const [selectedOption, setSelectedOption] = useState(() => {
+        const savedOption = localStorage.getItem("profileSelectedOption");
+        return savedOption ? parseInt(savedOption) : 1;
+    });
+
     const [profileData, setProfileData] = useState();
     const [citiesData, setCitiesData] = useState();
-    const [selectedMenu, setSelectedMenu] = useState(
-        <ProfileEdit profileData={profileData} citiesData={citiesData} />
-    );
+    const [selectedMenu, setSelectedMenu] = useState(null);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-    const [isMenuOpen, setIsMenuOpen] = useState(false); // Estado para controlar el menú hamburguesa
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -43,7 +45,18 @@ const Profile = ({}) => {
 
     const handleChangeOption = (option) => {
         setSelectedOption(option);
-        setIsMenuOpen(false); // Cerrar el menú al seleccionar una opción
+        setIsMenuOpen(false);
+
+        localStorage.setItem("profileSelectedOption", option.toString());
+
+        updateSelectedMenu(option);
+    };
+
+    const updateSelectedMenu = (option) => {
+        if (!profileData || !citiesData) {
+            return;
+        }
+
         switch (option) {
             case 1:
                 setSelectedMenu(
@@ -65,6 +78,10 @@ const Profile = ({}) => {
             case 6:
                 setSelectedMenu(<ProfileBiosite />);
                 break;
+            default:
+                setSelectedMenu(
+                    <ProfileEdit profileData={profileData} citiesData={citiesData} />
+                );
         }
     };
 
@@ -91,14 +108,8 @@ const Profile = ({}) => {
                                                     .slice()
                                                     .sort((a, b) => a.Titulo.localeCompare(b.Titulo))
                                             );
-                                            setSelectedMenu(
-                                                <ProfileEdit
-                                                    profileData={result1}
-                                                    citiesData={result2
-                                                        .slice()
-                                                        .sort((a, b) => a.Titulo.localeCompare(b.Titulo))}
-                                                />
-                                            );
+
+                                            updateSelectedMenu(selectedOption);
                                         }
                                     })
                                     .catch((error) => {});
@@ -114,8 +125,22 @@ const Profile = ({}) => {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        if (profileData && citiesData) {
+            updateSelectedMenu(selectedOption);
+        }
+    }, [profileData, citiesData, selectedOption]);
+
+    // Limpiar localStorage cuando el componente se desmonte (opcional)
+    useEffect(() => {
+        return () => {
+            // Opcional: limpiar la opción guardada cuando el usuario salga del perfil
+            // localStorage.removeItem("profileSelectedOption");
+        };
+    }, []);
+
     return sessionStatus() ? (
-        citiesData != null && citiesData != null ? (
+        citiesData != null && profileData != null ? (
             <div>
                 {isMobile ? <NavbarMobile activo={2} /> : <Navbar activo={2} isExposed={selectedOption === 6} />}
                 <div
@@ -123,12 +148,11 @@ const Profile = ({}) => {
                         selectedOption !== 6 ? "max-w-6xl" : ""
                     }`}
                 >
-                    {/* Menú hamburguesa para opción 6 */}
                     {selectedOption === 6 && (
-                        <div className="fixed top-20 left-5 z-50">
+                        <div className="absolute top-1 left-5 z-50">
                             <button
                                 onClick={toggleMenu}
-                                className="bg-white border border-gray-300 rounded-lg p-3 shadow-lg hover:shadow-xl transition-shadow duration-200"
+                                className="bg-white border border-gray-300 rounded-lg p-2 shadow-lg hover:shadow-xl transition-shadow duration-200"
                             >
                                 <div className="space-y-1">
                                     <div className="w-6 h-0.5 bg-gray-600"></div>
@@ -137,7 +161,6 @@ const Profile = ({}) => {
                                 </div>
                             </button>
 
-                            {/* Menú desplegable */}
                             {isMenuOpen && (
                                 <div className="absolute top-full left-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-xl min-w-[250px] overflow-hidden">
                                     <ProfileMenu
@@ -163,7 +186,11 @@ const Profile = ({}) => {
 
                     {/* Contenido principal */}
                     <div className={`w-full ${selectedOption !== 6 ? "md:w-9/12" : ""}`}>
-                        {selectedMenu}
+                        {selectedMenu || (
+                            <div className="flex justify-center items-center py-12">
+                                <div className="animate-spin w-8 h-8 border-t-4 border-greenVE-500 rounded-full"></div>
+                            </div>
+                        )}
                     </div>
                 </div>
                 {selectedOption !== 6 && <Footer />}
