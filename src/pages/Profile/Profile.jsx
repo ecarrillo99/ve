@@ -75,9 +75,7 @@ const Profile = ({}) => {
             case 5:
                 setSelectedMenu(<ProfileAdmin />);
                 break;
-            case 6:
-                setSelectedMenu(<ProfileBiosite />);
-                break;
+            // Se elimina el case 6 ya que ahora se abre en nueva ventana
             default:
                 setSelectedMenu(
                     <ProfileEdit profileData={profileData} citiesData={citiesData} />
@@ -142,50 +140,19 @@ const Profile = ({}) => {
     return sessionStatus() ? (
         citiesData != null && profileData != null ? (
             <div>
-                {isMobile ? <NavbarMobile activo={2} /> : <Navbar activo={2} isExposed={selectedOption === 6} />}
-                <div
-                    className={`flex flex-col md:flex-row mx-5 md:mx-auto py-6 sm:px-6 lg:px-8 gap-7 ${
-                        selectedOption !== 6 ? "max-w-6xl" : ""
-                    }`}
-                >
-                    {selectedOption === 6 && (
-                        <div className="absolute top-1 left-5 z-50">
-                            <button
-                                onClick={toggleMenu}
-                                className="bg-white border border-gray-300 rounded-lg p-2 shadow-lg hover:shadow-xl transition-shadow duration-200"
-                            >
-                                <div className="space-y-1">
-                                    <div className="w-6 h-0.5 bg-gray-600"></div>
-                                    <div className="w-6 h-0.5 bg-gray-600"></div>
-                                    <div className="w-6 h-0.5 bg-gray-600"></div>
-                                </div>
-                            </button>
-
-                            {isMenuOpen && (
-                                <div className="absolute top-full left-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-xl min-w-[250px] overflow-hidden">
-                                    <ProfileMenu
-                                        handleChangeOption={handleChangeOption}
-                                        selectedOption={selectedOption}
-                                        profileData={profileData}
-                                    />
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* Menú normal para otras opciones */}
-                    {selectedOption !== 6 && (
-                        <div className="w-full md:w-3/12">
-                            <ProfileMenu
-                                handleChangeOption={handleChangeOption}
-                                selectedOption={selectedOption}
-                                profileData={profileData}
-                            />
-                        </div>
-                    )}
+                {isMobile ? <NavbarMobile activo={2} /> : <Navbar activo={2} />}
+                <div className="flex flex-col md:flex-row mx-5 md:mx-auto py-6 sm:px-6 lg:px-8 gap-7 max-w-6xl">
+                    {/* Menú siempre visible */}
+                    <div className="w-full md:w-3/12">
+                        <ProfileMenu
+                            handleChangeOption={handleChangeOption}
+                            selectedOption={selectedOption}
+                            profileData={profileData}
+                        />
+                    </div>
 
                     {/* Contenido principal */}
-                    <div className={`w-full ${selectedOption !== 6 ? "md:w-9/12" : ""}`}>
+                    <div className="w-full md:w-9/12">
                         {selectedMenu || (
                             <div className="flex justify-center items-center py-12">
                                 <div className="animate-spin w-8 h-8 border-t-4 border-greenVE-500 rounded-full"></div>
@@ -193,7 +160,7 @@ const Profile = ({}) => {
                         )}
                     </div>
                 </div>
-                {selectedOption !== 6 && <Footer />}
+                <Footer />
             </div>
         ) : (
             <div className="h-screen w-screen flex flex-col justify-center items-center">
