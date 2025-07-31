@@ -10,10 +10,11 @@ export const loginRemote = async function (params) {
     const res = await suscripcionService.getInformacionPerfil(params);
     const responseData = await suscripcionService.getInformacionBiosite({
       email: params.id,
+      cedula: params.id,
       password: params.pass,
     });
 
-    if (responseData.code != -1) {
+    if (responseData.userId) {
       const { accessToken, refreshToken, userId, roleName, biositeId } =
         responseData;
 
