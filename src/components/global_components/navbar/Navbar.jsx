@@ -276,6 +276,7 @@ const Navbar = ({ activo, isExposed = false }) => {
             >
               <img
                 src="https://visitaecuador.com/img/web/nosotrosMenu.svg"
+                alt="nosotros"
                 style={{ height: "25px" }}
               ></img>
             </button>
