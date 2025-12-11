@@ -272,11 +272,12 @@ const Navbar = ({ activo, isExposed = false }) => {
               className={`flex  ${
                 activo == 3 ? "border-white" : "border-transparent"
               }   text-xs items-center `}
+              tittle="nosotros"
               onClick={handleClickNosotros}
             >
               <img
                 src="https://visitaecuador.com/img/web/nosotrosMenu.svg"
-                alt="nosotros"
+                title="nosotros"
                 style={{ height: "25px" }}
               ></img>
             </button>
