@@ -1,19 +1,19 @@
 import { useState } from "react";
-import React, { lazy, Suspense, useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { lazy, Suspense, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import {
   NavbarSkeleton,
   ContentSkeleton,
 } from "../../components/global_components/Skeleton/Loadingkeleton";
 
-const Navbar = lazy(() =>
-  import("../../components/global_components/navbar/Navbar")
+const Navbar = lazy(
+  () => import("../../components/global_components/navbar/Navbar"),
 );
-const NavbarMobile = lazy(() =>
-  import("../../components/global_components/navbar/NavbarMobile")
+const NavbarMobile = lazy(
+  () => import("../../components/global_components/navbar/NavbarMobile"),
 );
-const Footer = lazy(() =>
-  import("../../components/global_components/footer/Footer")
+const Footer = lazy(
+  () => import("../../components/global_components/footer/Footer"),
 );
 
 const VisasConcierge = () => {
@@ -48,7 +48,7 @@ const VisasConcierge = () => {
       const whatsappNumber = "593958955143"; // replace with the actual WhatsApp number
       const textMessage = `Nombres: ${nombres}\nCédula: ${cedula}\nTeléfono: ${telefono}\nEmail: ${mail}\nMensaje: ${mensaje}`;
       const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-        textMessage
+        textMessage,
       )}`;
       window.open(url, "_blank");
     } else {
@@ -74,11 +74,11 @@ const VisasConcierge = () => {
     <>
       {isMobile ? (
         <Suspense fallback={<NavbarSkeleton />}>
-          <NavbarMobile activo={4} />
+          <NavbarMobile activo={5} />
         </Suspense>
       ) : (
         <Suspense fallback={<NavbarSkeleton />}>
-          <Navbar activo={4} />
+          <Navbar activo={5} />
         </Suspense>
       )}
       <div className="mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 -m-12">

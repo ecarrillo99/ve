@@ -1,19 +1,20 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import Icons from "../../../global/icons";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   endRemoteSession,
   getPermissions,
   loginRemote,
   setPermissionsAdmin,
 } from "../../../controllers/suscripcion/suscripcionController";
-import { ClickAwayListener } from "@material-ui/core";
+import { ClickAwayListener } from "@mui/material";
 import { Spinner } from "@material-tailwind/react";
 import {
   FacebookAuthProvider,
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
+
 import { auth } from "../../../firebase";
 import encodePass from "../../../global/encodePass";
 import Config from "../../../global/config";
@@ -27,7 +28,6 @@ const Navbar = ({ activo, isExposed = false }) => {
   const location = useLocation();
   const [openProfile, setOpenProfile] = useState(false);
   const [openSuscription, setOpenSuscription] = useState(false);
-  const [openNosotros, setOpenNosotros] = useState(false);
   const [openConvenios, setOpenConvenios] = useState(false);
   const session = JSON.parse(localStorage.getItem("datos"));
   const nivel = session ? session.data.nivel : "visitante";
@@ -44,6 +44,8 @@ const Navbar = ({ activo, isExposed = false }) => {
   const gProvider = new GoogleAuthProvider();
   const fProvider = new FacebookAuthProvider();
   const isExposedRoute = location.pathname === "/disney" || isExposed;
+
+  const [openBeneficios, setOpenBeneficios] = useState(false);
 
   const handleClickLogin = () => {
     navigate("/login");
@@ -73,6 +75,10 @@ const Navbar = ({ activo, isExposed = false }) => {
 
   const handleClickYaGanaste = () => {
     navigate("/yaganaste");
+  };
+
+  const handleClickBeneficios = (name) => {
+    navigate(name);
   };
 
   const handleClickDashboard = () => {
@@ -210,7 +216,7 @@ const Navbar = ({ activo, isExposed = false }) => {
           try {
             const random = () => Math.floor(Math.random() * 100);
             const randomStr = Array.from({ length: 7 }, () => random()).join(
-              ""
+              "",
             );
             const username =
               user.displayName ?? "usuario" + randomStr.substring(0, 6);
@@ -570,14 +576,14 @@ const Navbar = ({ activo, isExposed = false }) => {
               </div>
             </div>
           )}
-          <div className=" flex  justify-center gap-52 relative z-0">
-            <div className="flex w-11/12 gap-2 items-end  mt-4 sm:mt-0">
+          <div className=" relative z-40 w-full flex justify-center">
+            <div className="flex w-full max-w-7xl items-center justify-between px-4">
               {(activo > 0 ||
                 location.pathname === "/suscripcion ||" ||
                 location.pathname.includes("/busqueda")) && (
-                <>
+                <div className="flex gap-2 items-end mt-4 sm:mt-0 flex-wrap">
                   <button
-                    className={`flex gap-1 border-2 ${
+                    className={`flex w-fit gap-1 border-2 ${
                       activo == 1 ? "border-white" : "border-transparent "
                     } text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white `}
                     onClick={handleClickInicio}
@@ -619,9 +625,59 @@ const Navbar = ({ activo, isExposed = false }) => {
                       Disney Concierge
                     </label>
                   </button>
+                  <div
+                    className="relative"
+                    onMouseEnter={() => setOpenBeneficios(true)}
+                    onMouseLeave={() => setOpenBeneficios(false)}
+                  >
+                    <button
+                      className={`flex gap-1 border-2 ${
+                        activo == 4 ? "border-white" : "border-transparent"
+                      } text-white rounded-full px-3 py-1 text-xs items-center hover:border-white`}
+                    >
+                      <div
+                        className="rounded-full bg-white p-1"
+                        style={{ height: "25px", width: "25px" }}
+                      >
+                        <img
+                          src="https://visitaecuador.com/img/web/visas-concierge.jpeg"
+                          className="rounded-full"
+                          style={{ height: "100%", width: "100%" }}
+                        />
+                      </div>
+                      <label className="hidden md:flex cursor-pointer">
+                        Beneficios
+                      </label>
+                    </button>
+
+                    {openBeneficios && (
+                      <div className="absolute left-0 pt-2 w-48 z-[60]">
+                        <div className="rounded-md bg-white shadow-xl">
+                          <button
+                            onClick={() => {
+                              setOpenBeneficios(false);
+                              handleClickBeneficios("vinos");
+                            }}
+                            className="w-full text-left px-4 py-2 text-xs text-greenVE-500 hover:text-white hover:bg-greenVE-500 rounded-t-md"
+                          >
+                            Ruta de vinos
+                          </button>
+                          <button
+                            onClick={() => {
+                              setOpenBeneficios(false);
+                              handleClickBeneficios("byd");
+                            }}
+                            className="w-full text-left px-4 py-2 text-xs text-greenVE-500 hover:text-white hover:bg-greenVE-500"
+                          >
+                            Puntos de carga
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                   <button
                     className={`flex gap-1 border-2 ${
-                      activo == 4 ? "border-white" : "border-transparent"
+                      activo == 5 ? "border-white" : "border-transparent"
                     } text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`}
                     onClick={handleClickVisas}
                   >
@@ -639,7 +695,7 @@ const Navbar = ({ activo, isExposed = false }) => {
                       Visas
                     </label>
                   </button>
-                </>
+                </div>
               )}
             </div>
             {!codigo && <MarcaPais />}

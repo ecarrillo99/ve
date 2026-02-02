@@ -1,5 +1,3 @@
-// clase generica para el consumo de APIS
-
 import axios from "axios"; // Importa la biblioteca axios si no la tienes instalada
 import Config from "../global/config";
 

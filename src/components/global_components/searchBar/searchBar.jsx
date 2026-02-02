@@ -1,11 +1,10 @@
 import { DateRange } from "react-date-range";
-//import { DatePicker } from "react-datepicker";
 import { useEffect, useState } from "react";
 import { es } from "react-date-range/dist/locale/";
-import "react-date-range/dist/styles.css"; // main css file
-import "react-date-range/dist/theme/default.css"; // theme css file
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
 import { useNavigate } from "react-router-dom";
-import { ClickAwayListener } from "@material-ui/core";
+import { ClickAwayListener } from "@mui/material";
 import { getEstablacimientoDestino } from "../../../controllers/establecimiento/establecimientoController";
 import Icons from "../../../global/icons";
 
@@ -13,10 +12,9 @@ const SearchBar = (props) => {
   const { Place, Dates, Options, type } = props;
   const [inputValue, setInputValue] = useState("");
   const icons = new Icons();
+
+  // Modificar handleClickAway para NO cerrar si se hace clic dentro del DateRange
   const handleClickAway = () => {
-    if (openDate) {
-      setOpenDate(false);
-    }
     if (openOptions) {
       setOpenOptions(false);
     }
@@ -24,6 +22,12 @@ const SearchBar = (props) => {
       setSuggestion(null);
     }
   };
+
+  // Manejador separado solo para el DateRange
+  const handleDateClickAway = () => {
+    setOpenDate(false);
+  };
+
   const [destination, setDestination] = useState(
     Place != null
       ? Place
@@ -149,7 +153,7 @@ const SearchBar = (props) => {
       }
     }, 500);
 
-    return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta o el valor cambia
+    return () => clearTimeout(timer);
   }, [inputValue]);
 
   const handleChange = (value) => {
@@ -231,7 +235,7 @@ const SearchBar = (props) => {
                 new Date(date[0].endDate)
               )}`}</span>
               {openDate && (
-                <ClickAwayListener onClickAway={handleClickAway}>
+                <ClickAwayListener onClickAway={handleDateClickAway}>
                   <div className="absolute top-0 left-0 z-50 mt-11">
                     <DateRange
                       editableDateInputs={true}
@@ -461,35 +465,37 @@ const SearchBar = (props) => {
           <label className="text-sm ">Fecha de entrada y salida</label>
           <span
             onClick={() => setOpenDate(!openDate)}
-            className="flex items-center justify-center bg-white text-sm mt-1 h-7"
+            className="flex items-center justify-center bg-white text-sm mt-1 h-7 cursor-pointer"
           >{`${formatDate(new Date(date[0].startDate))} - ${formatDate(
             new Date(date[0].endDate)
           )}`}</span>
           {openDate && (
-            <ClickAwayListener onClickAway={handleClickAway}>
-              <DateRange
-                editableDateInputs={true}
-                onChange={(item) =>
-                  handleChangeDate([
-                    item.selection ? item.selection : item["Invalid Date"],
-                  ])
-                }
-                moveRangeOnFirstSelection={false}
-                ranges={date}
-                locale={es}
-                months={1}
-                direction="horizontal"
-                className="absolute mt-1 shadow-xl z-50"
-                rangeColors={["#96c121"]}
-                minDate={new Date()}
-              />
+            <ClickAwayListener onClickAway={handleDateClickAway}>
+              <div className="absolute mt-1 z-50">
+                <DateRange
+                  editableDateInputs={true}
+                  onChange={(item) =>
+                    handleChangeDate([
+                      item.selection ? item.selection : item["Invalid Date"],
+                    ])
+                  }
+                  moveRangeOnFirstSelection={false}
+                  ranges={date}
+                  locale={es}
+                  months={1}
+                  direction="horizontal"
+                  className="shadow-xl"
+                  rangeColors={["#96c121"]}
+                  minDate={new Date()}
+                />
+              </div>
             </ClickAwayListener>
           )}
           <div className="mt-2">
             <label className="text-sm">Personas y habitaciones</label>
           </div>
           <span
-            className="flex items-center justify-center bg-white  text-sm h-7 z-50 mb-1"
+            className="flex items-center justify-center bg-white  text-sm h-7 z-50 mb-1 cursor-pointer"
             onClick={() => setOpenOptions(!openOptions)}
           >{`${options.adult} ${options.adult > 1 ? "adultos" : "adulto"} · 
                     ${options.children} ${
