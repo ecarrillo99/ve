@@ -10,7 +10,6 @@ import DatafastFormUI from "../../components/suscription_components/FormPayment/
 import DataFastForm from "../../components/suscription_components/FormPayment/DataFastForm";
 import Icons from "../../global/icons";
 import FormPayment from "../../components/suscription_components/FormPayment/FormPayment";
-import NavbarMobile from "../../components/global_components/navbar/NavbarMobile";
 import BuySuscription from "../../components/suscription_components/buy_suscription";
 import { useLocation } from "react-router-dom";
 import DataSuscription from "../../components/suscription_components/data_suscription";
@@ -123,11 +122,8 @@ const Suscription = () => {
     };
     return (
         <div>
-            {
-                isMobile
-                ?<NavbarMobile/>
-                :<Navbar/>
-            }
+          <Navbar/>
+            
                 {/*
                     <iframe
                         src="https://visitaecuador.com/compra"

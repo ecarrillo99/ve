@@ -9,9 +9,6 @@ import {
 const Navbar = lazy(
   () => import("../../components/global_components/navbar/Navbar"),
 );
-const NavbarMobile = lazy(
-  () => import("../../components/global_components/navbar/NavbarMobile"),
-);
 const Footer = lazy(
   () => import("../../components/global_components/footer/Footer"),
 );
@@ -72,15 +69,10 @@ const VisasConcierge = () => {
 
   return (
     <>
-      {isMobile ? (
-        <Suspense fallback={<NavbarSkeleton />}>
-          <NavbarMobile activo={5} />
-        </Suspense>
-      ) : (
+    
         <Suspense fallback={<NavbarSkeleton />}>
           <Navbar activo={5} />
         </Suspense>
-      )}
       <div className="mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 -m-12">
         <div className="flex items-center justify-center mt-20  mb-10">
           <img

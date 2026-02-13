@@ -179,9 +179,15 @@ const Search = () => {
   }
 
   const [checkboxStates, setCheckboxStates] = useState([]);
-  const { isLoaded } = useLoadScript({
+  const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: 'AIzaSyAwURL3bmODrFj1G0RUpgVT6DlGvlkhQzo',//"AIzaSyA6HUJy-ywbROEmCSK-Nx4-smVRLRVyR84",
   });
+
+  useEffect(() => {
+    if (loadError) {
+      console.error('Google Maps load error:', loadError);
+    }
+  }, [loadError]);
 
   const handleCheckBoxChange = (id) => {
     setCheckboxStates(prevState => {

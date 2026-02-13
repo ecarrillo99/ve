@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Galleria } from "primereact/galleria";
-import HotelServices from "./HotelServices";
+import HotelServices from "../hotelComponents/HotelServices";
 import { ClickAwayListener } from "@mui/material";
 import {
   changeFavoritoStatus,

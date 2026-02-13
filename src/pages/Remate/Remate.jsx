@@ -1,5 +1,4 @@
 import React, { Suspense, useEffect, useState } from 'react';
-import NavbarMobile from '../../components/global_components/navbar/NavbarMobile';
 import Navbar from '../../components/global_components/navbar/Navbar';
 import Footer from '../../components/global_components/footer/Footer';
 
@@ -19,11 +18,8 @@ const Remate = () => {
     }, []);
     return (
         <>
-        {
-            isMobile
-            ?<Suspense><NavbarMobile activo={1}/></Suspense>
-            :<Suspense><Navbar activo={1}/></Suspense>
-        }
+       <Suspense><Navbar activo={1}/></Suspense>
+        
         <div className='flex justify-center'>
             <iframe src='https://www.visitaecuador.com/ve/ofertas_remate.php' className='w-[955px] h-[1100px]'/>
         </div>

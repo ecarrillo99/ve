@@ -6,7 +6,6 @@ import HistoryItem from "../../components/booking_history_components/HistoryItem
 import HistoryItemSkeleton from "../../components/booking_history_components/HistoryItemSkeleton";
 import { sessionStatus } from "../../global/util";
 import { Navigate } from "react-router-dom";
-import NavbarMobile from "../../components/global_components/navbar/NavbarMobile";
 
 const BookHistory =({isAuth})=>{
     const [data, setData]=useState();
@@ -46,11 +45,9 @@ const BookHistory =({isAuth})=>{
     return(
         sessionStatus()?(
             <div>
-                {
-                    isMobile
-                    ?<NavbarMobile/>
-                    :<Navbar/>
-                }
+              
+                    <Navbar/>
+              
                 <div className="flex flex-col mx-5 md:mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 gap-7">
                     <h1 className="font-semibold text-3xl">Historial de reservas</h1>
                     <div className="flex flex-col gap-5">

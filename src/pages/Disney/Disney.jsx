@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Footer from "../../components/global_components/footer/Footer";
 import Navbar from "../../components/global_components/navbar/Navbar";
-import NavbarMobile from "../../components/global_components/navbar/NavbarMobile";
 import {useLocation} from "react-router-dom";
 
 const Disney=()=>{
@@ -24,11 +23,8 @@ const Disney=()=>{
 
     return (
         <div>
-            {
-                isMobile
-                ?<NavbarMobile activo={2}/>
-                :<Navbar activo={2}/>
-            }
+      <Navbar activo={3}/>
+            
                 <iframe
                     src="https://disneyconcierge.app/"
                     width="100%"

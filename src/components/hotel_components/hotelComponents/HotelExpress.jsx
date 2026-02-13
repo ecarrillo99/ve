@@ -7,7 +7,7 @@ import Config from "../../../global/config";
 import HotelConfirmationDetail from "./HotelConfirmationDetail";
 import { loginRemote } from "../../../controllers/suscripcion/suscripcionController";
 
-const HotelExpress = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, OnClose, OnBack, Opciones, setCorrecto, correcto }) => {
+const HotelExpress = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, OnClose, OnBack, Opciones, setCorrecto, correcto, WineOffer }) => {
     const contactosHotel = Establecimiento.Contactos;
     const contactosCentral = Establecimiento.ContactosCentral;
     const user = JSON.parse(localStorage.getItem('datos'));
@@ -27,6 +27,21 @@ const HotelExpress = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, OnClo
     const [errorTelefono, setErrorTelefono] = useState(false);
     const [correo, setCorreo] = useState(nivel=="express"?email:null);
     const [errorCorreo, setErrorCorreo] = useState(false);
+
+    // Obtener información de la WineOffer
+    const getWineOfferInfo = () => {
+        if (!WineOffer) return null;
+        return {
+            titulo: WineOffer.TituloOferta || WineOffer.title || 'Oferta Ruta del Vino',
+            precio: parseFloat(WineOffer.price || WineOffer.Precio || 0),
+            imagen: WineOffer.FotoPrincipal || WineOffer.image || '',
+            descripcion: WineOffer.Detalle || WineOffer.description || '',
+            idOferta: WineOffer.IdOferta || WineOffer.id,
+            inventarios: WineOffer.inventories || WineOffer.Inventarios || [],
+        };
+    };
+
+    const wineOfferInfo = getWineOfferInfo();
 
     function formatDateToAAAAMMDD(date) {
         const year = date.getFullYear();
@@ -126,6 +141,21 @@ const HotelExpress = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, OnClo
                         });
                         total+=oferta.Final*parseInt(oferta.NumOfertas);
                     }
+
+                    // Añadir WineOffer a los datos de reserva si existe
+                    if (wineOfferInfo) {
+                        datosReserva.wine_offer = {
+                            id_oferta_vino: wineOfferInfo.idOferta,
+                            titulo: wineOfferInfo.titulo,
+                            precio: wineOfferInfo.precio,
+                            regalos: wineOfferInfo.inventarios.map(i => ({
+                                nombre: i.name,
+                                precio: i.price || 0
+                            }))
+                        };
+                        total += wineOfferInfo.precio;
+                    }
+
                     datosReserva.total_reserva=total;
 
                     createReservation(datosReserva,listaOfertas).then((res)=>{
@@ -138,26 +168,6 @@ const HotelExpress = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, OnClo
                             alert("Ha ocurrido un error, intente nuevamente o escriba a nuestra central de reservas")
                         }
                     });
-                    /*for (const oferta of Ofertas) {
-                        await createReservation(oferta.Id, Opciones.adult, Opciones.children, oferta.TotalOfertas, formatDateToAAAAMMDD(Fechas[0].startDate), formatDateToAAAAMMDD(Fechas[0].endDate), Opciones.childrenAges)
-                            .then((res) => {
-                                
-                                if (res) {
-                                    reservas.push(res.id_reserva)
-                                    
-                                } else {
-                                    alert("Ha ocurrido un error, intente nuevamente o escriba a nuestra central de reservas")
-                                }
-                            }).catch((error) => { ; setIsLoading(false) });
-                    }
-                    setIsLoading(false)
-                    if(reservas.length>0){
-                        setCorrecto(true);
-                        OnClose();
-                        sendMailReservaExpress(correo, reservas)
-                    }else {
-                        alert("Ha ocurrido un error, intente nuevamente o escriba a nuestra central de reservas")
-                    }*/
                 }else{
                     setIsLoading(false)
                     alert("Ha ocurrido un error, intente nuevamente")
@@ -178,12 +188,62 @@ const HotelExpress = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, OnClo
                         <div className="flex-col w-full justify-center">
                             <div className="flex flex-col w-full justify-center my-2 items-center">
                             <div className="flex justify-between w-full">
-                                <button className={` text-gray-400 text-2xl rounded-full h-8 w-8 `} onClick={() => OnBack()} disabled={isLoading}><span class="icon-[ep--back]"></span></button>
+                                <button className={` text-gray-400 text-2xl rounded-full h-8 w-8 `} onClick={() => OnBack()} disabled={isLoading}><span className="icon-[ep--back]"></span></button>
                                 <button className={` text-gray-400 text-2xl rounded-full h-8 w-8 `} onClick={() => OnClose()} disabled={isLoading}>x</button>
                             </div>
                                 <label className="font-semibold text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">Reserva</label>
                             </div>
-                            <HotelConfirmationDetail Ofertas={Ofertas} isOpen={isOpen} Establecimiento={Establecimiento} Fechas={Fechas} Valores={Valores} OnClose={OnClose} Opciones={Opciones} />
+                            <HotelConfirmationDetail 
+                                Ofertas={Ofertas} 
+                                isOpen={isOpen} 
+                                Establecimiento={Establecimiento} 
+                                Fechas={Fechas} 
+                                Valores={Valores} 
+                                OnClose={OnClose} 
+                                Opciones={Opciones}
+                                WineOffer={WineOffer}
+                            />
+                            
+                            {/* Sección de Wine Offer */}
+                            {wineOfferInfo && (
+                                <div className="border mb-2 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg overflow-hidden">
+                                    <div className="bg-amber-500 px-3 py-2">
+                                        <label className="text-white font-medium text-sm flex items-center gap-2">
+                                            🍷 Oferta Ruta del Vino Incluida
+                                        </label>
+                                    </div>
+                                    <div className="p-3">
+                                        <div className="flex items-start gap-3">
+                                            {wineOfferInfo.imagen && (
+                                                <img 
+                                                    src={wineOfferInfo.imagen} 
+                                                    alt={wineOfferInfo.titulo}
+                                                    className="w-14 h-14 object-cover rounded-lg"
+                                                />
+                                            )}
+                                            <div className="flex-1">
+                                                <h4 className="font-semibold text-gray-800 text-sm">{wineOfferInfo.titulo}</h4>
+                                                {wineOfferInfo.inventarios.length > 0 && (
+                                                    <div className="mt-1">
+                                                        <span className="text-xs text-amber-700">🎁 Regalos: </span>
+                                                        <span className="text-xs text-gray-600">
+                                                            {wineOfferInfo.inventarios.map(i => i.name).join(', ')}
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            {wineOfferInfo.precio > 0 && (
+                                                <div className="text-right">
+                                                    <span className="text-lg font-bold text-amber-600">
+                                                        ${wineOfferInfo.precio.toFixed(2)}
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
                             <div className="flex flex-col items-center ">
                                 <label className="font-semibold text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">Datos Personales</label>
                                 <div className="flex w-full mt-2">
@@ -202,7 +262,7 @@ const HotelExpress = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, OnClo
                             </div>
                         </div>
                     </div>
-                </div>``
+                </div>
             </div>
         </>
     );

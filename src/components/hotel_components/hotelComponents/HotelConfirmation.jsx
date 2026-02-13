@@ -6,7 +6,7 @@ import Icons from "../../../global/icons";
 import Config from "../../../global/config";
 import HotelConfirmationDetail from "./HotelConfirmationDetail";
 
-const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, OnClose, Opciones }) => {
+const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, OnClose, Opciones, WineOffer }) => {
     const contactosHotel = Establecimiento.Contactos;
     const contactosCentral = Establecimiento.ContactosCentral;
     const user = JSON.parse(localStorage.getItem('datos'));
@@ -24,31 +24,55 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
     if (!isOpen) return null;
 
     const formatDate = (date) => {
+        if (!date) return '-';
         const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
-        const formattedDate = date.toLocaleDateString('es-ES', options);
-        return formattedDate;
+        try {
+            return new Date(date).toLocaleDateString('es-ES', options);
+        } catch (e) {
+            return '-';
+        }
     };
 
     function formatDateToAAAAMMDD(date) {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}/${month}/${day}`;
+        if (!date) return '';
+        try {
+            const d = new Date(date);
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}/${month}/${day}`;
+        } catch (e) {
+            return '';
+        }
     }
 
     const fechaString = (fecha) => {
-        // Obtener el año, mes y día de la fecha
         const año = fecha.getFullYear();
-        const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Sumar 1 al mes ya que los meses van de 0 a 11
+        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
         const dia = String(fecha.getDate()).padStart(2, '0');
-
-        // Construir el string en el formato YYYY-MM-DD
         return `${año}-${mes}-${dia}`;
     }
 
+    const getWineOfferInfo = () => {
+        if (!WineOffer) return null;
+        return {
+            titulo: WineOffer.TituloOferta || WineOffer.title || 'Oferta Ruta del Vino',
+            precio: parseFloat(WineOffer.price || WineOffer.Precio || 0),
+            imagen: WineOffer.FotoPrincipal || WineOffer.image || '',
+            descripcion: WineOffer.Detalle || WineOffer.description || '',
+            idOferta: WineOffer.IdOferta || WineOffer.id,
+            inventarios: WineOffer.inventories || WineOffer.Inventarios || [],
+        };
+    };
+
+    const wineOfferInfo = getWineOfferInfo();
 
     const createCert = () => {
         if (!isCreatingcert) {
+            if (!Fechas || !Fechas[0]) {
+                console.error('Fechas not set. Cannot create certificate.');
+                return;
+            }
             setIsCreatingCert(true);
             var dataOfertas = [];
             var fechas = {
@@ -64,6 +88,16 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
                     }
                 );
             })
+
+            let wineOfferParams = '';
+            if (wineOfferInfo) {
+                wineOfferParams = `&WineOfferTitulo=${encodeURIComponent(wineOfferInfo.titulo)}` +
+                    `&WineOfferPrecio=${wineOfferInfo.precio}` +
+                    `&WineOfferImagen=${encodeURIComponent(wineOfferInfo.imagen)}` +
+                    `&WineOfferDescripcion=${encodeURIComponent(wineOfferInfo.descripcion)}` +
+                    `&WineOfferRegalos=${encodeURIComponent(wineOfferInfo.inventarios.map(i => i.name).join(', '))}`;
+            }
+
             getCertificado(
                 inputUser,
                 Establecimiento.IdEstablecimiento,
@@ -74,7 +108,7 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
             ).then((result) => {
                 setIsCreatingCert(false);
                 if (result) {
-                    window.open("/certificado?" + result, '_blank');
+                    window.open("/certificado?" + result + wineOfferParams, '_blank');
                 }
             });
         }
@@ -88,15 +122,27 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
         Ofertas.forEach(element => {
             habitaciones = habitaciones + (element.TotalOfertas) + "x " + element.TituloOferta + "\n"
         });
+
+        let wineOfferMensaje = "";
+        if (wineOfferInfo) {
+            wineOfferMensaje = `\n🍷 *Oferta Ruta del Vino:* ${wineOfferInfo.titulo}`;
+            if (wineOfferInfo.precio > 0) {
+                wineOfferMensaje += ` - $${wineOfferInfo.precio.toFixed(2)}`;
+            }
+            if (wineOfferInfo.inventarios.length > 0) {
+                wineOfferMensaje += `\n🎁 Regalos incluidos: ${wineOfferInfo.inventarios.map(i => i.name).join(', ')}`;
+            }
+        }
+
         const total = "$" + Valores.SinImpuestos + " más $" + Valores.Impuestos + " de impuestos y cargos";
         const msj = Config.MENSAJE
             .replaceAll("{{nombre}}", nombre)
             .replaceAll("{{id}}", id)
             .replaceAll("{{hotel}}", Establecimiento.Titulo)
-            .replaceAll("{{checkin}}", formatDate(Fechas[0].startDate))
-            .replaceAll("{{checkout}}", formatDate(Fechas[0].endDate))
+            .replaceAll("{{checkin}}", formatDate(Fechas?.[0]?.startDate))
+            .replaceAll("{{checkout}}", formatDate(Fechas?.[0]?.endDate))
             .replaceAll("{{personas}}", personas)
-            .replaceAll("{{habitaciones}}", habitaciones)
+            .replaceAll("{{habitaciones}}", habitaciones + wineOfferMensaje)
             .replaceAll("{{total}}", total);
         return msj
     }
@@ -121,6 +167,11 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
 
                 var listaOfertas=[];
                 
+                if (!Fechas || !Fechas[0]) {
+                    console.error('Fechas not set. Cannot proceed with booking.');
+                    setIsLoading(false);
+                    return;
+                }
                 for (const oferta of Ofertas) {
                     listaOfertas.push({
                         "id_tbl_establecimiento": oferta.IdEstablecimiento,
@@ -135,6 +186,20 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
                     });
                     total+=oferta.Final*parseInt(oferta.NumOfertas);
                 }
+
+                if (wineOfferInfo) {
+                    datosReserva.wine_offer = {
+                        id_oferta_vino: wineOfferInfo.idOferta,
+                        titulo: wineOfferInfo.titulo,
+                        precio: wineOfferInfo.precio,
+                        regalos: wineOfferInfo.inventarios.map(i => ({
+                            nombre: i.name,
+                            precio: i.price || 0
+                        }))
+                    };
+                    total += wineOfferInfo.precio;
+                }
+
                 datosReserva.total_reserva=total;
 
                 createReservation(datosReserva,listaOfertas).then((res)=>{
@@ -143,176 +208,203 @@ const HotelConfirmation = ({ Ofertas, isOpen, Establecimiento, Fechas, Valores, 
                         navigate("/historial");
                     }
                 });
-                    /*await createReservation(oferta.Id, Opciones.adult, Opciones.children, oferta.TotalOfertas, formatDateToAAAAMMDD(Fechas[0].startDate), formatDateToAAAAMMDD(Fechas[0].endDate), Opciones.childrenAges)
-                        .then((res) => {
-                            if (res) {
-                                if (res == 401) {
-                                    localStorage.removeItem("datos");
-                                    window.location.reload();
-                                }
-                            } else {
-                                correcto = false;
-                            }
-                        }).catch((error) => { });
-                }
-                setIsLoading(false)
-                if (correcto) {
-                    
-                }*/
             } catch (e) {
             }
         }
     };
 
     return (
-        <>
-            <div className="fixed inset-0 flex items-center justify-center z-40">
-                <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-                <div className="w-full md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-1/3 m-6 z-50">
-                    <div className="bg-white p-2 rounded-md flex justify-center">
-                        <div className="flex-col w-full justify-center">
-                            <div className="flex flex-col w-full justify-center my-2 items-center">
-                                <button className={`bg-${isLoading ? 'gray-500' : 'red-600'} text-white rounded-full h-8 w-8 font-bold`} onClick={() => OnClose()} disabled={isLoading}>X</button>
-                                <label className="font-semibold text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">Reserva</label>
-                            </div>
-                            <HotelConfirmationDetail Ofertas={Ofertas} isOpen={isOpen} Establecimiento={Establecimiento} Fechas={Fechas} Valores={Valores} OnClose={OnClose} Opciones={Opciones} />
-                            <div className="flex">
-                                <div className="w-1/2 text-center font-semibold">
-                                    <label>Directo al hotel</label>
-                                    {
-                                        contactosHotel.Telefono.length > 0 && (
-                                            <>
-                                                {
-                                                    contactosHotel.Telefono.map((item) => (
-                                                        <div className="flex border-2 border-greenVE-300 rounded-md mx-3 py-1 bg-greenVE-50 mb-2">
-                                                            <div className="flex items-center w-2/12">
-                                                                <div dangerouslySetInnerHTML={{ __html: icons.Data.Telefono }} />
-                                                            </div>
-                                                            <div className="flex flex-col w-8/12 justify-start items-start">
-                                                                <label className="text-sm">Teléfono</label>
-                                                                <div className="font-normal text-xs">{item}</div>
-                                                            </div>
-                                                        </div>
-                                                    ))
-                                                }
-                                            </>
-                                        )
-                                    }
-                                    {
-                                        contactosHotel.Whatsapp.length > 0 && (
-                                            <>
-                                                {
-                                                    contactosHotel.Whatsapp.map((item) => (
-                                                        <div className="flex border-2 border-greenVE-300 rounded-md mx-3 py-1 bg-greenVE-50 mb-2">
-                                                            <div className="flex items-center w-2/12">
-                                                                <div dangerouslySetInnerHTML={{ __html: icons.Data.WhatsApp }} />
-                                                            </div>
-                                                            <div className="flex flex-col w-8/12 justify-start items-start">
-                                                                <label className="text-sm">WhatsApp</label>
-                                                                <div className="font-normal text-xs cursor-pointer hover:underline hover:text-blue-500" onClick={() => handleClickWhatsApp(item.replaceAll("+", "").replaceAll(" ", ""))}>{item}</div>
-                                                            </div>
-                                                        </div>
-                                                    ))
-                                                }
-                                            </>
-                                        )
-                                    }
-                                    {
-                                        contactosHotel.Email.length > 0 && (
-                                            <>
-                                                {
-                                                    contactosHotel.Email.map((item) => (
-                                                        <div className="flex border-2 border-greenVE-300 rounded-md mx-3 py-1 bg-greenVE-50 mb-2">
-                                                            <div className="flex items-center w-2/12">
-                                                                <div dangerouslySetInnerHTML={{ __html: icons.Data.Email }} />
-                                                            </div>
-                                                            <div className="flex flex-col w-8/12 justify-start items-start">
-                                                                <label className="text-sm">Email</label>
-                                                                <div className="font-normal text-ellipsis text-start text-xs cursor-pointer hover:underline hover:text-blue-500" style={{ maxWidth: '100%', overflowWrap: 'break-word' }} onClick={() => handleClickEmail(item)}>{item}</div>
-                                                            </div>
-                                                        </div>
-                                                    ))
-                                                }
-                                            </>
-                                        )
-                                    }
-                                </div>
-                                <div className="w-1/2 text-center font-semibold">
-                                    <label>Central de reserva</label>
-                                    {
-                                        contactosCentral.Whatsapp.length > 0 && (
-                                            <>
-                                                {
-                                                    contactosCentral.Whatsapp.map((item) => (
-                                                        <div className="flex border-2 border-greenVE-300 rounded-md mx-3 py-1 bg-greenVE-50 mb-2">
-                                                            <div className="flex items-center w-2/12">
-                                                                <div dangerouslySetInnerHTML={{ __html: icons.Data.WhatsApp }} />
-                                                            </div>
-                                                            <div className="flex flex-col w-8/12 justify-start items-start">
-                                                                <label className="text-sm">WhatsApp / Teléfono</label>
-                                                                <div className="font-normal text-xs cursor-pointer hover:underline hover:text-blue-500" onClick={() => handleClickWhatsApp(item.formateado.replaceAll("+", "").replaceAll(" ", ""))}>{item.valor}</div>
-                                                            </div>
-                                                        </div>
-                                                    ))
-                                                }
-                                            </>
-                                        )
-                                    }
-                                    {
-                                        contactosCentral.Email.length > 0 && (
-                                            <>
-                                                {
-                                                    contactosCentral.Email.map((item) => (
-                                                        <div className="flex border-2 border-greenVE-300 rounded-md mx-3 py-1 bg-greenVE-50 mb-2">
-                                                            <div className="flex items-center w-2/12">
-                                                                <div dangerouslySetInnerHTML={{ __html: icons.Data.Email }} />
-                                                            </div>
-                                                            <div className="flex flex-col w-8/12 justify-start items-start">
-                                                                <label className="text-sm">Email</label>
-                                                                <div className="font-normal text-ellipsis text-start text-xs cursor-pointer hover:underline hover:text-blue-500" style={{ maxWidth: '100%', overflowWrap: 'break-word' }} onClick={() => handleClickEmail(item.valor)}>{item.valor}</div>
-                                                            </div>
-                                                        </div>
-                                                    ))
-                                                }
-                                            </>
-                                        )
-                                    }
-                                    <div className="flex border-2 border-orange-300 cursor-pointer rounded-md mx-3 py-1 bg-orange-50 mb-2" onClick={() => handleClickAceptar()}>
-                                        <div className="flex items-center w-2/12">
-                                            <div dangerouslySetInnerHTML={{ __html: icons.Data.Web }} />
-                                        </div>
-                                        <div className="flex flex-col w-8/12 justify-start items-start cursor-pointer">
-                                            <label className="text-sm cursor-pointer">Reservar en la web</label>
-                                            <div className="font-normal text-xs cursor-pointer hover:underline hover:text-blue-500">Click para pre-reservar</div>
-                                        </div>
-                                        <div className="flex items-center just-end w-2/12 cursor-pointer">
-                                            {isLoading ? <Spinner color="white"></Spinner> : <></>}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="border m-4 flex flex-col justify-center items-center rounded-lg">
-                                <label className="text-md  font-semibold">Generar Certificado</label>
-                                <label className="text-sm">Llena el campo solo si el certificado no es para el titular de esta cuenta.</label>
-                                <div className="flex gap-3 mb-2 mt-2 w-3/4">
-                                    <input
-                                        className="border-2 border-greenVE-500 rounded-md px-2 py-1 w-1/2 outline-none "
-                                        type="text"
-                                        value={inputUser}
-                                        onChange={handleInputUserChange}
-                                        placeholder="Ingresar Id de Usuario" />
-                                    <button className={`bg-greenVE-500 text-white px-2 py-1 rounded-md w-full md:w-1/2`} onClick={() => createCert(true)} disabled={isLoading}>{isCreatingcert ? <div className=" flex items-center justify-center "><Spinner color="#36D7B7" size={150} /></div> : "Generar Certificado"}</button>
-                                </div>
-                            </div>
-                            <div className="flex w-full justify-center mt-6 mb-2 gap-2">
+        <div className=" fixed inset-0 flex items-center justify-center z-40">
+            <div className="absolute inset-0 bg-gray-500 opacity-75" onClick={() => !isLoading && OnClose()}></div>
+            <div className="w-full md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-1/3 m-6 z-50 max-h-[90vh] overflow-y-auto ">
+                <div className="bg-white rounded-lg shadow-lg">
+                    {/* Header */}
+                    <div className="bg-greenVE-600 p-4 rounded-t-lg relative">
+                        <button 
+                            className={`absolute top-4 right-4 ${isLoading ? 'bg-gray-400' : 'bg-white hover:bg-gray-100'} text-greenVE-600 rounded-full h-8 w-8 font-bold transition-colors flex items-center justify-center`} 
+                            onClick={() => OnClose()} 
+                            disabled={isLoading}
+                        >
+                            X
+                        </button>
+                        <h2 className="text-white text-xl font-semibold text-center pr-8">Confirmar Reserva</h2>
+                        <p className="text-white text-sm text-center mt-1">Revisa los detalles y elige cómo contactar</p>
+                    </div>
 
+                    <div className="p-4">
+                        {/* Detalles */}
+                        <HotelConfirmationDetail 
+                            Ofertas={Ofertas} 
+                            isOpen={isOpen} 
+                            Establecimiento={Establecimiento} 
+                            Fechas={Fechas} 
+                            Valores={Valores} 
+                            OnClose={OnClose} 
+                            Opciones={Opciones}
+                            WineOffer={WineOffer}
+                        />
+                       
+                        {/* Contactos */}
+                        <div className="flex flex-wrap gap-4 mt-4">
+                            {/* Directo al hotel */}
+                             {contactosHotel.Whatsapp.length > 0 && contactosHotel.Telefono.length > 0 && contactosHotel.Email.length > 0 && (
+                            <div>
+                                <h3 className="font-semibold text-center mb-3 flex items-center justify-center gap-2">
+                                    <span className="icon-[mdi--hotel] h-5 w-5 text-greenVE-600"></span>
+                                    Directo al hotel
+                                </h3>
+                                <div className="flex flex-wrap space-y-2">
+                                    {contactosHotel.Whatsapp.length > 0 && contactosHotel.Whatsapp.map((item, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => handleClickWhatsApp(item.replaceAll("+", "").replaceAll(" ", ""))}
+                                            className="w-full flex items-center gap-3 p-3 bg-white border border-gray-200 hover:border-green-400 rounded-lg transition-all"
+                                        >
+                                            <div className="bg-green-100 p-2 rounded-lg">
+                                                <span className="icon-[mdi--whatsapp] h-5 w-5 text-green-600"></span>
+                                            </div>
+                                            <div className="flex-1 text-left">
+                                                <p className="text-xs text-gray-500">WhatsApp</p>
+                                                <p className="text-sm font-medium text-gray-700">{item}</p>
+                                            </div>
+                                            <span className="icon-[material-symbols--arrow-forward-ios-rounded] h-4 w-4 text-gray-400"></span>
+                                        </button>
+                                    ))}
+
+                                    {contactosHotel.Telefono.length > 0 && contactosHotel.Telefono.map((item, index) => (
+                                        <a
+                                            key={index}
+                                            href={`tel:${item}`}
+                                            className="w-full flex items-center gap-3 p-3 bg-white border border-gray-200 hover:border-blue-400 rounded-lg transition-all"
+                                        >
+                                            <div className="bg-blue-100 p-2 rounded-lg">
+                                                <span className="icon-[ph--phone-bold] h-5 w-5 text-blue-600"></span>
+                                            </div>
+                                            <div className="flex-1 text-left">
+                                                <p className="text-xs text-gray-500">Teléfono</p>
+                                                <p className="text-sm font-medium text-gray-700">{item}</p>
+                                            </div>
+                                            <span className="icon-[material-symbols--arrow-forward-ios-rounded] h-4 w-4 text-gray-400"></span>
+                                        </a>
+                                    ))}
+
+                                    {contactosHotel.Email.length > 0 && contactosHotel.Email.map((item, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => handleClickEmail(item)}
+                                            className="w-full flex items-center gap-3 p-3 bg-white border border-gray-200 hover:border-red-400 rounded-lg transition-all"
+                                        >
+                                            <div className="bg-red-100 p-2 rounded-lg">
+                                                <span className="icon-[material-symbols--mail-outline-rounded] h-5 w-5 text-red-600"></span>
+                                            </div>
+                                            <div className="flex-1 text-left overflow-hidden">
+                                                <p className="text-xs text-gray-500">Email</p>
+                                                <p className="text-sm font-medium text-gray-700 truncate">{item}</p>
+                                            </div>
+                                            <span className="icon-[material-symbols--arrow-forward-ios-rounded] h-4 w-4 text-gray-400"></span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>)}
+
+                            {/* Central de reservas */}
+                            <div>
+                                <h3 className="font-semibold text-center mb-3 flex items-center justify-center gap-2">
+                                    <span className="icon-[ph--phone-bold] h-5 w-5 text-greenVE-600"></span>
+                                    Central de reservas
+                                </h3>
+                                <div className="flex flex-wrap space-y-2">
+                                    {contactosCentral.Whatsapp.length > 0 && contactosCentral.Whatsapp.map((item, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => handleClickWhatsApp(item.formateado.replaceAll("+", "").replaceAll(" ", ""))}
+                                            className="w-full flex items-center gap-3 p-3 bg-white border border-gray-200 hover:border-green-400 rounded-lg transition-all"
+                                        >
+                                            <div className="bg-green-100 p-2 rounded-lg">
+                                                <span className="icon-[mdi--whatsapp] h-5 w-5 text-green-600"></span>
+                                            </div>
+                                            <div className="flex-1 text-left">
+                                                <p className="text-xs text-gray-500">WhatsApp</p>
+                                                <p className="text-sm font-medium text-gray-700">{item.valor}</p>
+                                            </div>
+                                            <span className="icon-[material-symbols--arrow-forward-ios-rounded] h-4 w-4 text-gray-400"></span>
+                                        </button>
+                                    ))}
+
+                                    {contactosCentral.Email.length > 0 && contactosCentral.Email.map((item, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => handleClickEmail(item.valor)}
+                                            className="w-full flex items-center gap-3 p-3 bg-white border border-gray-200 hover:border-red-400 rounded-lg transition-all"
+                                        >
+                                            <div className="bg-red-100 p-2 rounded-lg">
+                                                <span className="icon-[material-symbols--mail-outline-rounded] h-5 w-5 text-red-600"></span>
+                                            </div>
+                                            <div className="flex-1 text-left overflow-hidden">
+                                                <p className="text-xs text-gray-500">Email</p>
+                                                <p className="text-sm font-medium text-gray-700 truncate">{item.valor}</p>
+                                            </div>
+                                            <span className="icon-[material-symbols--arrow-forward-ios-rounded] h-4 w-4 text-gray-400"></span>
+                                        </button>
+                                    ))}
+
+                                    {/* Reservar en la web */}
+                                    <button
+                                        onClick={handleClickAceptar}
+                                        disabled={isLoading}
+                                        className="w-full flex items-center gap-3 p-3 bg-orange-500 hover:bg-orange-600 rounded-lg transition-all disabled:opacity-50"
+                                    >
+                                        <div className="bg-white/20 p-2 rounded-lg">
+                                            <span className="icon-[mdi--web] h-5 w-5 text-white"></span>
+                                        </div>
+                                        <div className="flex-1 text-left">
+                                            <p className="text-xs text-white">Reservar en la web</p>
+                                            <p className="text-sm font-medium text-white">Click para pre-reservar</p>
+                                        </div>
+                                        {isLoading ? (
+                                            <Spinner color="white" className="h-5 w-5" />
+                                        ) : (
+                                            <span className="icon-[material-symbols--arrow-forward-ios-rounded] h-4 w-4 text-white"></span>
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Certificado */}
+                        <div className="mt-4 bg-greenVE-50 border border-greenVE-200 rounded-lg p-4">
+                            <div className="flex items-center justify-center gap-2 mb-3">
+                                <span className="icon-[ph--certificate] h-6 w-6 text-greenVE-600"></span>
+                                <h3 className="font-semibold text-greenVE-700">Generar Certificado</h3>
+                            </div>
+                            <p className="text-sm text-center text-gray-600 mb-3">
+                                Llena el campo solo si el certificado no es para el titular de esta cuenta
+                            </p>
+                            <div className="flex gap-3">
+                                <input
+                                    className="flex-1 border border-greenVE-300 focus:border-greenVE-500 rounded-lg px-3 py-2 outline-none"
+                                    type="text"
+                                    value={inputUser}
+                                    onChange={handleInputUserChange}
+                                    placeholder="ID de Usuario (opcional)"
+                                />
+                                <button 
+                                    className="bg-greenVE-600 hover:bg-greenVE-700 text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50" 
+                                    onClick={createCert} 
+                                    disabled={isCreatingcert}
+                                >
+                                    {isCreatingcert ? (
+                                        <Spinner color="white" className="h-5 w-5" />
+                                    ) : (
+                                        "Generar Certificado"
+                                    )}
+                                </button>
                             </div>
                         </div>
                     </div>
-                </div>``
+                </div>
             </div>
-        </>
-
+        </div>
     );
 };
 

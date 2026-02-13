@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Galleria } from 'primereact/galleria';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Maximize2, ZoomIn } from 'lucide-react';
 
 const HotelGallery = (props) => {
     const { Galeria } = props;
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [activeIndex, setActiveIndex] = useState(0);
+    const [isImageLoaded, setIsImageLoaded] = useState(false);
+    const [imageTransition, setImageTransition] = useState(false);
 
     const images = Galeria.map(item => ({
         itemImageSrc: item["Valor"],
@@ -14,6 +16,36 @@ const HotelGallery = (props) => {
         title: 'Gallery Image'
     }));
 
+    // Prevenir scroll cuando está en fullscreen
+    useEffect(() => {
+        if (isFullscreen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isFullscreen]);
+
+    // Keyboard navigation
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (!isFullscreen) return;
+            
+            if (e.key === 'Escape') {
+                setIsFullscreen(false);
+            } else if (e.key === 'ArrowLeft') {
+                handleNavigation('prev');
+            } else if (e.key === 'ArrowRight') {
+                handleNavigation('next');
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isFullscreen, activeIndex]);
+
     const handleBackgroundClick = (e) => {
         if (e.target === e.currentTarget) {
             setIsFullscreen(false);
@@ -21,105 +53,196 @@ const HotelGallery = (props) => {
     };
 
     const handleNavigation = (direction) => {
-        if (direction === 'prev') {
-            setActiveIndex(prev => prev > 0 ? prev - 1 : images.length - 1);
-        } else {
-            setActiveIndex(prev => prev < images.length - 1 ? prev + 1 : 0);
-        }
+        setImageTransition(true);
+        setTimeout(() => {
+            if (direction === 'prev') {
+                setActiveIndex(prev => prev > 0 ? prev - 1 : images.length - 1);
+            } else {
+                setActiveIndex(prev => prev < images.length - 1 ? prev + 1 : 0);
+            }
+            setImageTransition(false);
+        }, 200);
     };
 
-    const itemTemplate = (item) => {
+    const openFullscreen = (index) => {
+        setActiveIndex(index);
+        setIsFullscreen(true);
+        setIsImageLoaded(false);
+    };
+
+    const itemTemplate = (item, index) => {
         return (
-            <div
-                onClick={() => setIsFullscreen(true)}
-                className="cursor-pointer relative w-full h-[500px] overflow-hidden"
-            >
+            <div className="relative w-full h-[500px] overflow-hidden rounded-lg group">
                 <img
-                    className="absolute inset-0 w-full h-full object-contain"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                     src={item.itemImageSrc}
                     alt={item.alt}
                 />
+                {/* Overlay con efecto hover */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div className="absolute bottom-0 left-0 right-0 p-6 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500" >
+                        <button
+                            onClick={() => openFullscreen(index)}
+                            className="flex items-center gap-2 px-5 py-2.5 bg-white/95 backdrop-blur-sm text-gray-900 rounded-full font-medium hover:bg-white transition-all duration-300 shadow-lg hover:shadow-xl cursor-pointer"
+                            style={{cursor: "pointer"}}
+                        >
+                            <Maximize2 size={18} />
+                            <span className="text-sm">Ver galería completa</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         );
-    }
+    };
 
     const thumbnailTemplate = (item) => {
         return (
-            <div className="w-36 h-20 overflow-hidden">
+            <div className="mt-2 w-36 h-20 overflow-hidden rounded-md transition-all duration-300 hover:ring-2 hover:ring-blue-500 hover:ring-offset-2 cursor-pointer">
                 <img
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                     src={item.thumbnailImageSrc}
                     alt={item.alt}
                 />
             </div>
         );
-    }
+    };
 
-    const fullscreenItemTemplate = (item) => {
+    const fullscreenItemTemplate = () => {
         return (
-            <div className="flex flex-col justify-center items-center min-h-screen" onClick={handleBackgroundClick}>
-                <div className="relative max-w-7xl mx-auto">
-                    <button
-                        onClick={() => setIsFullscreen(false)}
-                        className="absolute top-4 right-4 z-50 text-white hover:text-gray-300 transition-colors"
-                        aria-label="Close"
-                    >
-                        <X size={24} />
-                    </button>
+            <div className="flex flex-col justify-center items-center min-h-screen px-4 py-0">
+                {/* Header bar */}
+                <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/80 to-transparent backdrop-blur-sm">
+                    <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+                        <div className="text-white/90 font-light tracking-wide">
+                            <span className="text-2xl font-semibold">{activeIndex + 1}</span>
+                            <span className="text-lg mx-2">/</span>
+                            <span className="text-lg text-white/60">{images.length}</span>
+                        </div>
+                        <button
+                            onClick={() => setIsFullscreen(false)}
+                            className="group flex items-center gap-2 px-4 py-2 text-white/90 hover:text-white transition-all duration-300 hover:bg-white/10 rounded-full"
+                            aria-label="Close"
+                        >
+                            <span className="text-sm font-medium hidden sm:inline">Cerrar</span>
+                            <X size={24} className="transition-transform duration-300 group-hover:rotate-90" />
+                        </button>
+                    </div>
+                </div>
 
+                {/* Main image container */}
+                <div className="relative flex-1 flex items-center justify-center w-full max-w-7xl">
+                    {/* Navigation buttons */}
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
                             handleNavigation('prev');
                         }}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors"
+                        className="absolute left-2 sm:left-6 z-40 group p-3 sm:p-4 bg-black/40 hover:bg-black/70 backdrop-blur-md text-white rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
                         aria-label="Previous"
                     >
-                        <ChevronLeft size={40} />
+                        <ChevronLeft size={28} className="transition-transform duration-300 group-hover:-translate-x-1" />
                     </button>
 
-                    <img
-                        src={images[activeIndex].itemImageSrc}
-                        alt={images[activeIndex].alt}
-                        className="max-h-[90vh] max-w-[90vw] object-contain"
-                        onClick={(e) => e.stopPropagation()}
-                    />
+                    {/* Image with loading state */}
+                    <div className="relative max-h-[75vh] max-w-full">
+                        {!isImageLoaded && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm rounded-lg">
+                                <div className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+                            </div>
+                        )}
+                        <img
+                            src={images[activeIndex].itemImageSrc}
+                            alt={images[activeIndex].alt}
+                            onLoad={() => setIsImageLoaded(true)}
+                            className={`max-h-[75vh] max-w-full rounded-lg shadow-2xl object-contain transition-all duration-300 ${
+                                imageTransition ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+                            } ${!isImageLoaded ? 'opacity-0' : 'opacity-100'}`}
+                            onClick={(e) => e.stopPropagation()}
+                        />
+                    </div>
 
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
                             handleNavigation('next');
                         }}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors"
+                        className="absolute right-2 sm:right-6 z-40 group p-3 sm:p-4 bg-black/40 hover:bg-black/70 backdrop-blur-md text-white rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
                         aria-label="Next"
                     >
-                        <ChevronRight size={40} />
+                        <ChevronRight size={28} className="transition-transform duration-300 group-hover:translate-x-1" />
                     </button>
                 </div>
 
-                <div className="mt-4 flex gap-2 overflow-x-auto max-w-[90vw] p-2" onClick={(e) => e.stopPropagation()}>
-                    {images.map((img, idx) => (
-                        <img
-                            key={idx}
-                            src={img.thumbnailImageSrc}
-                            alt={`Thumbnail ${idx + 1}`}
-                            onClick={() => setActiveIndex(idx)}
-                            className={`w-20 h-20 object-cover cursor-pointer transition-opacity
-                                ${activeIndex === idx ? 'opacity-100' : 'opacity-50'} 
-                                hover:opacity-100`}
-                        />
-                    ))}
+                {/* Thumbnail strip */}
+                <div 
+                    className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-black/90 via-black/70 to-transparent backdrop-blur-sm pt-8 pb-6"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <div className="max-w-7xl mx-auto px-4">
+                        <div className="flex gap-2 sm:gap-3 overflow-x-auto scrollbar-hide pb-2 justify-center">
+                            {images.map((img, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => {
+                                        setImageTransition(true);
+                                        setTimeout(() => {
+                                            setActiveIndex(idx);
+                                            setImageTransition(false);
+                                            setIsImageLoaded(false);
+                                        }, 200);
+                                    }}
+                                    className={`relative flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden transition-all duration-300 ${
+                                        activeIndex === idx 
+                                            ? 'ring-3 ring-white scale-105 shadow-lg' 
+                                            : 'ring-1 ring-white/20 hover:ring-white/50 opacity-60 hover:opacity-100'
+                                    }`}
+                                >
+                                    <img
+                                        src={img.thumbnailImageSrc}
+                                        alt={`Thumbnail ${idx + 1}`}
+                                        className="w-full h-full object-cover"
+                                    />
+                                    {activeIndex === idx && (
+                                        <div className="absolute inset-0 bg-gradient-to-t from-white/20 to-transparent"></div>
+                                    )}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
         );
-    }
+    };
 
     return (
         <div className="w-full">
+            <style jsx>{`
+                .scrollbar-hide::-webkit-scrollbar {
+                    display: none;
+                }
+                .scrollbar-hide {
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                }
+                @keyframes fadeInScale {
+                    from {
+                        opacity: 0;
+                        transform: scale(0.95);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: scale(1);
+                    }
+                }
+                .fade-in-scale {
+                    animation: fadeInScale 0.4s ease-out;
+                }
+            `}</style>
+
             <Galleria
                 value={images}
                 numVisible={5}
-                item={itemTemplate}
+                item={(item) => itemTemplate(item, images.indexOf(item))}
                 thumbnailsPosition="bottom"
                 thumbnail={thumbnailTemplate}
                 circular
@@ -133,76 +256,16 @@ const HotelGallery = (props) => {
 
             {isFullscreen && (
                 <div
-                    className="fixed inset-0 z-50 bg-black bg-opacity-80"
+                    className="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl fade-in-scale"
                     onClick={handleBackgroundClick}
                 >
                     <div onClick={(e) => e.stopPropagation()}>
-                        {fullscreenItemTemplate(images[activeIndex])}
+                        {fullscreenItemTemplate()}
                     </div>
                 </div>
             )}
         </div>
     );
-}
+};
 
 export default HotelGallery;
-
-
-/*import React, { Component } from 'react';
-import { useState } from "react";
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import { motion } from "framer-motion";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Scrollbar, A11y, Autoplay } from 'swiper/modules';
-
-
-
-const HotelGallery = (props) => {
-    const {Galeria}=props
-    const [currentImage, setCurrentImage] = useState(0);
-
-    const imageVariants = {
-        exit: { opacity: 0, y: 20, scale: 0.98, transition: { duration: 0.4 } },
-        enter: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4 } },
-    };
-    return (
-        <div className=' flex gap-3 pt-4'>
-            <div className='w-2/12 flex flex-col  gap-2'>
-                <Swiper
-                    modules={[Navigation, Pagination, Scrollbar, A11y, Autoplay]}
-                    direction={'vertical'}
-                    className='h-gallery'
-                    spaceBetween={8}
-                    slidesPerView={4}
-                    autoplay={{
-                        "delay": 1500,
-                        "disableOnInteraction": false
-                      }}
-                      speed={1000}
-                    >
-
-                    {Galeria.map((img, index) => (
-                        <SwiperSlide key={index}>
-                            <img
-                                key={index}
-                                src={img.Valor}
-                                onClick={() => setCurrentImage(index)}
-                                className="rounded-md cursor-pointer h-24 w-full object-cover"
-                            />
-                        </SwiperSlide>
-                    ))}
-                </Swiper>
-            </div>
-            <div className='w-10/12'>
-                <motion.div initial="exit" animate="enter" exit="exit" variants={imageVariants} key={currentImage}>
-                    <img
-                        src={Galeria[currentImage].Valor}
-                        className="rounded-md h-gallery w-full object-cover"
-                    />
-                </motion.div>
-            </div>
-        </div>
-    )
-}
-
-export default HotelGallery*/

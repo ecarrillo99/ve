@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import HotelServices from './HotelServices';
+import HotelServices from '../hotelComponents/HotelServices';
 
 const HotelServicesMain = ({Incluye, NoIncluye, Restricciones, SistemaServicios, Titulo}) => {
     const [openServices, setOpenServices]=useState(false)

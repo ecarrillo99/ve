@@ -1,5 +1,4 @@
 import React, { useEffect, useState, lazy, Suspense } from 'react';
-import NavbarMobile from '../../components/global_components/navbar/NavbarMobile';
 import { getOperador } from '../../controllers/info/infoController';
 import { set } from 'date-fns';
 
@@ -35,11 +34,8 @@ const Tips = () => {
       
     return (
         <div>
-            {
-        isMobile
-        ?<Suspense><NavbarMobile activo={1}/></Suspense>
-        :<Suspense><Navbar activo={0}/></Suspense>
-      }
+       <Suspense><Navbar activo={0}/></Suspense>
+      
             <div className="mx-auto max-w-6xl py-6 sm:px-6 lg:px-8">
                 <img className='-mt-6 mb-2' src="https://visitaecuador.com/img/web/banner_tips.png" alt="" />
                 {operador && (

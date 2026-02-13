@@ -1,5 +1,4 @@
 import React, { Suspense, useEffect, useState } from 'react';
-import NavbarMobile from '../../components/global_components/navbar/NavbarMobile';
 import Navbar from '../../components/global_components/navbar/Navbar';
 import Footer from '../../components/global_components/footer/Footer';
 import {useLocation, useParams } from 'react-router-dom';
@@ -101,11 +100,8 @@ const Convenio = () => {
     }, []);
     return (
         <>
-            {
-                isMobile
-                    ? <Suspense><NavbarMobile activo={1} /></Suspense>
-                    : <Suspense><Navbar activo={1} /></Suspense>
-            }
+        <Suspense><Navbar activo={1} /></Suspense>
+            
             <ImageItem src={banner} url={"/"} alt={"banner"} ></ImageItem>
             {
                 id==null

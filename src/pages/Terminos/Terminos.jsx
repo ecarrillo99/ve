@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Footer from "../../components/global_components/footer/Footer";
 import Navbar from "../../components/global_components/navbar/Navbar";
-import NavbarMobile from "../../components/global_components/navbar/NavbarMobile";
 
 const Terminos=()=>{
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Definir 768 como el punto de corte para móvil
@@ -441,11 +440,8 @@ const Terminos=()=>{
   </div>`;
     return(
         <div>
-            {
-                isMobile
-                ?<NavbarMobile/>
-                :<Navbar/>
-            }
+         <Navbar/>
+            
             <div className="flex flex-col mx-auto my-28 max-w-6xl py-6 sm:flex-row sm:px-6 lg:px-8 items-center">
             <div dangerouslySetInnerHTML={{ __html: terminos }} />
             </div>

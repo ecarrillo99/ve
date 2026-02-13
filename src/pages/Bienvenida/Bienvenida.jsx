@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { gestionarSuscripcion } from '../../controllers/suscripcion/suscripcionController';
 import { useLocation, useNavigate } from 'react-router-dom';
-import NavbarMobile from '../../components/global_components/navbar/NavbarMobile';
 import Navbar from '../../components/global_components/navbar/Navbar';
 import DataSuscription from '../../components/suscription_components/data_suscription';
 import { generarEsquemaSusDF } from '../../global/esquemaSuscripcionDF';
@@ -133,11 +132,9 @@ const Bienvenida = () => {
 
     return (
         <div>
-        {
-            isMobile
-            ?<NavbarMobile/>
-            :<Navbar/>
-        }
+      
+            <Navbar/>
+        
             {
                 id!=null&&loadingPago?
                     <div className="flex flex-col  mt-10 mx-auto mb-28 max-w-6xl py-6  sm:px-6 lg:px-8 items-center justify-center h-60">

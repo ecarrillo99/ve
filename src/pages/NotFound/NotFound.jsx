@@ -2,7 +2,6 @@ import React from 'react';
 import { lazy, useEffect, useState, Suspense } from 'react';
 import { useParams } from 'react-router-dom';
 const Navbar = lazy(() => import("../../components/global_components/navbar/Navbar"));
-const NavbarMobile = lazy(() => import("../../components/global_components/navbar/NavbarMobile"));
 const Footer = lazy(() => import("../../components/global_components/footer/Footer"));
 const SearchBar = lazy(() => import("../../components/global_components/searchBar/searchBar"));
 
@@ -29,11 +28,8 @@ const NotFound = () => {
     }
     return (
         <>
-            {
-                isMobile
-                    ? <Suspense><NavbarMobile activo={1} /></Suspense>
-                    : <Suspense><Navbar activo={1} /></Suspense>
-            }
+          <Suspense><Navbar activo={1} /></Suspense>
+            
             <div class="bg-right bg-no-repeat bg-contain  w-full -mb-20" style={{ backgroundImage: "url('https://visitaecuador.com/img/web/404-background.webp')" }}>
                 <div className="px-6 mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 -m-12 w-full pb-24">
                     <div className='flex flex-col gap-4 h-72 md:h-[500px] justify-center items-center'>

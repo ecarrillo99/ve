@@ -1,5 +1,4 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
-import NavbarMobile from '../../components/global_components/navbar/NavbarMobile';
 import StepsSuscription from './steps_suscription';
 import { useLocation } from 'react-router-dom';
 import DatafastController from '../../controllers/pago/datafast/datafastController';
@@ -125,11 +124,8 @@ const PayPhone = () => {
     
     return (
         <>
-        {
-            isMobile
-            ?<Suspense><NavbarMobile activo={1}/></Suspense>
-            :<Suspense><Navbar activo={1}/></Suspense>
-        }
+     <Suspense><Navbar activo={1}/></Suspense>
+        
         <ImageItem src={"https://visitaecuador.com/ve/img/contenido/publicidad/banner_payphone.png"} url={"/payphone"} alt={"banner"} ></ImageItem>
         {
                     id==null

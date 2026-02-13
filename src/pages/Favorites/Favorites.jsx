@@ -10,7 +10,6 @@ import { ClickAwayListener } from "@mui/material";
 import { DateRange } from "react-date-range";
 import { sessionStatus } from "../../global/util";
 import { Navigate } from "react-router-dom";
-import NavbarMobile from "../../components/global_components/navbar/NavbarMobile";
 
 const Favorites = ({ isAuth }) => {
   const [data, setData] = useState();
@@ -123,7 +122,7 @@ const Favorites = ({ isAuth }) => {
 
   return sessionStatus() ? (
     <div>
-      {isMobile ? <NavbarMobile /> : <Navbar />}
+      <Navbar />
       <div className="flex flex-col mx-5 md:mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 gap-7">
         <h1 className="font-semibold text-3xl">Mis favoritos</h1>
         <div className="flex gap-2">

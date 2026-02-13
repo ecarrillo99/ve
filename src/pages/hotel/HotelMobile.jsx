@@ -4,18 +4,17 @@ import Filtro from '../../models/Filtro';
 import { format } from 'date-fns';
 import { getResultadoFiltro } from '../../controllers/establecimiento/establecimientoController';
 
-const NavbarMobile = lazy(()=>import('../../components/global_components/navbar/NavbarMobile'))
 const Footer = lazy(()=>import('../../components/global_components/footer/Footer'))
 const HotelBanner = lazy(()=>import('../../components/hotel_components/hotelMobile/HotelBanner'))
 const HotelSearch = lazy(()=>import('../../components/hotel_components/hotelMobile/HotelSearch'))
 const HotelMap = lazy(()=>import('../../components/hotel_components/hotelMobile/HotelMap'))
 const HotelServicesMain = lazy(()=>import('../../components/hotel_components/hotelMobile/HotelServicesMain'))
 const HotelDescription = lazy(()=>import('../../components/hotel_components/hotelMobile/HotelDescription'))
-
+const Navbar = lazy(() => import("../../components/global_components/navbar/Navbar"));
 
 
 const HotelMobile = () => {
-    const location = useLocation(); // Declarar location primero
+    const location = useLocation(); 
     const searchParams = new URLSearchParams(location.search);
     const [options, setOptions] = useState();
     const [date, setDate] = useState();
@@ -102,7 +101,7 @@ const HotelMobile = () => {
     return (
         (Establecimiento)
         ?<div>
-            <Suspense><NavbarMobile/></Suspense>
+            <Suspense><Navbar/></Suspense>
             <Suspense><HotelBanner 
                 Titulo={Establecimiento.Titulo}
                 Catalogacion={Establecimiento.Catalogacion}

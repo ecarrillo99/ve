@@ -1,5 +1,4 @@
 import React, { Suspense, useEffect, useState } from 'react';
-import NavbarMobile from '../../components/global_components/navbar/NavbarMobile';
 import Navbar from '../../components/global_components/navbar/Navbar';
 import Footer from '../../components/global_components/footer/Footer';
 
@@ -19,11 +18,8 @@ const Pack = () => {
     }, []);
     return (
         <>
-        {
-            isMobile
-            ?<Suspense><NavbarMobile activo={1}/></Suspense>
-            :<Suspense><Navbar activo={1}/></Suspense>
-        }
+      <Suspense><Navbar activo={1}/></Suspense>
+        
             <iframe src='https://www.visitaecuador.com/pack/' className='w-full h-[1200px]'/>
             <Footer/>
         </>

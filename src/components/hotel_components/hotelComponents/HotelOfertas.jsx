@@ -10,7 +10,7 @@ import HotelExpressConfirmacion from './HotelExpressConfirmacion';
 import AlertExpress from '../../global_components/alert/AlertExpress';
 
 const HotelOfertas = (props) => {
-  const { Establecimiento, Noches, Fechas, Opciones, clickRecomendados, SetRecomendados} = props;
+  const { Establecimiento, Noches, Fechas, Opciones, clickRecomendados, SetRecomendados, OfertaSeleccionada, includeWineOffer = true, setIncludeWineOffer } = props;
   const icons = new Icons();
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,6 +20,23 @@ const HotelOfertas = (props) => {
   const [desExpress, setDescExpress]=useState();
   const [alerta, setAlerta]=useState("");
   const [correcto, setCorrecto]=useState();
+  
+  // Estado local solo si no viene controlado desde el padre
+  const [localIncludeWineOffer, setLocalIncludeWineOffer] = useState(!!OfertaSeleccionada);
+  
+  // Usar el estado del padre si está disponible, sino usar el local
+  const wineOfferIncluded = setIncludeWineOffer ? includeWineOffer : localIncludeWineOffer;
+
+  // Si viene una oferta seleccionada desde la página anterior, inicializamos su control de cantidad
+  useEffect(() => {
+    if (OfertaSeleccionada) {
+      setSelectedOptions((prev) => ({ ...(prev || {}), ['oferta-selected']: 0 }));
+      if (!setIncludeWineOffer) {
+        setLocalIncludeWineOffer(true);
+      }
+    }
+  }, [OfertaSeleccionada]);
+  
   const session = JSON.parse(localStorage.getItem("datos"));
   const nivel = session ? session.data.nivel : "visitante";
   const navigate = new useNavigate();
@@ -73,10 +90,24 @@ const HotelOfertas = (props) => {
     setSelectedOptions(newSelectedOptions);
   };
 
+  // Obtener el precio de la WineOffer
+  const getWineOfferPrice = () => {
+    if (!OfertaSeleccionada || !wineOfferIncluded) return 0;
+    const price = parseFloat(OfertaSeleccionada.price || OfertaSeleccionada.Precio || 0);
+    return isNaN(price) ? 0 : price;
+  };
+
+  // Obtener los regalos de la WineOffer
+  const getWineOfferGifts = () => {
+    if (!OfertaSeleccionada || !wineOfferIncluded) return [];
+    return OfertaSeleccionada.inventories || OfertaSeleccionada.Inventarios || [];
+  };
+
   const calcularTotal = () => {
     let total = {
       SinImpuestos: 0,
       Impuestos: 0,
+      WineOffer: 0,
     };
     for (const id in selectedOptions) {
       const selectedValue = selectedOptions[id];
@@ -87,6 +118,13 @@ const HotelOfertas = (props) => {
         total.Impuestos += objeto.Impuestos * selectedValue;
       }
     }
+    
+    // Agregar el precio de la WineOffer si está incluida
+    if (wineOfferIncluded && OfertaSeleccionada) {
+      total.WineOffer = getWineOfferPrice();
+      total.SinImpuestos += total.WineOffer;
+    }
+    
     return total;
   };
 
@@ -165,8 +203,29 @@ const HotelOfertas = (props) => {
   return (
     <>
       <HotelExpressConfirmacion isOpen={correcto} OnClose={()=>setCorrecto(false)}/>
-      <HotelConfirmation Ofertas={ofertas} isOpen={isModalOpen} Establecimiento={Establecimiento} Fechas={Fechas} Valores={calcularTotal()} OnClose={() => handleClickCancelar()} Opciones={Opciones} />
-      <HotelExpress Ofertas={ofertas} isOpen={isExpressOpen} Establecimiento={Establecimiento} Fechas={Fechas} Valores={calcularTotal()} OnClose={() => handleClickCancelar()} OnBack={()=>handleClickBack()} Opciones={Opciones} setCorrecto={setCorrecto} correcto={correcto} />
+      <HotelConfirmation 
+        Ofertas={ofertas} 
+        isOpen={isModalOpen} 
+        Establecimiento={Establecimiento} 
+        Fechas={Fechas} 
+        Valores={calcularTotal()} 
+        OnClose={() => handleClickCancelar()} 
+        Opciones={Opciones}
+        WineOffer={wineOfferIncluded ? OfertaSeleccionada : null}
+      />
+      <HotelExpress 
+        Ofertas={ofertas} 
+        isOpen={isExpressOpen} 
+        Establecimiento={Establecimiento} 
+        Fechas={Fechas} 
+        Valores={calcularTotal()} 
+        OnClose={() => handleClickCancelar()} 
+        OnBack={()=>handleClickBack()} 
+        Opciones={Opciones} 
+        setCorrecto={setCorrecto} 
+        correcto={correcto}
+        WineOffer={wineOfferIncluded ? OfertaSeleccionada : null}
+      />
       {
         (nivel=="visitante"||nivel=="express"||nivel=="gratuito")
         ?<AlertExpress 
@@ -185,6 +244,8 @@ const HotelOfertas = (props) => {
       }
       
       <div className='relative w-full z-0'>
+        {/* La WineOffer se muestra en HotelWineOffer, aquí solo calculamos el precio */}
+
         <div className='sticky top-0 z-10'>
           <div className='table-fixed w-full'>
             <table id={'tabla-ofertas'} className=" table-auto w-full">
@@ -351,6 +412,14 @@ const HotelOfertas = (props) => {
                         <div className="flex flex-col p-2 items-center gap-1 sticky top-20 bg-white">
                           <label className="font-semibold text-3xl text-center">${calcularTotal().SinImpuestos}</label>
                           <label className="text-xs text-gray-500 justify-center items-center">+ ${calcularTotal().Impuestos} de impuestos</label>
+                          
+                          {/* Mostrar desglose de WineOffer si está incluida */}
+                          {wineOfferIncluded && OfertaSeleccionada && calcularTotal().WineOffer > 0 && (
+                            <div className="text-xs text-[#7C9539] bg-[#F0FFC6] px-2 py-1 rounded-md mt-1">
+                              <span>🍷 Incluye: ${calcularTotal().WineOffer.toFixed(2)}</span>
+                            </div>
+                          )}
+                          
                           <button className="bg-greenVE-500 text-white py-1 px-2 rounded-lg border-greenVE-600 border-2" onClick={() => handleClickReservar()}>
                             Confirmar
                           </button>

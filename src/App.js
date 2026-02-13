@@ -62,6 +62,23 @@ const WineOffersBanner = lazy(
   () =>
     import("./components/vinos_components/wineOffersBanner/WineOffersBanner")
 );
+const WineSearchBar = lazy(
+  () =>
+    import("./components/vinos_components/wineOffersBanner/WineSearchBar")
+);
+
+// Skeleton para WineSearchBar
+const WineSearchBarSkeleton = () => (
+  <div className="bg-amber-600 relative rounded-sm w-full mt-10 animate-pulse">
+    <div className="grid lg:grid-cols-12 md:grid-cols-12 grid-flow-row">
+      <div className="col-span-3 bg-amber-100 h-12 m-0.5 rounded-sm"></div>
+      <div className="col-span-3 bg-amber-100 h-12 m-0.5 rounded-sm"></div>
+      <div className="col-span-2 bg-amber-100 h-12 m-0.5 rounded-sm"></div>
+      <div className="col-span-2 bg-amber-100 h-12 m-0.5 rounded-sm"></div>
+      <div className="col-span-2 bg-amber-200 h-12 m-0.5 rounded-sm"></div>
+    </div>
+  </div>
+);
 
 const handleOnClick = () => {
   const contacto = contactos[Math.floor(Math.random() * contactos.length)];
@@ -123,29 +140,11 @@ function App() {
               }
             />
 
-            {/* Ruta de Vinos - muestra ofertas de vinos */}
+            {/* Ruta de Vinos - muestra ofertas de vinos con WineSearchBar */}
             <Route
               path="vinos"
               element={
-                <>
-                  {isMobile ? (
-                    <div className="pt-4">
-                      <Suspense fallback={<SearchBarSkeleton />}>
-                        <SearchBar type={3} />
-                      </Suspense>
-                    </div>
-                  ) : (
-                    <Suspense fallback={<SearchBarSkeleton />}>
-                      <SearchBar type={0} />
-                    </Suspense>
-                  )}
-                  <Suspense fallback={<OffersBannerSkeleton />}>
-                    <WineOffersBanner />
-                  </Suspense>
-                  <Suspense fallback={<ContentSkeleton />}>
-                    <VideosBanner />
-                  </Suspense>
-                </>
+                <WineRouteContent isMobile={isMobile} />
               }
             />
 
@@ -215,7 +214,7 @@ function App() {
           <Route
             path="/hotel/:nombre"
             element={
-              <Suspense>{isMobile ? <HotelMobile /> : <Hotel />}</Suspense>
+              <Suspense> <Hotel /></Suspense>
             }
           />
           <Route
@@ -396,5 +395,49 @@ function App() {
     </>
   );
 }
+
+// Componente separado para la ruta de vinos con estado de filtros
+const WineRouteContent = ({ isMobile }) => {
+  const [wineFilters, setWineFilters] = useState({
+    country: "",
+    city: "",
+    type: "",
+    rate: 0,
+  });
+
+  const handleFilterChange = (filters) => {
+    setWineFilters(filters);
+  };
+
+  return (
+    <>
+      {isMobile ? (
+        <div className="pt-4">
+          <Suspense fallback={<WineSearchBarSkeleton />}>
+            <WineSearchBar 
+              type={3} 
+              onFilterChange={handleFilterChange}
+              initialFilters={wineFilters}
+            />
+          </Suspense>
+        </div>
+      ) : (
+        <Suspense fallback={<WineSearchBarSkeleton />}>
+          <WineSearchBar 
+            type={0} 
+            onFilterChange={handleFilterChange}
+            initialFilters={wineFilters}
+          />
+        </Suspense>
+      )}
+      <Suspense fallback={<OffersBannerSkeleton />}>
+        <WineOffersBanner filters={wineFilters} />
+      </Suspense>
+      <Suspense fallback={<ContentSkeleton />}>
+        <VideosBanner />
+      </Suspense>
+    </>
+  );
+};
 
 export default App;

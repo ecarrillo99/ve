@@ -28,7 +28,7 @@ const ItemHotels = ({ hotel }) => {
     }
 
     return (
-        <div className="relative group rounded-lg border-4 border-white overflow-hidden cursor-pointer" onClick={()=>handleClickHotel()}>
+        <div className="h-- relative group rounded-lg border-4 border-white overflow-hidden cursor-pointer" onClick={()=>handleClickHotel()}>
             <div className="border rounded-md px-2">
                 <img src={hotel.Foto} className="h-20 w-full object-contain rounded-xl"/>
             </div>

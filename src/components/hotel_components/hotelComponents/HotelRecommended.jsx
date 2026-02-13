@@ -32,17 +32,55 @@ const HotelRecommended = (props) => {
       };
       targetElement.scrollIntoView(scrollOptions);
     }
-    
   };
 
   const [open, setOpen] = useState(0);
-  const [count, setCount] = useState(0);
 
   const handleOpen = (value) => setOpen(open === value ? 0 : value);
 
+  // Verificar que Recomendados existe y tiene datos válidos
+  const hasValidRecomendados = Establecimiento?.Recomendados && 
+    Array.isArray(Establecimiento.Recomendados) && 
+    Establecimiento.Recomendados.length > 0;
+
+  // Si no hay recomendados válidos, no renderizar nada
+  if (!hasValidRecomendados) {
+    return null;
+  }
+
+  // Verificar que los precios están cargados (evitar mostrar $0)
+  const preciosCargados = Establecimiento.PrecioSinImpuestos !== undefined && 
+    Establecimiento.PrecioSinImpuestos !== null &&
+    (Establecimiento.PrecioSinImpuestos > 0 || Establecimiento.Recomendados.some(r => r.FinalSinImpuestos > 0));
+
+  // Si los precios no están cargados, mostrar skeleton
+  if (!preciosCargados) {
+    return (
+      <div className="border-l border-r border-t rounded-lg w-full animate-pulse">
+        <div className="h-8 bg-gray-200 rounded m-2 w-3/4"></div>
+        <div className="border-y w-full flex flex-col-reverse lg:flex-row rounded-b-lg">
+          <div className="lg:w-10/12 w-full p-4">
+            <div className="h-6 bg-gray-200 rounded mb-2 w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded mb-2 w-1/3"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+          </div>
+          <div className="border-l w-full lg:w-2/12 flex flex-col p-4 items-center justify-center gap-2">
+            <div className="h-8 bg-gray-200 rounded w-20"></div>
+            <div className="h-4 bg-gray-200 rounded w-24"></div>
+            <div className="h-10 bg-gray-200 rounded w-24"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="border-l border-r border-t rounded-lg w-full">
-      <label className="font-semibold p-2 text-xl">Recomendado para {Adultos} {Adultos==1?"adulto":"adultos"}{Ninos==0?"":Ninos==1?`, ${Ninos} niño`:`, ${Ninos} niños`} {Establecimiento.IdEstablecimiento!="443"?`y ${Noches} ${Noches==1?"noche":"noches"}`:" y 1 día"} </label>
+      <label className="font-semibold p-2 text-xl">
+        Recomendado para {Adultos} {Adultos == 1 ? "adulto" : "adultos"}
+        {Ninos == 0 ? "" : Ninos == 1 ? `, ${Ninos} niño` : `, ${Ninos} niños`} 
+        {Establecimiento.IdEstablecimiento != "443" ? ` y ${Noches} ${Noches == 1 ? "noche" : "noches"}` : " y 1 día"}
+      </label>
       <div className="border-y w-full flex flex-col-reverse lg:flex-row rounded-b-lg">
         <div className="lg:w-10/12 w-full">
           {Establecimiento.Recomendados.map((item, index) => (
@@ -54,25 +92,25 @@ const HotelRecommended = (props) => {
                   <span className="icon-[solar--user-rounded-outline] h-5 w-5 text-[#3d82f5]"></span>
                   <label className="text-gray-500 text-xs"> x {item.Adultos * item.NumOfertas} </label>
                   {
-                    (item.Ninos)!=null
-                    ?<div className='flex items-end'>,  
-                      <span className="icon-[solar--user-rounded-outline] h-3.5 w-3.5 text-[#3d82f5] ml-1"></span>
-                      <label className="text-gray-500 text-xs"> x {item.Ninos * item.NumOfertas} </label>
-                    </div>
-                    :<></>
+                    (item.Ninos) != null
+                      ? <div className='flex items-end'>,
+                        <span className="icon-[solar--user-rounded-outline] h-3.5 w-3.5 text-[#3d82f5] ml-1"></span>
+                        <label className="text-gray-500 text-xs"> x {item.Ninos * item.NumOfertas} </label>
+                      </div>
+                      : <></>
                   }
                 </div>
                 <label className="ml-2 text-xs font-semibold text-gray-500">Acomodación:</label>
                 {
-                  Establecimiento.IdEstablecimiento=="443"
-                  ?<div className="flex gap-1 ml-6 text-sm items-center">
-                    <span className="icon-[ri--prohibited-2-line] text-[#3d82f5] h-5 w-5"></span>
-                    <label className="text-gray-500 text-xs ">El estableciiento no ofrece hospedaje</label>
-                  </div>
-                  :<div className="flex gap-1 ml-6 text-sm items-center">
-                    <span className="icon-[material-symbols--bed-outline-rounded] text-[#3d82f5] h-5 w-5"></span>
-                    <label className="text-gray-500 text-xs ">{item.Acomodacion} x {item.NumOfertas} </label>
-                  </div>
+                  Establecimiento.IdEstablecimiento == "443"
+                    ? <div className="flex gap-1 ml-6 text-sm items-center">
+                      <span className="icon-[ri--prohibited-2-line] text-[#3d82f5] h-5 w-5"></span>
+                      <label className="text-gray-500 text-xs ">El establecimiento no ofrece hospedaje</label>
+                    </div>
+                    : <div className="flex gap-1 ml-6 text-sm items-center">
+                      <span className="icon-[material-symbols--bed-outline-rounded] text-[#3d82f5] h-5 w-5"></span>
+                      <label className="text-gray-500 text-xs ">{item.Acomodacion} x {item.NumOfertas} </label>
+                    </div>
                 }
                 <Accordion open={open === index + 1} icon={<Icon id={index + 1} open={open} />}>
                   <AccordionHeader className="p-0 text-xs pl-2 border-0 w-auto font-semibold text-blue-500 mt-4" onClick={() => handleOpen(index + 1)}>
@@ -86,7 +124,7 @@ const HotelRecommended = (props) => {
                           {item.Incluye.map((itemIncluye, incluyeIndex) => (
                             <div key={incluyeIndex} className="flex gap-2 items-center">
                               {
-                                getIcon({text:itemIncluye.Titulo, h:"h-5", w:"w-5", c:"text-[#3d82f5]"})
+                                getIcon({ text: itemIncluye.Titulo, h: "h-5", w: "w-5", c: "text-[#3d82f5]" })
                               }
                               <p
                                 dangerouslySetInnerHTML={{ __html: itemIncluye.Titulo }}
@@ -102,7 +140,7 @@ const HotelRecommended = (props) => {
                           {item.NoIncluye.map((itemNoIncluye, noIncluyeIndex) => (
                             <div key={noIncluyeIndex} className="flex gap-2 items-center">
                               {
-                                getIcon({text:itemNoIncluye.Titulo, h:"h-5", w:"w-5", c:"text-[#3d82f5]"})
+                                getIcon({ text: itemNoIncluye.Titulo, h: "h-5", w: "w-5", c: "text-[#3d82f5]" })
                               }
                               <p
                                 dangerouslySetInnerHTML={{ __html: itemNoIncluye.Titulo }}

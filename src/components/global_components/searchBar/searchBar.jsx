@@ -1,19 +1,21 @@
 import { DateRange } from "react-date-range";
 import { useEffect, useState } from "react";
-import { es } from "react-date-range/dist/locale/";
+import { es, is } from "react-date-range/dist/locale/";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ClickAwayListener } from "@mui/material";
 import { getEstablacimientoDestino } from "../../../controllers/establecimiento/establecimientoController";
 import Icons from "../../../global/icons";
+import MenuTabs from "../menu_tabs/MenuTabs";
 
 const SearchBar = (props) => {
   const { Place, Dates, Options, type } = props;
   const [inputValue, setInputValue] = useState("");
   const icons = new Icons();
+  const location = useLocation();
 
-  // Modificar handleClickAway para NO cerrar si se hace clic dentro del DateRange
+  
   const handleClickAway = () => {
     if (openOptions) {
       setOpenOptions(false);
@@ -23,7 +25,6 @@ const SearchBar = (props) => {
     }
   };
 
-  // Manejador separado solo para el DateRange
   const handleDateClickAway = () => {
     setOpenDate(false);
   };
@@ -165,12 +166,15 @@ const SearchBar = (props) => {
     setDate(value);
   };
 
+  const ishotel = location.pathname.includes("/hotel/");
+
   return type === 0 || type === 1 ? (
-    <div className="relative">
+    <div className="relative -mt-6">
+      <MenuTabs/>
       <>
-        <div className="bottom-[0px] bg-greenVE-600 relative rounded-sm w-full mt-10">
+        <div className="bottom-[0px] bg-white relative rounded-lg rounded-tl-none w-full mt-1 border-2 border-amber-400 shadow-lg">
           <div className="grid lg:grid-cols-12 md:grid-cols-12 grid-flow-row">
-            <div className="gap-3 col-span-4 max-sm:col-span-1  bg-white flex items-center justify-center m-0.5 rounded-sm pl-4 relative">
+            <div className="gap-3 col-span-4 max-sm:col-span-1 bg-white flex items-center justify-center m-0 rounded-l-lg pl-4 relative border-r border-gray-200">
               <div dangerouslySetInnerHTML={{ __html: icons.Data.Bed }} />
               <input
                 type="text"
@@ -226,30 +230,38 @@ const SearchBar = (props) => {
                 </ClickAwayListener>
               )}
             </div>
-            <div className="gap-3 col-span-3 max-sm:col-span-1 bg-white flex items-center justify-center m-0.5 rounded-sm relative">
-              <div dangerouslySetInnerHTML={{ __html: icons.Data.Calendar }} />
-              <span
-                onClick={() => setOpenDate(!openDate)}
-                className="placeholder-gray-600 hover:cursor-pointer"
-              >{`${formatDate(new Date(date[0].startDate))} - ${formatDate(
-                new Date(date[0].endDate)
-              )}`}</span>
+            <div className="col-span-3  border-r border-gray-200 px-4 py-2 flex flex-col items-start">
+                <div className="flex flex-row items-center gap-3">
+
+                <span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16"><path fill="#929292" d="M14 1v3h-3V1H5v3H2V1H0v15h16V1h-2zM3 15H1v-2h2v2zm0-3H1v-2h2v2zm0-3H1V7h2v2zm3 6H4v-2h2v2zm0-3H4v-2h2v2zm0-3H4V7h2v2zm3 6H7v-2h2v2zm0-3H7v-2h2v2zm0-3H7V7h2v2zm3 6h-2v-2h2v2zm0-3h-2v-2h2v2zm0-3h-2V7h2v2zm3 6h-2v-2h2v2zm0-3h-2v-2h2v2zm0-3h-2V7h2v2z"/><path fill="#929292" d="M3 0h1v3H3V0zm9 0h1v3h-1V0z"/></svg></span>
+                <div>
+                    <label className="text-sm text-gray-600 font-normal block mb-1 mt-1">
+                      Fecha de entrada y salida
+                    </label>
+                    <div
+                      onClick={() => setOpenDate(!openDate)}
+                      className="flex items-center text-xs cursor-pointer text-gray-800 font-medium"
+                    >
+                      {`${formatDate(new Date(date[0].startDate))} - ${formatDate(
+                        new Date(date[0].endDate)
+                      )}`}
+                </div>
+            </div>
+          </div>
               {openDate && (
                 <ClickAwayListener onClickAway={handleDateClickAway}>
-                  <div className="absolute top-0 left-0 z-50 mt-11">
+                  <div className="absolute top-16 z-50">
                     <DateRange
                       editableDateInputs={true}
                       onChange={(item) =>
                         handleChangeDate([
-                          item.selection
-                            ? item.selection
-                            : item["Invalid Date"],
+                          item.selection ? item.selection : item["Invalid Date"],
                         ])
                       }
                       moveRangeOnFirstSelection={false}
                       ranges={date}
                       locale={es}
-                      months={2}
+                      months={1}
                       direction="horizontal"
                       className="shadow-xl"
                       rangeColors={["#96c121"]}
@@ -259,19 +271,28 @@ const SearchBar = (props) => {
                 </ClickAwayListener>
               )}
             </div>
-            <div className="gap-3 col-span-4 max-sm:col-span-1 bg-white flex items-center justify-center m-0.5 rounded-sm cursor-pointer">
-              <div dangerouslySetInnerHTML={{ __html: icons.Data.People }} />
-              <span
-                onClick={() => setOpenOptions(!openOptions)}
-                className="placeholder-gray-600"
-              >{`${options.adult} ${options.adult > 1 ? "adultos" : "adulto"} · 
-              ${options.children} ${options.children != 1 ? "niños" : "niño"} · 
-              ${options.room} ${
-                options.room > 1 ? "habitaciones" : "habitación"
-              }`}</span>
+            <div className="col-span-3 border-r border-gray-200 px-4 py-2 flex flex-col items-start">
+              <div className="flex flex-row items-center gap-5">
+                <span><svg width="22" height="22" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#929292"><g fill="none" stroke="#929292" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"><path d="m20.5 23.5l-2-7L12 15l-6.5 1.5l-2 7zM8.625 5.812L12 7.5h4.5"/><path d="M16.5 12.25L12 14l-4.5-1.75v-6L12 4.5l4.5 1.75zm-6-2.25v-.5m3 .5v-.5m.953 6.066L12 19.5l-2.453-3.934"/></g></svg></span>
+                <div className="flex flex-col items-center">
+                  <label className="text-sm font-normal mb-1">
+                    Personas y habitaciones
+                  </label>
+                  <span
+                    className="text-xs cursor-pointer"
+                    onClick={() => setOpenOptions(!openOptions)}
+                  >{`${options.adult} ${options.adult > 1 ? "adultos" : "adulto"} · 
+                        ${options.children} ${
+                    options.children != 1 ? "niños" : "niño"
+                  } · 
+                        ${options.room} ${
+                    options.room > 1 ? "habitaciones" : "habitación"
+                  }`}</span>
+                </div>
+              </div>
               {openOptions && (
                 <ClickAwayListener onClickAway={handleClickAway}>
-                  <div className="absolute top-12 bg-white shadow-2xl px-1 py-2 z-50 rounded-lg">
+                  <div className="absolute top-16 bg-white shadow-xl px-1 py-2 z-50">
                     <div className="flex justify-between px-3 ">
                       <span>Adultos</span>
                       <div className="flex items-center justify-between border border-greenVE-600 rounded-md ">
@@ -301,9 +322,7 @@ const SearchBar = (props) => {
                         >
                           -
                         </button>
-                        <span className="w-7 text-center">
-                          {options.children}
-                        </span>
+                        <span className="w-7 text-center">{options.children}</span>
                         <button
                           className="w-7 h-7 cursor-pointer rounded-sm hover:bg-greenVE-100 hover:rounded-r-md text-greenVE-700 disabled:text-gray-400"
                           disabled={options.children >= 10}
@@ -387,245 +406,275 @@ const SearchBar = (props) => {
                 </ClickAwayListener>
               )}
             </div>
-            <div
-              className="col-span-1 max-sm:col-span-1 bg-greenVE-500 flex items-center justify-center rounded-sm m-0.5 cursor-pointer"
-              onClick={handleSearch}
-            >
-              <button className="bg-greenVE-500 h-10 text-white">Buscar</button>
+            <div className="flex justify-center col-span-2 bg-greenVE-600 rounded-r-lg">
+              <button
+                className="text-white font-semibold"
+                onClick={handleSearch}
+              >
+                Buscar
+              </button>
             </div>
           </div>
         </div>
       </>
     </div>
   ) : (
-    <div>
-      <div className="bg-greenVE-300 p-4 md:rounded-lg rounded-none">
-        <h1 className="text-xl mb-2 font-medium">Buscar</h1>
-        <div className=" text-sm flex flex-col">
-          <label className="mb-1 ">Destino</label>
-          <input
-            type="text"
-            placeholder=" ¿A dónde vas?"
-            className="w-full h-7 max-w-full overflow-hidden placeholder-gray-600 mr-4 p-2"
-            onChange={(e) => handleChange(e.target.value)}
-            onClick={() => setOpenSearch(true)}
-            value={
-              destination.Titulo.charAt(0).toUpperCase() +
-              destination.Titulo.slice(1)
-            }
-          />
+    <div className={`${ishotel ? "p-0": "p-4"}`}>
+      <div className="bg-white rounded-lg shadow-lg border-2 border-amber-400 overflow-hidden">
+        {/* Campo de búsqueda - Destino */}
+        <div className="relative border-b border-gray-200">
+          <div className="flex items-center gap-3 px-4 py-3">
+            <div dangerouslySetInnerHTML={{ __html: icons.Data.Bed }} className="text-gray-500" />
+            <input
+              type="text"
+              placeholder="¿A dónde vas?"
+              className="w-full placeholder-gray-600 focus:outline-none text-sm"
+              onChange={(e) => handleChange(e.target.value)}
+              onClick={() => setOpenSearch(true)}
+              value={
+                destination.Titulo.charAt(0).toUpperCase() +
+                destination.Titulo.slice(1)
+              }
+            />
+          </div>
           {suggestion && (
             <ClickAwayListener onClickAway={handleClickAway}>
-              <div className=" absolute mt-14 max-h-[17rem] w-80 bg-white z-50 shadow-2xl p-2 overflow-y-auto  rounded-lg">
-                {suggestion ? (
-                  suggestion.map((item, key) => (
-                    <div
-                      key={key}
-                      className={`flex items-center p-1 ${
-                        key !== suggestion.length - 1 ? "border-b" : ""
-                      } cursor-pointer gap-2`}
-                      onClick={() => (
-                        setDestination(item), setSuggestion(null)
-                      )}
-                    >
-                      {item.Tipo == "destino" ? (
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: icons.Data.MapPin,
-                          }}
-                        />
-                      ) : (
-                        <div
-                          dangerouslySetInnerHTML={{ __html: icons.Data.Bed }}
-                        />
-                      )}
-                      <div className="flex flex-col p-1 cursor-pointer">
-                        <label
-                          key={key}
-                          className="text-sm font-semibold cursor-pointer"
-                        >
-                          {item.Titulo.charAt(0).toUpperCase() +
-                            item.Titulo.slice(1)}
-                        </label>
-                        <label className="text-xs cursor-pointer">
-                          {item.Lugar.charAt(0).toUpperCase() +
-                            item.Lugar.slice(1)}
-                        </label>
-                      </div>
+              <div className="absolute top-full left-0 right-0 max-h-64 bg-white z-50 shadow-2xl overflow-y-auto border-t border-gray-200">
+                {suggestion.map((item, key) => (
+                  <div
+                    key={key}
+                    className={`flex items-center p-3 ${
+                      key !== suggestion.length - 1 ? "border-b border-gray-100" : ""
+                    } cursor-pointer gap-3 hover:bg-gray-50 active:bg-gray-100`}
+                    onClick={() => (
+                      setDestination(item), setSuggestion(null)
+                    )}
+                  >
+                    {item.Tipo == "destino" ? (
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: icons.Data.MapPin,
+                        }}
+                        className="text-gray-500"
+                      />
+                    ) : (
+                      <div
+                        dangerouslySetInnerHTML={{ __html: icons.Data.Bed }}
+                        className="text-gray-500"
+                      />
+                    )}
+                    <div className="flex flex-col">
+                      <label className="text-sm font-semibold text-gray-800">
+                        {item.Titulo.charAt(0).toUpperCase() +
+                          item.Titulo.slice(1)}
+                      </label>
+                      <label className="text-xs text-gray-500">
+                        {item.Lugar.charAt(0).toUpperCase() +
+                          item.Lugar.slice(1)}
+                      </label>
                     </div>
-                  ))
-                ) : (
-                  <p></p>
-                )}
+                  </div>
+                ))}
               </div>
             </ClickAwayListener>
           )}
         </div>
-        <div className="pt-2 ">
-          <label className="text-sm ">Fecha de entrada y salida</label>
-          <span
-            onClick={() => setOpenDate(!openDate)}
-            className="flex items-center justify-center bg-white text-sm mt-1 h-7 cursor-pointer"
-          >{`${formatDate(new Date(date[0].startDate))} - ${formatDate(
-            new Date(date[0].endDate)
-          )}`}</span>
+
+        {/* Fechas */}
+        <div className="border-b border-gray-200 px-4 py-3">
+            <div className="flex flex-row items-center gap-3">
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16"><path fill="#929292" d="M14 1v3h-3V1H5v3H2V1H0v15h16V1h-2zM3 15H1v-2h2v2zm0-3H1v-2h2v2zm0-3H1V7h2v2zm3 6H4v-2h2v2zm0-3H4v-2h2v2zm0-3H4V7h2v2zm3 6H7v-2h2v2zm0-3H7v-2h2v2zm0-3H7V7h2v2zm3 6h-2v-2h2v2zm0-3h-2v-2h2v2zm0-3h-2V7h2v2zm3 6h-2v-2h2v2zm0-3h-2v-2h2v2zm0-3h-2V7h2v2z"/><path fill="#929292" d="M3 0h1v3H3V0zm9 0h1v3h-1V0z"/></svg>
+            <div>
+                <label className="text-sm text-gray-600 font-normal block mb-1">
+                  Fecha de entrada y salida
+                </label>
+                <div
+                  onClick={() => setOpenDate(!openDate)}
+                  className="flex items-center text-xs cursor-pointer text-gray-800 font-medium"
+                >
+                  {`${formatDate(new Date(date[0].startDate))} - ${formatDate(
+                    new Date(date[0].endDate)
+                  )}`}
+                </div>
+            </div>
+          </div>
           {openDate && (
             <ClickAwayListener onClickAway={handleDateClickAway}>
-              <div className="absolute mt-1 z-50">
-                <DateRange
-                  editableDateInputs={true}
-                  onChange={(item) =>
-                    handleChangeDate([
-                      item.selection ? item.selection : item["Invalid Date"],
-                    ])
-                  }
-                  moveRangeOnFirstSelection={false}
-                  ranges={date}
-                  locale={es}
-                  months={1}
-                  direction="horizontal"
-                  className="shadow-xl"
-                  rangeColors={["#96c121"]}
-                  minDate={new Date()}
-                />
-              </div>
-            </ClickAwayListener>
-          )}
-          <div className="mt-2">
-            <label className="text-sm">Personas y habitaciones</label>
-          </div>
-          <span
-            className="flex items-center justify-center bg-white  text-sm h-7 z-50 mb-1 cursor-pointer"
-            onClick={() => setOpenOptions(!openOptions)}
-          >{`${options.adult} ${options.adult > 1 ? "adultos" : "adulto"} · 
-                    ${options.children} ${
-            options.children != 1 ? "niños" : "niño"
-          } · 
-                    ${options.room} ${
-            options.room > 1 ? "habitaciones" : "habitación"
-          }`}</span>
-          {openOptions && (
-            <ClickAwayListener onClickAway={handleClickAway}>
-              <div className="absolute bg-white shadow-xl px-1 py-2 z-50">
-                <div className="flex justify-between px-3 ">
-                  <span>Adultos</span>
-                  <div className="flex items-center justify-between border border-greenVE-600 rounded-md ">
-                    <button
-                      disabled={options.adult <= 1}
-                      className="w-7 h-7 disabled:cursor-not-allowed hover:bg-greenVE-100 hover:rounded-l-md text-greenVE-700 disabled:text-gray-400"
-                      onClick={() => handleOption("adult", "d")}
-                    >
-                      -
-                    </button>
-                    <span className="w-7 text-center">{options.adult}</span>
-                    <button
-                      className="w-7 h-7  cursor-pointer hover:bg-greenVE-100 hover:rounded-r-md text-greenVE-700 disabled:text-gray-400"
-                      onClick={() => handleOption("adult", "i")}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-                <div className="flex justify-between px-3 pt-2">
-                  <span>Niños</span>
-                  <div className="flex items-center justify-between border border-greenVE-600 rounded-md">
-                    <button
-                      disabled={options.children <= 0}
-                      className="w-7 h-7  cursor-pointer disabled:cursor-not-allowed hover:bg-greenVE-100 hover:rounded-l-md text-greenVE-700 disabled:text-gray-400"
-                      onClick={() => handleOption("children", "d")}
-                    >
-                      -
-                    </button>
-                    <span className="w-7 text-center">{options.children}</span>
-                    <button
-                      className="w-7 h-7 cursor-pointer rounded-sm hover:bg-greenVE-100 hover:rounded-r-md text-greenVE-700 disabled:text-gray-400"
-                      disabled={options.children >= 10}
-                      onClick={() => handleOption("children", "i")}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-x-2 px-3">
-                  {Array.from({ length: options.children }, (_, index) => (
-                    <select
-                      key={index}
-                      name="age"
-                      value={options["childrenAges"][index]}
-                      className="px-2 bg-white border border-greenVE-400 rounded-sm mt-2"
-                      onChange={(event) => handleAgeChange(event, index)}
-                    >
-                      <option value="0" data-key="0">
-                        0 años
-                      </option>
-                      <option value="1" data-key="1">
-                        1 año
-                      </option>
-                      <option value="2" data-key="2">
-                        2 años
-                      </option>
-                      <option value="3" data-key="3">
-                        3 años
-                      </option>
-                      <option value="4" data-key="4">
-                        4 años
-                      </option>
-                      <option value="5" data-key="5">
-                        5 años
-                      </option>
-                      <option value="6" data-key="6">
-                        6 años
-                      </option>
-                      <option value="7" data-key="7">
-                        7 años
-                      </option>
-                      <option value="8" data-key="8">
-                        8 años
-                      </option>
-                      <option value="9" data-key="9">
-                        9 años
-                      </option>
-                      <option value="10" data-key="10">
-                        10 años
-                      </option>
-                      <option value="11" data-key="11">
-                        11 años
-                      </option>
-                      <option value="12" data-key="12">
-                        12 años
-                      </option>
-                    </select>
-                  ))}
-                </div>
-                <div className="flex justify-between px-3 pt-2">
-                  <span className="mr-6 ">Habitaciones</span>
-                  <div className="flex items-center justify-between border border-greenVE-600 rounded-md">
-                    <button
-                      disabled={options.room <= 1}
-                      className="w-7 h-7  cursor-pointer disabled:cursor-not-allowed hover:bg-greenVE-100 hover:rounded-l-md text-greenVE-700 disabled:text-gray-400"
-                      onClick={() => handleOption("room", "d")}
-                    >
-                      -
-                    </button>
-                    <span className="w-7 text-center">{options.room}</span>
-                    <button
-                      className="w-7 h-7 cursor-pointer hover:bg-greenVE-100 hover:rounded-r-md text-greenVE-700 disabled:text-gray-400"
-                      onClick={() => handleOption("room", "i")}
-                    >
-                      +
-                    </button>
-                  </div>
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+                <div className="bg-white rounded-lg shadow-2xl max-w-full overflow-auto">
+                  <DateRange
+                    editableDateInputs={true}
+                    onChange={(item) =>
+                      handleChangeDate([
+                        item.selection ? item.selection : item["Invalid Date"],
+                      ])
+                    }
+                    moveRangeOnFirstSelection={false}
+                    ranges={date}
+                    locale={es}
+                    months={1}
+                    direction="horizontal"
+                    rangeColors={["#96c121"]}
+                    minDate={new Date()}
+                  />
                 </div>
               </div>
             </ClickAwayListener>
           )}
         </div>
-        <button
-          className="bg-greenVE-600 w-full py-1 text-white mt-3"
-          onClick={handleSearch}
-        >
-          Buscar
-        </button>
+
+        {/* Personas y habitaciones */}
+        <div className="px-4 py-3">
+          <div className="flex flex-row items-center gap-3">
+                <span><svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#929292"><g fill="none" stroke="#929292" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"><path d="m20.5 23.5l-2-7L12 15l-6.5 1.5l-2 7zM8.625 5.812L12 7.5h4.5"/><path d="M16.5 12.25L12 14l-4.5-1.75v-6L12 4.5l4.5 1.75zm-6-2.25v-.5m3 .5v-.5m.953 6.066L12 19.5l-2.453-3.934"/></g></svg></span>
+                <div className="flex flex-col">
+                  <label className="text-sm font-normal ">
+                    Personas y habitaciones
+                  </label>
+                  <span
+                    className="text-xs cursor-pointer"
+                    onClick={() => setOpenOptions(!openOptions)}
+                  >{`${options.adult} ${options.adult > 1 ? "adultos" : "adulto"} · 
+                        ${options.children} ${
+                    options.children != 1 ? "niños" : "niño"
+                  } · 
+                        ${options.room} ${
+                    options.room > 1 ? "habitaciones" : "habitación"
+                  }`}</span>
+                </div>
+              </div>
+          {openOptions && (
+            <ClickAwayListener onClickAway={handleClickAway}>
+              <div className="fixed inset-0 z-50 flex items-end justify-center bg-black bg-opacity-50">
+                <div className="bg-white w-full max-w-md rounded-t-2xl shadow-2xl p-4 max-h-[80vh] overflow-y-auto">
+                  <div className="flex justify-between items-center mb-4 pb-3 border-b border-gray-200">
+                    <h3 className="font-semibold text-gray-800">Opciones de búsqueda</h3>
+                    <button 
+                      onClick={() => setOpenOptions(false)}
+                      className="text-gray-500 hover:text-gray-700 cursor-pointer"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium text-gray-700">Adultos</span>
+                      <div className="flex items-center justify-between border-2 border-greenVE-600 rounded-lg">
+                        <button
+                          disabled={options.adult <= 1}
+                          className="w-10 h-10 disabled:cursor-not-allowed cursor-pointer hover:bg-greenVE-100 rounded-l-lg text-greenVE-700 disabled:text-gray-400 font-semibold text-lg"
+                          onClick={() => handleOption("adult", "d")}
+                        >
+                          -
+                        </button>
+                        <span className="w-10 text-center font-semibold text-gray-800">{options.adult}</span>
+                        <button
+                          className="w-10 h-10 cursor-pointer hover:bg-greenVE-100 rounded-r-lg text-greenVE-700 font-semibold text-lg"
+                          onClick={() => handleOption("adult", "i")}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium text-gray-700">Niños</span>
+                      <div className="flex items-center justify-between border-2 border-greenVE-600 rounded-lg">
+                        <button
+                          disabled={options.children <= 0}
+                          className="w-10 h-10 cursor-pointer disabled:cursor-not-allowed hover:bg-greenVE-100 rounded-l-lg text-greenVE-700 disabled:text-gray-400 font-semibold text-lg"
+                          onClick={() => handleOption("children", "d")}
+                        >
+                          -
+                        </button>
+                        <span className="w-10 text-center font-semibold text-gray-800">{options.children}</span>
+                        <button
+                          className="w-10 h-10 cursor-pointer hover:bg-greenVE-100 rounded-r-lg text-greenVE-700 disabled:text-gray-400 font-semibold text-lg"
+                          disabled={options.children >= 10}
+                          onClick={() => handleOption("children", "i")}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                    
+                    {options.children > 0 && (
+                      <div className="pt-2">
+                        <label className="text-xs text-gray-600 font-medium block mb-2">
+                          Edad de los niños
+                        </label>
+                        <div className="grid grid-cols-2 gap-2">
+                          {Array.from({ length: options.children }, (_, index) => (
+                            <select
+                              key={index}
+                              name="age"
+                              value={options["childrenAges"][index]}
+                              className="px-3 py-2 bg-white border-2 border-greenVE-400 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-greenVE-500"
+                              onChange={(event) => handleAgeChange(event, index)}
+                            >
+                              <option value="0">0 años</option>
+                              <option value="1">1 año</option>
+                              <option value="2">2 años</option>
+                              <option value="3">3 años</option>
+                              <option value="4">4 años</option>
+                              <option value="5">5 años</option>
+                              <option value="6">6 años</option>
+                              <option value="7">7 años</option>
+                              <option value="8">8 años</option>
+                              <option value="9">9 años</option>
+                              <option value="10">10 años</option>
+                              <option value="11">11 años</option>
+                              <option value="12">12 años</option>
+                            </select>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium text-gray-700">Habitaciones</span>
+                      <div className="flex items-center justify-between border-2 border-greenVE-600 rounded-lg">
+                        <button
+                          disabled={options.room <= 1}
+                          className="w-10 h-10 cursor-pointer disabled:cursor-not-allowed hover:bg-greenVE-100 rounded-l-lg text-greenVE-700 disabled:text-gray-400 font-semibold text-lg"
+                          onClick={() => handleOption("room", "d")}
+                        >
+                          -
+                        </button>
+                        <span className="w-10 text-center font-semibold text-gray-800">{options.room}</span>
+                        <button
+                          className="w-10 h-10 cursor-pointer hover:bg-greenVE-100 rounded-r-lg text-greenVE-700 font-semibold text-lg"
+                          onClick={() => handleOption("room", "i")}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    className="w-full bg-greenVE-600 text-white font-semibold py-3 rounded-lg mt-6 hover:bg-greenVE-700 transition-colors"
+                    onClick={() => setOpenOptions(false)}
+                  >
+                    Aplicar
+                  </button>
+                </div>
+              </div>
+            </ClickAwayListener>
+          )}
+        </div>
+
+        {/* Botón de búsqueda */}
+        <div className="px-4 pb-4">
+          <button
+            className="w-full bg-greenVE-600 hover:bg-greenVE-700 text-white font-semibold py-3 rounded-lg transition-colors"
+            onClick={handleSearch}
+          >
+            Buscar
+          </button>
+        </div>
       </div>
     </div>
   );

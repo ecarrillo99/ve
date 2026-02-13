@@ -12,8 +12,7 @@ import { lazy, Suspense } from "react";
 //import ActivityBanner from "../../components/home_components/activityBanner/ActivityBanner";
 //import DestinoBanner from "../../components/home_components/destinoBanner/DestinoBanner";
 import { useEffect, useState } from "react";
-import NavbarMobile from "../../components/global_components/navbar/NavbarMobile";
-import { Outlet, useParams } from "react-router-dom";
+import { Outlet, useLocation, useParams } from "react-router-dom";
 import {
   BannerSkeleton,
   NavbarSkeleton,
@@ -50,6 +49,7 @@ const DestinoBanner = lazy(
 const Home = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Definir 768 como el punto de corte para móvil
   const { codigo } = useParams();
+  const location = useLocation();
 
   useEffect(() => {
     const handleResize = () => {
@@ -68,24 +68,23 @@ const Home = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, [codigo]);
+  
+  const isVinos = location.pathname === "/vinos";
+  
 
   return (
     <main>
-      {isMobile ? (
+     
         <Suspense fallback={<NavbarSkeleton />}>
-          <NavbarMobile activo={1} />
+                {isVinos ? (<Navbar activo={4} />)
+          :(<Navbar activo={1} />)}
         </Suspense>
-      ) : (
-        <Suspense fallback={<NavbarSkeleton />}>
-          <Navbar activo={1} />
-        </Suspense>
-      )}
 
       <Suspense fallback={<BannerSkeleton />}>
         <MainBanner />
       </Suspense>
 
-      <div className="mx-auto max-w-6xl py-6 sm:px-6 lg:px-8 -m-12">
+      <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8 -m-8">
         <Outlet />
 
         <Suspense fallback={<ContentSkeleton />}>

@@ -8,7 +8,6 @@ import ProfilePassword from "../../components/profile_components/ProfilePassword
 import { getProfileData } from "../../controllers/perfil/perfilController";
 import { getRemoteCities } from "../../controllers/lugares/lugaresController";
 import { sessionStatus } from "../../global/util";
-import NavbarMobile from "../../components/global_components/navbar/NavbarMobile";
 import Cashback from "../../components/profile_components/cashback/Cashback";
 import ProfileAgencia from "../../components/profile_components/ProfileAgencia";
 import ProfileAdmin from "../../components/profile_components/ProfileAdmin";
@@ -139,7 +138,7 @@ const Profile = ({}) => {
   return sessionStatus() ? (
     citiesData != null && profileData != null ? (
       <div>
-        {isMobile ? <NavbarMobile activo={2} /> : <Navbar activo={2} />}
+      <Navbar activo={2} />
         <div className="flex flex-col md:flex-row mx-5 md:mx-auto py-6 sm:px-6 lg:px-8 gap-7 max-w-6xl">
           {/* Menú siempre visible */}
           <div className="w-full md:w-3/12">

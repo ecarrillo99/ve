@@ -5,13 +5,12 @@ import { format } from "date-fns";
 import { getResultadoFiltro } from "../../controllers/establecimiento/establecimientoController";
 import Filtro from "../../models/Filtro";
 import Icons from "../../global/icons";
-
-const NavbarMobile = lazy(() => import("../../components/global_components/navbar/NavbarMobile"));
 const Footer = lazy(() => import("../../components/global_components/footer/Footer"));
 const SearchBar =lazy(()=> import('../../components/search_components/mobile_search/SearchBar'))
 const FilterBar = lazy(()=>import('../../components/search_components/mobile_search/FilterBar'))
 const SearchResult = lazy(()=>import('../../components/search_components/mobile_search/SearchResult'))
 const SearchResultSkeleton = lazy(()=> import('../../components/search_components/mobile_search/SearchResultSkeleton'))
+const Navbar = lazy(() => import("../../components/global_components/navbar/Navbar"));
 
 const SearchMobile = () => {
     const location = useLocation();
@@ -260,7 +259,7 @@ const SearchMobile = () => {
 
     return (
         <div>
-            <Suspense><NavbarMobile/></Suspense>
+            <Suspense><Navbar/></Suspense>
             <Suspense><SearchBar filtro={filtro}/></Suspense>
             <Suspense>
                 <FilterBar 

@@ -1,7 +1,6 @@
 import React, { lazy, Suspense } from "react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import NavbarMobile from "../../components/global_components/navbar/NavbarMobile";
 import BuySuscription from "../../components/suscription_components/buy_suscription";
 import {
   NavbarSkeleton,

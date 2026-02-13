@@ -169,7 +169,7 @@ const HotelRooms = ({setOpenRooms, Establecimiento, date, options}) => {
             }
             {
                 subtotal!=0
-                ?<div className='fixed bottom-0 bg-white w-full pb-6 pt-2 border-t px-4 flex justify-between items-center'>
+                ?<div className='fixed bottom-14 bg-white w-full pb-6 pt-2 border-t px-4 flex justify-between items-center'>
                     <div className='flex flex-col'>
                         <label className='text-lg font-semibold'>US ${subtotal}</label>
                         <label className='text-sm '>US ${impuestos} de impuestos y cargos</label>

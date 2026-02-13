@@ -6,17 +6,10 @@ import {
   View,
   Text,
   StyleSheet,
-  Font,
   Image,
   pdf,
 } from "@react-pdf/renderer";
-import montserratRegular from "../../global/fonts/Montserrat/Montserrat-Regular.ttf";
-import montserratBold from "../../global/fonts/Montserrat/Montserrat-Bold.ttf";
 import { useLocation } from "react-router-dom";
-
-// Registra las fuentes personalizadas
-Font.register({ family: "Montserrat", src: montserratRegular });
-Font.register({ family: "Montserrat-Bold", src: montserratBold });
 
 // Define los estilos de Tailwind CSS convertidos a objetos de estilo de react-pdf/renderer
 const styles = StyleSheet.create({
@@ -43,14 +36,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 12,
     textAlign: "left",
-    fontFamily: "Montserrat-Bold",
-    fontWeight: "black",
+    fontFamily: "Helvetica-Bold",
+    fontWeight: "bold",
     color: "#4d4d4d",
   },
   paragraph: {
     fontSize: 8,
     textAlign: "left",
-    fontFamily: "Montserrat",
+    fontFamily: "Helvetica",
     color: "#4d4d4d",
   },
   logoContainer: {
@@ -75,6 +68,32 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     objectFit: "cover",
+  },
+  // Estilos para WineOffer
+  wineOfferSection: {
+    marginTop: 8,
+    marginBottom: 8,
+    padding: 8,
+    backgroundColor: "#fffbeb",
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: "#d97706",
+  },
+  wineOfferTitle: {
+    fontSize: 10,
+    fontFamily: "Helvetica-Bold",
+    color: "#92400e",
+    marginBottom: 4,
+  },
+  wineOfferText: {
+    fontSize: 8,
+    fontFamily: "Helvetica",
+    color: "#78716c",
+  },
+  wineOfferPrice: {
+    fontSize: 10,
+    fontFamily: "Helvetica-Bold",
+    color: "#d97706",
   },
 });
 
@@ -101,6 +120,16 @@ const Certificado = () => {
       reserva[key] = value;
     }
   }
+
+  // Obtener información de WineOffer de los parámetros
+  const wineOffer = {
+    titulo: reserva.WineOfferTitulo ? decodeURIComponent(reserva.WineOfferTitulo) : null,
+    precio: reserva.WineOfferPrecio ? parseFloat(reserva.WineOfferPrecio) : 0,
+    imagen: reserva.WineOfferImagen ? decodeURIComponent(reserva.WineOfferImagen) : null,
+    descripcion: reserva.WineOfferDescripcion ? decodeURIComponent(reserva.WineOfferDescripcion) : null,
+    regalos: reserva.WineOfferRegalos ? decodeURIComponent(reserva.WineOfferRegalos) : null,
+  };
+  const hasWineOffer = wineOffer.titulo !== null;
 
   // Estado para el nombre que se muestra en el PDF (solo cambia al aplicar)
   const [nombreSuscriptorPDF, setNombreSuscriptorPDF] = useState(
@@ -193,7 +222,7 @@ const Certificado = () => {
                     <Text
                       style={{
                         ...styles.paragraph,
-                        ...{ fontFamily: "Montserrat-Bold" },
+                        ...{ fontFamily: "Helvetica-Bold" },
                       }}
                     >
                       NÚMERO DE RESERVA:
@@ -202,7 +231,7 @@ const Certificado = () => {
                       style={{
                         ...styles.paragraph,
                         ...{
-                          fontFamily: "Montserrat-Bold",
+                          fontFamily: "Helvetica-Bold",
                           color: "#96c121",
                           marginLeft: 4,
                         },
@@ -216,7 +245,7 @@ const Certificado = () => {
                     <Text
                       style={{
                         ...styles.paragraph,
-                        ...{ fontFamily: "Montserrat-Bold" },
+                        ...{ fontFamily: "Helvetica-Bold" },
                       }}
                     >
                       FECHA DE EMISIÓN:
@@ -225,7 +254,7 @@ const Certificado = () => {
                       style={{
                         ...styles.paragraph,
                         ...{
-                          fontFamily: "Montserrat-Bold",
+                          fontFamily: "Helvetica-Bold",
                           color: "#96c121",
                           marginLeft: 4,
                         },
@@ -240,7 +269,7 @@ const Certificado = () => {
                     style={{
                       ...styles.paragraph,
                       ...{
-                        fontFamily: "Montserrat-Bold",
+                        fontFamily: "Helvetica-Bold",
                       },
                     }}
                   >
@@ -250,7 +279,7 @@ const Certificado = () => {
                     style={{
                       ...styles.paragraph,
                       ...{
-                        fontFamily: "Montserrat-Bold",
+                        fontFamily: "Helvetica-Bold",
                         color: "#96c121",
                         marginLeft: 4,
                       },
@@ -263,7 +292,7 @@ const Certificado = () => {
                   <Text
                     style={{
                       ...styles.paragraph,
-                      ...{ fontFamily: "Montserrat-Bold" },
+                      ...{ fontFamily: "Helvetica-Bold" },
                     }}
                   >
                     NOMBRE SUSCRIPTOR:
@@ -272,7 +301,7 @@ const Certificado = () => {
                     style={{
                       ...styles.paragraph,
                       ...{
-                        fontFamily: "Montserrat-Bold",
+                        fontFamily: "Helvetica-Bold",
                         color: "#96c121",
                         marginLeft: 4,
                       },
@@ -293,14 +322,20 @@ const Certificado = () => {
             >
               <View style={styles.column}>
                 <View style={{ ...styles.row, height: 63 }}>
-                  <View style={styles.imageContainer}>
-                    <Image style={styles.image} src={reserva.FotoEst} />
-                  </View>
+                  {reserva.FotoEst && (
+                    <View style={styles.imageContainer}>
+                      <Image 
+                        style={styles.image} 
+                        src={reserva.FotoEst}
+                        cache={false}
+                      />
+                    </View>
+                  )}
                   <View style={{ ...styles.column, width: "100%" }}>
                     <Text
                       style={{
                         ...styles.paragraph,
-                        fontFamily: "Montserrat-Bold",
+                        fontFamily: "Helvetica-Bold",
                         fontSize: 10,
                       }}
                     >
@@ -352,7 +387,7 @@ const Certificado = () => {
                       style={{
                         ...styles.paragraph,
                         textAlign: "center",
-                        fontFamily: "Montserrat-Bold",
+                        fontFamily: "Helvetica-Bold",
                         fontSize: 6,
                       }}
                     >
@@ -418,7 +453,7 @@ const Certificado = () => {
                       style={{
                         ...styles.paragraph,
                         textAlign: "center",
-                        fontFamily: "Montserrat-Bold",
+                        fontFamily: "Helvetica-Bold",
                         fontSize: 6,
                       }}
                     >
@@ -485,7 +520,7 @@ const Certificado = () => {
                       style={{
                         ...styles.paragraph,
                         textAlign: "center",
-                        fontFamily: "Montserrat-Bold",
+                        fontFamily: "Helvetica-Bold",
                         fontSize: 6,
                       }}
                     >
@@ -509,7 +544,7 @@ const Certificado = () => {
                       style={{
                         ...styles.paragraph,
                         textAlign: "center",
-                        fontFamily: "Montserrat-Bold",
+                        fontFamily: "Helvetica-Bold",
                         fontSize: 6,
                         marginTop: 10,
                       }}
@@ -533,8 +568,8 @@ const Certificado = () => {
               <Text style={{ ...styles.paragraph, fontSize: 13 }}>Precio</Text>
             </View>
             {reserva.Habitaciones.map((item, index) => (
-              <>
-                <View key={index} style={styles.row}>
+              <React.Fragment key={index}>
+                <View style={styles.row}>
                   <View style={{ ...styles.column, width: "100%" }}>
                     <Text style={{ ...styles.paragraph, fontSize: 8 }}>
                       {item.Cantidad} x {item.Nombre} (Máximo: {item.Adultos}{" "}
@@ -549,7 +584,7 @@ const Certificado = () => {
                       <Text
                         style={{
                           ...{
-                            fontFamily: "Montserrat-Bold",
+                            fontFamily: "Helvetica-Bold",
                             color: "#3b82f6",
                             marginLeft: 4,
                           },
@@ -581,7 +616,7 @@ const Certificado = () => {
                         <Text
                           style={{
                             ...{
-                              fontFamily: "Montserrat-Bold",
+                              fontFamily: "Helvetica-Bold",
                               color: "#96c121",
                               marginLeft: 4,
                             },
@@ -610,7 +645,7 @@ const Certificado = () => {
                         <Text
                           style={{
                             ...{
-                              fontFamily: "Montserrat-Bold",
+                              fontFamily: "Helvetica-Bold",
                               color: "#96c121",
                               marginLeft: 4,
                             },
@@ -631,8 +666,34 @@ const Certificado = () => {
                     </View>
                   </View>
                 )}
-              </>
+              </React.Fragment>
             ))}
+
+            {/* ========== SECCIÓN WINE OFFER EN PRECIOS ========== */}
+            {hasWineOffer && wineOffer.precio > 0 && (
+              <View style={{ ...styles.row, marginTop: 3 }}>
+                <View style={{ ...styles.column, width: "100%" }}>
+                  <Text style={{ ...styles.paragraph, fontSize: 8, color: '#d97706' }}>
+                    🍷 Oferta Ruta del Vino: {wineOffer.titulo}
+                  </Text>
+                </View>
+                <View style={styles.column}>
+                  <Text
+                    style={{
+                      ...styles.paragraph,
+                      textAlign: "right",
+                      fontSize: 8,
+                      color: '#d97706',
+                      fontFamily: 'Helvetica-Bold'
+                    }}
+                  >
+                    ${wineOffer.precio.toFixed(2)}
+                  </Text>
+                </View>
+              </View>
+            )}
+            {/* ========== FIN SECCIÓN WINE OFFER EN PRECIOS ========== */}
+
             <View style={{ ...styles.row, marginTop: 5 }}>
               <View style={styles.column}>
                 <Text style={{ ...styles.paragraph, fontSize: 13 }}>
@@ -647,7 +708,7 @@ const Certificado = () => {
                     fontSize: 13,
                   }}
                 >
-                  ${Number(reserva.Subtotal).toFixed(2)}
+                  ${(Number(reserva.Subtotal) + (hasWineOffer ? wineOffer.precio : 0)).toFixed(2)}
                 </Text>
               </View>
             </View>
@@ -688,7 +749,7 @@ const Certificado = () => {
                   style={{
                     ...styles.paragraph,
                     fontSize: 8,
-                    fontFamily: "Montserrat-Bold",
+                    fontFamily: "Helvetica-Bold",
                   }}
                 >
                   Precio final
@@ -700,10 +761,10 @@ const Certificado = () => {
                     ...styles.paragraph,
                     textAlign: "right",
                     fontSize: 8,
-                    fontFamily: "Montserrat-Bold",
+                    fontFamily: "Helvetica-Bold",
                   }}
                 >
-                  ${reserva.Total}
+                  ${(Number(reserva.Total) + (hasWineOffer ? wineOffer.precio : 0)).toFixed(2)}
                 </Text>
               </View>
             </View>
@@ -712,6 +773,69 @@ const Certificado = () => {
                 (Impuestos incluidos)
               </Text>
             </View>
+
+            {/* ========== SECCIÓN DESTACADA WINE OFFER ========== */}
+            {hasWineOffer && (
+              <View style={styles.wineOfferSection}>
+                <View style={{ ...styles.row, alignItems: 'center', marginBottom: 4 }}>
+                  <Text style={styles.wineOfferTitle}>
+                    🍷 Oferta Especial - Ruta del Vino
+                  </Text>
+                </View>
+                
+                <View style={styles.row}>
+                  {wineOffer.imagen && (
+                    <View style={{ width: 45, height: 45, marginRight: 8 }}>
+                      <Image 
+                        src={wineOffer.imagen}
+                        cache={false}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 4 }} 
+                      />
+                    </View>
+                  )}
+                  <View style={{ ...styles.column, flex: 1 }}>
+                    <Text style={{ 
+                      ...styles.paragraph, 
+                      fontSize: 9, 
+                      fontFamily: 'Helvetica-Bold',
+                      color: '#92400e'
+                    }}>
+                      {wineOffer.titulo}
+                    </Text>
+                    {wineOffer.descripcion && (
+                      <Text style={{ ...styles.paragraph, fontSize: 7, color: '#78716c' }}>
+                        {wineOffer.descripcion}
+                      </Text>
+                    )}
+                  </View>
+                  {wineOffer.precio > 0 && (
+                    <View style={{ alignItems: 'flex-end' }}>
+                      <Text style={styles.wineOfferPrice}>
+                        ${wineOffer.precio.toFixed(2)}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+
+                {wineOffer.regalos && (
+                  <View style={{ ...styles.row, marginTop: 4 }}>
+                    <Text style={{ ...styles.paragraph, fontSize: 7 }}>
+                      <Text style={{ fontFamily: 'Helvetica-Bold', color: '#d97706' }}>🎁 Regalos incluidos: </Text>
+                      {wineOffer.regalos}
+                    </Text>
+                  </View>
+                )}
+
+                <View style={{ ...styles.row, marginTop: 6, paddingTop: 4, borderTopWidth: 0.5, borderTopColor: '#fcd34d' }}>
+                  <Text style={{ ...styles.paragraph, fontSize: 6, color: '#92400e', fontStyle: 'italic' }}>
+                    Esta oferta de la Ruta del Vino incluye beneficios especiales que serán entregados durante su estadía.
+                    Por favor presente este certificado al momento del check-in para reclamar sus regalos.
+                  </Text>
+                </View>
+              </View>
+            )}
+            {/* ========== FIN SECCIÓN DESTACADA WINE OFFER ========== */}
+
             <View style={{ ...styles.row, marginTop: 5 }}>
               <Text style={{ ...styles.paragraph, fontSize: 10 }}>
                 El precio final que se muestra es el importe que pagarás al
@@ -753,7 +877,7 @@ const Certificado = () => {
               <Text
                 style={{
                   ...styles.paragraph,
-                  fontFamily: "Montserrat",
+                  fontFamily: "Helvetica",
                   fontSize: 8,
                 }}
               >
@@ -781,7 +905,7 @@ const Certificado = () => {
                   <Text
                     style={{
                       ...styles.paragraph,
-                      fontFamily: "Montserrat-Bold",
+                      fontFamily: "Helvetica-Bold",
                       fontSize: 8,
                     }}
                   >
@@ -797,7 +921,7 @@ const Certificado = () => {
             <View style={{ ...styles.row, paddingTop: 3 }}>
               <View style={{ ...styles.row, gap: 3 }}>
                 <Text style={{ ...styles.paragraph, fontSize: 8 }}>
-                  <Text style={{ fontFamily: "Montserrat-Bold" }}>
+                  <Text style={{ fontFamily: "Helvetica-Bold" }}>
                     Restricciones del establecimiento:
                   </Text>
                 </Text>
@@ -819,7 +943,7 @@ const Certificado = () => {
             >
               <View style={{ ...styles.row, gap: 3 }}>
                 <Text style={{ ...styles.paragraph, fontSize: 8 }}>
-                  <Text style={{ fontFamily: "Montserrat-Bold" }}>
+                  <Text style={{ fontFamily: "Helvetica-Bold" }}>
                     Sistemas de servicios:
                   </Text>
                 </Text>
@@ -839,7 +963,7 @@ const Certificado = () => {
             >
               <Image
                 src={staticMapImageUrl}
-                style={{ width: "100%", height: "120px" }}
+                style={{ width: "100%", height: "80px" }}
               />
             </View>
             {reserva.Habitaciones.map((item, index) => (
@@ -847,14 +971,14 @@ const Certificado = () => {
                 <View style={{ ...styles.row, paddingTop: 3 }}>
                   <View style={{ ...styles.row, gap: 3 }}>
                     <Text style={{ ...styles.paragraph, fontSize: 8 }}>
-                      <Text style={{ fontFamily: "Montserrat-Bold" }}>
+                      <Text style={{ fontFamily: "Helvetica-Bold" }}>
                         Incluye:
                       </Text>
                     </Text>
                     <Text
                       style={{
                         ...styles.paragraph,
-                        fontFamily: "Montserrat",
+                        fontFamily: "Helvetica",
                         fontSize: 8,
                       }}
                     >
@@ -865,14 +989,14 @@ const Certificado = () => {
                 <View style={{ ...styles.row, paddingTop: 3 }}>
                   <View style={{ ...styles.row, gap: 3 }}>
                     <Text style={{ ...styles.paragraph, fontSize: 8 }}>
-                      <Text style={{ fontFamily: "Montserrat-Bold" }}>
+                      <Text style={{ fontFamily: "Helvetica-Bold" }}>
                         No incluye:
                       </Text>
                     </Text>
                     <Text
                       style={{
                         ...styles.paragraph,
-                        fontFamily: "Montserrat",
+                        fontFamily: "Helvetica",
                         fontSize: 8,
                       }}
                     >
@@ -892,14 +1016,14 @@ const Certificado = () => {
                 >
                   <View style={{ ...styles.row, gap: 3 }}>
                     <Text style={{ ...styles.paragraph, fontSize: 8 }}>
-                      <Text style={{ fontFamily: "Montserrat-Bold" }}>
+                      <Text style={{ fontFamily: "Helvetica-Bold" }}>
                         Acomodación:
                       </Text>
                     </Text>
                     <Text
                       style={{
                         ...styles.paragraph,
-                        fontFamily: "Montserrat",
+                        fontFamily: "Helvetica",
                         fontSize: 8,
                       }}
                     >
@@ -914,7 +1038,7 @@ const Certificado = () => {
                 style={{
                   ...styles.paragraph,
                   fontSize: 6,
-                  fontFamily: "Montserrat-Bold",
+                  fontFamily: "Helvetica-Bold",
                 }}
               >
                 Términos y condiciones:
@@ -982,13 +1106,13 @@ const Certificado = () => {
               }}
             >
               <Text style={{ ...styles.paragraph, fontSize: 6 }}>
-                <Text style={{ fontFamily: "Montserrat-Bold" }}>PBX:</Text> +593
+                <Text style={{ fontFamily: "Helvetica-Bold" }}>PBX:</Text> +593
                 7 413 4500 ::
-                <Text style={{ fontFamily: "Montserrat-Bold" }}>
+                <Text style={{ fontFamily: "Helvetica-Bold" }}>
                   DIR.:
                 </Text>{" "}
                 Calle del Batán 5-317 y Esmeraldas :: Cuenca ::
-                <Text style={{ fontFamily: "Montserrat-Bold" }}>
+                <Text style={{ fontFamily: "Helvetica-Bold" }}>
                   VisitaEcuador.com
                 </Text>
               </Text>
@@ -1002,24 +1126,24 @@ const Certificado = () => {
                   ></Image>
                   <View style={styles.column}>
                     <Text
-                      style={{ fontFamily: "Montserrat-Bold", fontSize: 8 }}
+                      style={{ fontFamily: "Helvetica-Bold", fontSize: 8 }}
                     >
                       CENTRAL DE RESERVAS:
                     </Text>
-                    <Text style={{ fontFamily: "Montserrat", fontSize: 7 }}>
+                    <Text style={{ fontFamily: "Helvetica", fontSize: 7 }}>
                       +593 98 064 4467
                     </Text>
-                    <Text style={{ fontFamily: "Montserrat", fontSize: 7 }}>
+                    <Text style={{ fontFamily: "Helvetica", fontSize: 7 }}>
                       +593 98 185 0436
                     </Text>
-                    <Text style={{ fontFamily: "Montserrat", fontSize: 7 }}>
+                    <Text style={{ fontFamily: "Helvetica", fontSize: 7 }}>
                       +593 98 626 3432
                     </Text>
                   </View>
                 </View>
               </View>
               <View style={styles.column}>
-                <Text style={{ fontFamily: "Montserrat-Bold", fontSize: 8 }}>
+                <Text style={{ fontFamily: "Helvetica-Bold", fontSize: 8 }}>
                   CON EL AUSPICIO DE:
                 </Text>
                 <Image
@@ -1032,7 +1156,7 @@ const Certificado = () => {
         </Page>
       </Document>
     );
-  }, [nombreSuscriptorPDF]); // Solo depende de nombreSuscriptorPDF
+  }, [nombreSuscriptorPDF, hasWineOffer, wineOffer]); // Añadido hasWineOffer y wineOffer a las dependencias
 
   // Descarga automática inicial solo en móvil (una sola vez)
   useEffect(() => {
@@ -1140,6 +1264,19 @@ const Certificado = () => {
           )}
         </div>
       </div>
+
+      {/* Indicador de Wine Offer si existe */}
+      {hasWineOffer && (
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2">
+          <div className="max-w-6xl mx-auto flex items-center gap-2">
+            <span className="text-amber-600">🍷</span>
+            <span className="text-sm text-amber-800">
+              Este certificado incluye la <strong>Oferta Ruta del Vino: {wineOffer.titulo}</strong>
+              {wineOffer.regalos && <span> con regalos: {wineOffer.regalos}</span>}
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Visor del PDF */}
       <div className="flex-1 overflow-hidden">

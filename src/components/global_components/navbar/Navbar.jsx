@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import Icons from "../../../global/icons";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import {
   endRemoteSession,
   getPermissions,
@@ -19,6 +19,8 @@ import { auth } from "../../../firebase";
 import encodePass from "../../../global/encodePass";
 import Config from "../../../global/config";
 import MarcaPais from "./MarcaPais";
+import MobileMenu from "./MobileMenu";
+import MobileBottomNav from "./MobileBottomNav";
 
 const icons = new Icons();
 
@@ -47,6 +49,10 @@ const Navbar = ({ activo, isExposed = false }) => {
 
   const [openBeneficios, setOpenBeneficios] = useState(false);
 
+  // Mobile states
+  const [openMenu, setOpenMenu] = useState(false);
+  const [openMobileProfile, setOpenMobileProfile] = useState(false);
+
   const handleClickLogin = () => {
     navigate("/login");
   };
@@ -59,26 +65,36 @@ const Navbar = ({ activo, isExposed = false }) => {
   };
   const handleClickNosotros = () => {
     navigate("/nosotros");
+    setOpenMenu(false);
   };
 
   const handleClickProfileSet = () => {
     navigate("/perfil");
+    setOpenMobileProfile(false);
   };
 
   const handleClickBookHistory = () => {
     navigate("/historial");
+    setOpenMobileProfile(false);
   };
 
   const handleClickFavorites = () => {
     navigate("/favoritos");
+    setOpenMobileProfile(false);
   };
 
   const handleClickYaGanaste = () => {
     navigate("/yaganaste");
   };
 
-  const handleClickBeneficios = (name) => {
-    navigate(name);
+  const handleClickVinos = () => {
+    navigate("/vinos");
+    setOpenMenu(false);
+  };
+
+  const handleClickBYD = () => {
+    navigate("/byd");
+    setOpenMenu(false);
   };
 
   const handleClickDashboard = () => {
@@ -91,6 +107,7 @@ const Navbar = ({ activo, isExposed = false }) => {
 
   const handleClickLogo = () => {
     navigate("/");
+    setOpenMenu(false);
   };
 
   const handleClickAdministradorBeta = () => {
@@ -121,6 +138,14 @@ const Navbar = ({ activo, isExposed = false }) => {
     setOpenProfile(!openProfile);
   };
 
+  const handleClickMobileProfile = () => {
+    if (nivel == "visitante") {
+      navigate("/login");
+    } else {
+      setOpenMobileProfile(!openMobileProfile);
+    }
+  };
+
   const handleClickSuscribing = () => {
     setOpenConvenios(false);
     setOpenSuscription(!openSuscription);
@@ -142,18 +167,32 @@ const Navbar = ({ activo, isExposed = false }) => {
 
   const handleClickDisney = () => {
     navigate("/disney");
+    setOpenMenu(false);
   };
 
   const handleClickVisas = () => {
     navigate("/visas-concierge");
+    setOpenMenu(false);
   };
 
   const handleClickInicio = () => {
     navigate("/");
+    setOpenMenu(false);
   };
 
   const handleClickInfotour = () => {
     window.open("https://www.infotour.app/");
+    setOpenMenu(false);
+  };
+
+  const handleClickContactanos = () => {
+    navigate("/contacto");
+    setOpenMenu(false);
+  }
+
+  const handleClickMenu = () => {
+    setOpenConvenios(false);
+    setOpenMenu(!openMenu);
   };
 
   const handleClickGoogle = () => {
@@ -211,13 +250,10 @@ const Navbar = ({ activo, isExposed = false }) => {
       signInWithPopup(auth, fProvider)
         .then(async (result) => {
           setIsLoadingFB(true);
-          // The signed-in user info.
           const user = result.user;
           try {
             const random = () => Math.floor(Math.random() * 100);
-            const randomStr = Array.from({ length: 7 }, () => random()).join(
-              "",
-            );
+            const randomStr = Array.from({ length: 7 }, () => random()).join("");
             const username =
               user.displayName ?? "usuario" + randomStr.substring(0, 6);
             const email = user.email ?? "";
@@ -258,35 +294,28 @@ const Navbar = ({ activo, isExposed = false }) => {
           } catch (e) {}
         })
         .catch((error) => {
-          // Handle Errors here.
           const errorCode = error.code;
           const errorMessage = error.message;
-          // The email of the user's account used.
           const email = error.customData.email;
-          // The AuthCredential type that was used.
           const credential = FacebookAuthProvider.credentialFromError(error);
         });
     }
   };
 
+  const router = 
+    location.pathname === "/vinos"
+  
+
+  const route = 
+    location.pathname === "/"
+  
+
   return (
     <header className="bg-greenVE-500">
       {!isExposedRoute && (
-        <div className="bg-[#8eb934]">
-          <div className="flex justify-end gap-3 align-middle mx-auto max-w-6xl py-2 px-4 sm:px-6 lg:px-8 ">
-            <button
-              className={`flex  ${
-                activo == 3 ? "border-white" : "border-transparent"
-              }   text-xs items-center `}
-              tittle="nosotros"
-              onClick={handleClickNosotros}
-            >
-              <img
-                src="https://visitaecuador.com/img/web/nosotrosMenu.svg"
-                title="nosotros"
-                style={{ height: "25px" }}
-              ></img>
-            </button>
+        <div className="bg-[#8eb934] flex  justify-center lg:gap-56 xl:gap-[350px] flex-wrap sm:flex-row">
+          <div className="flex sm:justify-end gap-3 align-start py-3 lg:px-8 px-3">
+            {!codigo && <MarcaPais />}
             <a
               className=" w-6 h-6 rounded-full flex items-center justify-center"
               href="https://www.facebook.com/visitaecuadorcom"
@@ -336,112 +365,124 @@ const Navbar = ({ activo, isExposed = false }) => {
             >
               <span className="icon-[flowbite--x-company-solid] text-white h-3 w-3"></span>
             </a>
+           
           </div>
-        </div>
-      )}
-      <div className="flex mx-auto max-w-6xl py-2 px-4 sm:px-6 lg:px-8">
-        {!codigo && (
-          <div className="w-2/12 flex cursor-pointer" onClick={handleClickLogo}>
             {!isExposedRoute && (
-              <img
-                src="https://visitaecuador.com/img/web/ve_logo.svg"
-                style={{ width: "110px", height: "auto" }}
-              />
-            )}
-          </div>
-        )}
-        <div
-          className={`flex flex-col  ${
-            codigo ? "w-full" : "w-10/12"
-          } justify-between `}
-        >
-          {!isExposedRoute && (
-            <div className="flex gap-2 justify-end items-center">
-              <a
-                className="flex gap-1 text-white border-white rounded-full border-2 px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-300"
-                href="/smart/"
-              >
-                Registrar alojamiento
-              </a>
-              <div className="flex justify-center relative">
-                {/* {(nivel === "visitante" || nivel === "gratuito") && (
-                <button className="flex gap-1 text-greenVE-600 bg-white rounded-full px-5 py-1 text-xs hover:border-gray-300 hover:text-gray-500" onClick={handleClickSuscribing}>
-                  Suscribirse
-                </button>
-              )} */}
-                <button
-                  className="flex gap-1 text-greenVE-600 bg-white rounded-full px-5 py-1 text-xs hover:border-gray-300 hover:text-gray-500"
-                  onClick={handleClickSuscribing}
+            <div className=" flex gap-2 justify-end sm:justify-start items-center pr-8 sm:pr-4">
+              {/* Desktop view */}
+              <div className="sr-only sm:not-sr-only md:flex gap-2">
+                <a
+                  className="flex gap-1 text-white border-white rounded-md border-2 px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-300"
+                  href="/smart/"
                 >
-                  Suscribirse
-                </button>
-                {openSuscription && (
-                  <ClickAwayListener onClickAway={handleClickSuscribing}>
-                    <div className="absolute z-50 bg-white flex flex-col items-start py-2 top-12  gap-2 shadow-2xl rounded-md ">
-                      <button
-                        className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2 "
-                        onClick={handleClickSuscription}
-                      >
-                        <div
-                          dangerouslySetInnerHTML={{ __html: icons.Data.Buy }}
-                        />
-                        Comprar suscripción
-                      </button>
-                      <button
-                        className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"
-                        onClick={handleClickPack}
-                      >
-                        <div
-                          dangerouslySetInnerHTML={{ __html: icons.Data.Gift }}
-                        />
-                        Activar VisitaPack
-                      </button>
-                      <label className="text-xs font-medium text-center w-full">
-                        Prueba gratis con:
-                      </label>
-                      <div className="flex justify-center items-center w-full gap-2  pb-3">
-                        {isLoadingGoogle ? (
-                          <Spinner
-                            color="blue"
-                            className="text-greenVE-300"
-                          ></Spinner>
-                        ) : (
-                          <a
-                            dangerouslySetInnerHTML={{
-                              __html: icons.Data["LoginGoogleSM"],
-                            }}
-                            className="border p-2 rounded-md hover:border-greenVE-500"
-                            onClick={() => handleClickGoogle()}
+                  Registrar alojamiento
+                </a>
+                <div className="flex justify-center relative">
+                  <button
+                    className="flex gap-1 text-greenVE-600 bg-white rounded-md px-5 py-1 text-xs hover:border-gray-300 hover:text-gray-500"
+                    onClick={handleClickSuscribing}
+                  >
+                    Suscribirse
+                  </button>
+                  {openSuscription && (
+                    <ClickAwayListener onClickAway={handleClickSuscribing}>
+                      <div className="absolute z-50 bg-white flex flex-col items-start py-2 top-12  gap-2 shadow-2xl rounded-md ">
+                        <button
+                          className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2 "
+                          onClick={handleClickSuscription}
+                        >
+                          <div
+                            dangerouslySetInnerHTML={{ __html: icons.Data.Buy }}
                           />
-                        )}
-                        {isLoadingFB ? (
-                          <Spinner
-                            color="blue"
-                            className="text-greenVE-300"
-                          ></Spinner>
-                        ) : (
-                          <a
-                            dangerouslySetInnerHTML={{
-                              __html: icons.Data["LoginFacebookSM"],
-                            }}
-                            className="border p-2 rounded-md hover:border-greenVE-500"
-                            onClick={() => handleClickFacebook()}
+                          Comprar suscripción
+                        </button>
+                        <button
+                          className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"
+                          onClick={handleClickPack}
+                        >
+                          <div
+                            dangerouslySetInnerHTML={{ __html: icons.Data.Gift }}
                           />
-                        )}
+                          Activar VisitaPack
+                        </button>
+                        <label className="text-xs font-medium text-center w-full">
+                          Prueba gratis con:
+                        </label>
+                        <div className="flex justify-center items-center w-full gap-2  pb-3">
+                          {isLoadingGoogle ? (
+                            <Spinner
+                              color="blue"
+                              className="text-greenVE-300"
+                            ></Spinner>
+                          ) : (
+                            <a
+                              dangerouslySetInnerHTML={{
+                                __html: icons.Data["LoginGoogleSM"],
+                              }}
+                              className="border p-2 rounded-md hover:border-greenVE-500"
+                              onClick={() => handleClickGoogle()}
+                            />
+                          )}
+                          {isLoadingFB ? (
+                            <Spinner
+                              color="blue"
+                              className="text-greenVE-300"
+                            ></Spinner>
+                          ) : (
+                            <a
+                              dangerouslySetInnerHTML={{
+                                __html: icons.Data["LoginFacebookSM"],
+                              }}
+                              className="border p-2 rounded-md hover:border-greenVE-500"
+                              onClick={() => handleClickFacebook()}
+                            />
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </ClickAwayListener>
+                    </ClickAwayListener>
+                  )}
+                </div>
+                {nivel === "visitante" && (
+                  <button
+                    className="flex gap-1 text-greenVE-600 bg-white rounded-md  px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-500"
+                    onClick={() => (activo != 6 ? handleClickLogin() : {})}
+                  >
+                    Iniciar Sesión
+                  </button>
                 )}
               </div>
-              {nivel === "visitante" && (
+
+              {/* Mobile hamburger menu */}
+              <div className="flex md:hidden gap-2 ml-auto items-center">
+                {nivel !== "visitante" && (
+                  <img
+                    src={foto}
+                    onClick={handleClickMobileProfile}
+                    className="rounded-full h-8 w-8 border-2 border-white cursor-pointer"
+                    alt="Profile"
+                  />
+                )}
+                 {nivel === "visitante" ? (
                 <button
-                  className="flex gap-1 text-greenVE-600 bg-white rounded-full px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-500"
-                  onClick={() => (activo != 6 ? handleClickLogin() : {})}
+                  onClick={handleClickMenu}
+                  className="text-white p-2 "
                 >
-                  Iniciar Sesión
-                </button>
-              )}
-              <div className="flex items-end justify-end">
+                  {openMenu ? (
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  ) : (
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                  )}
+                </button> ) : (
+                  <></>
+                )}
+              </div>
+               
+
+              <div className="hidden md:flex items-end justify-end">
                 {foto !== "" && nivel !== "visitante" && (
                   <div
                     className="flex gap-2 items-center cursor-pointer hover:bg-white hover:bg-opacity-20 hover:rounded-md p-1"
@@ -476,26 +517,26 @@ const Navbar = ({ activo, isExposed = false }) => {
                         Mi perfil
                       </button>
                       <button
-                        className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"
                         onClick={handleClickBookHistory}
+                        className="hover:bg-greenVE-200 w-full px-4 text-xs py-1 text-start flex items-center gap-2"
                       >
                         <div
                           dangerouslySetInnerHTML={{
-                            __html: icons.Data.Historial,
+                            __html: icons.Data.HistorialReservas,
                           }}
-                        />{" "}
-                        Historial de Reservas
+                        />
+                        Historial de reservas
                       </button>
                       <button
-                        className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"
                         onClick={handleClickFavorites}
+                        className="hover:bg-greenVE-200 w-full px-4 text-xs py-1 text-start flex items-center gap-2"
                       >
                         <div
                           dangerouslySetInnerHTML={{
-                            __html: icons.Data.Favorito,
+                            __html: icons.Data.Favoritos,
                           }}
-                        />{" "}
-                        Mis Favoritos
+                        />
+                        Favoritos
                       </button>
                       <button
                         className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2"
@@ -521,12 +562,9 @@ const Navbar = ({ activo, isExposed = false }) => {
                               __html: icons.Data.Administrador,
                             }}
                           />{" "}
-                          Administrador (beta)
+                          Administrador (Beta)
                           {isLoadingAdminBeta && (
-                            <Spinner
-                              className="h-4 w-4"
-                              color="white"
-                            ></Spinner>
+                            <Spinner className="h-4 w-4" color="white"></Spinner>
                           )}
                         </button>
                       )}
@@ -576,52 +614,62 @@ const Navbar = ({ activo, isExposed = false }) => {
               </div>
             </div>
           )}
+        </div>
+      )}
+      <div className={`flex mx-auto max-w-7xl py-2 px-4 sm:px-6 lg:px-8 ${router ? "hidden" : ""} ${route ? "hidden" : ""}`}>
+     
+        <div
+          className={`flex flex-col align-center align-middle items-center ${
+            codigo ? "w-full" : "w-10/12"
+          } justify-between `}
+        >
+        
           <div className=" relative z-40 w-full flex justify-center">
             <div className="flex w-full max-w-7xl items-center justify-between px-4">
               {(activo > 0 ||
                 location.pathname === "/suscripcion ||" ||
                 location.pathname.includes("/busqueda")) && (
-                <div className="flex gap-2 items-end mt-4 sm:mt-0 flex-wrap">
+                <div className="hidden md:flex gap-0.5 items-end mt-4 sm:mt-0 flex-wrap">
                   <button
-                    className={`flex w-fit gap-1 border-2 ${
-                      activo == 1 ? "border-white" : "border-transparent "
-                    } text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white `}
+                    className={`flex w-fit gap-2 ${
+                      activo == 1 ? "bg-white text-gray-800" : "bg-white/20 text-white hover:bg-white/40"
+                    } rounded-t-lg px-4 py-2 text-sm items-center transition-all`}
                     onClick={handleClickInicio}
                   >
                     <img
                       src="https://visitaecuador.com/img/web/homeMenu.svg"
-                      style={{ height: "25px" }}
+                      style={{ height: "20px" }}
                     ></img>
-                    <label className="hidden md:flex cursor-pointer">
+                    <label className="hidden md:flex cursor-pointer font-medium">
                       Hospedaje
                     </label>
                   </button>
 
                   <button
-                    className={`flex gap-1 border-2 ${
-                      activo == 3 ? "border-white" : "border-transparent"
-                    } text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`}
+                    className={`flex gap-2 ${
+                      activo == 2 ? "bg-white text-gray-800" : "bg-white/20 text-white hover:bg-white/40"
+                    } rounded-t-lg px-4 py-2 text-sm items-center transition-all`}
                     onClick={handleClickInfotour}
                   >
                     <img
                       src="https://visitaecuador.com/img/web/infotourMenu.svg"
-                      style={{ height: "25px" }}
+                      style={{ height: "20px" }}
                     ></img>
-                    <label className="hidden md:flex cursor-pointer">
+                    <label className="hidden md:flex cursor-pointer font-medium">
                       InfoTour
                     </label>
                   </button>
                   <button
-                    className={`flex gap-1 border-2 ${
-                      activo == 2 ? "border-white" : "border-transparent"
-                    } text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`}
+                    className={`flex gap-2 ${
+                      activo == 3 ? "bg-white text-gray-800" : "bg-white/20 text-white hover:bg-white/40"
+                    } rounded-t-lg px-4 py-2 text-sm items-center transition-all`}
                     onClick={handleClickDisney}
                   >
                     <img
                       src="https://visitaecuador.com/img/web/disneyMenu.svg"
-                      style={{ height: "25px" }}
+                      style={{ height: "20px" }}
                     ></img>
-                    <label className="hidden md:flex cursor-pointer">
+                    <label className="hidden md:flex cursor-pointer font-medium">
                       Disney Concierge
                     </label>
                   </button>
@@ -631,21 +679,21 @@ const Navbar = ({ activo, isExposed = false }) => {
                     onMouseLeave={() => setOpenBeneficios(false)}
                   >
                     <button
-                      className={`flex gap-1 border-2 ${
-                        activo == 4 ? "border-white" : "border-transparent"
-                      } text-white rounded-full px-3 py-1 text-xs items-center hover:border-white`}
+                      className={`flex gap-2 ${
+                        activo == 4 ? "bg-white text-gray-800" : "bg-white/20 text-white hover:bg-white/40"
+                      } rounded-t-lg px-4 py-2 text-sm items-center transition-all`}
                     >
                       <div
-                        className="rounded-full bg-white p-1"
-                        style={{ height: "25px", width: "25px" }}
+                        className="rounded-full bg-white p-0.5"
+                        style={{ height: "22px", width: "22px" }}
                       >
                         <img
-                          src="https://visitaecuador.com/img/web/visas-concierge.jpeg"
+                          src="https://visitaecuador.com/img/web/benefit.svg"
                           className="rounded-full"
                           style={{ height: "100%", width: "100%" }}
                         />
                       </div>
-                      <label className="hidden md:flex cursor-pointer">
+                      <label className="hidden md:flex cursor-pointer font-medium">
                         Beneficios
                       </label>
                     </button>
@@ -656,7 +704,7 @@ const Navbar = ({ activo, isExposed = false }) => {
                           <button
                             onClick={() => {
                               setOpenBeneficios(false);
-                              handleClickBeneficios("vinos");
+                              handleClickVinos();
                             }}
                             className="w-full text-left px-4 py-2 text-xs text-greenVE-500 hover:text-white hover:bg-greenVE-500 rounded-t-md"
                           >
@@ -665,7 +713,7 @@ const Navbar = ({ activo, isExposed = false }) => {
                           <button
                             onClick={() => {
                               setOpenBeneficios(false);
-                              handleClickBeneficios("byd");
+                              handleClickBYD();
                             }}
                             className="w-full text-left px-4 py-2 text-xs text-greenVE-500 hover:text-white hover:bg-greenVE-500"
                           >
@@ -676,14 +724,14 @@ const Navbar = ({ activo, isExposed = false }) => {
                     )}
                   </div>
                   <button
-                    className={`flex gap-1 border-2 ${
-                      activo == 5 ? "border-white" : "border-transparent"
-                    } text-white hover:border-2 rounded-full px-3 py-1 text-xs items-center hover:border-white hover:text-white`}
+                    className={`flex gap-2 ${
+                      activo == 5 ? "bg-white text-gray-800" : "bg-white/20 text-white hover:bg-white/40"
+                    } rounded-t-lg px-4 py-2 text-sm items-center transition-all`}
                     onClick={handleClickVisas}
                   >
                     <div
-                      className="rounded-full bg-white p-1"
-                      style={{ height: "25px", width: "25px" }}
+                      className="rounded-full bg-white p-0.5"
+                      style={{ height: "22px", width: "22px" }}
                     >
                       <img
                         src="https://visitaecuador.com/img/web/visas-concierge.jpeg"
@@ -691,17 +739,96 @@ const Navbar = ({ activo, isExposed = false }) => {
                         style={{ height: "100%", width: "100%" }}
                       ></img>
                     </div>
-                    <label className="hidden md:flex cursor-pointer">
+                    <label className="hidden md:flex cursor-pointer font-medium">
                       Visas
+                    </label>
+                  </button>
+                  <button
+                    className={`flex gap-2 ${
+                      activo == 6 ? "bg-white text-gray-800" : "bg-white/20 text-white hover:bg-white/40"
+                    } rounded-t-lg px-4 py-2 text-sm items-center transition-all`}
+                    onClick={handleClickNosotros}
+                  >
+                    <div
+                      className="rounded-full bg-white p-0.5"
+                      style={{ height: "22px", width: "22px" }}
+                    >
+                      <img
+                        src="https://visitaecuador.com/img/web/nosotrosMenu.svg"
+                        className="rounded-full"
+                        style={{ height: "100%", width: "100%" }}
+                      ></img>
+                    </div>
+                    <label className="hidden md:flex cursor-pointer font-medium">
+                      Nosotros
+                    </label>
+                  </button>
+                  <button
+                    className={`flex gap-1 ${
+                      activo == 7 ? "bg-white text-gray-800" : "bg-white/20 text-white hover:bg-white/40"
+                    } rounded-t-lg px-4 py-2 text-sm items-center transition-all`}
+                    onClick={handleClickContactanos}
+                  >
+
+                    <div
+                      className="rounded-full bg-white p-1"
+                      style={{ height: "22px", width: "22px" }}
+                    >
+                      <img
+                        src="https://visitaecuador.com/img/web/contacto.svg"
+                        className="rounded-full"
+                        style={{ height: "100%", width: "100%" }}
+                      ></img>
+                    </div>
+                    <label className="hidden md:flex cursor-pointer">
+                      Contactanos
                     </label>
                   </button>
                 </div>
               )}
             </div>
-            {!codigo && <MarcaPais />}
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu Component */}
+      <MobileMenu
+        openMenu={openMenu}
+        openMobileProfile={openMobileProfile}
+        nivel={nivel}
+        nombre={nombre}
+        foto={foto}
+        beta={beta}
+        isLoadingGoogle={isLoadingGoogle}
+        isLoadingFB={isLoadingFB}
+        isLoadingAdmin={isLoadingAdmin}
+        isLoadingAdminBeta={isLoadingAdminBeta}
+        icons={icons}
+        handleClickMenu={handleClickMenu}
+        handleClickLogo={handleClickLogo}
+        handleClickLogin={handleClickLogin}
+        handleClickSuscription={handleClickSuscription}
+        handleClickGoogle={handleClickGoogle}
+        handleClickFacebook={handleClickFacebook}
+        handleClickMobileProfile={handleClickMobileProfile}
+        setOpenMobileProfile={setOpenMobileProfile}
+        handleClickProfileSet={handleClickProfileSet}
+        handleClickAdministrador={handleClickAdministrador}
+        handleClickAdministradorBeta={handleClickAdministradorBeta}
+        handleClickBookHistory={handleClickBookHistory}
+        handleClickFavorites={handleClickFavorites}
+        handleClickLogOut={handleClickLogOut}
+      />
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav 
+        activo={activo}
+        onClickInicio={handleClickInicio}
+        onClickDisney={handleClickDisney}
+        onClickVinos={handleClickVinos}
+        onClickVisas={handleClickVisas}
+        onClickContactanos={handleClickContactanos}
+      />
     </header>
   );
 };
