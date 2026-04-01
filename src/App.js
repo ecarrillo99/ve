@@ -11,13 +11,10 @@ import {
   OffersBannerSkeleton,
   ContentSkeleton,
 } from "./components/global_components/Skeleton/Loadingkeleton.jsx";
-
-// Importa los componentes utilizando lazy
 const Home = lazy(() => import("./pages/home/Home"));
 const Hotel = lazy(() => import("./pages/hotel/Hotel"));
 const HotelMobile = lazy(() => import("./pages/hotel/HotelMobile"));
 const Search = lazy(() => import("./pages/search/search"));
-const SearchMobile = lazy(() => import("./pages/search/SearchMobile"));
 const Login = lazy(() => import("./pages/login/login"));
 const Suscription = lazy(() => import("./pages/suscription/Suscription"));
 const Profile = lazy(() => import("./pages/Profile/Profile"));
@@ -57,6 +54,8 @@ const BiositeRedirect = lazy(
   () => import("./pages/BiositeRedirect/BiositeRedirect")
 );
 
+const Restaurant = lazy(() => import("./pages/restaurant/Restaurant"));
+const RCertificado = lazy(() => import("./pages/Certificado/RestaurantsCertificado"));
 // Componentes de Vinos
 const WineOffersBanner = lazy(
   () =>
@@ -66,6 +65,7 @@ const WineSearchBar = lazy(
   () =>
     import("./components/vinos_components/wineOffersBanner/WineSearchBar")
 );
+const WineSearch = lazy(() => import("./pages/BeneffitsSearch/WineSearch"));
 
 // Skeleton para WineSearchBar
 const WineSearchBarSkeleton = () => (
@@ -144,15 +144,15 @@ function App() {
             <Route
               path="vinos"
               element={
-                <WineRouteContent isMobile={isMobile} />
+                <WineRouteContent isMobile={isMobile} offerType="vinos" />
               }
             />
 
-            {/* Ruta de BYD */}
+            {/* Ruta de Tours */}
             <Route
-              path="byd"
+              path="Tours"
               element={
-                <div className="h-40 text-black">Esta es la pagina 3</div>
+                <WineRouteContent isMobile={isMobile} offerType="tours" />
               }
             />
           </Route>
@@ -168,7 +168,7 @@ function App() {
           <Route
             path="/busqueda/"
             element={
-              <Suspense>{isMobile ? <SearchMobile /> : <Search />}</Suspense>
+              <Suspense><Search /></Suspense>
             }
           />
           <Route
@@ -217,6 +217,12 @@ function App() {
               <Suspense> <Hotel /></Suspense>
             }
           />
+           <Route
+            path="/restaurante/:nombre"
+            element={
+              <Suspense> <Restaurant /></Suspense>
+            }
+          />
           <Route
             path="/politicas-privacidad/"
             element={
@@ -238,6 +244,14 @@ function App() {
             element={
               <Suspense>
                 <Certificado />
+              </Suspense>
+            }
+          />
+           <Route
+            path="/res_certificado/"
+            element={
+              <Suspense>
+                <RCertificado />
               </Suspense>
             }
           />
@@ -354,6 +368,14 @@ function App() {
             }
           />
           <Route
+            path="/busqueda-beneficios"
+            element={
+              <Suspense>
+                <WineSearch />
+              </Suspense>
+            }
+          />
+          <Route
             path="*"
             element={
               <Suspense>
@@ -397,7 +419,7 @@ function App() {
 }
 
 // Componente separado para la ruta de vinos con estado de filtros
-const WineRouteContent = ({ isMobile }) => {
+const WineRouteContent = ({ isMobile, offerType = 'vinos' }) => {
   const [wineFilters, setWineFilters] = useState({
     country: "",
     city: "",
@@ -412,12 +434,14 @@ const WineRouteContent = ({ isMobile }) => {
   return (
     <>
       {isMobile ? (
-        <div className="pt-4">
+        <div className="">
           <Suspense fallback={<WineSearchBarSkeleton />}>
             <WineSearchBar 
               type={3} 
               onFilterChange={handleFilterChange}
               initialFilters={wineFilters}
+              navigateTo="/busqueda-beneficios"
+              offerType={offerType}
             />
           </Suspense>
         </div>
@@ -427,11 +451,13 @@ const WineRouteContent = ({ isMobile }) => {
             type={0} 
             onFilterChange={handleFilterChange}
             initialFilters={wineFilters}
+            navigateTo="/busqueda-beneficios"
+            offerType={offerType}
           />
         </Suspense>
       )}
       <Suspense fallback={<OffersBannerSkeleton />}>
-        <WineOffersBanner filters={wineFilters} />
+        <WineOffersBanner filters={wineFilters} offerType={offerType} />
       </Suspense>
       <Suspense fallback={<ContentSkeleton />}>
         <VideosBanner />

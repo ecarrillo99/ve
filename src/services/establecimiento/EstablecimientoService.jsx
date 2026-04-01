@@ -12,6 +12,11 @@ class EstablecimientoService extends GenericService{
         return await this.post(url, params);
     }
 
+       async filtroR(params){
+        const url = `${Config.URL_SERVICIOS}${Config.VEREST}filtroRpost/`;
+        return await this.post(url, params);
+    }
+
     async guardarReserva(params){
         const url = `${Config.URL_SERVICIOS}${Config.ADMIN}${Config.RESERVAS}guardarReserva/`;
         return await this.post(url, params);

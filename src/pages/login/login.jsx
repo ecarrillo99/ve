@@ -24,7 +24,7 @@ const Login = () => {
     return (
         !sessionStatus()?
         <div className="h-screen">
-           <Navbar activo={6}/>
+           <Navbar activo={1}/>
             
             <div className="flex flex-col md:mx-auto md:my-28 md:max-w-6xl py-6 md:flex-row md:px-6 lg:px-8 items-center">
                 <div className="w-full md:w-1/2 border-r md:border-r-2 mb-4 md:mb-0">

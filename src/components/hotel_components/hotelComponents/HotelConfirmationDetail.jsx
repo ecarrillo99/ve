@@ -150,7 +150,7 @@ const HotelConfirmationDetail = ({ Ofertas, isOpen, Establecimiento, Fechas, Val
                     {wineOfferInfo && (
                         <div className="pt-2 border-t border-amber-200">
                             <p className="text-xs font-medium text-amber-700 mb-1 flex items-center gap-1">
-                                🍷 Ruta del Vino:
+                                Ruta del Vino:
                             </p>
                             <p className="text-xs text-amber-600 font-medium ml-4">{wineOfferInfo.titulo}</p>
                             {wineOfferInfo.inventarios.length > 0 && (
@@ -173,16 +173,11 @@ const HotelConfirmationDetail = ({ Ofertas, isOpen, Establecimiento, Fechas, Val
                 </div>
                 <div className="p-3 space-y-2">
                     <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Subtotal hospedaje:</span>
+                        <span className="text-gray-600">Subtotal hospedaje/{wineOfferInfo && getWineOfferPrice() > 0 && (     <span> Vino</span>    )}:</span>
                         <span className="font-semibold">${Valores.SinImpuestos}</span>
                     </div>
                     
-                    {wineOfferInfo && getWineOfferPrice() > 0 && (
-                        <div className="flex justify-between text-sm text-amber-700">
-                            <span>🍷 Ruta del Vino:</span>
-                            <span className="font-semibold">${getWineOfferPrice().toFixed(2)}</span>
-                        </div>
-                    )}
+             
                     
                     <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Impuestos / servicios:</span>
@@ -191,7 +186,7 @@ const HotelConfirmationDetail = ({ Ofertas, isOpen, Establecimiento, Fechas, Val
                     
                     <div className="flex justify-between text-sm border-t border-greenVE-200 pt-2">
                         <span className="font-bold text-greenVE-700">Total a pagar:</span>
-                        <span className="font-bold text-greenVE-700">${getTotalConWineOffer().toFixed(2)}</span>
+                        <span className="font-bold text-greenVE-700">${Valores.SinImpuestos + Valores.Impuestos}</span>
                     </div>
                 </div>
             </div>

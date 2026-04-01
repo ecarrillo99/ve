@@ -93,6 +93,19 @@ export const getResultadoFiltro = async function (filtro) {
         return _getResultadoFiltro(filtro)
     }
 }
+export const getResultadoRFiltro = async function (filtro) {
+    var bd = JSON.parse(localStorage.getItem('datos'))
+    if (bd == null) {
+        return DefaultToken()
+            .then((result) => {
+                if (result) {
+                    return _getResultadoRFiltro(filtro);
+                }
+            });
+    } else {
+        return _getResultadoRFiltro(filtro)
+    }
+}
 
 const _getRemoteOfertas = async function () {
 
@@ -112,6 +125,7 @@ const _getRemoteOfertas = async function () {
                 var establecimientos=res['data']['establecimientos']
                 var url = res['data']['url']['oferta']
                 for (const oferta of ofertas) {
+                    const estData = establecimientos[oferta['id_establecimiento']] || {};
                     const ofertaInicio = new OfertaInicio(
                         oferta['id'],
                         oferta['id_establecimiento'],
@@ -124,8 +138,17 @@ const _getRemoteOfertas = async function () {
                         oferta['dias'],
                         oferta['adultos'],
                         oferta['ninos'],
-                        establecimientos[oferta['id_establecimiento']]['catalogacion']
+                        estData['catalogacion']
                     )
+                    // Descripción del establecimiento
+                    ofertaInicio.Descripcion = estData['descripcionEst'] || estData['descripcion'] || '';
+                    // Check-in y Check-out desde sistemaServEst
+                    const sistServ = estData['sistemaServEst'] || {};
+                    const sistValues = Object.values(sistServ);
+                    const checkInVal = sistValues.find(v => typeof v === 'string' && v.toLowerCase().includes('check in'));
+                    const checkOutVal = sistValues.find(v => typeof v === 'string' && v.toLowerCase().includes('check out'));
+                    ofertaInicio.CheckIn  = checkInVal  ? checkInVal.replace(/hora check in[:\s]*/i, '').trim()  : null;
+                    ofertaInicio.CheckOut = checkOutVal ? checkOutVal.replace(/hora check out[:\s]*/i, '').trim() : null;
                     listadoOfertas.push(ofertaInicio)
                 }
                 return listadoOfertas
@@ -206,7 +229,7 @@ const _getResultadoFiltro = async function (filtro) {
                 opcionesOrden,
                 beneficios,
                 url,
-                filtro: { catalogacion, locacion, precios, servicios, serviciosHabEst, incluyeEst },
+                filtro: { catalogacion, locacion, precios, servicios, serviciosHabEst, incluyeEst, adicionalesEst },
             } = res.data;
 
             const listadoCatalogaciones = createDetalles(catalogacion, 'nombre', 'catalogacion');
@@ -214,6 +237,7 @@ const _getResultadoFiltro = async function (filtro) {
             const listadoServicios = createDetalles(servicios, 'nombre', 'estilo');
             const listadoServiciosHab = createDetalles(serviciosHabEst,  'nombre', 'estilo');
             const listadoIncluye = createDetalles(incluyeEst, 'nombre', 'Icono');
+            const listadoAdicionales = createDetalles(adicionalesEst, 'nombre', 'Icono');
             const listadoOrdenes = createDetalles(opcionesOrden, 'name', 'text');
             const listadoBeneficios = createDetalles(beneficios, 'nombre',  'color');
 
@@ -226,6 +250,74 @@ const _getResultadoFiltro = async function (filtro) {
                 listadoServicios,
                 listadoServiciosHab,
                 listadoIncluye,
+                listadoAdicionales,
+                listadoOrdenes,
+                listadoBeneficios
+            );
+            return resultadoBusqueda;
+        }
+        if(res.codigo==401){
+            return 401
+        }
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+const _getResultadoRFiltro = async function (filtro) {
+    try {
+        const establecimientoService = new EstablecimientoService();
+        const bd = JSON.parse(localStorage.getItem('datos'));
+        var params = {
+            "token": bd['token'],
+            "id":filtro.IdDestino,
+            "tipo":filtro.TipoDestino,
+        }
+
+        filtro.IdDestino&&(params.id=filtro.IdDestino); 
+        filtro.TipoDestino&&(params.tipo=filtro.TipoDestino);
+        filtro.IdEstablecimiento&&(params.id_establecimiento=filtro.IdEstablecimiento);
+        filtro.txtBusqueda&&(params.txtBusqueda=filtro.txtBusqueda);
+        filtro.IdBeneficios&&(params.beneficios=filtro.IdBeneficios); 
+        filtro.IdServicios&&(params.idservicios=filtro.IdServicios);
+        filtro.Personas&&(params.personas=filtro.Personas); 
+        filtro.Tiempo&&(params.tiempo=filtro.Tiempo); 
+        filtro.Precio&&(params.precio=filtro.Precio); 
+        filtro.Habitaciones&&(params.habitaciones=filtro.Habitaciones); 
+        filtro.Ordenar&&(params.ordenar=filtro.Ordenar); 
+        filtro.Fechas&&(params.fechas=filtro.Fechas); 
+        filtro.Pax&&(params.pax=filtro.Pax); 
+        const res = await establecimientoService.filtroR(params);
+       
+        if (res.estado && res.codigo === 0) {
+            const {
+                establecimientos,
+                centralReserva,
+                opcionesOrden,
+                beneficios,
+                url,
+                filtro: { catalogacion, locacion, precios, servicios, serviciosHabEst, incluyeEst, adicionalesEst },
+            } = res.data;
+
+            const listadoCatalogaciones = createDetalles(catalogacion, 'nombre', 'catalogacion');
+            const listadoLocaciones = createDetalles(locacion, 'nombre', 'color');
+            const listadoServicios = createDetalles(servicios, 'nombre', 'estilo');
+            const listadoServiciosHab = createDetalles(serviciosHabEst,  'nombre', 'estilo');
+            const listadoIncluye = createDetalles(incluyeEst, 'nombre', 'Icono');
+            const listadoAdicionales = createDetalles(adicionalesEst, 'nombre', 'Icono');
+            const listadoOrdenes = createDetalles(opcionesOrden, 'name', 'text');
+            const listadoBeneficios = createDetalles(beneficios, 'nombre',  'color');
+
+            const resultadoBusqueda = new ResultadoBusqueda(
+                createEstablecimientos(establecimientos, url.oferta, beneficios, centralReserva),
+                precios.MinPrecio,
+                precios.MaxPrecio,
+                listadoCatalogaciones,
+                listadoLocaciones,
+                listadoServicios,
+                listadoServiciosHab,
+                listadoIncluye,
+                listadoAdicionales,
                 listadoOrdenes,
                 listadoBeneficios
             );
@@ -297,8 +389,8 @@ function createEstablecimientos(establecimientos, url, beneficios, centralReserv
         establecimiento.Ofertas = Object.values(establecimientoTmp.ofertas).map(mapPropiedadesOferta);
 
         // Servicios
-        const propiedadesServ=['Servicios', 'Incluye', 'NoIncluye', 'Restricciones', 'SistemaServicios', 'ServiciosHab'];
-        ['serviciosEst', 'incluyeEst', 'noIncluyeEst', 'restriccionesEst', 'sistemaServEst', 'serviciosHabEst'].forEach((servicio, index) => {
+        const propiedadesServ=['Servicios', 'Incluye', 'NoIncluye', 'Restricciones', 'SistemaServicios', 'ServiciosHab','Adicionales'];
+        ['serviciosEst', 'incluyeEst', 'noIncluyeEst', 'restriccionesEst', 'sistemaServEst', 'serviciosHabEst', 'adicionalesEst'].forEach((servicio, index) => {
             if(servicio=='serviciosEst'){
                 establecimientoTmp[servicio]&&(establecimiento[propiedadesServ[index]] = Object.entries(establecimientoTmp[servicio]).map(([key, value]) => new Detalle(value.nombre, key, value.estilo)));
             }
@@ -480,4 +572,3 @@ export const getFavoritos = async function (){
         
     }
 }
-

@@ -8,10 +8,20 @@ export const loginRemote = async function (params) {
   try {
     const suscripcionService = new SuscripcionService();
     const res = await suscripcionService.getInformacionPerfil(params);
+      const storedData = localStorage.getItem("datos");
+        if (!storedData) {
+          console.log("No hay datos en localStorage");
+          return;
+        }
+
+        const parsedData = JSON.parse(storedData);
+
+        const cedula = parsedData?.data?.ci;
+         const email = cedula;
+        const password = cedula.substring(0, 5);           
     const responseData = await suscripcionService.getInformacionBiosite({
-      email: params.id,
-      cedula: params.id,
-      password: params.pass,
+      cedula: email,
+      password: password,
     });
 
     if (responseData.userId) {

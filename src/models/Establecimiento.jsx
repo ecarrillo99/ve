@@ -17,6 +17,7 @@ class Establecimiento{
         ServiciosHab,
         Incluye,
         NoIncluye,
+        Adicionales,
         Restricciones,
         SistemaServicios,
         Contactos,
@@ -49,6 +50,7 @@ class Establecimiento{
         this.ServiciosHab=ServiciosHab
         this.Incluye=Incluye
         this.NoIncluye=NoIncluye
+        this.Adicionales=Adicionales
         this.Restricciones=Restricciones
         this.SistemaServicios=SistemaServicios
         this.Contactos=Contactos

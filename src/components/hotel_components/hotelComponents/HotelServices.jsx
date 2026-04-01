@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const HotelServices = ({ Titulo, Incluye, NoIncluye, Restricciones, SistemaServicios, setOpenServices }) => {
+const HotelServices = ({ Titulo, Incluye, NoIncluye, Restricciones, SistemaServicios, setOpenServices, Adicionales }) => {
     // Determinar si es versión modal (mobile) o inline (desktop)
     const isModal = setOpenServices !== undefined;
     const [openServicesModal, setOpenServicesModal] = useState(false);
@@ -74,6 +74,21 @@ const HotelServices = ({ Titulo, Incluye, NoIncluye, Restricciones, SistemaServi
                             </>
                             : <></>
                     }
+                    {
+                        Adicionales?.length > 0
+                            ? <>
+                                <label className="text-lg font-semibold mt-3">Adicionales:</label>
+                                {
+                                    Adicionales.map((item, idx) => (
+                                        <div key={idx} className="flex gap-1 items-center">
+                                            <span className="icon-[material-symbols--check-small] text-greenVE-500 w-1/12 h-6"></span>
+                                            <div className="w-11/12">{item.Titulo}</div>
+                                        </div>
+                                    ))
+                                }
+                            </>
+                            : <></>
+                    }
                 </div>
             </div>
         );
@@ -108,6 +123,7 @@ const HotelServices = ({ Titulo, Incluye, NoIncluye, Restricciones, SistemaServi
                         Incluye={Incluye}
                         NoIncluye={NoIncluye}
                         Restricciones={Restricciones}
+                        Adicionales={Adicionales}
                         SistemaServicios={SistemaServicios}
                         Titulo={Titulo}
                         setOpenServices={setOpenServicesModal}

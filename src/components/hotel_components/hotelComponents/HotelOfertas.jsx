@@ -119,11 +119,7 @@ const HotelOfertas = (props) => {
       }
     }
     
-    // Agregar el precio de la WineOffer si está incluida
-    if (wineOfferIncluded && OfertaSeleccionada) {
-      total.WineOffer = getWineOfferPrice();
-      total.SinImpuestos += total.WineOffer;
-    }
+   
     
     return total;
   };
@@ -416,7 +412,7 @@ const HotelOfertas = (props) => {
                           {/* Mostrar desglose de WineOffer si está incluida */}
                           {wineOfferIncluded && OfertaSeleccionada && calcularTotal().WineOffer > 0 && (
                             <div className="text-xs text-[#7C9539] bg-[#F0FFC6] px-2 py-1 rounded-md mt-1">
-                              <span>🍷 Incluye: ${calcularTotal().WineOffer.toFixed(2)}</span>
+                              <span> Incluye: ${calcularTotal().WineOffer.toFixed(2)}</span>
                             </div>
                           )}
                           

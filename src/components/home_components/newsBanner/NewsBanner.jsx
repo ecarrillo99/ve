@@ -32,9 +32,8 @@ const NewsBanner = () => {
     const CustomNextArrow = (props) => {
         return (
           <div
-            className="-mr-3  absolute top-1/2 transform -translate-y-1/2 right-0 cursor-pointer rounded-full bg-gray-100 text-greenVE-600 text-lg h-8 w-8 flex items-center justify-center pl-1"
-            onClick={props.onClick}
-            style={{ filter: 'drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.5))' }}>
+            className="-mr-3 z-40 absolute top-1/2 transform -translate-y-1/2 right-0 cursor-pointer rounded-full bg-white shadow-lg text-gray-800 text-lg h-10 w-10 flex items-center justify-center hover:bg-gray-100 transition-colors"
+            onClick={props.onClick}>
             <span className="icon-[material-symbols--arrow-forward-ios]"></span>
           </div>
         );
@@ -43,9 +42,8 @@ const NewsBanner = () => {
       const CustomPrevArrow = (props) => {
         return (
           <div
-            className="-ml-3 z-40  absolute top-1/2 transform -translate-y-1/2 left-0 cursor-pointer rounded-full bg-gray-100 text-greenVE-600 text-lg pr-1 h-8 w-8 flex items-center justify-center"
-            onClick={props.onClick}
-            style={{ filter: 'drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.5))' }}>
+            className="-ml-3 z-40 absolute top-1/2 transform -translate-y-1/2 left-0 cursor-pointer rounded-full bg-white shadow-lg text-gray-800 text-lg h-10 w-10 flex items-center justify-center hover:bg-gray-100 transition-colors"
+            onClick={props.onClick}>
             <span className="icon-[material-symbols--arrow-back-ios-new]"></span>
           </div>
         );
@@ -64,48 +62,45 @@ const NewsBanner = () => {
         prevArrow: <CustomPrevArrow />,
         responsive: [
             {
-                breakpoint: 900,
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 1,
+                    rows: 2,
+                },
+            },
+            {
+                breakpoint: 640,
                 settings: {
                     slidesToShow: 1,
                     rows: 1,
                 },
             },
-            {
-                breakpoint: 1150,
-                settings: {
-                    slidesToShow: 2,
-                },
-            },
-            {
-                breakpoint: 1300,
-                settings: {
-                    slidesToShow: 2,
-                },
-            },]
+        ]
     };
 
     return (
-        <div>
-            <h1 className="font-bold text-xl">Noticias</h1>
-
-            <Slider {...settings} spaceBetween={10}>
-                {
-                    data ?(
-                        data.map((item, index) => (
-                            <div key={index} className="w-1/2">
-                                <NewsItem noticia={item}></NewsItem>
-                            </div>
-                        ))
-                    ):(
-                        Array(8).fill(null).map((item, index)=>(
-                            <div key={index} className="w-1/2">
-                                <NewsItemSkeleton></NewsItemSkeleton>
-                            </div>
-                        ))
-                    )
-                }
-            </Slider>
-
+        <div className=" md:mx-0 mx-5">
+            <h1 className="font-bold text-2xl mb-3">Noticias</h1>
+            
+            <div className="">
+                <Slider {...settings}>
+                    {
+                        data ?(
+                            data.map((item, index) => (
+                                <div key={index}>
+                                    <NewsItem noticia={item}></NewsItem>
+                                </div>
+                            ))
+                        ):(
+                            Array(8).fill(null).map((item, index)=>(
+                                <div key={index}>
+                                    <NewsItemSkeleton></NewsItemSkeleton>
+                                </div>
+                            ))
+                        )
+                    }
+                </Slider>
+            </div>
         </div>
     );
 }

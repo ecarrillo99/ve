@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import HotelServices from '../hotelComponents/HotelServices';
 
-const HotelServicesMain = ({Incluye, NoIncluye, Restricciones, SistemaServicios, Titulo}) => {
+const HotelServicesMain = ({Incluye = [], NoIncluye = [], Restricciones = [], SistemaServicios = [], Titulo}) => {
     const [openServices, setOpenServices]=useState(false)
     return (
         <div className='p-3 border-y z-50'>

@@ -78,6 +78,25 @@ const HotelGallery = (props) => {
                     src={item.itemImageSrc}
                     alt={item.alt}
                 />
+
+                {/* Flecha izquierda centrada verticalmente */}
+                <button
+                    onClick={(e) => { e.stopPropagation(); handleNavigation('prev'); }}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 z-20 p-2 bg-black/40 hover:bg-black/70 backdrop-blur-md text-white rounded-full transition-all duration-300 hover:scale-110 active:scale-95 opacity-0 group-hover:opacity-100"
+                    aria-label="Anterior"
+                >
+                    <ChevronLeft size={28} />
+                </button>
+
+                {/* Flecha derecha centrada verticalmente */}
+                <button
+                    onClick={(e) => { e.stopPropagation(); handleNavigation('next'); }}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 z-20 p-2 bg-black/40 hover:bg-black/70 backdrop-blur-md text-white rounded-full transition-all duration-300 hover:scale-110 active:scale-95 opacity-0 group-hover:opacity-100"
+                    aria-label="Siguiente"
+                >
+                    <ChevronRight size={28} />
+                </button>
+
                 {/* Overlay con efecto hover */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                     <div className="absolute bottom-0 left-0 right-0 p-6 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500" >
@@ -216,26 +235,20 @@ const HotelGallery = (props) => {
 
     return (
         <div className="w-full">
-            <style jsx>{`
-                .scrollbar-hide::-webkit-scrollbar {
-                    display: none;
+            <style>{`
+                .scrollbar-hide::-webkit-scrollbar { display: none; }
+                .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+                @keyframes fadeInScale {
+                    from { opacity: 0; transform: scale(0.95); }
+                    to   { opacity: 1; transform: scale(1);    }
                 }
-                .scrollbar-hide {
+                .fade-in-scale { animation: fadeInScale 0.4s ease-out; }
+
+                /* Ocultar scrollbar del contenedor interno de PrimeReact thumbnails */
+                .p-galleria-thumbnail-container::-webkit-scrollbar { display: none; }
+                .p-galleria-thumbnail-container {
                     -ms-overflow-style: none;
                     scrollbar-width: none;
-                }
-                @keyframes fadeInScale {
-                    from {
-                        opacity: 0;
-                        transform: scale(0.95);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: scale(1);
-                    }
-                }
-                .fade-in-scale {
-                    animation: fadeInScale 0.4s ease-out;
                 }
             `}</style>
 
@@ -247,11 +260,11 @@ const HotelGallery = (props) => {
                 thumbnail={thumbnailTemplate}
                 circular
                 autoPlay={!isFullscreen}
-                transitionInterval={3000}
+                transitionInterval={7000}
                 activeIndex={activeIndex}
                 onItemChange={(e) => !isFullscreen && setActiveIndex(e.index)}
                 className="w-full"
-                style={{ maxWidth: '100%' }}
+                style={{ maxWidth: '100%', overflowX: 'hidden' }}
             />
 
             {isFullscreen && (

@@ -59,9 +59,8 @@ const DestinoBanner = () => {
     const CustomNextArrow = (props) => {
         return (
           <div
-            className="-mr-3  absolute top-1/2 transform -translate-y-1/2 right-0 cursor-pointer rounded-full bg-gray-100 text-greenVE-600 text-lg h-8 w-8 flex items-center justify-center pl-1"
-            onClick={props.onClick}
-            style={{ filter: 'drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.5))' }}>
+            className="-mr-3 z-40 absolute top-1/2 transform -translate-y-1/2 right-0 cursor-pointer rounded-full bg-white shadow-lg text-gray-800 text-lg h-10 w-10 flex items-center justify-center hover:bg-gray-100 transition-colors"
+            onClick={props.onClick}>
             <span className="icon-[material-symbols--arrow-forward-ios]"></span>
           </div>
         );
@@ -70,9 +69,8 @@ const DestinoBanner = () => {
       const CustomPrevArrow = (props) => {
         return (
           <div
-            className="-ml-3 z-40  absolute top-1/2 transform -translate-y-1/2 left-0 cursor-pointer rounded-full bg-gray-100 text-greenVE-600 text-lg pr-1 h-8 w-8 flex items-center justify-center"
-            onClick={props.onClick}
-            style={{ filter: 'drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.5))' }}>
+            className="-ml-3 z-40 absolute top-1/2 transform -translate-y-1/2 left-0 cursor-pointer rounded-full bg-white shadow-lg text-gray-800 text-lg h-10 w-10 flex items-center justify-center hover:bg-gray-100 transition-colors"
+            onClick={props.onClick}>
             <span className="icon-[material-symbols--arrow-back-ios-new]"></span>
           </div>
         );
@@ -84,47 +82,53 @@ const DestinoBanner = () => {
         autoplay: false,
         autoplaySpeed: 5000,
         speed: 1000,
-        slidesToShow: 6,
-        slidesToScroll: 6,
+        slidesToShow: 4,
+        slidesToScroll: 1,
         nextArrow: <CustomNextArrow />,
         prevArrow: <CustomPrevArrow />,
         responsive: [
             {
-                breakpoint: 900,
-                settings: {
-                    slidesToShow: 1,
-                },
-            },
-            {
-                breakpoint: 1150,
+                breakpoint: 1400,
                 settings: {
                     slidesToShow: 3,
+                    slidesToScroll: 1,
                 },
             },
             {
-                breakpoint: 1300,
+                breakpoint: 1024,
                 settings: {
-                    slidesToShow: 4,
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
                 },
-            },]
+            },
+            {
+                breakpoint: 640,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                },
+            },
+        ]
     };
 
     return (
         <div className="mt-10 md:mx-0 mx-5">
-            <h1 className="font-bold text-xl">Destino Express</h1>
-            <div className="flex justify-between mb-4">
-                <h6 className="text-md">Descubre la emoción de escapadas cercanas. ¡Vive la aventura sin largos trayectos!</h6>
+            <h1 className="font-bold text-2xl mb-2">Destino Express</h1>
+            <div className="flex justify-between mb-6">
+                <h6 className="text-gray-600 text-base">Descubre la emoción de escapadas cercanas. ¡Vive la aventura sin largos trayectos!</h6>
             </div>
-            <Slider {...settings}>
-                {data ? (
-                    data.map((item, index) => (
-                        <div key={index}>
-                            <DestinoItem destino={item}></DestinoItem>
-                        </div>
-                    ))) : (<></>
-                )
-                }
-            </Slider>
+            <div className="">
+                <Slider {...settings}>
+                    {data ? (
+                        data.map((item, index) => (
+                            <div key={index}>
+                                <DestinoItem destino={item}></DestinoItem>
+                            </div>
+                        ))) : (<></>
+                    )
+                    }
+                </Slider>
+            </div>
         </div>
     );
 }

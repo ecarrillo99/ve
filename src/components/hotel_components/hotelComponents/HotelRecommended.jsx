@@ -39,8 +39,8 @@ const HotelRecommended = (props) => {
   const handleOpen = (value) => setOpen(open === value ? 0 : value);
 
   // Verificar que Recomendados existe y tiene datos válidos
-  const hasValidRecomendados = Establecimiento?.Recomendados && 
-    Array.isArray(Establecimiento.Recomendados) && 
+  const hasValidRecomendados = Establecimiento?.Recomendados &&
+    Array.isArray(Establecimiento.Recomendados) &&
     Establecimiento.Recomendados.length > 0;
 
   // Si no hay recomendados válidos, no renderizar nada
@@ -49,150 +49,203 @@ const HotelRecommended = (props) => {
   }
 
   // Verificar que los precios están cargados (evitar mostrar $0)
-  const preciosCargados = Establecimiento.PrecioSinImpuestos !== undefined && 
+  const preciosCargados = Establecimiento.PrecioSinImpuestos !== undefined &&
     Establecimiento.PrecioSinImpuestos !== null &&
     (Establecimiento.PrecioSinImpuestos > 0 || Establecimiento.Recomendados.some(r => r.FinalSinImpuestos > 0));
 
   // Si los precios no están cargados, mostrar skeleton
   if (!preciosCargados) {
     return (
-      <div className="border-l border-r border-t rounded-lg w-full animate-pulse">
-        <div className="h-8 bg-gray-200 rounded m-2 w-3/4"></div>
-        <div className="border-y w-full flex flex-col-reverse lg:flex-row rounded-b-lg">
-          <div className="lg:w-10/12 w-full p-4">
-            <div className="h-6 bg-gray-200 rounded mb-2 w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded mb-2 w-1/3"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+      <div className="rounded-xl w-full animate-pulse bg-white shadow-sm border border-gray-100 overflow-hidden">
+        <div className="p-4 bg-gray-50">
+          <div className="h-6 bg-gray-200 rounded-md w-3/4"></div>
+        </div>
+        <div className="p-4 flex flex-col lg:flex-row gap-4">
+          <div className="lg:w-9/12 w-full space-y-3">
+            <div className="h-5 bg-gray-200 rounded-md w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-md w-1/3"></div>
+            <div className="h-4 bg-gray-200 rounded-md w-1/4"></div>
           </div>
-          <div className="border-l w-full lg:w-2/12 flex flex-col p-4 items-center justify-center gap-2">
-            <div className="h-8 bg-gray-200 rounded w-20"></div>
-            <div className="h-4 bg-gray-200 rounded w-24"></div>
-            <div className="h-10 bg-gray-200 rounded w-24"></div>
+          <div className="lg:w-3/12 flex flex-col items-center justify-center gap-2 p-4">
+            <div className="h-8 bg-gray-200 rounded-md w-20"></div>
+            <div className="h-4 bg-gray-200 rounded-md w-24"></div>
+            <div className="h-10 bg-gray-200 rounded-full w-28"></div>
           </div>
         </div>
       </div>
     );
   }
 
+  const partitals = (item) => {
+    const count = [item.Incluye, item.NoIncluye, item.Restricciones, item.SistemaServicios]
+      .filter(Boolean).length;
+
+    const cols = {
+      1: "grid-cols-1",
+      2: "grid-cols-2",
+      3: "grid-cols-3",
+      4: "grid-cols-4",
+    };
+
+    return cols[count] || "grid-cols-1";
+};
+
+
   return (
-    <div className="border-l border-r border-t rounded-lg w-full">
-      <label className="font-semibold p-2 text-xl">
-        Recomendado para {Adultos} {Adultos == 1 ? "adulto" : "adultos"}
-        {Ninos == 0 ? "" : Ninos == 1 ? `, ${Ninos} niño` : `, ${Ninos} niños`} 
-        {Establecimiento.IdEstablecimiento != "443" ? ` y ${Noches} ${Noches == 1 ? "noche" : "noches"}` : " y 1 día"}
-      </label>
-      <div className="border-y w-full flex flex-col-reverse lg:flex-row rounded-b-lg">
-        <div className="lg:w-10/12 w-full">
+    <div className="rounded-xl w-full bg-white shadow-sm border border-gray-100 overflow-hidden">
+      {/* Header */}
+      <div className="bg-greenVE-50 px-4 py-3 border-b border-greenVE-100">
+        <h3 className="font-semibold text-lg text-greenVE-800 flex items-center gap-2">
+          Recomendado para {Adultos} {Adultos == 1 ? "adulto" : "adultos"}
+          {Ninos == 0 ? "" : Ninos == 1 ? `, ${Ninos} niño` : `, ${Ninos} niños`}
+          {Establecimiento.IdEstablecimiento != "443" ? ` y ${Noches} ${Noches == 1 ? "noche" : "noches"}` : " y 1 día"}
+        </h3>
+      </div>
+
+      {/* Content */}
+      <div className="flex flex-col-reverse lg:flex-row">
+        {/* Ofertas */}
+        <div className="lg:w-12/12 w-full divide-y divide-gray-100">
           {Establecimiento.Recomendados.map((item, index) => (
-            <div key={index} className={`flex ${index !== Establecimiento.Recomendados.length - 1 ? 'border-b' : ''}`}>
-              <div className="w-full lg:w-10/12 p-2 flex flex-col">
-                <label className="font-semibold text-sm text-greenVE-600">{item.NumOfertas} x {item.TituloOferta}</label>
-                <label className="ml-2 text-xs font-semibold text-gray-500">Personas:</label>
-                <div className="flex ml-6 text-sm items-end">
-                  <span className="icon-[solar--user-rounded-outline] h-5 w-5 text-[#3d82f5]"></span>
-                  <label className="text-gray-500 text-xs"> x {item.Adultos * item.NumOfertas} </label>
-                  {
-                    (item.Ninos) != null
-                      ? <div className='flex items-end'>,
-                        <span className="icon-[solar--user-rounded-outline] h-3.5 w-3.5 text-[#3d82f5] ml-1"></span>
-                        <label className="text-gray-500 text-xs"> x {item.Ninos * item.NumOfertas} </label>
-                      </div>
-                      : <></>
-                  }
+            <div key={index} className="flex flex-col lg:flex-row">
+              <div className="w-full lg:w-10/12 p-4 flex flex-col gap-2">
+                {/* Título de oferta */}
+                <label className="font-semibold text-sm text-greenVE-600 bg-greenVE-50 px-2 py-1 rounded-md w-fit">
+                  {item.NumOfertas} x {item.TituloOferta}
+                </label>
+
+                {/* Info de personas y acomodación en fila */}
+                <div className="flex flex-wrap gap-x-6 gap-y-1 mt-1">
+                  {/* Personas */}
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-medium text-gray-500">Personas:</span>
+                    <span className="icon-[solar--user-rounded-outline] h-4 w-4 text-blue-500"></span>
+                    <span className="text-xs text-gray-600">x {item.Adultos * item.NumOfertas}</span>
+                    <span className='text-xs'>adultos</span>
+                    {(item.Ninos) != null && (
+                      <>
+                        <span className="text-gray-300 mx-0.5">|</span>
+                        <span className="icon-[solar--user-rounded-outline] h-3.5 w-3.5 text-blue-400"></span>
+                        <span className="text-xs text-gray-600">x {item.Ninos * item.NumOfertas}</span>
+                        <span className='text-xs'>niños</span>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Acomodación */}
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-medium text-gray-500">Acomodación:</span>
+                    {Establecimiento.IdEstablecimiento == "443"
+                      ? <>
+                        <span className="icon-[ri--prohibited-2-line] text-gray-400 h-4 w-4"></span>
+                        <span className="text-xs text-gray-500">Sin hospedaje</span>
+                      </>
+                      : <>
+                        <span className="icon-[material-symbols--bed-outline-rounded] text-blue-500 h-4 w-4"></span>
+                        <span className="text-xs text-gray-600">{item.Acomodacion} x {item.NumOfertas}</span>
+                      </>
+                    }
+                  </div>
                 </div>
-                <label className="ml-2 text-xs font-semibold text-gray-500">Acomodación:</label>
-                {
-                  Establecimiento.IdEstablecimiento == "443"
-                    ? <div className="flex gap-1 ml-6 text-sm items-center">
-                      <span className="icon-[ri--prohibited-2-line] text-[#3d82f5] h-5 w-5"></span>
-                      <label className="text-gray-500 text-xs ">El establecimiento no ofrece hospedaje</label>
-                    </div>
-                    : <div className="flex gap-1 ml-6 text-sm items-center">
-                      <span className="icon-[material-symbols--bed-outline-rounded] text-[#3d82f5] h-5 w-5"></span>
-                      <label className="text-gray-500 text-xs ">{item.Acomodacion} x {item.NumOfertas} </label>
-                    </div>
-                }
+
+                {/* Accordion de servicios */}
                 <Accordion open={open === index + 1} icon={<Icon id={index + 1} open={open} />}>
-                  <AccordionHeader className="p-0 text-xs pl-2 border-0 w-auto font-semibold text-blue-500 mt-4" onClick={() => handleOpen(index + 1)}>
+                  <AccordionHeader
+                    className="p-0 text-xs border-0 w-auto font-medium text-blue-500 mt-2 hover:text-blue-600"
+                    onClick={() => handleOpen(index + 1)}
+                  >
                     Ver servicios y otros detalles
                   </AccordionHeader>
-                  <AccordionBody className="p-0 pl-5">
-                    <div className="flex gap-2">
+                  <AccordionBody className="p-0 pt-3 w-full ">
+                    <div className={`grid grid-cols-1 ${partitals(item)} gap-4`}>
                       {item.Incluye && (
-                        <div className="flex-1 border-r pr-1">
-                          <label className="text-xs font-semibold text-gray-500">Incluye</label>
-                          {item.Incluye.map((itemIncluye, incluyeIndex) => (
-                            <div key={incluyeIndex} className="flex gap-2 items-center">
-                              {
-                                getIcon({ text: itemIncluye.Titulo, h: "h-5", w: "w-5", c: "text-[#3d82f5]" })
-                              }
-                              <p
-                                dangerouslySetInnerHTML={{ __html: itemIncluye.Titulo }}
-                                className="my-0.5 text-xs leading-3 font-light text-gray-500 w-11/12"
-                              ></p>
-                            </div>
-                          ))}
+                        <div className="space-y-1.5 border-r border-gray-100 pr-4">
+                          <label className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Incluye</label>
+                          <div className="space-y-1">
+                            {item.Incluye.map((itemIncluye, incluyeIndex) => (
+                              <div key={incluyeIndex} className="flex gap-1.5 items-start">
+                                {getIcon({ text: itemIncluye.Titulo, h: "h-5", w: "w-5", c: "text-greenVE-500 shrink-0 mt-0.5" })}
+                                <p
+                                  dangerouslySetInnerHTML={{ __html: itemIncluye.Titulo }}
+                                  className="text-xs text-gray-600 leading-4"
+                                ></p>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
                       {item.NoIncluye && (
-                        <div className="flex-1 border-r pr-1">
-                          <label className="text-xs font-semibold text-gray-500">No Incluye</label>
-                          {item.NoIncluye.map((itemNoIncluye, noIncluyeIndex) => (
-                            <div key={noIncluyeIndex} className="flex gap-2 items-center">
-                              {
-                                getIcon({ text: itemNoIncluye.Titulo, h: "h-5", w: "w-5", c: "text-[#3d82f5]" })
-                              }
-                              <p
-                                dangerouslySetInnerHTML={{ __html: itemNoIncluye.Titulo }}
-                                className="my-0.5 text-xs font-light text-gray-500 leading-3 w-11/12"
-                              ></p>
-                            </div>
-                          ))}
+                        <div className="space-y-1.5 border-r border-gray-100 pr-4">
+                          <label className="text-xs font-semibold text-gray-700 uppercase tracking-wide">No Incluye</label>
+                          <div className="space-y-1">
+                            {item.NoIncluye.map((itemNoIncluye, noIncluyeIndex) => (
+                              <div key={noIncluyeIndex} className="flex gap-1.5 items-start">
+                                {getIcon({ text: itemNoIncluye.Titulo, h: "h-5", w: "w-5", c: "text-orange-400 shrink-0 mt-0.5" })}
+                                <p
+                                  dangerouslySetInnerHTML={{ __html: itemNoIncluye.Titulo }}
+                                  className="text-xs text-gray-600 leading-4"
+                                ></p>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
                       {item.Restricciones && (
-                        <div className="flex-1 border-r pr-1">
-                          <label className="text-xs font-semibold text-gray-500">Restricciones</label>
-                          {item.Restricciones.map((itemRestricciones, restriccionesIndex) => (
-                            <div key={restriccionesIndex} className="flex gap-2 items-center">
-                              <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => itemRestricciones.Titulo.includes(clave))] }} className="" />
-                              <p
-                                dangerouslySetInnerHTML={{ __html: itemRestricciones.Titulo }}
-                                className="my-0.5 text-xs leading-3 font-light text-gray-500"
-                              ></p>
-                            </div>
-                          ))}
+                        <div className="space-y-1.5 border-r border-gray-100 pr-4">
+                          <label className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Restricciones</label>
+                          <div className="space-y-1">
+                            {item.Restricciones.map((itemRestricciones, restriccionesIndex) => (
+                              <div key={restriccionesIndex} className="flex gap-1.5 items-start">
+                                <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => itemRestricciones.Titulo.includes(clave))] }} className="shrink-0 mt-0.5" />
+                                <p
+                                  dangerouslySetInnerHTML={{ __html: itemRestricciones.Titulo }}
+                                  className="text-xs text-gray-600 leading-4"
+                                ></p>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
                       {item.SistemaServicios && (
-                        <div className="flex-1 pr-1">
-                          <label className="text-xs font-semibold text-gray-500">Sistema de Servicios</label>
-                          {item.SistemaServicios.map((itemSistemaServicios, sistemaServiciosIndex) => (
-                            <div key={sistemaServiciosIndex} className="flex gap-2 items-center">
-                              <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => itemSistemaServicios.Titulo.includes(clave))] }} className="" />
-                              <p
-                                dangerouslySetInnerHTML={{ __html: itemSistemaServicios.Titulo }}
-                                className=" my-0.5 text-xs leading-3 font-light text-gray-500"
-                              ></p>
-                            </div>
-                          ))}
+                        <div className="space-y-1.5 border-r border-gray-100 ">
+                          <label className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Sistema de Servicios</label>
+                          <div className="space-y-1">
+                            {item.SistemaServicios.map((itemSistemaServicios, sistemaServiciosIndex) => (
+                              <div key={sistemaServiciosIndex} className="flex gap-1.5 items-start">
+                                <div dangerouslySetInnerHTML={{ __html: icons.Data[Object.keys(icons.Data).find((clave) => itemSistemaServicios.Titulo.includes(clave))] }} className="shrink-0 mt-0.5" />
+                                <p
+                                  dangerouslySetInnerHTML={{ __html: itemSistemaServicios.Titulo }}
+                                  className="text-xs text-gray-600 leading-4"
+                                ></p>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>
                   </AccordionBody>
                 </Accordion>
               </div>
-              <div className="flex flex-col border-l p-2 items-center justify-center">
-                <label className="font-semibold text-2xl">${item.FinalSinImpuestos * item.NumOfertas}</label>
-                <label className="text-xs text-gray-500"> + ${item.Impuestos * item.NumOfertas} de impuestos</label>
+
+              {/* Precio individual por oferta */}
+              <div className="flex flex-row  lg:flex-col border-t lg:border-t-0 lg:border-l border-gray-100 p-3 items-center justify-center gap-1 ">
+                <span className="font-bold text-xl text-gray-800">${item.FinalSinImpuestos * item.NumOfertas}</span>
+                <span className="text-[11px] text-gray-400">+ ${item.Impuestos * item.NumOfertas} impuestos</span>
               </div>
             </div>
           ))}
         </div>
-        <div className="border-l w-full lg:w-2/12 flex flex-col p-2 items-center justify-center gap-1">
-          <label className="font-semibold text-3xl">${Establecimiento.PrecioSinImpuestos}</label>
-          <label className="text-xs text-gray-500">+ ${Establecimiento.Impuestos} de impuestos</label>
-          <button className="bg-greenVE-500 text-white py-1 px-2 rounded-lg border-greenVE-600 border-2" onClick={() => handleClickPreReserva()}>
+
+        {/* Panel de precio total y reserva */}
+        <div className="border-b lg:border-b-0 lg:border-l border-gray-100 w-full lg:w-3/12 flex flex-row lg:flex-col p-5 items-center justify-center gap-2 bg-gradient-to-b from-gray-50 to-white">
+          <div className="text-center flex-row">
+            <span className="font-bold text-3xl text-gray-900">${Establecimiento.PrecioSinImpuestos}</span>
+            <p className="text-xs text-gray-400 mt-0.5">+ ${Establecimiento.Impuestos} de impuestos</p>
+          </div>
+          <button
+            className="bg-greenVE-500 hover:bg-greenVE-600 transition-colors text-white font-medium py-2 px-6 rounded-full shadow-sm hover:shadow-md"
+            onClick={() => handleClickPreReserva()}
+          >
             Reservar
           </button>
         </div>

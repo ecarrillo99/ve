@@ -10,12 +10,12 @@ import Icons from "../../../global/icons";
 import MenuTabs from "../menu_tabs/MenuTabs";
 
 const SearchBar = (props) => {
-  const { Place, Dates, Options, type } = props;
+  const { Place, Dates, Options, type, onSearch } = props;
   const [inputValue, setInputValue] = useState("");
   const icons = new Icons();
   const location = useLocation();
 
-  
+
   const handleClickAway = () => {
     if (openOptions) {
       setOpenOptions(false);
@@ -119,6 +119,7 @@ const SearchBar = (props) => {
   const navigate = useNavigate();
 
   const handleSearch = () => {
+
     const path = `/busqueda/?destino=${encodeURIComponent(
       JSON.stringify(destination)
     )}&fechas=${encodeURIComponent(
@@ -166,13 +167,26 @@ const SearchBar = (props) => {
     setDate(value);
   };
 
-  const ishotel = location.pathname.includes("/hotel/");
+  // Sincroniza con el padre (Hotel) en tiempo real cuando cambian opciones o fechas
+  useEffect(() => {
+    if (onSearch) {
+      onSearch({ destination, date, options });
+    }
+  }, [options, date]);
+
+  const ishotel = location.pathname.includes("busqueda") || location.pathname.includes("hotel");
+    const isbusqueda = location.pathname.includes("busqueda") ;
+
+    const isMobile = window.innerWidth < 768; // Puedes ajustar el breakpoint según tus necesidades
+
 
   return type === 0 || type === 1 ? (
-    <div className="relative -mt-6">
+    <div className="relative -mt-3">
+      <div className={`w-full ${ishotel ? "hidden" : ""} ${isMobile ? "hidden" : ""}`} >
       <MenuTabs/>
+      </div>
       <>
-        <div className="bottom-[0px] bg-white relative rounded-lg rounded-tl-none w-full mt-1 border-2 border-amber-400 shadow-lg">
+        <div className={`bottom-[0px] bg-white relative rounded-lg rounded-tl-none w-full mt-1 border-2 border-amber-400 shadow-lg ${isbusqueda ? `mt-10` : ""} `}>
           <div className="grid lg:grid-cols-12 md:grid-cols-12 grid-flow-row">
             <div className="gap-3 col-span-4 max-sm:col-span-1 bg-white flex items-center justify-center m-0 rounded-l-lg pl-4 relative border-r border-gray-200">
               <div dangerouslySetInnerHTML={{ __html: icons.Data.Bed }} />
@@ -249,27 +263,40 @@ const SearchBar = (props) => {
             </div>
           </div>
               {openDate && (
-                <ClickAwayListener onClickAway={handleDateClickAway}>
-                  <div className="absolute top-16 z-50">
-                    <DateRange
-                      editableDateInputs={true}
-                      onChange={(item) =>
-                        handleChangeDate([
-                          item.selection ? item.selection : item["Invalid Date"],
-                        ])
-                      }
-                      moveRangeOnFirstSelection={false}
-                      ranges={date}
-                      locale={es}
-                      months={1}
-                      direction="horizontal"
-                      className="shadow-xl"
-                      rangeColors={["#96c121"]}
-                      minDate={new Date()}
-                    />
-                  </div>
-                </ClickAwayListener>
-              )}
+  <div 
+    className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+    onClick={handleDateClickAway}
+  >
+    <div 
+      className="bg-white rounded-lg shadow-2xl max-w-full overflow-auto"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <DateRange
+        editableDateInputs={true}
+        onChange={(item) =>
+          handleChangeDate([
+            item.selection ? item.selection : item["Invalid Date"],
+          ])
+        }
+        moveRangeOnFirstSelection={false}
+        ranges={date}
+        locale={es}
+        months={1}
+        direction="horizontal"
+        rangeColors={["#96c121"]}
+        minDate={new Date()}
+      />
+      <div className="flex justify-end p-3 border-t border-gray-200">
+        <button
+          onClick={handleDateClickAway}
+          className="bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-2 rounded-lg text-sm"
+        >
+          Aplicar fechas
+        </button>
+      </div>
+    </div>
+  </div>
+)}
             </div>
             <div className="col-span-3 border-r border-gray-200 px-4 py-2 flex flex-col items-start">
               <div className="flex flex-row items-center gap-5">
@@ -406,10 +433,10 @@ const SearchBar = (props) => {
                 </ClickAwayListener>
               )}
             </div>
-            <div className="flex justify-center col-span-2 bg-greenVE-600 rounded-r-lg">
+            <div onClick={handleSearch} className="flex cursor-pointer justify-center col-span-2 bg-greenVE-600 rounded-r-lg">
               <button
                 className="text-white font-semibold"
-                onClick={handleSearch}
+             
               >
                 Buscar
               </button>
@@ -419,7 +446,7 @@ const SearchBar = (props) => {
       </>
     </div>
   ) : (
-    <div className={`${ishotel ? "p-0": "p-4"}`}>
+    <div className={`${ishotel ? "p-0 ": "p-4"}`}>
       <div className="bg-white rounded-lg shadow-lg border-2 border-amber-400 overflow-hidden">
         {/* Campo de búsqueda - Destino */}
         <div className="relative border-b border-gray-200">
@@ -499,29 +526,41 @@ const SearchBar = (props) => {
                 </div>
             </div>
           </div>
-          {openDate && (
-            <ClickAwayListener onClickAway={handleDateClickAway}>
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-                <div className="bg-white rounded-lg shadow-2xl max-w-full overflow-auto">
-                  <DateRange
-                    editableDateInputs={true}
-                    onChange={(item) =>
-                      handleChangeDate([
-                        item.selection ? item.selection : item["Invalid Date"],
-                      ])
-                    }
-                    moveRangeOnFirstSelection={false}
-                    ranges={date}
-                    locale={es}
-                    months={1}
-                    direction="horizontal"
-                    rangeColors={["#96c121"]}
-                    minDate={new Date()}
-                  />
-                </div>
-              </div>
-            </ClickAwayListener>
-          )}
+   {openDate && (
+  <div 
+    className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+    onClick={handleDateClickAway}
+  >
+    <div 
+      className="bg-white rounded-lg shadow-2xl max-w-full overflow-auto"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <DateRange 
+        editableDateInputs={true}
+        onChange={(item) =>
+          handleChangeDate([
+            item.selection ? item.selection : item["Invalid Date"],
+          ])
+        }
+        moveRangeOnFirstSelection={false}
+        ranges={date}
+        locale={es}
+        months={1}
+        direction="horizontal"
+        rangeColors={["#96c121"]}
+        minDate={new Date()}
+      />
+      <div className="flex justify-end p-3 border-t border-gray-200">
+        <button
+          onClick={handleDateClickAway}
+          className="bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-2 rounded-lg text-sm"
+        >
+          Aplicar fechas
+        </button>
+      </div>
+    </div>
+  </div>
+)}
         </div>
 
         {/* Personas y habitaciones */}
@@ -667,10 +706,10 @@ const SearchBar = (props) => {
         </div>
 
         {/* Botón de búsqueda */}
-        <div className="px-4 pb-4">
+        <div    onClick={handleSearch} className="px-4 cursor-pointer pb-4">
           <button
             className="w-full bg-greenVE-600 hover:bg-greenVE-700 text-white font-semibold py-3 rounded-lg transition-colors"
-            onClick={handleSearch}
+          
           >
             Buscar
           </button>

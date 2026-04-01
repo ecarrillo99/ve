@@ -5,6 +5,7 @@ const ItemRecomended = ({ oferta }) => {
   const navigate = useNavigate();
   const [viewShare, setViewShare] = useState(false);
   const [shortUrl, setShortUrl] = useState(null);
+  const [expandedDescription, setExpandedDescription] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [loadingShare, setLoadingShare] = useState(false);
 
@@ -82,7 +83,7 @@ const ItemRecomended = ({ oferta }) => {
       )}
       
       <div 
-        className="bg-white rounded-xl border border-gray-200 hover:border-greenVE-400 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer overflow-visible group relative"
+        className="bg-white rounded-xl border border-gray-200 hover:border-greenVE-400 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer overflow-visible group relative flex flex-col"
       >
         {/* Imagen con overlay de gradiente */}
         <div className="relative w-full md:h-52 h-40 overflow-hidden" onClick={HandleClickItem}>
@@ -112,40 +113,88 @@ const ItemRecomended = ({ oferta }) => {
           {/* Badge de precio en la esquina superior derecha */}
           <div className="absolute top-3 right-3">
             <div className="bg-greenVE-600 text-white px-3 py-1.5 rounded-full shadow-lg">
-              <span className="text-xs font-bold">Desde ${oferta.Precio}</span>
+              <span className="text-xs font-bold">Reservar ${oferta.Precio}</span>
             </div>
           </div>
         </div>
 
-        {/* Contenido de la tarjeta */}
-        <div className="p-4">
+        {/* Contenido de la tarjeta - flex-col para empujar el footer al fondo */}
+        <div className="p-4 flex flex-col flex-1">
           {/* Nombre del establecimiento */}
-          <h3 className="text-sm md:text-sm font-bold text-gray-800 line-clamp-2 min-h-[2.5rem] group-hover:text-greenVE-700 transition-colors">
-            {oferta.Establecimiento}
-          </h3>
+          <div className="flex flex-wrap gap-2">
+            <h3 className="text-sm md:text-sm font-bold text-gray-800 line-clamp-2 min-h-[2.5rem] group-hover:text-greenVE-700 transition-colors">
+                {oferta.Establecimiento}
+            </h3>
 
-          {/* Estrellas de calificación */}
-          <div className="flex items-center gap-1">
-            {Array(+(oferta.Catalogacion)).fill(null).map((item, index) => (
-              <svg 
-                key={index} 
-                height="14px" 
-                width="14px" 
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg" 
-                viewBox="0 0 24 24" 
-                className="fill-current text-amber-400"
-              >
-                <path 
-                  fillRule="evenodd" 
-                  d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" 
-                  clipRule="evenodd" 
-                />
-              </svg>
-            ))}
+            {/* Estrellas de calificación */}
+            <div className="flex items-start gap-1 mt-0.5">
+                {Array(+(oferta.Catalogacion)).fill(null).map((item, index) => (
+                <svg 
+                    key={index} 
+                    height="14px" 
+                    width="14px" 
+                    fill="none" 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 24 24" 
+                    className="fill-current text-amber-400"
+                >
+                    <path 
+                    fillRule="evenodd" 
+                    d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" 
+                    clipRule="evenodd" 
+                    />
+                </svg>
+                ))}
+            </div>
           </div>
 
-          {/* Comentarios y calificación */}
+          {/* Zona de altura fija — solo crece al expandir */}
+          <div className="mt-1.5">
+            {oferta.Descripcion && (
+              <>
+                <p className="text-xs text-gray-500 leading-relaxed">
+                  {expandedDescription
+                    ? oferta.Descripcion
+                    : oferta.Descripcion.length > 80
+                    ? oferta.Descripcion.slice(0, 80) + "…"
+                    : oferta.Descripcion}
+                </p>
+                {oferta.Descripcion.length > 80 && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setExpandedDescription((prev) => !prev);
+                    }}
+                    className="text-xs text-greenVE-600 hover:text-greenVE-700 font-semibold mt-0.5 transition-colors"
+                  >
+                    {expandedDescription ? "Ver menos ▲" : "Ver más ▼"}
+                  </button>
+                )}
+              </>
+            )}
+
+            {/* Check-in / Check-out — siempre visible */}
+            {(oferta.CheckIn || oferta.CheckOut) && (
+              <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-greenVE-500 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
+                  <path d="M13 7h-2v5.414l3.293 3.293 1.414-1.414L13 11.586z"/>
+                </svg>
+                {oferta.CheckIn && (
+                  <span>
+                    <span className="font-medium text-gray-600">Check-in:</span> {oferta.CheckIn}
+                  </span>
+                )}
+                {oferta.CheckIn && oferta.CheckOut && <span className="text-gray-300">|</span>}
+                {oferta.CheckOut && (
+                  <span>
+                    <span className="font-medium text-gray-600">Check-out:</span> {oferta.CheckOut}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+          {/* Comentarios y calificación 
           <div className="flex items-center gap-2 text-xs text-gray-600">
             <div className="flex items-center gap-1">
               <span className="font-bold text-greenVE-700">9.7</span>
@@ -153,9 +202,9 @@ const ItemRecomended = ({ oferta }) => {
             </div>
             <span className="text-gray-500">10 Comentarios</span>
           </div>
-
-          {/* Separador sutil */}
-          <div className="border-t border-gray-100 pt-3 mt-3">
+*/}
+          {/* Separador sutil - siempre al fondo */}
+          <div className="border-t border-gray-100 pt-3 mt-auto">
             <div className="flex items-center justify-between relative">
               {/* Duración de la estadía 
                   <div className="flex items-center gap-2">

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import EditOfferModal from "../admin/EditOfferModal";
+import { getOfferTypeConfig } from "../../../core/offertTypeConfig";
 
 const slugify = (text) => {
   if (!text) return "";
@@ -10,11 +11,17 @@ const slugify = (text) => {
 
 const WineOfferItem = ({ offer }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const typeConfig = getOfferTypeConfig(offer.type);
+  // Leer scheduleDateTime de la URL actual para propagarlo al restaurante
+  const _qp = new URLSearchParams(location.search);
+  const scheduleDateTime = _qp.get('scheduleDateTime') || '';
   const [imageLoaded, setImageLoaded] = useState(false);
   const [openEditOffer, setOpenEditOffer] = useState(false);
   const [openEditInventory, setOpenEditInventory] = useState(false);
   const [inventoryToEdit, setInventoryToEdit] = useState(null);
   const [viewShare, setViewShare] = useState(false);
+  const [expandedDescription, setExpandedDescription] = useState(false);
   const [shortUrl, setShortUrl] = useState(null);
   const [isCopied, setIsCopied] = useState(false);
   const [loadingShare, setLoadingShare] = useState(false);
@@ -52,7 +59,7 @@ const WineOfferItem = ({ offer }) => {
     e.stopPropagation();
     setLoadingShare(true);
     if (shortUrl == null) {
-      const tempShortUrl = window.location.origin + "/hotel/" + offer.establishment.name;
+      const tempShortUrl = window.location.origin + "/restaurante/" + offer.establishment.name;
       setViewShare(true);
       setShortUrl(tempShortUrl);
       setLoadingShare(false);
@@ -85,7 +92,7 @@ const WineOfferItem = ({ offer }) => {
     if (openEditOffer || openEditInventory) return;
 
     const establishment = offer.establishment || {};
-    const establishmentName = establishment.name || offer.title;
+    const establishmentName = establishment.name ;
 
     const today = new Date();
     const tomorrow = new Date(today);
@@ -111,6 +118,7 @@ const WineOfferItem = ({ offer }) => {
       date_st: offer.date_st,
       date_ed: offer.date_ed,
       inventories: offer.inventories || [],
+      schedules: offer.schedules || [],
       wineEstablishment: {
         name: establishmentName,
         city: establishment.city,
@@ -119,12 +127,13 @@ const WineOfferItem = ({ offer }) => {
     };
 
     const slug = slugify(establishmentName);
-    const url = `/hotel/${slug}/`;
+    const url = `/restaurante/${slug}/`;
 
-    console.log('[WineOfferItem] Navegando a hotel:', { 
+    console.log('[WineOfferItem] Navegando al restaurante:', { 
       establishmentName, 
       slug,
-      wineOffer: offer.title 
+      wineOffer: offer.title ,
+      schedules: offer.schedules || [],
     });
 
     navigate(url, { 
@@ -133,7 +142,8 @@ const WineOfferItem = ({ offer }) => {
         options: opts,
         date: dateTmp,
         searchEstablishmentName: establishmentName,
-        fromWineOffer: true
+        fromWineOffer: true,
+        scheduleDateTime,
       } 
     });
   };
@@ -146,6 +156,32 @@ const WineOfferItem = ({ offer }) => {
       month: "short",
       timeZone: 'UTC'
     });
+  };
+
+  // Soporte para días 0-6 (Dom=0) y 1-7 (Lun=1, Dom=7)
+  const DAY_NAMES_0 = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+  const DAY_NAMES_1 = ["", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+
+  const formatDayRange = (start, end) => {
+    // Si algún valor es > 6 asumimos base 1 (1=Lun … 7=Dom)
+    const useBase1 = start > 6 || end > 6;
+    const names = useBase1 ? DAY_NAMES_1 : DAY_NAMES_0;
+    const s = names[start] ?? start;
+    const e = names[end] ?? end;
+    return s === e ? s : `${s} – ${e}`;
+  };
+
+  const formatTime = (timeValue) => {
+    if (!timeValue) return '';
+    // Puede llegar como string "HH:MM:SS" o como Date ISO
+    const str = typeof timeValue === 'string' ? timeValue : new Date(timeValue).toISOString();
+    // Extraer HH:MM ya sea de "HH:MM:SS" o de la parte T de un ISO
+    const timePart = str.includes('T') ? str.split('T')[1] : str;
+    const [hh, mm] = timePart.split(':');
+    const h = parseInt(hh, 10);
+    const period = h >= 12 ? 'pm' : 'am';
+    const h12 = h % 12 || 12;
+    return `${h12}:${mm}${period}`;
   };
 
   const getDaysRemaining = () => {
@@ -230,8 +266,8 @@ const WineOfferItem = ({ offer }) => {
           {/* Badge de precio en la esquina superior derecha */}
           {offer.price && (
             <div className="absolute top-3 right-3">
-              <div className="bg-greenVE-600 text-white px-3 py-1.5 rounded-full shadow-lg">
-                <span className="text-xs font-bold">Desde ${offer.price}</span>
+              <div className={`${typeConfig.badgeBg} text-white px-3 py-1.5 rounded-full shadow-lg`}>
+                <span className="text-xs font-bold">{typeConfig.reserveLabel} ${offer.price}</span>
               </div>
             </div>
           )}
@@ -271,28 +307,93 @@ const WineOfferItem = ({ offer }) => {
         {/* Contenido de la tarjeta */}
         <div className="p-4">
           {/* Nombre del establecimiento */}
-          {offer.establishment && (
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs text-gray-500 font-medium truncate">
-                {offer.establishment.name}
-              </span>
-            </div>
-          )}
-
+          <div className="flex flex-wrap gap-2">
+            
+              {offer.establishment && (
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs text-gray-500 font-medium truncate">
+                    {offer.establishment.name}
+                  </span>
+                </div>
+              )}
+              <div className="flex items-start gap-1">
+                {Array(+(offer.establishment.rate)).fill(null).map((item, index) => (
+                  <svg 
+                    key={index} 
+                    height="14px" 
+                    width="14px" 
+                    fill="none" 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 24 24" 
+                    className="fill-current text-amber-400"
+                  >
+                    <path 
+                      fillRule="evenodd" 
+                      d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" 
+                      clipRule="evenodd" 
+                    />
+                  </svg>
+                ))}
+              </div>
+          </div>
           {/* Título de la oferta */}
           <h3 className="text-sm md:text-sm font-bold text-gray-800 line-clamp-2 min-h-[2.5rem] group-hover:text-greenVE-700 transition-colors">
             {offer.title}
           </h3>
 
-          {/* Fechas */}
-          <div className="flex items-center gap-2 text-xs text-gray-600 mt-2">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-gray-400" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm-8 4H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z" />
-            </svg>
-            <span>
-              {formatDate(offer.date_st)} - {formatDate(offer.date_ed)}
-            </span>
-          </div>
+          {/* Descripción expandible */}
+          {offer.description && (
+            <div className="-mt-2">
+              <p className="text-xs text-gray-500 leading-relaxed">
+                {expandedDescription
+                  ? offer.description
+                  : offer.description.length > 80
+                  ? offer.description.slice(0, 80) + "…"
+                  : offer.description}
+              </p>
+              {offer.description.length > 80 && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setExpandedDescription((prev) => !prev);
+                  }}
+                  className="text-xs text-amber-600 hover:text-amber-700 font-semibold mt-0.5 transition-colors"
+                >
+                  {expandedDescription ? "Ver menos ▲" : "Ver más ▼"}
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Schedules */}
+          {offer.schedules && offer.schedules.length > 0 ? (
+            <div className="mt-2 flex flex-wrap gap-2.5">
+              {offer.schedules.map((schedule, idx) => (
+                <div key={idx} className={`flex items-center gap-1 ${offer.schedules.length > 1 ? 'text-[10px]' : 'text-xs'}  text-gray-600`}>
+                  {/* Ícono reloj */}
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-amber-500 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
+                    <path d="M13 7h-2v5.414l3.293 3.293 1.414-1.414L13 11.586z"/>
+                  </svg>
+                  <span className="font-medium text-amber-700">
+                    {formatDayRange(schedule.day_start, schedule.day_end)}
+                  </span>
+                  <span className="text-gray-400">·</span>
+                  <span>
+                    {formatTime(schedule.time_st)} – {formatTime(schedule.time_ed)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            /* Fallback: fechas si no hay schedules */
+            <div className="flex items-center gap-2 text-xs text-gray-600 mt-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-gray-400" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm-8 4H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z" />
+              </svg>
+              <span>{formatDate(offer.date_st)} - {formatDate(offer.date_ed)}</span>
+            </div>
+          )}
 
           {/* Separador sutil */}
           <div className="border-t border-gray-100 pt-3 mt-3">
@@ -404,8 +505,11 @@ const WineOfferItem = ({ offer }) => {
                 </div>
               )}
 
-              <div className="flex items-center gap-1.5 text-greenVE-600 font-semibold group-hover:gap-2 transition-all cursor-pointer" onClick={handleClickItem}>
-                <span className="text-xs">Ver más</span>
+              <div
+                className="flex items-center gap-1.5 text-greenVE-600 font-semibold hover:gap-2 transition-all cursor-pointer"
+                onClick={handleClickItem}
+              >
+                <span className="text-xs">Ver oferta</span>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                 </svg>

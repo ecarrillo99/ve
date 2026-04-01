@@ -1,8 +1,8 @@
 import axios from "axios";
 import Cookies from 'js-cookie';
 
-const API_BASE = process.env.REACT_APP_API_BASE_URL || "http://localhost:8007";
-const IMAGE_BASE = process.env.REACT_APP_IMAGE_BASE_URL || "http://localhost:8005";
+const API_BASE = process.env.REACT_APP_API_BASE_URL || "https://vinos.visitaecuador.com/vino_api";
+const IMAGE_BASE = process.env.REACT_APP_IMAGE_BASE_URL || "https://vinos.visitaecuador.com/vino_api";
 
 const vinoApiService = axios.create({
   baseURL: API_BASE,
@@ -28,6 +28,7 @@ export const ENDPOINTS = {
   OFFERTS: '/offerts',
   INVENTORIES: '/inventories',
   ESTABLISHMENTS: '/establishments',
+  RESERVATIONS: '/reservations',
   UPLOAD_IMAGE: '/upload/image',
   UPLOAD_OFFERT_IMAGE: (id) => `/upload/offert-image/${id}`,
   UPLOAD_INVENTORY_IMAGE: (id) => `/upload/inventory-image/${id}`,
@@ -127,6 +128,74 @@ export const getEstablishments = async () => {
 
 export const getEstablishmentById = async (id) => {
   const response = await vinoApiService.get(`${ENDPOINTS.ESTABLISHMENTS}/${id}`);
+  return response.data;
+};
+
+// ============ RESERVACIONES (VINOS) ============
+
+/**
+ * Crea una nueva reservación en la API de vinos
+ * @param {Object} payload - { offertId, adults, childs, tables, userName, cedula, userId, email }
+ */
+export const createWineReservation = async (payload) => {
+  const response = await vinoApiService.post(ENDPOINTS.RESERVATIONS, payload);
+  return response.data;
+};
+
+/**
+ * Obtiene todas las reservaciones
+ * @param {Object} params - { page, size }
+ */
+export const getWineReservations = async (params = {}) => {
+  const response = await vinoApiService.get(ENDPOINTS.RESERVATIONS, { params });
+  return response.data;
+};
+
+/**
+ * Obtiene una reservación por ID
+ * @param {string} id - UUID de la reservación
+ */
+export const getWineReservationById = async (id) => {
+  const response = await vinoApiService.get(`${ENDPOINTS.RESERVATIONS}/${id}`);
+  return response.data;
+};
+
+/**
+ * Obtiene reservaciones por oferta
+ * @param {string} offertId - UUID de la oferta
+ * @param {Object} params - { page, size }
+ */
+export const getWineReservationsByOffert = async (offertId, params = {}) => {
+  const response = await vinoApiService.get(`${ENDPOINTS.RESERVATIONS}/offert/${offertId}`, { params });
+  return response.data;
+};
+
+/**
+ * Obtiene reservaciones por usuario (userId o email)
+ * @param {string} identifier - userId o email
+ * @param {Object} params - { page, size }
+ */
+export const getWineReservationsByUser = async (identifier, params = {}) => {
+  const response = await vinoApiService.get(`${ENDPOINTS.RESERVATIONS}/user/${identifier}`, { params });
+  return response.data;
+};
+
+/**
+ * Actualiza una reservación
+ * @param {string} id - UUID de la reservación
+ * @param {Object} payload - campos a actualizar
+ */
+export const updateWineReservation = async (id, payload) => {
+  const response = await vinoApiService.patch(`${ENDPOINTS.RESERVATIONS}/${id}`, payload);
+  return response.data;
+};
+
+/**
+ * Elimina (soft delete) una reservación
+ * @param {string} id - UUID de la reservación
+ */
+export const deleteWineReservation = async (id) => {
+  const response = await vinoApiService.delete(`${ENDPOINTS.RESERVATIONS}/${id}`);
   return response.data;
 };
 

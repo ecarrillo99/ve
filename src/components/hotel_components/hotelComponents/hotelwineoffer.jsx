@@ -74,7 +74,7 @@ const HotelWineOffer = ({ ofertaSeleccionada, establecimiento, includeInReservat
       <div className="bg-[#7C9539] px-4 py-2.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="rounded-full p-1.5">
-            <span className="text-xl">🍷</span>
+            <span className="text-xl"></span>
           </div>
           <h3 className="text-white font-semibold text-sm md:text-base">
             Oferta Ruta del Vino: {offer.TituloOferta || offer.title}
@@ -104,9 +104,9 @@ const HotelWineOffer = ({ ofertaSeleccionada, establecimiento, includeInReservat
               {/* Personas */}    <th className="border px-2 py-2 text-center text-gray-100 font-medium " >Vigencia</th>
        
               {/* Precio por noches / Vigencia */}
-                 <th className="border px-2 py-2 text-center text-gray-600 font-medium text-sm">Detalle</th>
-              {/* Incluye / Regalos */}
-              <th className="border px-2 py-2 text-center text-gray-600 font-medium text-sm">{hasGift ? 'Regalos' : ''}</th>
+                 <th className="border px-2 py-2 text-center text-gray-100 font-medium text-sm">Detalle</th>
+              {/* Incluye / Regalos 
+              <th className="border px-2 py-2 text-center text-gray-600 font-medium text-sm">{hasGift ? 'Regalos' : ''}</th>*/}
               {/* Total / Precio */}
               <th className="border px-2 py-2 text-center text-gray-100 font-medium " >Precio</th>
             </tr>
@@ -121,12 +121,12 @@ const HotelWineOffer = ({ ofertaSeleccionada, establecimiento, includeInReservat
                       <div className="absolute inset-0 bg-[#EEF2E3] animate-pulse"></div>
                     )}
                     <img
-                      src={offer.FotoPrincipal || offer.image || 'https://via.placeholder.com/80x64?text=🍷'}
+                      src={offer.FotoPrincipal || offer.image || 'https://via.placeholder.com/80x64?text='}
                       alt={offer.TituloOferta || offer.title}
                       className={`w-full h-full object-cover bg-black opacity-70 `}
                       onLoad={() => setImageLoaded(true)}
                       onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/80x64?text=🍷';
+                        e.target.src = 'https://via.placeholder.com/80x64?text=';
                         setImageLoaded(true);
                       }}
                     />
@@ -168,7 +168,7 @@ const HotelWineOffer = ({ ofertaSeleccionada, establecimiento, includeInReservat
 
            
 
-              {/* Columna: Regalos */}
+              {/* Columna: Regalos 
               <td className="border px-2 py-3">
                 {hasGift ? (
                   <div className="flex flex-col gap-1">
@@ -185,7 +185,7 @@ const HotelWineOffer = ({ ofertaSeleccionada, establecimiento, includeInReservat
                     )}
                   </div>
                 ) : null}
-              </td>
+              </td>*/}
 
               {/* Columna: Precio */}
               <td className="border  py-3 text-center">
@@ -234,7 +234,7 @@ const HotelWineOffer = ({ ofertaSeleccionada, establecimiento, includeInReservat
                     />
                   ) : (
                     <div className="w-8 h-8 bg-amber-100 rounded flex items-center justify-center flex-shrink-0">
-                      <span className="text-sm">🍷</span>
+                      <span className="text-sm"></span>
                     </div>
                   )}
                   <div className="flex-1 min-w-0">

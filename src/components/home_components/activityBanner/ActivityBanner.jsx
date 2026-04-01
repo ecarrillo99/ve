@@ -26,8 +26,8 @@ const ActivityBanner=()=>{
     }, []);
 
     return(
-        <div>
-            <h1 className="font-bold text-xl">Actividad</h1>
+        <div className="mt-2">
+            <h1 className="font-bold text-xl mb-5">Actividad</h1>
             <label className="font-medium text-md">Reporte desde la Central de Reservas</label>
             <div className="mt-4">
             {

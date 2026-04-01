@@ -3,7 +3,7 @@ import React from 'react';
 
 
 const MarcaPais = () => (
-     <svg className='h-4 md:h-6' version="1.1" id="Livello_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+     <svg className='h-6 ' version="1.1" id="Livello_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
           viewBox="0 0 604.8 95" style={{ enableBackground: "new 0 0 604.8 95" }} xmlSpace="preserve">
           <style type="text/css">
                {`

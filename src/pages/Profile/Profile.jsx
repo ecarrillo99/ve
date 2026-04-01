@@ -91,7 +91,7 @@ const Profile = ({}) => {
         getProfileData()
           .then((result1) => {
             if (result1 == 401) {
-              localStorage.removeItem("Datos");
+              localStorage.removeItem("datos");
               window.location.reload();
             } else {
               if (result1) {
@@ -138,7 +138,7 @@ const Profile = ({}) => {
   return sessionStatus() ? (
     citiesData != null && profileData != null ? (
       <div>
-      <Navbar activo={2} />
+      <Navbar activo={1} />
         <div className="flex flex-col md:flex-row mx-5 md:mx-auto py-6 sm:px-6 lg:px-8 gap-7 max-w-6xl">
           {/* Menú siempre visible */}
           <div className="w-full md:w-3/12">

@@ -7,109 +7,101 @@ import { useEffect, useState } from "react";
 import { getHotels } from "../../../controllers/info/infoController";
 import ItemHotelsSkeleton from "./ItemHotelsSkeleton";
 
-
 const HotelsBanner = () => {
+  const [data, setData] = useState();
 
-  const [data, setData] = useState()
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                getHotels()
-                    .then((result) => {
-                      if(result==401){
-                        localStorage.removeItem('datos');
-                        window.location.reload();
-                      }else{
-                          setData(result)
-                      }
-                    })
-                    .catch((error) => { })
-
-            } catch (error) {
-                console.error("Error:", error);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        getHotels()
+          .then((result) => {
+            if (result == 401) {
+              localStorage.removeItem('datos');
+              window.location.reload();
+            } else {
+              setData(result);
             }
-        }
-        fetchData();
-    }, []);
+          })
+          .catch((error) => {});
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+    fetchData();
+  }, []);
 
-    const CustomNextArrow = (props) => {
-      return (
-        <div
-          className="-mr-3  absolute top-1/2 transform -translate-y-1/2 right-0 cursor-pointer rounded-full bg-gray-100 text-greenVE-600 text-lg h-8 w-8 flex items-center justify-center pl-1"
-          onClick={props.onClick}
-          style={{ filter: 'drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.5))' }}>
-          <span className="icon-[material-symbols--arrow-forward-ios]"></span>
-        </div>
-      );
-    };
-  
-    const CustomPrevArrow = (props) => {
-      return (
-        <div
-          className="-ml-3 z-10  absolute top-1/2 transform -translate-y-1/2 left-0 cursor-pointer rounded-full bg-gray-100 text-greenVE-600 text-lg pr-1 h-8 w-8 flex items-center justify-center"
-          onClick={props.onClick}
-          style={{ filter: 'drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.5))' }}>
-          <span className="icon-[material-symbols--arrow-back-ios-new]"></span>
-        </div>
-      );
-    };
+  const CustomNextArrow = (props) => (
+    <button
+      className="absolute top-1/2 -translate-y-1/2 -right-4 z-10 w-9 h-9 rounded-full bg-white border border-gray-200 shadow-md text-greenVE-600 flex items-center justify-center hover:bg-greenVE-600 hover:text-white hover:border-greenVE-600 transition-all duration-200"
+      onClick={props.onClick}
+      aria-label="Siguiente"
+    >
+      <span className="icon-[material-symbols--arrow-forward-ios] text-sm" />
+    </button>
+  );
+
+  const CustomPrevArrow = (props) => (
+    <button
+      className="absolute top-1/2 -translate-y-1/2 -left-4 z-10 w-9 h-9 rounded-full bg-white border border-gray-200 shadow-md text-greenVE-600 flex items-center justify-center hover:bg-greenVE-600 hover:text-white hover:border-greenVE-600 transition-all duration-200"
+      onClick={props.onClick}
+      aria-label="Anterior"
+    >
+      <span className="icon-[material-symbols--arrow-back-ios-new] text-sm" />
+    </button>
+  );
 
   const settings = {
     dots: false,
     infinite: true,
     autoplay: false,
     autoplaySpeed: 4000,
-    speed: 500,
+    speed: 400,
     slidesToShow: 6,
-    slidesToScroll: 6,
+    slidesToScroll: 3,
     nextArrow: <CustomNextArrow />,
     prevArrow: <CustomPrevArrow />,
     responsive: [
-      {
-        breakpoint: 900,
-        settings: {
-          slidesToShow: 1,
-        },
-      },
-      {
-        breakpoint: 1150,
-        settings: {
-          slidesToShow: 3,
-        },
-      },
-      {
-        breakpoint: 1300,
-        settings: {
-          slidesToShow: 4,
-        },
-      },]
+      { breakpoint: 900,  settings: { slidesToShow: 2, slidesToScroll: 2 } },
+      { breakpoint: 1150, settings: { slidesToShow: 3, slidesToScroll: 3 } },
+      { breakpoint: 1300, settings: { slidesToShow: 4, slidesToScroll: 4 } },
+    ],
   };
 
   return (
-    <div className="mt-10 mx-5 md:mx-0">
-      <h1 className="font-bold text-xl">Establecimientos Asociados</h1>
-      <div className="flex justify-between mb-4">
-        <h6 className="text-md">Mas de 500 ofertas disponibles.</h6>
+    <section className="mt-10 mx-5 md:mx-0">
+      {/* Header */}
+      <div className="flex items-end justify-between mb-5">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-1 h-5 rounded-full bg-greenVE-500 inline-block" />
+            <h2 className="font-bold text-xl text-gray-800 tracking-tight">
+              Establecimientos Asociados
+            </h2>
+          </div>
+          <p className="text-sm text-gray-500 pl-3">
+            Más de <span className="font-semibold text-greenVE-600">500 ofertas</span> disponibles
+          </p>
+        </div>
       </div>
-      <Slider {...settings}>
-        {data?(
-          data.map((item, index)=>(
-            <div key={index}>
-              <ItemHotels hotel={item} ></ItemHotels>
-            </div>
-          ))):(
-            Array(8).fill(null).map((item, index)=>(
-              <div key={index}>
-              <ItemHotelsSkeleton></ItemHotelsSkeleton>
-            </div>
-            ))
-          )
-        }
-      </Slider>
 
-    </div>
+      {/* Slider */}
+      <div className="relative px-1">
+        <Slider {...settings}>
+          {data
+            ? data.map((item, index) => (
+                <div key={index} className="px-1.5">
+                  <ItemHotels hotel={item} />
+                </div>
+              ))
+            : Array(8).fill(null).map((_, index) => (
+                <div key={index} className="px-1.5">
+                  <ItemHotelsSkeleton />
+                </div>
+              ))}
+        </Slider>
+      </div>
+    </section>
   );
 };
 
 export default HotelsBanner;
-

@@ -8,64 +8,103 @@ import {
   uploadOffertImage,
   uploadInventoryImage 
 } from '../../../core/vinoApiService';
+import { OFFER_TYPE_OPTIONS, getOfferTypeConfig, getSubTypeOptions } from '../../../core/offertTypeConfig';
+
+const DAYS = [
+  { label: 'Lun', value: 1 },
+  { label: 'Mar', value: 2 },
+  { label: 'Mié', value: 3 },
+  { label: 'Jue', value: 4 },
+  { label: 'Vie', value: 5 },
+  { label: 'Sáb', value: 6 },
+  { label: 'Dom', value: 7 },
+];
+
+const DAY_NAMES = { 1: 'Lun', 2: 'Mar', 3: 'Mié', 4: 'Jue', 5: 'Vie', 6: 'Sáb', 7: 'Dom' };
+
+const emptySchedule = () => ({ day_start: 1, day_end: 5, time_st: '08:00', time_ed: '18:00' });
+
+const parseTime = (val) => {
+  if (!val) return '';
+  const str = String(val);
+  // ISO completo: "1970-01-01T13:00:00.000Z" -> extraer parte despues de T
+  if (str.includes('T')) {
+    return str.split('T')[1].substring(0, 5);
+  }
+  // "HH:mm:ss" o "HH:mm"
+  return str.substring(0, 5);
+};
 
 const EditOfferModal = ({ isOpen, onClose, offer, inventory, mode = 'offer', onUpdated }) => {
-    const [form, setForm] = useState({
-      title: '', description: '', price: '', image: '', date_st: '', date_ed: '',
-    });
-    const [inventories, setInventories] = useState([]);
-    const [editingInventory, setEditingInventory] = useState(null);
-    const [showInventoryForm, setShowInventoryForm] = useState(false);
-    const [inventoryForm, setInventoryForm] = useState({
-      name: '', price: '', image: '', icon: '', other_details: '', quantity: '', description: '',
-    });
-    const [loading, setLoading] = useState(false);
-    const [loadingInventory, setLoadingInventory] = useState(false);
-    const [error, setError] = useState(null);
-    const [successMessage, setSuccessMessage] = useState(null);
-
-    useEffect(() => {
-      if (offer) {
-        setForm({
-          title: offer.title || '',
-          description: offer.description || '',
-          price: offer.price || '',
-          image: offer.image || '',
-          date_st: offer.date_st ? offer.date_st.split('T')[0] : '',
-          date_ed: offer.date_ed ? offer.date_ed.split('T')[0] : '',
-        });
-        setInventories(offer.inventories || []);
-      }
-    }, [offer]);
-
-    useEffect(() => {
-      if (mode === 'inventory' && inventory) {
-        setEditingInventory(inventory);
-        setInventoryForm({
-          name: inventory.name || '',
-          price: inventory.price || '',
-          image: inventory.image || '',
-          icon: inventory.icon || '',
-          other_details: inventory.other_details || '',
-          quantity: inventory.quantity || '',
-          description: inventory.description || '',
-        });
-      }
-    }, [mode, inventory]);
+  const [form, setForm] = useState({
+    title: '', description: '', price: '', image: '', date_st: '', date_ed: '', type: '', subType: '',
+  });
+  const [schedules, setSchedules] = useState([emptySchedule()]);
+  const [inventories, setInventories] = useState([]);
+  const [editingInventory, setEditingInventory] = useState(null);
+  const [showInventoryForm, setShowInventoryForm] = useState(false);
+  const [inventoryForm, setInventoryForm] = useState({
+    name: '', price: '', image: '', icon: '', other_details: '', quantity: '', description: '',
+  });
+  const [loading, setLoading] = useState(false);
+  const [loadingInventory, setLoadingInventory] = useState(false);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
+    if (offer) {
+      setForm({
+        title: offer.title || '',
+        description: offer.description || '',
+        price: offer.price || '',
+        image: offer.image || '',
+        date_st: offer.date_st ? offer.date_st.split('T')[0] : '',
+        date_ed: offer.date_ed ? offer.date_ed.split('T')[0] : '',
+        type: offer.type || 'rutas',
+        subType: offer.subType || '',
+      });
+      setInventories(offer.inventories || []);
+
+      // Cargar schedules existentes o iniciar con uno vacío
+      if (offer.schedules && offer.schedules.length > 0) {
+        setSchedules(offer.schedules.map(s => ({
+          id: s.id,
+          day_start: s.day_start,
+          day_end: s.day_end,
+          time_st: parseTime(s.time_st),
+          time_ed: parseTime(s.time_ed),
+        })));
+      } else {
+        setSchedules([emptySchedule()]);
+      }
     }
+  }, [offer]);
+
+  useEffect(() => {
+    if (mode === 'inventory' && inventory) {
+      setEditingInventory(inventory);
+      setInventoryForm({
+        name: inventory.name || '',
+        price: inventory.price || '',
+        image: inventory.image || '',
+        icon: inventory.icon || '',
+        other_details: inventory.other_details || '',
+        quantity: inventory.quantity || '',
+        description: inventory.description || '',
+      });
+    }
+  }, [mode, inventory]);
+
+  useEffect(() => {
+    if (isOpen) document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = 'unset'; };
   }, [isOpen]);
 
   if (!isOpen) return null;
 
+  // ── MODE: INVENTORY ────────────────────────────────────────
   if (mode === 'inventory') {
-    const handleImageUploadedStandalone = (url) => {
-      setInventoryForm(prev => ({ ...prev, image: url }));
-    };
+    const handleImageUploadedStandalone = (url) => setInventoryForm(prev => ({ ...prev, image: url }));
 
     const handleSubmitInventoryStandalone = async (e) => {
       e && e.preventDefault && e.preventDefault();
@@ -97,7 +136,7 @@ const EditOfferModal = ({ isOpen, onClose, offer, inventory, mode = 'offer', onU
       <div className="fixed inset-0 z-[9999]" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
         <div className="absolute inset-0 bg-black/60" onClick={onClose} />
         <div className="absolute inset-0 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="relative w-full max-w-lg bg-white rounded-xl shadow-2xl my-8" onClick={(e) => e.stopPropagation()}>
+          <div className="relative w-full max-w-lg bg-white rounded-xl shadow-2xl my-8" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center p-4 border-b bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-xl">
               <h3 className="text-lg font-semibold text-white">✏️ Editar Inventario</h3>
               <button onClick={onClose} className="text-white/80 hover:text-white p-1">
@@ -114,30 +153,27 @@ const EditOfferModal = ({ isOpen, onClose, offer, inventory, mode = 'offer', onU
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Nombre *</label>
-                  <input name="name" value={inventoryForm.name} onChange={(e) => setInventoryForm(prev => ({ ...prev, [e.target.name]: e.target.value }))} className="w-full border rounded-lg px-3 py-2" />
+                  <input name="name" value={inventoryForm.name} onChange={e => setInventoryForm(prev => ({ ...prev, [e.target.name]: e.target.value }))} className="w-full border rounded-lg px-3 py-2" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
-                  <textarea name="description" value={inventoryForm.description || inventoryForm.other_details} onChange={(e) => setInventoryForm(prev => ({ ...prev, [e.target.name]: e.target.value }))} rows={3} className="w-full border rounded-lg px-3 py-2 resize-none" />
+                  <textarea name="description" value={inventoryForm.description || inventoryForm.other_details} onChange={e => setInventoryForm(prev => ({ ...prev, [e.target.name]: e.target.value }))} rows={3} className="w-full border rounded-lg px-3 py-2 resize-none" />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Precio</label>
-                    <input name="price" value={inventoryForm.price} onChange={(e) => setInventoryForm(prev => ({ ...prev, [e.target.name]: e.target.value }))} className="w-full border rounded-lg px-3 py-2" placeholder="0.00" />
+                    <input name="price" value={inventoryForm.price} onChange={e => setInventoryForm(prev => ({ ...prev, [e.target.name]: e.target.value }))} className="w-full border rounded-lg px-3 py-2" placeholder="0.00" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Cantidad</label>
-                    <input name="quantity" value={inventoryForm.quantity} onChange={(e) => setInventoryForm(prev => ({ ...prev, [e.target.name]: e.target.value }))} className="w-full border rounded-lg px-3 py-2" placeholder="0" />
+                    <input name="quantity" value={inventoryForm.quantity} onChange={e => setInventoryForm(prev => ({ ...prev, [e.target.name]: e.target.value }))} className="w-full border rounded-lg px-3 py-2" placeholder="0" />
                   </div>
                 </div>
                 <div>
                   <UploadImageInput mode="inventory" targetId={inventory?.id || inventory?.Id} currentImage={inventoryForm.image} onUploaded={handleImageUploadedStandalone} label="Imagen del producto" />
                   {inventoryForm.image && <div className="mt-2"><img src={inventoryForm.image} alt="Preview" className="w-full h-40 object-cover rounded-lg border" /></div>}
                 </div>
-
-                {error && <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">{error}</div>}
               </div>
-
               <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
                 <button type="button" onClick={onClose} className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg">Cancelar</button>
                 <button type="submit" disabled={loadingInventory} className={`px-4 py-2 text-white rounded-lg ${loadingInventory ? 'bg-amber-400' : 'bg-amber-500 hover:bg-amber-600'}`}>
@@ -153,7 +189,15 @@ const EditOfferModal = ({ isOpen, onClose, offer, inventory, mode = 'offer', onU
     return ReactDOM.createPortal(modalInventoryContent, document.body);
   }
 
+  // ── MODE: OFFER ────────────────────────────────────────────
   const handleChange = (e) => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+
+  const handleScheduleChange = (index, field, value) =>
+    setSchedules(prev => prev.map((s, i) => i === index ? { ...s, [field]: value } : s));
+
+  const addSchedule = () => setSchedules(prev => [...prev, emptySchedule()]);
+  const removeSchedule = (index) => setSchedules(prev => prev.filter((_, i) => i !== index));
+  const scheduleLabel = (s) => `${DAY_NAMES[s.day_start]} – ${DAY_NAMES[s.day_end]}  ·  ${s.time_st} a ${s.time_ed}`;
 
   const handleImageUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -166,7 +210,7 @@ const EditOfferModal = ({ isOpen, onClose, offer, inventory, mode = 'offer', onU
         setSuccessMessage('Imagen actualizada');
         setTimeout(() => setSuccessMessage(null), 3000);
       }
-    } catch (err) { setError('Error al subir la imagen'); }
+    } catch { setError('Error al subir la imagen'); }
     finally { setLoading(false); }
   };
 
@@ -175,13 +219,34 @@ const EditOfferModal = ({ isOpen, onClose, offer, inventory, mode = 'offer', onU
     if (!form.title.trim()) { setError('El título es requerido'); return; }
     setLoading(true); setError(null);
     try {
-      const payload = { title: form.title, description: form.description, price: form.price, image: form.image };
-      if (form.date_st) payload.date_st = new Date(form.date_st).toISOString();
-      if (form.date_ed) payload.date_ed = new Date(form.date_ed).toISOString();
+      // Asegurar que el tiempo esté en formato HH:mm (24h) sin segundos ni AM/PM
+      const sanitizeTime = (val) => {
+        if (!val) return '00:00';
+        const str = String(val);
+        // Si viene como "HH:mm:ss" o "HH:mm:ss.000Z" recortar
+        const match = str.match(/^(\d{2}:\d{2})/);
+        return match ? match[1] : '00:00';
+      };
+      const payload = {
+        title: form.title,
+        description: form.description,
+        price: form.price,
+        image: form.image,
+        type: form.type,
+        subType: form.subType || undefined,
+        schedules: schedules.map(s => ({
+          day_start: Number(s.day_start),
+          day_end: Number(s.day_end),
+          time_st: sanitizeTime(s.time_st),
+          time_ed: sanitizeTime(s.time_ed),
+        })),
+      };
+      if (form.date_st) payload.date_st = form.date_st;
+      if (form.date_ed) payload.date_ed = form.date_ed;
       await updateOffert(offer.id, payload);
       setSuccessMessage('Oferta actualizada');
       setTimeout(() => setSuccessMessage(null), 3000);
-    } catch (err) { setError('No se pudo actualizar'); }
+    } catch { setError('No se pudo actualizar'); }
     finally { setLoading(false); }
   };
 
@@ -201,7 +266,7 @@ const EditOfferModal = ({ isOpen, onClose, offer, inventory, mode = 'offer', onU
       } else {
         setInventoryForm(prev => ({ ...prev, image: URL.createObjectURL(file), _file: file }));
       }
-    } catch (err) { setError('Error al subir imagen'); }
+    } catch { setError('Error al subir imagen'); }
     finally { setLoadingInventory(false); }
   };
 
@@ -211,9 +276,9 @@ const EditOfferModal = ({ isOpen, onClose, offer, inventory, mode = 'offer', onU
     setShowInventoryForm(true);
   };
 
-  const openEditInventoryForm = (inventory) => {
-    setEditingInventory(inventory);
-    setInventoryForm({ name: inventory.name || '', price: inventory.price || '', image: inventory.image || '', icon: inventory.icon || '', other_details: inventory.other_details || '' });
+  const openEditInventoryForm = (inv) => {
+    setEditingInventory(inv);
+    setInventoryForm({ name: inv.name || '', price: inv.price || '', image: inv.image || '', icon: inv.icon || '', other_details: inv.other_details || '' });
     setShowInventoryForm(true);
   };
 
@@ -227,15 +292,8 @@ const EditOfferModal = ({ isOpen, onClose, offer, inventory, mode = 'offer', onU
       const payload = { name: inventoryForm.name, price: inventoryForm.price, image: inventoryForm.image, icon: inventoryForm.icon, other_details: inventoryForm.other_details };
       if (editingInventory) {
         const updated = await updateInventory(editingInventory.id, payload);
-        if (mode === 'inventory') {
-          setSuccessMessage('Inventario actualizado');
-          setTimeout(() => setSuccessMessage(null), 3000);
-          onUpdated && onUpdated(updated);
-          onClose && onClose();
-        } else {
-          setInventories(prev => prev.map(inv => inv.id === editingInventory.id ? { ...inv, ...updated } : inv));
-          setSuccessMessage('Inventario actualizado');
-        }
+        setInventories(prev => prev.map(inv => inv.id === editingInventory.id ? { ...inv, ...updated } : inv));
+        setSuccessMessage('Inventario actualizado');
       } else {
         payload.offertId = offer.id;
         const created = await createInventory(payload);
@@ -248,7 +306,7 @@ const EditOfferModal = ({ isOpen, onClose, offer, inventory, mode = 'offer', onU
       }
       setTimeout(() => setSuccessMessage(null), 3000);
       cancelInventoryForm();
-    } catch (err) { setError('Error al guardar'); }
+    } catch { setError('Error al guardar'); }
     finally { setLoadingInventory(false); }
   };
 
@@ -258,9 +316,10 @@ const EditOfferModal = ({ isOpen, onClose, offer, inventory, mode = 'offer', onU
     <div className="fixed inset-0 z-[9999]" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
       <div className="absolute inset-0 bg-black/60" onClick={handleClose} />
       <div className="absolute inset-0 flex items-center justify-center p-4 overflow-y-auto">
-        <div className="relative w-full max-w-4xl bg-white rounded-xl shadow-2xl my-8" onClick={(e) => e.stopPropagation()}>
+        <div className="relative w-full max-w-4xl bg-white rounded-xl shadow-2xl my-8" onClick={e => e.stopPropagation()}>
+
           {/* Header */}
-          <div className="flex justify-between items-center p-4 border-b bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-xl">
+          <div className={`flex justify-between items-center p-4 border-b bg-gradient-to-r ${getOfferTypeConfig(form.type).headerGradient} rounded-t-xl`}>
             <h3 className="text-lg font-semibold text-white">✏️ Editar: {offer?.title}</h3>
             <button onClick={handleClose} className="text-white/80 hover:text-white p-1">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -272,13 +331,57 @@ const EditOfferModal = ({ isOpen, onClose, offer, inventory, mode = 'offer', onU
           {error && <div className="mx-4 mt-4 bg-red-50 border border-red-200 text-red-600 px-4 py-2 rounded-lg text-sm">⚠️ {error}</div>}
           {successMessage && <div className="mx-4 mt-4 bg-green-50 border border-green-200 text-green-600 px-4 py-2 rounded-lg text-sm">✅ {successMessage}</div>}
 
-          {/* Content */}
           <div className="p-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* COLUMNA IZQUIERDA */}
-              <div className="space-y-4">
-                <h4 className="font-semibold text-gray-700 border-b pb-2">📋 Datos de la Oferta</h4>
+            <div className="flex flex-wrap gap-6">
+
+              {/* ── COLUMNA IZQUIERDA: Oferta ── */}
+              <div className="space-y-4 w-full">
+                <div className='flex justify-between'>
+                  <h4 className="font-semibold text-gray-700 border-b pb-2">📋 Datos de la Oferta</h4>
+                      <div className="p-2 border-t bg-gray-50 rounded-b-xl">
+                  <button onClick={handleClose} className="">Cerrar</button>
+                  </div>
+                </div>
                 <form onSubmit={handleSubmitOffer} className="space-y-3">
+                  {/* Tipo de Oferta */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Oferta</label>
+                    <div className="flex gap-2">
+                      {OFFER_TYPE_OPTIONS.map(opt => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => setForm(prev => ({ ...prev, type: opt.value }))}
+                          className={`flex-1 py-1.5 px-3 rounded-lg text-sm font-medium border-2 transition-colors ${
+                            form.type === opt.value
+                              ? opt.value === 'tours'
+                                ? 'bg-emerald-50 border-emerald-500 text-emerald-700'
+                                : 'bg-amber-50 border-amber-500 text-amber-700'
+                              : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Sub-Tipo */}
+                  {getSubTypeOptions(form.type).length > 0 && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Sub-Tipo</label>
+                      <select
+                        name="subType"
+                        value={form.subType}
+                        onChange={handleChange}
+                        className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-amber-500 outline-none text-sm"
+                      >
+                        <option value="">— Sin sub-tipo —</option>
+                        {getSubTypeOptions(form.type).map(sub => (
+                          <option key={sub.value} value={sub.value}>{sub.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Título *</label>
                     <input name="title" value={form.title} onChange={handleChange} className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-amber-500 outline-none" />
@@ -301,6 +404,70 @@ const EditOfferModal = ({ isOpen, onClose, offer, inventory, mode = 'offer', onU
                       <input name="date_ed" type="date" value={form.date_ed} onChange={handleChange} className="w-full border rounded-lg px-3 py-2 outline-none" />
                     </div>
                   </div>
+
+                  {/* ── Horarios ── */}
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <label className="block text-sm font-medium text-gray-700">🕐 Horarios de Atención</label>
+                      <button type="button" onClick={addSchedule} className="text-xs bg-amber-100 hover:bg-amber-200 text-amber-700 px-2 py-1 rounded-lg font-medium">+ Agregar</button>
+                    </div>
+                    <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+                      {schedules.map((s, i) => (
+                        <div key={i} className="border rounded-lg p-2.5 bg-gray-50 space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Horario {i + 1}</span>
+                            {schedules.length > 1 && (
+                              <button type="button" onClick={() => removeSchedule(i)} className="text-red-400 hover:text-red-600 text-xs">✕</button>
+                            )}
+                          </div>
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <label className="text-xs text-gray-500 mb-1 block">Día inicio</label>
+                              <div className="flex gap-1 flex-wrap">
+                                {DAYS.map(d => (
+                                  <button key={d.value} type="button"
+                                    onClick={() => handleScheduleChange(i, 'day_start', d.value)}
+                                    className={`px-1.5 py-0.5 rounded text-xs font-medium border transition-colors ${
+                                      s.day_start === d.value
+                                        ? 'bg-amber-500 text-white border-amber-500'
+                                        : 'bg-white text-gray-600 border-gray-300 hover:border-amber-400'
+                                    }`}
+                                  >{d.label}</button>
+                                ))}
+                              </div>
+                            </div>
+                            <div>
+                              <label className="text-xs text-gray-500 mb-1 block">Día fin</label>
+                              <div className="flex gap-1 flex-wrap">
+                                {DAYS.map(d => (
+                                  <button key={d.value} type="button"
+                                    onClick={() => handleScheduleChange(i, 'day_end', d.value)}
+                                    className={`px-1.5 py-0.5 rounded text-xs font-medium border transition-colors ${
+                                      s.day_end === d.value
+                                        ? 'bg-amber-500 text-white border-amber-500'
+                                        : 'bg-white text-gray-600 border-gray-300 hover:border-amber-400'
+                                    }`}
+                                  >{d.label}</button>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <label className="text-xs text-gray-500 mb-1 block">Hora inicio</label>
+                              <input type="time" value={s.time_st} onChange={e => handleScheduleChange(i, 'time_st', e.target.value)} className="w-full border rounded px-2 py-1 text-sm outline-none focus:ring-2 focus:ring-amber-500" />
+                            </div>
+                            <div>
+                              <label className="text-xs text-gray-500 mb-1 block">Hora fin</label>
+                              <input type="time" value={s.time_ed} onChange={e => handleScheduleChange(i, 'time_ed', e.target.value)} className="w-full border rounded px-2 py-1 text-sm outline-none focus:ring-2 focus:ring-amber-500" />
+                            </div>
+                          </div>
+                          <p className="text-xs text-amber-600 font-medium">📅 {scheduleLabel(s)}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Imagen</label>
                     <div className="flex items-center gap-3">
@@ -317,7 +484,7 @@ const EditOfferModal = ({ isOpen, onClose, offer, inventory, mode = 'offer', onU
                 </form>
               </div>
 
-              {/* COLUMNA DERECHA */}
+              {/* ── COLUMNA DERECHA: Inventarios 
               <div className="space-y-4">
                 <div className="flex justify-between items-center border-b pb-2">
                   <h4 className="font-semibold text-gray-700">🎁 Inventarios</h4>
@@ -326,7 +493,7 @@ const EditOfferModal = ({ isOpen, onClose, offer, inventory, mode = 'offer', onU
                 <div className="space-y-2 max-h-48 overflow-y-auto">
                   {inventories.length === 0 ? (
                     <div className="text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed"><span className="text-3xl">📦</span><p className="text-gray-400 text-sm mt-2">Sin inventarios</p></div>
-                  ) : inventories.map((inv) => (
+                  ) : inventories.map(inv => (
                     <div key={inv.id} className="flex items-center gap-3 p-2 bg-gray-50 rounded-lg border hover:border-amber-300">
                       {inv.image ? <img src={inv.image} alt={inv.name} className="w-10 h-10 object-cover rounded" /> : <div className="w-10 h-10 bg-gray-200 rounded flex items-center justify-center">📦</div>}
                       <div className="flex-1 min-w-0"><p className="font-medium text-sm truncate">{inv.name}</p><p className="text-xs text-gray-500">${inv.price || '0.00'}</p></div>
@@ -353,7 +520,7 @@ const EditOfferModal = ({ isOpen, onClose, offer, inventory, mode = 'offer', onU
                         <div className="flex items-center gap-2">
                           {inventoryForm.image && <img src={inventoryForm.image} alt="Preview" className="w-12 h-12 object-cover rounded border" />}
                           <label className="cursor-pointer bg-white hover:bg-gray-100 px-2 py-1 rounded border text-xs">
-                            <input type="file" accept="image/*" onChange={(e) => handleInventoryImageUpload(e, editingInventory?.id)} className="hidden" />
+                            <input type="file" accept="image/*" onChange={e => handleInventoryImageUpload(e, editingInventory?.id)} className="hidden" />
                             📷 {inventoryForm.image ? 'Cambiar' : 'Subir'}
                           </label>
                         </div>
@@ -367,11 +534,10 @@ const EditOfferModal = ({ isOpen, onClose, offer, inventory, mode = 'offer', onU
                     </form>
                   </div>
                 )}
-              </div>
+              </div>── */}
             </div>
           </div>
 
-          {/* Footer */}
           <div className="p-4 border-t bg-gray-50 rounded-b-xl">
             <button onClick={handleClose} className="w-full bg-gray-600 hover:bg-gray-700 text-white py-2.5 rounded-lg font-medium">Cerrar</button>
           </div>
@@ -380,7 +546,6 @@ const EditOfferModal = ({ isOpen, onClose, offer, inventory, mode = 'offer', onU
     </div>
   );
 
-  // USAR PORTAL PARA RENDERIZAR EN EL BODY
   return ReactDOM.createPortal(modalContent, document.body);
 };
 

@@ -1,12 +1,11 @@
 import { useLocation, useParams } from 'react-router-dom';
-import { getResultadoFiltro } from "../../controllers/establecimiento/establecimientoController";
+import { getResultadoRFiltro } from "../../controllers/establecimiento/establecimientoController";
 import React, { Suspense, lazy, useEffect, useState, useRef } from "react";
 import Filtro from "../../models/Filtro";
 import { format } from "date-fns";
 import { NavbarSkeleton } from '../../components/global_components/Skeleton/Loadingkeleton';
 import { getWineOffers } from "../../core/vinoApiService";
 
-// Desktop Components
 const Navbar = lazy(() => import("../../components/global_components/navbar/Navbar"));
 const Footer = lazy(() => import("../../components/global_components/footer/Footer"));
 const HotelBanner = lazy(() => import("../../components/hotel_components/hotelComponents/HotelBanner"));
@@ -14,26 +13,22 @@ const HotelGallery = lazy(() => import("../../components/hotel_components/hotelC
 const HotelAdress = lazy(() => import("../../components/hotel_components/hotelComponents/HotelAdress"));
 const HotelDetails = lazy(() => import("../../components/hotel_components/hotelComponents/HotelDetails2"));
 const HotelContacts = lazy(() => import("../../components/hotel_components/hotelComponents/HotelContacts"));
-const HotelRecommended = lazy(() => import("../../components/hotel_components/hotelComponents/HotelRecommended"));
-const HotelOfertas = lazy(() => import("../../components/hotel_components/hotelComponents/HotelOfertas"));
-const SearchBar = lazy(() => import("../../components/global_components/searchBar/searchBar"));
-
-// Mobile Components
+const RestaurantOfertas = lazy(() => import("../../components/restaurants_components/RestaurantsOfertas"));
+const WineSearchBar = lazy(() => import("../../components/vinos_components/wineOffersBanner/WineSearchBar"));
 const HotelBannerMobile = lazy(() => import("../../components/hotel_components/hotelMobile/HotelBanner"));
-const HotelSearch = lazy(() => import("../../components/hotel_components/hotelMobile/HotelSearch"));
 const HotelMap = lazy(() => import("../../components/hotel_components/hotelMobile/HotelMap"));
 const HotelServicesMain = lazy(() => import("../../components/hotel_components/hotelMobile/HotelServicesMain"));
 const HotelDescription = lazy(() => import("../../components/hotel_components/hotelMobile/HotelDescription"));
 
-// Shared Component
 const WineOfferRecommended = lazy(() => import("../../components/restaurants_components/WineOfferRecommended"));
 
-const Hotel = () => {
+const Restaurants = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const { nombre } = useParams();
   
   const searchInitiated = useRef(false);
+  const ofertasRef = useRef(null);
   
   const getInitialId = () => {
     try {
@@ -57,6 +52,7 @@ const Hotel = () => {
   const [openMap, setOpenMap] = useState(false);
   const [noches, setNoches] = useState(1);
   const [ofertaSeleccionada, setOfertaSeleccionada] = useState(null);
+  const [wineOffersForEstablishment, setWineOffersForEstablishment] = useState([]);
   const [includeWineOffer, setIncludeWineOffer] = useState(true);
   const [clickRecomendados, setClickRecomendados] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -67,84 +63,92 @@ const Hotel = () => {
   const nivel = session ? session.data.nivel : "visitante";
   const codigo = localStorage.getItem('codigo');
 
+  const [wineFilters, setWineFilters] = useState({
+    country: "",
+    city: "",
+    scheduleDateTime: location.state?.scheduleDateTime || "",
+    rate: 0,
+  });
+
+  const handleFilterChange = (filters) => {
+    setWineFilters(filters);
+  };
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
-    // Actualiza opciones, fechas y URL cuando el usuario busca desde la searchBar del hotel
-  return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   // Función para buscar ofertas de vino relacionadas con el establecimiento
+  // Retorna: { recommended, allOffers } - la oferta recomendada y TODAS las ofertas del establecimiento
   const searchRelatedWineOffer = async (establishmentName, establishmentCity) => {
-    if (!establishmentName) return null;
+    if (!establishmentName) return { recommended: null, allOffers: [] };
     
     try {
       setWineOfferLoading(true);
       const wineOffers = await getWineOffers();
       
       if (!wineOffers || wineOffers.length === 0) {
-        return null;
+        return { recommended: null, allOffers: [] };
       }
 
-      // Normalizar el nombre del establecimiento para comparación
       const normalizedName = establishmentName.toLowerCase().trim();
       const normalizedCity = (establishmentCity || '').toLowerCase().trim();
 
-      // Buscar oferta que coincida con el establecimiento
-      const matchedOffer = wineOffers.find(offer => {
+      // Filtrar TODAS las ofertas que coincidan con el establecimiento
+      const matchedOffers = wineOffers.filter(offer => {
         const establishment = offer.establishment || {};
         const offerEstName = (establishment.name || '').toLowerCase().trim();
         const offerCity = (establishment.city || '').toLowerCase().trim();
 
-        // Coincidencia por nombre exacto
-        if (offerEstName === normalizedName) {
-          return true;
-        }
+        if (offerEstName === normalizedName) return true;
 
-        // Coincidencia parcial del nombre (el nombre del establecimiento contiene o está contenido)
         if (offerEstName.includes(normalizedName) || normalizedName.includes(offerEstName)) {
-          // Si además coincide la ciudad, es una mejor coincidencia
-          if (normalizedCity && offerCity && offerCity.includes(normalizedCity)) {
-            return true;
-          }
-          // Si no hay ciudad para comparar, aceptar coincidencia parcial de nombre
-          if (!normalizedCity || !offerCity) {
-            return true;
-          }
+          if (normalizedCity && offerCity && offerCity.includes(normalizedCity)) return true;
+          if (!normalizedCity || !offerCity) return true;
         }
 
         return false;
       });
 
-      if (matchedOffer) {
-        // Mapear la oferta al formato esperado por HotelWineOffer
-     const mappedOffer = {
-        TituloOferta: matchedOffer.title,
-        FotoPrincipal: matchedOffer.image,
-        Detalle: matchedOffer.description || matchedOffer.title,
-        IdOferta: matchedOffer.id,
-        price: matchedOffer.price || 0,
-        Precio: matchedOffer.price || 0,
-        FinalSinImpuestos: matchedOffer.price || 0,
-        Impuestos: matchedOffer.taxes || 0,
-        date_st: matchedOffer.date_st,
-        date_ed: matchedOffer.date_ed,
-        inventories: matchedOffer.inventories || [],
-        schedules: matchedOffer.schedules || [],  
-        wineEstablishment: {
-          name: matchedOffer.establishment?.name,
-          city: matchedOffer.establishment?.city,
-          country: matchedOffer.establishment?.country  
-        }
-      };
-     console.log('schedules en matchedOffer:', matchedOffer);
-        return mappedOffer;
+      if (matchedOffers.length > 0) {
+        // Mapear todas las ofertas al formato esperado
+        const mappedOffers = matchedOffers.map(matchedOffer => ({
+          TituloOferta: matchedOffer.title,
+          FotoPrincipal: matchedOffer.image,
+          Detalle: matchedOffer.description || matchedOffer.title,
+          IdOferta: matchedOffer.id,
+          id: matchedOffer.id,
+          price: matchedOffer.price || 0,
+          Precio: matchedOffer.price || 0,
+          FinalSinImpuestos: matchedOffer.price || 0,
+          Impuestos: matchedOffer.taxes || 0,
+          taxes: matchedOffer.taxes || 0,
+          title: matchedOffer.title,
+          description: matchedOffer.description,
+          image: matchedOffer.image,
+          date_st: matchedOffer.date_st,
+          date_ed: matchedOffer.date_ed,
+          inventories: matchedOffer.inventories || [],
+          schedules: matchedOffer.schedules || [],
+          type: matchedOffer.type || '',
+          subType: matchedOffer.subType || '',
+          wineEstablishment: {
+            name: matchedOffer.establishment?.name,
+            city: matchedOffer.establishment?.city,
+            country: matchedOffer.establishment?.country
+          }
+        }));
+
+        console.log('[Restaurants] Ofertas de vino encontradas:', mappedOffers.length);
+        return { recommended: mappedOffers[0], allOffers: mappedOffers };
       }
 
-      return null;
+      return { recommended: null, allOffers: [] };
     } catch (error) {
-      console.error('[Hotel] Error buscando ofertas de vino:', error);
-      return null;
+      console.error('[Restaurants] Error buscando ofertas de vino:', error);
+      return { recommended: null, allOffers: [] };
     } finally {
       setWineOfferLoading(false);
     }
@@ -158,17 +162,11 @@ const Hotel = () => {
       // Si viene una oferta seleccionada desde WineOfferItem, usarla
       if (location.state?.OfertaSeleccionada) {
         setOfertaSeleccionada(location.state.OfertaSeleccionada);
+        setWineOffersForEstablishment([location.state.OfertaSeleccionada]);
         setIncludeWineOffer(true);
       }
 
-      // Siempre leer opciones desde URL primero (tiene los niños del buscador)
-      const opcionesParamEarly = searchParams.get('opciones');
-      if (opcionesParamEarly) {
-        try {
-          const parsedEarly = JSON.parse(decodeURIComponent(opcionesParamEarly));
-          setOptions(parsedEarly);
-        } catch {}
-      } else if (location.state?.options) {
+      if (location.state?.options) {
         setOptions(location.state.options);
       }
       if (location.state?.date) {
@@ -190,13 +188,17 @@ const Hotel = () => {
         if (location.state.destination) setDestination(location.state.destination);
         setOpenMap(location.state.openMap || false);
         
-        // Si no viene oferta seleccionada, buscar una relacionada
+        // Buscar TODAS las ofertas de vino del establecimiento
+        const { recommended, allOffers } = await searchRelatedWineOffer(est.Titulo, est.Ciudad);
+        
         if (!location.state?.OfertaSeleccionada) {
-          const relatedOffer = await searchRelatedWineOffer(est.Titulo, est.Ciudad);
-          if (relatedOffer) {
-            setOfertaSeleccionada(relatedOffer);
-            setIncludeWineOffer(false); // Por defecto no incluir si se encontró automáticamente
+          if (recommended) {
+            setOfertaSeleccionada(recommended);
+            setIncludeWineOffer(false);
           }
+        }
+        if (allOffers.length > 0) {
+          setWineOffersForEstablishment(allOffers);
         }
         return;
       }
@@ -206,11 +208,9 @@ const Hotel = () => {
 
       try {
         const opcionesParam = searchParams.get('opciones');
-        if (opcionesParam) {
+        if (opcionesParam && !location.state?.options) {
           parsedOptions = JSON.parse(decodeURIComponent(opcionesParam));
           setOptions(parsedOptions);
-        } else if (location.state?.options) {
-          parsedOptions = location.state.options;
         }
 
         const fechasParam = searchParams.get('fechas');
@@ -234,7 +234,7 @@ const Hotel = () => {
           setDestination(dest);
         }
       } catch (error) {
-        console.error("[Hotel] Error parsing URL params:", error);
+        console.error("[Restaurants] Error parsing URL params:", error);
       }
 
       const searchName = location.state?.searchEstablishmentName || 
@@ -254,7 +254,7 @@ const Hotel = () => {
       const searchDateEnd = parsedDate?.[0]?.endDate || location.state?.date?.[0]?.endDate || tomorrow;
 
       const filtro = new Filtro();
-      filtro.TipoDestino = "establecimiento";
+      filtro.TipoDestino = "restaurantes";
       filtro.Fechas = {
         inicio: format(new Date(searchDateStart), "yyyy-MM-dd"),
         fin: format(new Date(searchDateEnd), "yyyy-MM-dd")
@@ -272,7 +272,7 @@ const Hotel = () => {
       }
 
       try {
-        const result = await getResultadoFiltro(filtro);
+        const result = await getResultadoRFiltro(filtro);
         
         if (result === 401) {
           localStorage.removeItem("datos");
@@ -306,22 +306,27 @@ const Hotel = () => {
             setIdHotel(matchedEstablishment.IdEstablecimiento);
           }
 
-          // Si no viene oferta seleccionada, buscar una relacionada
+          // Buscar TODAS las ofertas de vino del establecimiento
+          const { recommended, allOffers } = await searchRelatedWineOffer(
+            matchedEstablishment.Titulo, 
+            matchedEstablishment.Ciudad
+          );
+
           if (!location.state?.OfertaSeleccionada) {
-            const relatedOffer = await searchRelatedWineOffer(
-              matchedEstablishment.Titulo, 
-              matchedEstablishment.Ciudad
-            );
-            if (relatedOffer) {
-              setOfertaSeleccionada(relatedOffer);
-              setIncludeWineOffer(false); // Por defecto no incluir si se encontró automáticamente
+            if (recommended) {
+              setOfertaSeleccionada(recommended);
+              setIncludeWineOffer(false);
             }
+          }
+
+          if (allOffers.length > 0) {
+            setWineOffersForEstablishment(allOffers);
           }
         } else {
           setErrorMessage(`No se encontró el establecimiento "${searchName}"`);
         }
       } catch (error) {
-        console.error('[Hotel] Error buscando establecimiento:', error);
+        console.error('[Restaurants] Error buscando establecimiento:', error);
         setErrorMessage('Error al buscar el establecimiento');
       }
     };
@@ -370,8 +375,6 @@ const Hotel = () => {
           <>
             <div className="animate-spin w-14 h-14 border-t-4 border-greenVE-500 rounded-full"></div>
             <p className="text-gray-500 mt-4 text-sm">Cargando establecimiento...</p>
-            
-         
           </>
         )}
       </div>
@@ -382,7 +385,7 @@ const Hotel = () => {
   if (isMobile) {
     return (
       <div>
-        <Suspense><Navbar /></Suspense>
+        <Suspense><Navbar  activo={4}/></Suspense>
         
         {/* Banner Mobile */}
         <Suspense>
@@ -392,6 +395,7 @@ const Hotel = () => {
             Galeria={establecimiento.Galeria} 
             Incluye={establecimiento.Incluye}
             NoIncluye={establecimiento.NoIncluye}
+            Adicionales={establecimiento.Adicionales}
             Restricciones={establecimiento.Restricciones}
             SistemaServicios={establecimiento.SistemaServicios}
             esFavorito={establecimiento.Favorito === "false" ? false : true}
@@ -401,7 +405,7 @@ const Hotel = () => {
 
         <div className='h-3 bg-gray-200' />
 
-        {/* Wine Offer Mobile - Siempre que exista */}
+        {/* Wine Offer Recomendada Mobile */}
         {ofertaSeleccionada && (
           <>
             <div className="px-3 py-4">
@@ -409,9 +413,8 @@ const Hotel = () => {
                 <WineOfferRecommended
                   ofertaSeleccionada={ofertaSeleccionada}
                   establecimiento={establecimiento}
-                  includeInReservation={includeWineOffer}
-                  setIncludeInReservation={setIncludeWineOffer}
-                  showCheckbox={true}
+                  showCheckbox={false}
+                  onReservar={() => ofertasRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
                 />
               </Suspense>
             </div>
@@ -430,14 +433,34 @@ const Hotel = () => {
 
         {/* Search Mobile */}
         <Suspense>
-          <HotelSearch 
-            date={date} 
-            options={options} 
-            Establecimiento={establecimiento}
+          <WineSearchBar 
+            type={0} 
+            onFilterChange={handleFilterChange}
+            initialFilters={wineFilters}
+            navigateTo="/busqueda-beneficios"
           />
         </Suspense>
 
         <div className='h-3 bg-gray-200' />
+
+        {/* Tabla de ofertas de vino Mobile */}
+        {wineOffersForEstablishment.length > 0 && (
+          <>
+            <div className="px-3 py-4" ref={ofertasRef}>
+              <Suspense>
+                <RestaurantOfertas
+                  Establecimiento={establecimiento}
+                  Ofertas={wineOffersForEstablishment}
+                  Fechas={date}
+                  Opciones={options}
+                  scheduleDateTime={wineFilters.scheduleDateTime}
+                  ofertaActiva={ofertaSeleccionada}
+                />
+              </Suspense>
+            </div>
+            <div className='h-3 bg-gray-200' />
+          </>
+        )}
 
         {/* Map Mobile */}
         <Suspense>
@@ -459,9 +482,9 @@ const Hotel = () => {
             Titulo={establecimiento.Titulo}
             Incluye={establecimiento.Incluye}
             NoIncluye={establecimiento.NoIncluye}
+            Adicionales={establecimiento.Adicionales}
             Restricciones={establecimiento.Restricciones}
             SistemaServicios={establecimiento.SistemaServicios}
-            Adicionales={establecimiento.Adicionales}
           />
         </Suspense>
 
@@ -477,68 +500,45 @@ const Hotel = () => {
     );
   }
 
-  // Actualiza opciones, fechas y URL cuando el usuario busca desde la searchBar del hotel
-  const handleSearchUpdate = ({ destination: newDest, date: newDate, options: newOptions }) => {
-    setOptions(newOptions);
-    setDate(newDate);
-    if (newDest) setDestination(newDest);
-    if (newDate?.[0]) {
-      const n = Math.ceil(Math.abs(newDate[0].endDate - newDate[0].startDate) / (1000 * 60 * 60 * 24));
-      setNoches(n || 1);
-    }
-    const newParams = new URLSearchParams(window.location.search);
-    newParams.set('opciones', encodeURIComponent(JSON.stringify(newOptions)));
-    newParams.set('fechas', encodeURIComponent(JSON.stringify(newDate)));
-    window.history.replaceState(null, '', `${window.location.pathname}?${newParams.toString()}`);
-  };
-
   // Desktop View
   return (
     <div>
       <Suspense fallback={<NavbarSkeleton />}>
-        <Navbar activo={1} />
+        <Navbar activo={4} />
       </Suspense>
       
       <div className="flex flex-col md:flex-row mx-auto max-w-6xl py-6 sm:px-6 lg:px-8">
-        
         <div className="md:w-9/12">
           <Suspense><HotelGallery Galeria={establecimiento.Galeria} /></Suspense> 
         </div>
         <div className="md:w-3/12 ml-5 mb-5">
           <Suspense>
-            <SearchBar type={2} Place={destination} Dates={date} Options={options} onSearch={handleSearchUpdate} />
+            <WineSearchBar 
+              type={3} 
+              onFilterChange={handleFilterChange}
+              initialFilters={wineFilters}
+              navigateTo="/busqueda-beneficios"
+            />
           </Suspense>
           <Suspense>
             <HotelAdress Establecimiento={establecimiento} openMap={openMap} />
           </Suspense>
         </div>
       </div>
-      <div className="flex mx-auto max-w-6xl py-0 sm:px-6 lg:px-8 ">
-           <Suspense><HotelBanner Establecimiento={establecimiento} /></Suspense>
+
+     <div className="flex mx-auto max-w-6xl py-0 sm:px-6 lg:px-8">
+        <Suspense><HotelBanner Establecimiento={establecimiento} /></Suspense>
       </div>
-      <div className="flex mx-auto max-w-6xl py-0 sm:px-6 lg:px-8 ">
-        {establecimiento.Recomendados?.length > 0 && (
-          <Suspense fallback={<div className="w-full h-32 bg-gray-100 animate-pulse rounded-lg"></div>}>
-            <HotelRecommended
-              Establecimiento={establecimiento}
-              Noches={noches}
-              Adultos={options?.adult || 2}
-              Ninos={options?.children || 0}
-              SetRecomendados={setClickRecomendados}
-            />
-          </Suspense>
-        )}
-      </div>
-         {/* HotelWineOffer Desktop - Siempre que exista */}
+
+      {/* Wine Offer Recomendada Desktop */}
       {ofertaSeleccionada && (
         <div className="flex justify-center w-full mx-auto max-w-6xl py-0 sm:px-6 lg:px-8">
           <Suspense fallback={<div className="h-32 bg-gray-100 animate-pulse rounded-xl w-full"></div>}>
             <WineOfferRecommended
               ofertaSeleccionada={ofertaSeleccionada}
               establecimiento={establecimiento}
-              includeInReservation={includeWineOffer}
-              setIncludeInReservation={setIncludeWineOffer}
-              showCheckbox={true}
+              showCheckbox={false}
+              onReservar={() => ofertasRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
             />
           </Suspense>
         </div>
@@ -548,7 +548,7 @@ const Hotel = () => {
       {wineOfferLoading && !ofertaSeleccionada && (
         <div className="flex justify-center w-full mx-auto max-w-6xl py-4 sm:px-6 lg:px-8">
           <div className="h-20 bg-amber-50 animate-pulse rounded-xl w-full flex items-center justify-center border border-amber-200">
-            <span className="text-amber-600 text-sm"> Buscando ofertas especiales de vino...</span>
+            <span className="text-amber-600 text-sm">Buscando ofertas especiales de vino...</span>
           </div>
         </div>
       )}
@@ -569,20 +569,16 @@ const Hotel = () => {
         </div>
       </div>
 
-   
-
-      <div className="flex mx-auto max-w-6xl py-0 sm:px-6 lg:px-8 mb-20">
+      {/* Tabla de ofertas de vino - RestaurantOfertas */}
+      <div ref={ofertasRef} className="flex mx-auto max-w-6xl py-0 sm:px-6 lg:px-8 mb-20">
         <Suspense>
-          <HotelOfertas
+          <RestaurantOfertas
             Establecimiento={establecimiento}
-            Noches={noches}
+            Ofertas={wineOffersForEstablishment}
             Fechas={date}
             Opciones={options}
-            clickRecomendados={clickRecomendados}
-            SetRecomendados={setClickRecomendados}
-            OfertaSeleccionada={ofertaSeleccionada}
-            includeWineOffer={includeWineOffer}
-            setIncludeWineOffer={setIncludeWineOffer}
+            scheduleDateTime={wineFilters.scheduleDateTime}
+            ofertaActiva={ofertaSeleccionada}
           />
         </Suspense>
       </div>
@@ -592,4 +588,4 @@ const Hotel = () => {
   );
 };
 
-export default Hotel;
+export default Restaurants;

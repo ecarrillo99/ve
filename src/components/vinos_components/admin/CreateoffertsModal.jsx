@@ -8,8 +8,24 @@ import {
   uploadInventoryImage,
   getEstablishments
 } from '../../../core/vinoApiService';
+import { OFFER_TYPE_OPTIONS, getOfferTypeConfig, getSubTypeOptions } from '../../../core/offertTypeConfig';
 
-const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
+const DAYS = [
+  { label: 'Lun', value: 1 },
+  { label: 'Mar', value: 2 },
+  { label: 'Mié', value: 3 },
+  { label: 'Jue', value: 4 },
+  { label: 'Vie', value: 5 },
+  { label: 'Sáb', value: 6 },
+  { label: 'Dom', value: 7 },
+];
+
+const DAY_NAMES = { 1: 'Lun', 2: 'Mar', 3: 'Mié', 4: 'Jue', 5: 'Vie', 6: 'Sáb', 7: 'Dom' };
+
+const emptySchedule = () => ({ day_start: 1, day_end: 5, time_st: '08:00', time_ed: '18:00' });
+
+const CreateOfferModal = ({ isOpen, onClose, onCreated, offerType = 'vinos' }) => {
+  const typeConfig = getOfferTypeConfig(offerType);
   const [form, setForm] = useState({
     establishmentId: '',
     title: '',
@@ -18,8 +34,11 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
     image: '',
     date_st: '',
     date_ed: '',
+    type: offerType,
+    subType: '',
   });
-  
+
+  const [schedules, setSchedules] = useState([emptySchedule()]);
   const [establishments, setEstablishments] = useState([]);
   const [loadingEstablishments, setLoadingEstablishments] = useState(false);
   const [establishmentQuery, setEstablishmentQuery] = useState('');
@@ -30,14 +49,8 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
   const [showInventoryForm, setShowInventoryForm] = useState(false);
   const [editingInventoryIndex, setEditingInventoryIndex] = useState(null);
   const [inventoryForm, setInventoryForm] = useState({
-    name: '',
-    price: '',
-    image: '',
-    icon: '',
-    other_details: '',
-    _file: null,
+    name: '', price: '', image: '', icon: '', other_details: '', _file: null,
   });
-
   const [offerImageFile, setOfferImageFile] = useState(null);
   const [offerImagePreview, setOfferImagePreview] = useState('');
   const [loading, setLoading] = useState(false);
@@ -52,13 +65,10 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
     } else {
       document.body.style.overflow = 'unset';
     }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
+    return () => { document.body.style.overflow = 'unset'; };
   }, [isOpen]);
 
   useEffect(() => {
-    // actualizar la query cuando se selecciona un establecimiento
     if (form.establishmentId && establishments.length) {
       const sel = establishments.find(e => e.id === form.establishmentId);
       if (sel) setEstablishmentQuery(`${sel.name} - ${sel.city}`);
@@ -73,7 +83,7 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
       const data = await getEstablishments();
       setEstablishments(data || []);
       setFilteredEstablishments(data || []);
-    } catch (err) {
+    } catch {
       setError('No se pudieron cargar los establecimientos');
     } finally {
       setLoadingEstablishments(false);
@@ -81,7 +91,8 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
   };
 
   const resetForm = () => {
-    setForm({ establishmentId: '', title: '', description: '', price: '', image: '', date_st: '', date_ed: '' });
+    setForm({ establishmentId: '', title: '', description: '', price: '', image: '', date_st: '', date_ed: '', type: offerType, subType: '' });
+    setSchedules([emptySchedule()]);
     setInventories([]);
     setOfferImageFile(null);
     setOfferImagePreview('');
@@ -96,14 +107,26 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
+  // ── Schedules ──────────────────────────────────────────────
+  const handleScheduleChange = (index, field, value) =>
+    setSchedules(prev => prev.map((s, i) => i === index ? { ...s, [field]: value } : s));
+
+  const addSchedule = () => setSchedules(prev => [...prev, emptySchedule()]);
+
+  const removeSchedule = (index) => setSchedules(prev => prev.filter((_, i) => i !== index));
+
+  const scheduleLabel = (s) =>
+    `${DAY_NAMES[s.day_start]} – ${DAY_NAMES[s.day_end]}  ·  ${s.time_st} a ${s.time_ed}`;
+
+  // ── Establishments ─────────────────────────────────────────
   const handleEstablishmentQueryChange = (e) => {
     const q = e.target.value;
     setEstablishmentQuery(q);
     setShowEstabDropdown(true);
-    const filtered = establishments.filter(est => (`${est.name} ${est.city}`).toLowerCase().includes(q.toLowerCase()));
-    setFilteredEstablishments(filtered);
+    setFilteredEstablishments(establishments.filter(est =>
+      (`${est.name} ${est.city}`).toLowerCase().includes(q.toLowerCase())
+    ));
     setHighlightedIndex(0);
-    // limpiamos selection por si el usuario está buscando otro
     if (form.establishmentId) setForm(prev => ({ ...prev, establishmentId: '' }));
   };
 
@@ -116,20 +139,10 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
   };
 
   const handleEstabKeyDown = (e) => {
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      setHighlightedIndex(i => Math.min(i + 1, filteredEstablishments.length - 1));
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      setHighlightedIndex(i => Math.max(i - 1, 0));
-    } else if (e.key === 'Enter') {
-      e.preventDefault();
-      if (filteredEstablishments[highlightedIndex]) {
-        handleSelectEstablishment(filteredEstablishments[highlightedIndex]);
-      }
-    } else if (e.key === 'Escape') {
-      setShowEstabDropdown(false);
-    }
+    if (e.key === 'ArrowDown') { e.preventDefault(); setHighlightedIndex(i => Math.min(i + 1, filteredEstablishments.length - 1)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setHighlightedIndex(i => Math.max(i - 1, 0)); }
+    else if (e.key === 'Enter') { e.preventDefault(); if (filteredEstablishments[highlightedIndex]) handleSelectEstablishment(filteredEstablishments[highlightedIndex]); }
+    else if (e.key === 'Escape') setShowEstabDropdown(false);
   };
 
   const clearSelectedEstablishment = () => {
@@ -138,6 +151,7 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
     setShowEstabDropdown(false);
   };
 
+  // ── Images ─────────────────────────────────────────────────
   const handleOfferImageSelect = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -145,6 +159,7 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
     setOfferImagePreview(URL.createObjectURL(file));
   };
 
+  // ── Inventory ──────────────────────────────────────────────
   const handleInventoryChange = (e) => {
     const { name, value } = e.target;
     setInventoryForm(prev => ({ ...prev, [name]: value }));
@@ -153,8 +168,7 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
   const handleInventoryImageSelect = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const preview = URL.createObjectURL(file);
-    setInventoryForm(prev => ({ ...prev, image: preview, _file: file }));
+    setInventoryForm(prev => ({ ...prev, image: URL.createObjectURL(file), _file: file }));
   };
 
   const openNewInventoryForm = () => {
@@ -164,22 +178,15 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
   };
 
   const openEditInventoryForm = (index) => {
-    const inv = inventories[index];
     setEditingInventoryIndex(index);
-    setInventoryForm({ ...inv });
+    setInventoryForm({ ...inventories[index] });
     setShowInventoryForm(true);
   };
 
-  const cancelInventoryForm = () => {
-    setShowInventoryForm(false);
-    setEditingInventoryIndex(null);
-  };
+  const cancelInventoryForm = () => { setShowInventoryForm(false); setEditingInventoryIndex(null); };
 
   const saveInventoryToList = () => {
-    if (!inventoryForm.name.trim()) {
-      setError('El nombre es requerido');
-      return;
-    }
+    if (!inventoryForm.name.trim()) { setError('El nombre es requerido'); return; }
     if (editingInventoryIndex !== null) {
       setInventories(prev => prev.map((inv, idx) => idx === editingInventoryIndex ? { ...inventoryForm } : inv));
     } else {
@@ -189,31 +196,22 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
     setError(null);
   };
 
-  const removeInventory = (index) => {
-    setInventories(prev => prev.filter((_, idx) => idx !== index));
-  };
+  const removeInventory = (index) => setInventories(prev => prev.filter((_, idx) => idx !== index));
 
   const goToStep2 = () => {
-    if (!form.establishmentId) {
-      setError('Selecciona un establecimiento');
-      return;
-    }
-    if (!form.title.trim()) {
-      setError('El título es requerido');
-      return;
-    }
+    if (!form.establishmentId) { setError('Selecciona un establecimiento'); return; }
+    if (!form.title.trim()) { setError('El título es requerido'); return; }
     setError(null);
     setStep(2);
   };
 
+  // ── Submit ─────────────────────────────────────────────────
   const handleSubmit = async () => {
     setLoading(true);
     setError(null);
     try {
       let offerImageUrl = '';
-      if (offerImageFile) {
-        offerImageUrl = await uploadImage(offerImageFile);
-      }
+      if (offerImageFile) offerImageUrl = await uploadImage(offerImageFile);
 
       const offerPayload = {
         establishmentId: form.establishmentId,
@@ -221,9 +219,17 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
         description: form.description,
         price: form.price,
         image: offerImageUrl,
+        type: form.type,
+        subType: form.subType || undefined,
+        schedules: schedules.map(s => ({
+          day_start: Number(s.day_start),
+          day_end: Number(s.day_end),
+          time_st: s.time_st,
+          time_ed: s.time_ed,
+        })),
       };
-      if (form.date_st) offerPayload.date_st = new Date(form.date_st).toISOString();
-      if (form.date_ed) offerPayload.date_ed = new Date(form.date_ed).toISOString();
+      if (form.date_st) offerPayload.date_st = form.date_st;
+      if (form.date_ed) offerPayload.date_ed = form.date_ed;
 
       const createdOffer = await createOffert(offerPayload);
 
@@ -231,24 +237,17 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
         try {
           const finalImageUrl = await uploadOffertImage(createdOffer.id, offerImageFile);
           createdOffer.image = finalImageUrl;
-        } catch (e) {}
+        } catch {}
       }
 
       for (const inv of inventories) {
-        const inventoryPayload = {
-          offertId: createdOffer.id,
-          name: inv.name,
-          price: inv.price,
-          icon: inv.icon,
-          other_details: inv.other_details,
-          image: '',
-        };
+        const inventoryPayload = { offertId: createdOffer.id, name: inv.name, price: inv.price, icon: inv.icon, other_details: inv.other_details, image: '' };
         const createdInventory = await createInventory(inventoryPayload);
         if (inv._file && createdInventory.id) {
           try {
             const invImageUrl = await uploadInventoryImage(createdInventory.id, inv._file);
             await updateInventory(createdInventory.id, { image: invImageUrl });
-          } catch (e) {}
+          } catch {}
         }
       }
 
@@ -264,22 +263,17 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
 
   return (
     <div className="fixed inset-0 z-[9999]">
-      {/* Backdrop */}
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      
-      {/* Modal centrado */}
       <div className="absolute inset-0 flex items-center justify-center p-4">
-        <div 
-          className="relative w-full max-w-2xl bg-white rounded-xl shadow-2xl max-h-[90vh] overflow-hidden flex flex-col"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <div className="relative w-full max-w-2xl bg-white rounded-xl shadow-2xl max-h-[90vh] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+
           {/* Header */}
-          <div className="flex justify-between items-center p-4 border-b bg-gradient-to-r from-amber-500 to-amber-600 shrink-0">
+          <div className={`flex justify-between items-center p-4 border-b bg-gradient-to-r ${typeConfig.headerGradient} shrink-0`}>
             <div className="flex items-center gap-3">
-              <span className="text-2xl">🍷</span>
+              <span className="text-2xl">{form.type === 'tours' ? '🏔️' : '🍷'}</span>
               <div>
-                <h3 className="text-lg font-semibold text-white">Nueva Oferta</h3>
-                <p className="text-amber-100 text-sm">Paso {step} de 2</p>
+                <h3 className="text-lg font-semibold text-white">Nueva Oferta — {typeConfig.label}</h3>
+                <p className="text-white/70 text-sm">Paso {step} de 2</p>
               </div>
             </div>
             <button onClick={onClose} className="text-white/80 hover:text-white p-1">
@@ -289,22 +283,62 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
             </button>
           </div>
 
-          {/* Progress */}
           <div className="h-1 bg-gray-200 shrink-0">
             <div className="h-full bg-amber-500 transition-all" style={{ width: step === 1 ? '50%' : '100%' }} />
           </div>
 
-          {/* Error */}
-          {error && (
-            <div className="mx-4 mt-4 bg-red-50 border border-red-200 text-red-600 px-4 py-2 rounded-lg text-sm">⚠️ {error}</div>
-          )}
+          {error && <div className="mx-4 mt-4 bg-red-50 border border-red-200 text-red-600 px-4 py-2 rounded-lg text-sm">⚠️ {error}</div>}
 
           {/* Content */}
           <div className="flex-1 overflow-y-auto p-4">
+
+            {/* ── STEP 1 ── */}
             {step === 1 && (
               <div className="space-y-4">
                 <h4 className="font-semibold text-gray-700 border-b pb-2">📋 Información de la Oferta</h4>
-                
+
+                {/* Tipo de Oferta */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Oferta *</label>
+                  <div className="flex gap-2">
+                    {OFFER_TYPE_OPTIONS.map(opt => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setForm(prev => ({ ...prev, type: opt.value }))}
+                        className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium border-2 transition-colors ${
+                          form.type === opt.value
+                            ? opt.value === 'tours'
+                              ? 'bg-emerald-50 border-emerald-500 text-emerald-700'
+                              : 'bg-amber-50 border-amber-500 text-amber-700'
+                            : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Sub-Tipo de Oferta */}
+                {getSubTypeOptions(form.type).length > 0 && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Sub-Tipo</label>
+                    <select
+                      name="subType"
+                      value={form.subType}
+                      onChange={handleChange}
+                      className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-amber-500 outline-none text-sm"
+                    >
+                      <option value="">— Sin sub-tipo —</option>
+                      {getSubTypeOptions(form.type).map(sub => (
+                        <option key={sub.value} value={sub.value}>{sub.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {/* Establecimiento */}
                 <div className="relative">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Establecimiento *</label>
                   {loadingEstablishments ? (
@@ -314,7 +348,6 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
                       <div className="relative">
                         <input
                           type="text"
-                          name="establishmentQuery"
                           value={establishmentQuery}
                           onChange={handleEstablishmentQueryChange}
                           onFocus={() => { setShowEstabDropdown(true); setFilteredEstablishments(establishments); }}
@@ -328,14 +361,11 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
                           <button type="button" onClick={clearSelectedEstablishment} className="absolute right-2 top-2 text-gray-400 hover:text-gray-600">✖</button>
                         )}
                       </div>
-
                       {showEstabDropdown && filteredEstablishments.length > 0 && (
                         <div className="absolute z-30 mt-1 w-full bg-white border rounded-lg shadow-lg max-h-44 overflow-y-auto">
                           {filteredEstablishments.map((est, idx) => (
-                            <button
-                              key={est.id}
-                              type="button"
-                              onMouseDown={(e) => { e.preventDefault(); handleSelectEstablishment(est); }}
+                            <button key={est.id} type="button"
+                              onMouseDown={e => { e.preventDefault(); handleSelectEstablishment(est); }}
                               onMouseEnter={() => setHighlightedIndex(idx)}
                               className={`w-full text-left px-3 py-2 ${idx === highlightedIndex ? 'bg-amber-50' : 'hover:bg-gray-50'}`}
                             >
@@ -345,7 +375,6 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
                           ))}
                         </div>
                       )}
-
                       {showEstabDropdown && filteredEstablishments.length === 0 && (
                         <div className="mt-2 text-sm text-gray-500">No se encontraron establecimientos</div>
                       )}
@@ -355,7 +384,7 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Título *</label>
-                  <input name="title" value={form.title} onChange={handleChange} className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-amber-500 outline-none" placeholder="Ej: Promoción Vino Reserva" />
+                  <input name="title" value={form.title} onChange={handleChange} className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-amber-500 outline-none" placeholder={form.type === 'tours' ? 'Ej: Tour Valle de los Volcanes' : 'Ej: Promoción Vino Reserva'} />
                 </div>
 
                 <div>
@@ -378,6 +407,76 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
                   </div>
                 </div>
 
+                {/* ── Horarios ── */}
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="block text-sm font-medium text-gray-700">🕐 Horarios de Atención</label>
+                    <button type="button" onClick={addSchedule} className="text-xs bg-amber-100 hover:bg-amber-200 text-amber-700 px-2 py-1 rounded-lg font-medium">+ Agregar horario</button>
+                  </div>
+                  <div className="space-y-3">
+                    {schedules.map((s, i) => (
+                      <div key={i} className="border rounded-lg p-3 bg-gray-50 space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Horario {i + 1}</span>
+                          {schedules.length > 1 && (
+                            <button type="button" onClick={() => removeSchedule(i)} className="text-red-400 hover:text-red-600 text-xs">✕ Eliminar</button>
+                          )}
+                        </div>
+
+                        {/* Selección de días */}
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="text-xs text-gray-500 mb-1 block">Día inicio</label>
+                            <div className="flex gap-1 flex-wrap">
+                              {DAYS.map(d => (
+                                <button key={d.value} type="button"
+                                  onClick={() => handleScheduleChange(i, 'day_start', d.value)}
+                                  className={`px-2 py-1 rounded text-xs font-medium border transition-colors ${
+                                    s.day_start === d.value
+                                      ? 'bg-amber-500 text-white border-amber-500'
+                                      : 'bg-white text-gray-600 border-gray-300 hover:border-amber-400'
+                                  }`}
+                                >{d.label}</button>
+                              ))}
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-xs text-gray-500 mb-1 block">Día fin</label>
+                            <div className="flex gap-1 flex-wrap">
+                              {DAYS.map(d => (
+                                <button key={d.value} type="button"
+                                  onClick={() => handleScheduleChange(i, 'day_end', d.value)}
+                                  className={`px-2 py-1 rounded text-xs font-medium border transition-colors ${
+                                    s.day_end === d.value
+                                      ? 'bg-amber-500 text-white border-amber-500'
+                                      : 'bg-white text-gray-600 border-gray-300 hover:border-amber-400'
+                                  }`}
+                                >{d.label}</button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Horas */}
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="text-xs text-gray-500 mb-1 block">Hora inicio</label>
+                            <input type="time" value={s.time_st} onChange={e => handleScheduleChange(i, 'time_st', e.target.value)} className="w-full border rounded px-2 py-1.5 text-sm focus:ring-2 focus:ring-amber-500 outline-none" />
+                          </div>
+                          <div>
+                            <label className="text-xs text-gray-500 mb-1 block">Hora fin</label>
+                            <input type="time" value={s.time_ed} onChange={e => handleScheduleChange(i, 'time_ed', e.target.value)} className="w-full border rounded px-2 py-1.5 text-sm focus:ring-2 focus:ring-amber-500 outline-none" />
+                          </div>
+                        </div>
+
+                        {/* Preview */}
+                        <p className="text-xs text-amber-600 font-medium">📅 {scheduleLabel(s)}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Imagen */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Imagen</label>
                   <div className="flex items-center gap-4">
@@ -391,34 +490,32 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
               </div>
             )}
 
+            {/* ── STEP 2 ── */}
             {step === 2 && (
               <div className="space-y-4">
                 <div className="flex justify-between items-center border-b pb-2">
                   <h4 className="font-semibold text-gray-700">🎁 Inventarios / Regalos</h4>
                   <button onClick={openNewInventoryForm} className="bg-green-500 hover:bg-green-600 text-white text-sm px-3 py-1.5 rounded-lg">+ Agregar</button>
                 </div>
-
                 <div className="space-y-2">
                   {inventories.length === 0 ? (
                     <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed">
                       <span className="text-4xl block mb-2">📦</span>
                       <p className="text-gray-500">No hay regalos agregados</p>
                     </div>
-                  ) : (
-                    inventories.map((inv, index) => (
-                      <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border">
-                        {inv.image ? <img src={inv.image} alt={inv.name} className="w-12 h-12 object-cover rounded" /> : <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">📦</div>}
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium truncate">{inv.name}</p>
-                          <p className="text-sm text-gray-500">${inv.price || '0.00'}</p>
-                        </div>
-                        <div className="flex gap-2">
-                          <button onClick={() => openEditInventoryForm(index)} className="text-amber-600 hover:text-amber-700 text-sm font-medium">Editar</button>
-                          <button onClick={() => removeInventory(index)} className="text-red-500 hover:text-red-600 text-sm font-medium">Eliminar</button>
-                        </div>
+                  ) : inventories.map((inv, index) => (
+                    <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border">
+                      {inv.image ? <img src={inv.image} alt={inv.name} className="w-12 h-12 object-cover rounded" /> : <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">📦</div>}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium truncate">{inv.name}</p>
+                        <p className="text-sm text-gray-500">${inv.price || '0.00'}</p>
                       </div>
-                    ))
-                  )}
+                      <div className="flex gap-2">
+                        <button onClick={() => openEditInventoryForm(index)} className="text-amber-600 hover:text-amber-700 text-sm font-medium">Editar</button>
+                        <button onClick={() => removeInventory(index)} className="text-red-500 hover:text-red-600 text-sm font-medium">Eliminar</button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
                 {showInventoryForm && (
@@ -472,7 +569,10 @@ const CreateOfferModal = ({ isOpen, onClose, onCreated }) => {
               {step === 1 ? (
                 <>
                   <button onClick={onClose} className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2.5 rounded-lg font-medium">Cancelar</button>
-                  <button onClick={goToStep2} className="flex-1 bg-amber-500 hover:bg-amber-600 text-white py-2.5 rounded-lg font-medium">Siguiente →</button>
+                {/*  <button onClick={goToStep2} className="flex-1 bg-amber-500 hover:bg-amber-600 text-white py-2.5 rounded-lg font-medium">Siguiente →</button>*/}
+                        <button onClick={handleSubmit} disabled={loading} className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-lg font-medium disabled:bg-green-300">
+                    {loading ? '⏳ Creando...' : '✓ Crear Oferta'}
+                  </button>
                 </>
               ) : (
                 <>

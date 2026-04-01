@@ -1,14 +1,16 @@
+import { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const MenuTabs = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const pathname = location.pathname;
+  const [beneficiosOpen, setBeneficiosOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
-  // Determinar el tab activo basándose en la ruta actual
   const getActiveTab = () => {
     if (pathname === "/" || pathname.startsWith("/busqueda") || pathname.startsWith("/hotel/")) return 1;
-    if (pathname === "/vinos" || pathname === "/byd") return 4;
+    if (pathname === "/vinos" || pathname === "/Tours") return 4;
     if (pathname.startsWith("/disney")) return 3;
     if (pathname.startsWith("/visas-concierge")) return 5;
     if (pathname.startsWith("/nosotros")) return 6;
@@ -26,167 +28,133 @@ const MenuTabs = () => {
   const handleClickNosotros = () => navigate("/nosotros");
   const handleClickContactanos = () => navigate("/contacto");
 
-  // Items del menú
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setBeneficiosOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const menuItems = [
-    {
-      id: 1,
-      label: "Hospedaje",
-      icon: "https://visitaecuador.com/img/web/homeMenu.svg",
-      onClick: handleClickInicio,
-      isImage: true
-    },
-    {
-      id: 2,
-      label: "InfoTour",
-      icon: "https://visitaecuador.com/img/web/infotourMenu.svg",
-      onClick: handleClickInfotour,
-      isImage: true,
-      external: true
-    },
-    {
-      id: 3,
-      label: "Disney",
-      icon: "https://visitaecuador.com/img/web/disneyMenu.svg",
-      onClick: handleClickDisney,
-      isImage: true
-    },
-    {
-      id: 4,
-      label: "Beneficios",
-      icon: "https://visitaecuador.com/img/web/benefit.svg",
-      onClick: handleClickVinos,
-      isImage: true,
-      rounded: true
-    },
-    {
-      id: 5,
-      label: "Visas",
-      icon: "https://visitaecuador.com/img/web/visas-concierge.jpeg",
-      onClick: handleClickVisas,
-      isImage: true,
-      rounded: true
-    },
-    {
-      id: 6,
-      label: "Nosotros",
-      icon: "https://visitaecuador.com/img/web/nosotrosMenu.svg",
-      onClick: handleClickNosotros,
-      isImage: true,
-      rounded: true
-    },
-    {
-      id: 7,
-      label: "Contacto",
-      icon: "https://visitaecuador.com/img/web/contacto.svg",
-      onClick: handleClickContactanos,
-      isImage: true,
-      rounded: true
-    }
+    { id: 1, label: "Hospedaje",  href: "https://visitaecuador.com/",                icon: "https://visitaecuador.com/img/web/homeMenu.svg",          onClick: handleClickInicio,      rounded: false },
+    { id: 2, label: "InfoTour",   href: "https://www.infotour.app/",                 icon: "https://visitaecuador.com/img/web/infotourMenu.svg",       onClick: handleClickInfotour,    rounded: false },
+    { id: 3, label: "Magic Concierge",     href: "https://visitaecuador.com/disney",          icon: "https://visitaecuador.com/img/web/disney.png",         onClick: handleClickDisney,      rounded: false },
+    { id: 5, label: "Visas",      href: "https://visitaecuador.com/visas-concierge", icon: "https://visitaecuador.com/img/web/visas-concierge.jpeg",   onClick: handleClickVisas,       rounded: true  },
+    { id: 6, label: "Nosotros",   href: "https://visitaecuador.com/nosotros",        icon: "https://visitaecuador.com/img/web/nosotrosMenu.svg",       onClick: handleClickNosotros,    rounded: true  },
+    { id: 7, label: "Contacto",   href: "https://visitaecuador.com/contacto",        icon: "https://visitaecuador.com/img/web/contacto.svg",           onClick: handleClickContactanos, rounded: true  },
   ];
 
-  // Items principales para móvil (los más importantes - máximo 5)
-  const mobileItems = [
-    menuItems[0], // Hospedaje
-    menuItems[2], // Disney
-    menuItems[3], // Beneficios
-    menuItems[4], // Visas
-    menuItems[6], // Contacto
-  ];
+  const busqueda =
+    location.pathname.includes("busqueda") ||
+    location.pathname.includes("hotel") ||
+    location.pathname.includes("/busqueda-beneficios");
 
-  const busqueda = location.pathname.startsWith("/busqueda");
+  const renderTabClass = (id) =>
+    `flex gap-2 ${
+      activo === id ? "bg-white text-gray-800" : "bg-[#ACCD7B] text-white"
+    } rounded-t-lg px-4 py-2 text-sm items-center transition-all`;
 
   return (
     <>
       {/* ========== DESKTOP: Tabs superiores ========== */}
-      <div className={`${busqueda ? "hidden" : ""}  hidden md:flex gap-0.5 items-end flex-wrap`}>
-        {menuItems.map((item) => (
-          <button
+      <div className={`${busqueda ? "hidden " : ""}  md:flex gap-0.5 items-end flex-wrap`}>
+
+        {/* Items 1–3 */}
+        {menuItems.filter((i) => i.id < 4).map((item) => (
+          <a
             key={item.id}
-            className={`flex gap-2 ${
-              activo === item.id 
-                ? "bg-white text-gray-800" 
-                : "bg-[#ACCD7B] text-white hover:bg-white/40"
-            } rounded-t-lg px-4 py-2 text-sm items-center transition-all`}
-            onClick={item.onClick}
+            href={item.href}
+            onClick={(e) => { e.preventDefault(); item.onClick(); }}
+            className={renderTabClass(item.id)}
           >
             {item.rounded ? (
-              <div
-                className="rounded-full bg-white p-0.5"
-                style={{ height: "22px", width: "22px" }}
-              >
-                <img
-                  src={item.icon}
-                  className="rounded-full"
-                  style={{ height: "100%", width: "100%" }}
-                  alt={item.label}
-                />
+              <div className="rounded-full bg-white p-0.5" style={{ height: "22px", width: "22px" }}>
+                <img src={item.icon} className="rounded-full" style={{ height: "100%", width: "100%" }} alt={item.label} />
               </div>
             ) : (
-              <img
-                src={item.icon}
-                style={{ height: "20px" }}
-                alt={item.label}
-              />
+              <img src={item.icon} style={{ height: "20px" }} alt={item.label} />
             )}
-            <label className="hidden md:flex cursor-pointer font-medium">
-              {item.label}
-            </label>
-          </button>
+            <label className="hidden md:flex cursor-pointer font-medium">{item.label}</label>
+          </a>
         ))}
-      </div>
 
-      {/* ========== MOBILE: Menú inferior fijo ========== */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-lg z-[60]">
-        <div className="flex justify-around items-center py-2 px-2">
-          {mobileItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={item.onClick}
-              className={`flex flex-col items-center space-y-1 p-2 rounded-lg transition-all duration-200 min-w-[60px] ${
-                activo === item.id
-                  ? "text-greenVE-600 bg-greenVE-50"
-                  : "text-gray-500 hover:text-greenVE-500 hover:bg-gray-100"
-              }`}
+        {/* ── Beneficios con dropdown ── */}
+        <div className="relative" ref={dropdownRef}>
+          <button
+            onClick={() => setBeneficiosOpen((prev) => !prev)}
+            className={`flex gap-2 ${
+              activo === 4 ? "bg-white text-gray-800" : "bg-[#ACCD7B] text-white"
+            } rounded-t-lg px-4 py-2 text-sm items-center transition-all cursor-pointer`}
+          >
+            <div className="rounded-full bg-white p-0.5" style={{ height: "22px", width: "22px" }}>
+              <img
+                src="https://visitaecuador.com/img/web/benefit.svg"
+                className="rounded-full"
+                style={{ height: "100%", width: "100%" }}
+                alt="Beneficios"
+              />
+            </div>
+            <span className="hidden md:flex font-medium">Beneficios</span>
+            {/* Chevron */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className={`h-3 w-3 transition-transform duration-200 ${beneficiosOpen ? "rotate-180" : ""}`}
+              viewBox="0 0 20 20"
+              fill="currentColor"
             >
-              {item.rounded ? (
-                <div
-                  className={`rounded-full p-0.5 ${
-                    activo === item.id ? "bg-greenVE-100" : "bg-gray-100"
-                  }`}
-                  style={{ height: "24px", width: "24px" }}
-                >
-                  <img
-                    src={item.icon}
-                    className="rounded-full w-full h-full object-cover"
-                    alt={item.label}
-                  />
-                </div>
-              ) : (
-                <img
-                  src={item.icon}
-                  className={`h-5 w-5 ${
-                    activo === item.id ? "opacity-100" : "opacity-70"
-                  }`}
-                  alt={item.label}
-                />
-              )}
-              <span className="text-[10px] font-medium tracking-wide">
-                {item.label}
-              </span>
-            </button>
-          ))}
+              <path
+                fillRule="evenodd"
+                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+
+          {/* Dropdown panel */}
+          {beneficiosOpen && (
+            <div className="absolute left-0 top-full mt-1 z-50 bg-white rounded-lg shadow-lg border border-gray-100 min-w-[160px] overflow-hidden">
+              <button
+                onClick={() => { navigate("/vinos"); setBeneficiosOpen(false); }}
+                className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-[#ACCD7B] hover:text-white transition-colors font-medium"
+              >
+                Ruta del Vino
+              </button>
+              <button
+                onClick={() => { navigate("/Tours"); setBeneficiosOpen(false); }}
+                className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-[#ACCD7B] hover:text-white transition-colors font-medium"
+              >
+                Tours
+              </button>
+            </div>
+          )}
         </div>
-        
-        {/* Safe area para dispositivos con notch */}
-        <div className="h-safe-area-inset-bottom bg-white/95" />
-      </nav>
+
+        {/* Items 5–7 */}
+        {menuItems.filter((i) => i.id > 4).map((item) => (
+          <a
+            key={item.id}
+            href={item.href}
+            onClick={(e) => { e.preventDefault(); item.onClick(); }}
+            className={renderTabClass(item.id)}
+          >
+            {item.rounded ? (
+              <div className="rounded-full bg-white p-0.5" style={{ height: "22px", width: "22px" }}>
+                <img src={item.icon} className="rounded-full" style={{ height: "100%", width: "100%" }} alt={item.label} />
+              </div>
+            ) : (
+              <img src={item.icon} style={{ height: "20px" }} alt={item.label} />
+            )}
+            <label className="hidden md:flex cursor-pointer font-medium">{item.label}</label>
+          </a>
+        ))}
+
+      </div>
     </>
   );
 };
-
-// Componente separado para el spacer (usar en las páginas donde se necesite)
-export const MobileMenuSpacer = () => (
-  <div className="md:hidden h-20" />
-);
 
 export default MenuTabs;
