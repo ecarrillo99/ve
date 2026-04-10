@@ -1,6 +1,6 @@
 import "react-multi-carousel/lib/styles.css";
 import WineOfferItem from "./WineOfferItem";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -14,10 +14,6 @@ import { getOfferTypeConfig } from "../../../core/offertTypeConfig";
 import WineOfferItemSkeleton from "./WineOfferItemSkeleton";
 import CreateOfferModal from "../admin/CreateoffertsModal";
 
-/**
- * Normaliza el type de la oferta para comparar.
- * "" | null | "vinos" → "rutas"
- */
 const normalizeType = (type) => {
   if (!type || !type.trim()) return "rutas";
   const key = type.toLowerCase().trim();
@@ -57,83 +53,81 @@ const WineOffersBanner = ({ filters, offerType = 'rutas' }) => {
     }
   };
 
+  // ✅ FIX: resetea estado y vuelve a fetchear cada vez que cambia offerType
   useEffect(() => {
+    setData(null);
+    setError(null);
     fetchData();
-  }, []);
+  }, [offerType]);
 
-  const handleOfferCreated = (newOffer) => {
+  const handleOfferCreated = () => {
     fetchData();
   };
 
-  const CustomNextArrow = (props) => {
-    return (
-      <div
-        className="-mr-3  absolute top-1/2 transform -translate-y-1/2 right-0 cursor-pointer rounded-full bg-gray-100 text-greenVE-600 text-lg h-8 w-8 flex items-center justify-center pl-1"
-        onClick={props.onClick}
-        style={{ filter: 'drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.5))' }}>
-        <span className="icon-[material-symbols--arrow-forward-ios]"></span>
-      </div>
-    );
-  };
+  const CustomNextArrow = (props) => (
+    <div
+      className="-mr-3 absolute top-1/2 transform -translate-y-1/2 right-0 cursor-pointer rounded-full bg-gray-100 text-greenVE-600 text-lg h-8 w-8 flex items-center justify-center pl-1"
+      onClick={props.onClick}
+      style={{ filter: 'drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.5))' }}
+    >
+      <span className="icon-[material-symbols--arrow-forward-ios]"></span>
+    </div>
+  );
 
-  const CustomPrevArrow = (props) => {
-    return (
-      <div
-        className="-ml-3 z-40  absolute top-1/2 transform -translate-y-1/2 left-0 cursor-pointer rounded-full bg-gray-100 text-greenVE-600 text-lg pr-1 h-8 w-8 flex items-center justify-center"
-        onClick={props.onClick}
-        style={{ filter: 'drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.5))' }}>
-        <span className="icon-[material-symbols--arrow-back-ios-new]"></span>
-      </div>
-    );
-  };
+  const CustomPrevArrow = (props) => (
+    <div
+      className="-ml-3 z-40 absolute top-1/2 transform -translate-y-1/2 left-0 cursor-pointer rounded-full bg-gray-100 text-greenVE-600 text-lg pr-1 h-8 w-8 flex items-center justify-center"
+      onClick={props.onClick}
+      style={{ filter: 'drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.5))' }}
+    >
+      <span className="icon-[material-symbols--arrow-back-ios-new]"></span>
+    </div>
+  );
 
-  const getSliderSettings = (itemCount) => {
-    const baseSettings = {
-      dots: false,
-      infinite: itemCount > 3,
-      autoplay: itemCount > 3,
-      autoplaySpeed: 5000,
-      speed: 1000,
-      rows: 1,
-      slidesToShow: Math.min(3, itemCount),
-      slidesToScroll: 1,
-      nextArrow: <CustomNextArrow /> ,
-      prevArrow:  <CustomPrevArrow />,
-      responsive: [
-        {
-          breakpoint: 900,
-          settings: {
-            slidesToShow: Math.min(1, itemCount),
-            infinite: itemCount > 1,
-            autoplay: itemCount > 1,
-          },
+  const getSliderSettings = (itemCount) => ({
+    dots: false,
+    infinite: itemCount > 3,
+    autoplay: itemCount > 3,
+    autoplaySpeed: 5000,
+    speed: 1000,
+    rows: 1,
+    slidesToShow: Math.min(3, itemCount),
+    slidesToScroll: 1,
+    nextArrow: <CustomNextArrow />,
+    prevArrow: <CustomPrevArrow />,
+    responsive: [
+      {
+        breakpoint: 900,
+        settings: {
+          slidesToShow: Math.min(1, itemCount),
+          infinite: itemCount > 1,
+          autoplay: itemCount > 1,
         },
-        {
-          breakpoint: 1150,
-          settings: {
-            slidesToShow: Math.min(2, itemCount),
-            infinite: itemCount > 2,
-            autoplay: itemCount > 2,
-          },
+      },
+      {
+        breakpoint: 1150,
+        settings: {
+          slidesToShow: Math.min(2, itemCount),
+          infinite: itemCount > 2,
+          autoplay: itemCount > 2,
         },
-        {
-          breakpoint: 1300,
-          settings: {
-            slidesToShow: Math.min(3, itemCount),
-            infinite: itemCount > 3,
-            autoplay: itemCount > 3,
-          },
+      },
+      {
+        breakpoint: 1300,
+        settings: {
+          slidesToShow: Math.min(3, itemCount),
+          infinite: itemCount > 3,
+          autoplay: itemCount > 3,
         },
-      ],
-    };
-    return baseSettings;
-  };
+      },
+    ],
+  });
 
   const settings = getSliderSettings(data?.length || 0);
 
   return (
     <div className="pt-5 mx-5 md:mx-0">
-      {/* Header con icono */}
+      {/* Header */}
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2">
           {normalizeType(offerType) === 'tours' ? (
@@ -141,20 +135,13 @@ const WineOffersBanner = ({ filters, offerType = 'rutas' }) => {
               <path d="M14 6l-3.75 5 2.85 3.8-1.6 1.2C9.81 13.75 7 10 7 10l-6 8h22L14 6z"/>
             </svg>
           ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className={`h-6 w-6 ${typeConfig.iconColor}`}
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" className={`h-6 w-6 ${typeConfig.iconColor}`} viewBox="0 0 24 24" fill="currentColor">
               <path d="M6 3l-.01 6.62c0 1.59.51 3.13 1.46 4.42l.05.07c.9 1.22 1.47 2.69 1.5 4.26V21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-2.63c.03-1.57.6-3.04 1.5-4.26l.05-.07c.95-1.29 1.46-2.83 1.46-4.42L17 3H6zm3.11 9.71l-.11.15c-.7.95-1.21 2.04-1.5 3.18-1.18-1.88-1.51-4.16-1.29-6.04h7.58c.22 1.88-.11 4.16-1.29 6.04-.29-1.14-.8-2.23-1.5-3.18l-.11-.15c-.52-.71-.89-1.54-.89-2.39V5h-2v5.33c0 .85-.37 1.68-.89 2.38z" />
             </svg>
           )}
           <h1 className="font-bold text-xl text-gray-800">
             {typeConfig.bannerTitle}
           </h1>
-          
-        
         </div>
 
         {isAdmin() && (
@@ -176,26 +163,27 @@ const WineOffersBanner = ({ filters, offerType = 'rutas' }) => {
         </h6>
       </div>
 
+      {/* Error */}
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-4">
           <p className="text-sm">{error}</p>
         </div>
       )}
 
+      {/* Skeleton mientras carga */}
       {!data && !error && (
         <div>
           <Slider {...getSliderSettings(5)}>
-            {Array(5)
-              .fill(null)
-              .map((item, index) => (
-                <div key={index} className="border-4 border-white">
-                  <WineOfferItemSkeleton />
-                </div>
-              ))}
+            {Array(5).fill(null).map((_, index) => (
+              <div key={index} className="border-4 border-white">
+                <WineOfferItemSkeleton />
+              </div>
+            ))}
           </Slider>
         </div>
       )}
 
+      {/* Lista de ofertas */}
       {data && data.length > 0 && (
         <div>
           <Slider {...settings}>
@@ -208,15 +196,10 @@ const WineOffersBanner = ({ filters, offerType = 'rutas' }) => {
         </div>
       )}
 
+      {/* Sin resultados */}
       {data && data.length === 0 && (
         <div className="text-center py-10 bg-amber-50 rounded-xl border border-amber-200">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-16 w-16 text-amber-300 mx-auto mb-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-amber-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <p className="text-gray-600 font-medium">

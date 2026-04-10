@@ -1,6 +1,6 @@
 import "react-multi-carousel/lib/styles.css";
 import ItemRecomended from "./ItemRecomended";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -12,11 +12,32 @@ import 'slick-carousel/slick/slick-theme.css';
 import { getRemoteOfertas } from "../../../controllers/establecimiento/establecimientoController";
 import ItemRecomendedSkeleton from "./ItemRecomendedSkeleton";
 
+const TIPOS_ESTABLECIMIENTO = [
+  { key: "", label: "Todos" },
+  { key: "Hoteles", label: "Hoteles" },
+  { key: "Hosterías", label: "Hosterías" },
+  { key: "Resort - Spa", label: "Resort & Spa" },
+  { key: "SPA", label: "SPA" },
+  { key: "Hacienda", label: "Haciendas" },
+  { key: "Hospedaje Familiar", label: "Hospedaje Familiar" },
+];
 
-const OffersBanner = () => {
 
+const OffersBanner = ({ tipoEst = "", setTipoEst = () => {} }) => {
 
   const [data, setData] = useState(null);
+  const [openTipoFilter, setOpenTipoFilter] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpenTipoFilter(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
 
   useEffect(() => {
@@ -102,8 +123,39 @@ const OffersBanner = () => {
     ],
   };
   
+  const labelActual = TIPOS_ESTABLECIMIENTO.find((t) => t.key === tipoEst)?.label || "Todos";
+
   return (
     <div className="pt-5 mx-5 md:mx-0">
+      {/* Filtro tipo de establecimiento */}
+      <div className="flex relative mb-1" ref={dropdownRef}>
+        <div
+          className="flex items-center gap-2 border-2 h-fit rounded-xl px-2 py-0.5 mb-3 text-sm cursor-pointer select-none hover:bg-gray-50 transition-colors"
+          onClick={() => setOpenTipoFilter(!openTipoFilter)}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+          </svg>
+          Tipo: {labelActual}
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M7 15l5 5 5-5"/><path d="M7 9l5-5 5 5"/>
+          </svg>
+        </div>
+        {openTipoFilter && (
+          <div className="absolute top-8 flex flex-col bg-white border rounded-md shadow-xl z-50 min-w-max">
+            {TIPOS_ESTABLECIMIENTO.map((tipo) => (
+              <button
+                key={tipo.key}
+                className={`hover:bg-gray-200 px-3 py-1.5 text-sm text-left transition-colors ${tipoEst === tipo.key ? "bg-gray-100 font-medium" : ""}`}
+                onClick={() => { setTipoEst(tipo.key); setOpenTipoFilter(false); }}
+              >
+                {tipo.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
       <h1 className="font-bold text-xl">Nuestras ofertas</h1>
       <div className="flex justify-between mb-4">
         <h6 className="text-md">En hoteles TOP, el mejor precio certificado. Pero en serio.</h6>

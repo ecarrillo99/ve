@@ -117,27 +117,7 @@ function App() {
             {/* Ruta principal (index) - muestra hoteles */}
             <Route
               index
-              element={
-                <>
-                  {isMobile ? (
-                    <div className="pt-4">
-                      <Suspense fallback={<SearchBarSkeleton />}>
-                        <SearchBar type={3} />
-                      </Suspense>
-                    </div>
-                  ) : (
-                    <Suspense fallback={<SearchBarSkeleton />}>
-                      <SearchBar type={0} />
-                    </Suspense>
-                  )}
-                  <Suspense fallback={<OffersBannerSkeleton />}>
-                    <OffersBanner />
-                  </Suspense>
-                  <Suspense fallback={<ContentSkeleton />}>
-                    <VideosBanner />
-                  </Suspense>
-                </>
-              }
+              element={<HomeIndexContent isMobile={isMobile} />}
             />
 
             {/* Ruta de Vinos - muestra ofertas de vinos con WineSearchBar */}
@@ -417,6 +397,33 @@ function App() {
     </>
   );
 }
+
+// Componente para la ruta index con estado de tipoEstablecimiento
+const HomeIndexContent = ({ isMobile }) => {
+  const [tipoEst, setTipoEst] = useState("");
+
+  return (
+    <>
+      {isMobile ? (
+        <div className="pt-4">
+          <Suspense fallback={<SearchBarSkeleton />}>
+            <SearchBar type={3} TipoEst={tipoEst} />
+          </Suspense>
+        </div>
+      ) : (
+        <Suspense fallback={<SearchBarSkeleton />}>
+          <SearchBar type={0} TipoEst={tipoEst} />
+        </Suspense>
+      )}
+      <Suspense fallback={<OffersBannerSkeleton />}>
+        <OffersBanner tipoEst={tipoEst} setTipoEst={setTipoEst} />
+      </Suspense>
+      <Suspense fallback={<ContentSkeleton />}>
+        <VideosBanner />
+      </Suspense>
+    </>
+  );
+};
 
 // Componente separado para la ruta de vinos con estado de filtros
 const WineRouteContent = ({ isMobile, offerType = 'vinos' }) => {

@@ -32,13 +32,13 @@ export const OFFER_TYPES = {
       { value: 'ruta_de_las_cascadas', label: 'Ruta de las Cascadas' },
     ],
   },
-  descuentos: {
-    key: 'descuentos',
-    label: 'Descuentos',
-    route: '/descuentos',
+  promociones: {
+    key: 'promociones',
+    label: 'Promociones',
+    route: '/promociones',
     searchRoute: '/busqueda-beneficios',
-    bannerTitle: 'Descuentos Exclusivos',
-    bannerSubtitle: 'Aprovecha los mejores descuentos en restaurantes, bares y vinotecas asociadas',
+    bannerTitle: 'Promociones Exclusivas',
+    bannerSubtitle: 'Aprovecha las mejores promociones en nuestros establecimientos asociados, con descuentos y regalos especiales',
     priceLabel: 'Precio con Descuento',
     reserveLabel: 'Aprovechar Descuento',
     accentColor: 'rose',
@@ -51,7 +51,7 @@ export const OFFER_TYPES = {
     tagBorder: 'border-rose-300',
     iconColor: 'text-rose-600',
     subTypes: [
-      { value: 'restaurantes', label: 'Restaurantes' },
+      { value: 'burgerKing', label: 'Burger King' },
       { value: 'bares', label: 'Bares & Lounges' },
       { value: 'vinotecas', label: 'Vinotecas' },
     ],

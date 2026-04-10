@@ -3,71 +3,73 @@ import SuscripcionService from "../../services/suscripcion/SuscripcionService";
 import Cookie from "js-cookie";
 
 export const loginRemote = async function (params) {
-  const isLogged = false;
-
   try {
     const suscripcionService = new SuscripcionService();
     const res = await suscripcionService.getInformacionPerfil(params);
-      const storedData = localStorage.getItem("datos");
-        if (!storedData) {
-          console.log("No hay datos en localStorage");
-          return;
-        }
 
-        const parsedData = JSON.parse(storedData);
-
-        const cedula = parsedData?.data?.ci;
-         const email = cedula;
-        const password = cedula.substring(0, 5);           
-    const responseData = await suscripcionService.getInformacionBiosite({
-      cedula: email,
-      password: password,
-    });
-
-    if (responseData.userId) {
-      const { accessToken, refreshToken, userId, roleName, biositeId } =
-        responseData;
-
-      const userRole = roleName.toString();
-
-      const accessExpirationDate = new Date();
-      const refreshExpirationDate = new Date();
-      accessExpirationDate.setDate(accessExpirationDate.getDate() + 2);
-      refreshExpirationDate.setDate(refreshExpirationDate.getDate() + 7);
-
-      Cookie.set("accessToken", accessToken, { expires: accessExpirationDate });
-      Cookie.set("refreshToken", refreshToken, {
-        expires: refreshExpirationDate,
-      });
-      Cookie.set("userId", userId, { expires: refreshExpirationDate });
-      Cookie.set("roleName", userRole, { expires: refreshExpirationDate });
-      Cookie.set("biositeId", biositeId, { expires: refreshExpirationDate });
+    if (!res || !res.estado || res.codigo != 0) {
+      return res?.msj || false;
     }
 
-    if (res.estado && res.codigo == 0) {
-      if (res.data.fin != null) {
-        if (new Date(res.data.fin) < new Date()) {
-          return (
-            <label>
-              {"Cuenta caducada el " + res.data.fin}
-              <br />{" "}
-              <a
-                className="text-blue-500 underline cursor-pointer"
-                href={window.location.origin + "/suscripcion"}
-              >
-                Renueva aquí
-              </a>
-            </label>
-          );
-        }
+    // Verificar suscripción caducada
+    if (res.data.fin != null) {
+      if (new Date(res.data.fin) < new Date()) {
+        return (
+          <label>
+            {"Cuenta caducada el " + res.data.fin}
+            <br />
+            <a
+              className="text-blue-500 underline cursor-pointer"
+              href={window.location.origin + "/suscripcion"}
+            >
+              Renueva aquí
+            </a>
+          </label>
+        );
       }
-      if (Object.values(res).length > 0) {
-        localStorage.setItem("datos", JSON.stringify(res));
-      }
-      return res.estado;
     }
+    // ✅ Guardar en localStorage ANTES de intentar leerlo
+    localStorage.setItem("datos", JSON.stringify(res));
+
+    // Ahora sí leer la cédula para Biosite
+    const cedula = res.data?.ci;
+    if (cedula) {
+      const email = cedula;
+      const password = cedula.substring(0, 5);
+
+      try {
+        const responseData = await suscripcionService.getInformacionBiosite({
+          cedula: email,
+          password: password,
+        });
+
+        if (responseData?.userId) {
+          const { accessToken, refreshToken, userId, roleName, biositeId } =
+            responseData;
+
+          const accessExpirationDate = new Date();
+          const refreshExpirationDate = new Date();
+          accessExpirationDate.setDate(accessExpirationDate.getDate() + 2);
+          refreshExpirationDate.setDate(refreshExpirationDate.getDate() + 7);
+
+          Cookie.set("accessToken", accessToken, { expires: accessExpirationDate });
+          Cookie.set("refreshToken", refreshToken, { expires: refreshExpirationDate });
+          Cookie.set("userId", userId, { expires: refreshExpirationDate });
+          Cookie.set("roleName", roleName.toString(), { expires: refreshExpirationDate });
+          Cookie.set("biositeId", biositeId, { expires: refreshExpirationDate });
+        }
+      } catch (biositeError) {
+        // Si Biosite falla, el login principal igual debe funcionar
+        console.warn("Biosite no disponible:", biositeError);
+      }
+    }
+
+    return true;
+
+  } catch (e) {
+    console.error("Error en loginRemote:", e);
     return false;
-  } catch (e) {}
+  }
 };
 
 export const getPermissions = async function (idUsuario) {

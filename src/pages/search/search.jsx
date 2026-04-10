@@ -25,6 +25,7 @@ const Search = () => {
   const destination = JSON.parse(decodeURIComponent(searchParams.get("destino")));
   const options = JSON.parse(decodeURIComponent(searchParams.get("opciones")));
   const fechas = JSON.parse(decodeURIComponent(searchParams.get("fechas")));
+  const tipoEstParam = decodeURIComponent(searchParams.get("tipoEst") || "");
   const dateTmp = [{
     startDate: new Date(fechas[0].startDate),
     endDate: new Date(fechas[0].endDate),
@@ -46,6 +47,7 @@ const Search = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   // Mobile-only sort state
   const [selectedFiltro, setSelectedFiltro] = useState("0");
+  const [tipoEstFilter, setTipoEstFilter] = useState(tipoEstParam || "");
 
   const filtro = new Filtro();
   const icons = new Icons();
@@ -109,12 +111,25 @@ const Search = () => {
 
   useEffect(() => {
     if (dataFinal) {
-      const ofertasFiltradas = dataFinal.Establecimientos.filter(
+      let filtered = dataFinal.Establecimientos;
+      // Price filter
+      filtered = filtered.filter(
         (e) => e.PrecioSinImpuestos >= prices[0] && e.PrecioSinImpuestos <= prices[1]
       );
-      setData({ ...data, Establecimientos: ofertasFiltradas });
+      // Tipo establecimiento filter
+      if (tipoEstFilter) {
+        filtered = filtered.filter(
+          (e) => e.TipoEstablecimiento === tipoEstFilter
+        );
+      }
+      setData({ ...data, Establecimientos: filtered });
     }
-  }, [prices]);
+  }, [prices, tipoEstFilter]);
+
+  // Collect unique tipos from results for sidebar
+  const tiposDisponibles = dataFinal
+    ? [...new Set(dataFinal.Establecimientos.map((e) => e.TipoEstablecimiento).filter(Boolean))]
+    : [];
 
   // ── Desktop sort ────────────────────────────────────────────
   const handleFilterChange = (id) => {
@@ -196,7 +211,7 @@ const Search = () => {
       <div>
         <Suspense><Navbar /></Suspense>
         <Suspense>
-          <SearchBar filtro={filtro} type={4} Place={destination} Dates={date} Options={options} NewPage={true} />
+          <SearchBar filtro={filtro} type={4} Place={destination} Dates={date} Options={options} TipoEst={tipoEstFilter} NewPage={true} />
         </Suspense>
         <Suspense>
           <FilterBar
@@ -209,6 +224,9 @@ const Search = () => {
             setPrices={setPrices}
             maxPrice={maxPrice}
             minPrice={minPrice}
+            tipoEstFilter={tipoEstFilter}
+            setTipoEstFilter={setTipoEstFilter}
+            tiposDisponibles={tiposDisponibles}
           />
         </Suspense>
         {data ? (
@@ -237,7 +255,7 @@ const Search = () => {
       <Suspense><Navbar /></Suspense>
       <div className="mx-auto max-w-6xl py-6 sm:px-6 lg:px-8">
         <Suspense>
-          <SearchBar type={1} Place={destination} Dates={date} Options={options} NewPage={true} />
+          <SearchBar type={1} Place={destination} Dates={date} Options={options} TipoEst={tipoEstFilter} NewPage={true} />
         </Suspense>
       </div>
 
@@ -315,6 +333,36 @@ const Search = () => {
                 />
               </div>
             </div>
+            {/* Tipo de establecimiento */}
+            {tiposDisponibles.length > 0 && (
+              <div className="border-b-2 p-2">
+                <h2 className="font-bold text-base">Tipo de establecimiento</h2>
+                <div className="flex flex-col gap-0.5 mt-1">
+                  <label className="cursor-pointer flex items-center gap-2 py-0.5 hover:bg-gray-50 rounded px-1">
+                    <input
+                      type="radio"
+                      name="tipoEst"
+                      className="accent-greenVE-600"
+                      checked={tipoEstFilter === ""}
+                      onChange={() => setTipoEstFilter("")}
+                    />
+                    <span className="text-sm">Todos</span>
+                  </label>
+                  {tiposDisponibles.map((tipo) => (
+                    <label key={tipo} className="cursor-pointer flex items-center gap-2 py-0.5 hover:bg-gray-50 rounded px-1">
+                      <input
+                        type="radio"
+                        name="tipoEst"
+                        className="accent-greenVE-600"
+                        checked={tipoEstFilter === tipo}
+                        onChange={() => setTipoEstFilter(tipo)}
+                      />
+                      <span className="text-sm">{tipo}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
             {data ? (
               <div className="flex flex-col">
                 {data.Servicios && (

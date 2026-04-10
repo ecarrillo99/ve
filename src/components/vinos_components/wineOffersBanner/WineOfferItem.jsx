@@ -119,6 +119,8 @@ const WineOfferItem = ({ offer }) => {
       date_ed: offer.date_ed,
       inventories: offer.inventories || [],
       schedules: offer.schedules || [],
+      type: offer.type || '',
+      subType: offer.subType || '',
       wineEstablishment: {
         name: establishmentName,
         city: establishment.city,

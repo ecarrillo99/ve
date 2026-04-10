@@ -163,10 +163,10 @@ const Navbar = ({ activo, isExposed = false }) => {
 
   return (
     <header className="bg-[#8eb934]">
-      {!isExposedRoute && (
+
         <div className="bg-[#8eb934] flex justify-center lg:justify-between xl:justify-between md:justify-center xs:justify-center sm:justify-center xl:px-28 lg:px-5 flex-wrap sm:flex-row">
           <a className="p-2" href="/"><img src="https://visitaecuador.com/img/web/ve_logo.svg" title="nosotros" style={{ width: "70px", height: "auto" }} /></a>
-          <div className="flex flex-center items-center gap-4 py-2">
+          {!isExposedRoute && (  <div className="flex flex-center items-center gap-4 py-2">
             <div className="flex sm:justify-end gap-3 align-start py-3 lg:px-6 p-2 ">
               {!codigo && <MarcaPais />}
               <div className={`mt-1 flex flex-row gap-2 ${isSmall ? "hidden" : ""} `}>
@@ -179,7 +179,7 @@ const Navbar = ({ activo, isExposed = false }) => {
                 <a className="w-6 h-6 rounded-full flex items-center justify-center" href="https://x.com/clubvisita" target="_blank"><span className="icon-[flowbite--x-company-solid] text-white h-3 w-3"></span></a>
               </div>
             </div>
-            {!isExposedRoute && (
+          
               <div className="flex gap-2 justify-end sm:justify-start items-center">
                 <div className="sr-only sm:not-sr-only md:flex gap-2">
                   <a className="flex gap-1 text-white border-white rounded-md border-2 px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-300" href="/smart/">Registrar Establecimiento</a>
@@ -248,18 +248,18 @@ const Navbar = ({ activo, isExposed = false }) => {
                   )}
                 </div>
               </div>
-            )}
-          </div>
+          
+          </div>  )}
         </div>
-      )}
+      
 
-      <div className={`flex mx-auto max-w-7xl py-2 px-4 sm:px-6 lg:px-8 ${router ? "hidden" : ""} ${route ? "hidden" : ""}`}>
+      <div className={`flex mx-auto max-w-7xl py-2 px-4 sm:px-6 lg:px-8 ${router ? "hidden" : ""} ${route ? "hidden" : ""} ${isExposedRoute ? "-mt-14" : ""}`}>
         <div className={`flex flex-col align-center align-middle items-center ${codigo ? "w-full" : "w-10/12"} justify-between`}>
           <div className="relative z-40 w-full flex justify-center">
             <div className="flex w-full max-w-7xl items-center justify-between px-4">
+           
               {(activo > 0 || location.pathname === "/suscripcion ||" || location.pathname.includes("/busqueda")) && (
-                <div className="hidden md:flex gap-0.5 items-end mt-4 sm:mt-0 flex-wrap">
-
+               <div className="hidden md:flex gap-0.5 items-end mt-4 sm:mt-0 flex-wrap">
                   {/* Hospedaje */}
                   <a
                     href="https://visitaecuador.com/"

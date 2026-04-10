@@ -125,6 +125,7 @@ const WineOfferRecommended = ({ ofertaSeleccionada, establecimiento, includeInRe
   const taxes = offer.Impuestos || offer.taxes || 0;
   const inventories = offer.inventories || [];
   const schedules = offer.schedules || [];
+  const subtypes = offer.subtype || '';
   const wineEst = offer.wineEstablishment || {};
 
   // type y subType vienen de la API de vinos (vinoApiService → /offerts)
@@ -282,7 +283,10 @@ const WineOfferRecommended = ({ ofertaSeleccionada, establecimiento, includeInRe
             {price > 0 ? (
               <>
                 <span className="font-bold text-3xl text-gray-900">${price}</span>
-                <p className="text-xs text-gray-400 mt-0.5">precio descorche</p>
+             {ofertSubType === "tour" ? (
+  <p className="text-xs text-gray-400 mt-0.5">precio 2x1</p>
+) : <p className="text-xs text-gray-400 mt-0.5">precio descorche</p>}
+                
               </>
             ) : (
               <span className="font-semibold text-lg text-gray-600">Consultar precio</span>
