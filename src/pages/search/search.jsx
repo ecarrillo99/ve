@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { getResultadoFiltro } from "../../controllers/establecimiento/establecimientoController";
 import Filtro from "../../models/Filtro";
 import Icons from "../../global/icons";
-import BingMapsReact from "bingmaps-react";
+import LeafletMap from "../../components/global_components/maps/LeafletMap";
 import Slider from "react-slider";
 
 const Navbar = lazy(() => import("../../components/global_components/navbar/Navbar"));
@@ -39,6 +39,8 @@ const Search = () => {
   const [prices, setPrices] = useState([minPrice, maxPrice]);
   const [data, setData] = useState(null);
   const [dataFinal, setDataFinal] = useState(null);
+  const [pagina, setPagina] = useState(1);
+  const [cargandoMas, setCargandoMas] = useState(false);
   const [sinResultados, setSinResultados] = useState(false);
   const [filtroNombre, setFiltroNombre] = useState("Estrellas (Mayor a menor)");
   const [openFilters, setOpenFilters] = useState(false);
@@ -64,6 +66,7 @@ const Search = () => {
     ninos: options.children,
     edadninos: options.childrenAges,
   };
+  filtro.Nitems = 12; // establecimientos por página
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -106,6 +109,25 @@ const Search = () => {
       console.error("Error:", error);
     }
   }
+
+  const cargarMas = async () => {
+    if (cargandoMas || !data?.Paginacion?.hayMas) return;
+    setCargandoMas(true);
+    try {
+      const sig = pagina + 1;
+      const result = await getResultadoFiltro({ ...filtro, Pag: sig });
+      if (result && result !== 401 && result.Establecimientos?.length) {
+        const nuevos = result.Establecimientos;
+        setDataFinal((prev) => ({ ...prev, Establecimientos: [...prev.Establecimientos, ...nuevos], Paginacion: result.Paginacion }));
+        setData((prev) => ({ ...prev, Establecimientos: [...prev.Establecimientos, ...nuevos], Paginacion: result.Paginacion }));
+        setPagina(sig);
+      }
+    } catch (e) {
+      console.error("Error cargar más:", e);
+    } finally {
+      setCargandoMas(false);
+    }
+  };
 
   useEffect(() => { fetchData(filtro); }, []);
 
@@ -245,6 +267,15 @@ const Search = () => {
         ) : (
           <Suspense><SearchResultSkeleton /></Suspense>
         )}
+
+        {data?.Paginacion?.hayMas && (
+          <div className="flex justify-center my-6">
+            <button onClick={cargarMas} disabled={cargandoMas}
+              className="bg-greenVE-600 hover:bg-greenVE-700 text-white px-6 py-2 rounded-full disabled:opacity-60">
+              {cargandoMas ? "Cargando..." : "Ver más"}
+            </button>
+          </div>
+        )}
         <Suspense><Footer /></Suspense>
       </div>
     );
@@ -277,18 +308,17 @@ const Search = () => {
         <div className="w-3/12 mr-5">
           {/* Mapa */}
           <div className="relative aspect-w-3 aspect-h-2 h-44 mb-4 z-0">
-            <div className="absolute w-full h-full z-10 rounded-md bg-gray-400 bg-opacity-20 flex items-center justify-center">
-              <button
-                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-greenVE-500 text-white px-3 py-1 rounded-full"
-                onClick={() => setIsModalOpen(true)}
-              >
+            <div
+              className="absolute w-full h-full z-10 rounded-md bg-gray-400 bg-opacity-20 flex items-center justify-center cursor-pointer"
+              onClick={() => setIsModalOpen(true)}
+            >
+              <span className="bg-greenVE-500 text-white px-3 py-1 rounded-full pointer-events-none">
                 Ver en Mapa
-              </button>
+              </span>
             </div>
             {data ? (
               <Suspense>
-                <BingMapsReact
-                  bingMapsKey="AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z"
+                <LeafletMap
                   viewOptions={{
                     center: { latitude: data.Establecimientos[0].Latitud, longitude: data.Establecimientos[0].Longitud },
                     zoom: 15,
@@ -458,6 +488,15 @@ const Search = () => {
           ) : (
             <div>
               {[1, 2, 3, 4].map((i) => <Suspense key={i}><SearchItemSkeleton /></Suspense>)}
+            </div>
+          )}
+
+          {data?.Paginacion?.hayMas && (
+            <div className="flex justify-center my-6">
+              <button onClick={cargarMas} disabled={cargandoMas}
+                className="bg-greenVE-600 hover:bg-greenVE-700 text-white px-6 py-2 rounded-full disabled:opacity-60">
+                {cargandoMas ? "Cargando..." : "Ver más"}
+              </button>
             </div>
           )}
         </div>

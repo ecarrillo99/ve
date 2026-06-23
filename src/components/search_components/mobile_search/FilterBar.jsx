@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import Slider from "react-slider";
-import BingMapsReact from "bingmaps-react";
+import LeafletMap from "../../global_components/maps/LeafletMap";
 
 
 const FilterBar = ({ handleOrderChange, selectedFiltro, minPrice, maxPrice, prices, setPrices, data, handleCheckBoxChange, checkboxStates }) => {
@@ -220,8 +220,7 @@ const FilterBar = ({ handleOrderChange, selectedFiltro, minPrice, maxPrice, pric
                <Fragment>
                    <div>
                        <div>
-                           <BingMapsReact
-                               bingMapsKey="AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z"
+                           <LeafletMap
                                height="100vh"
                                //pushPins={pinsList}
                                pushPinsWithInfoboxes={pinsList}

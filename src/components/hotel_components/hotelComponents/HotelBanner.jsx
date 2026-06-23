@@ -21,7 +21,8 @@ const HotelBanner = (props) => {
     Catalogacion,
     esFavorito,
     IdEstablecimiento,
-    Establecimiento
+    Establecimiento,
+    offer
   } = props;
 
   // Usar props directas o del objeto Establecimiento (para compatibilidad)
@@ -35,6 +36,7 @@ const HotelBanner = (props) => {
   const adicionales = Adicionales || Establecimiento?.Adicionales;
   const catalogacion = Catalogacion || Establecimiento?.Catalogacion;
   const idEstablecimiento = IdEstablecimiento || Establecimiento?.IdEstablecimiento;
+  const ofertaSeleccionada = offer || {};
 
   const [openServices, setOpenServices] = useState();
   const session = JSON.parse(localStorage.getItem("datos"));
@@ -49,13 +51,18 @@ const HotelBanner = (props) => {
   const [loadingShare, setLoadingShare] = useState(false);
 
   const icons = new Icons();
-  
+
   const petFriendly =
     (incluye != null
       ? incluye.some((item) => parseInt(item.Valor) === 112)
       : false) ||
     (sistemaServicios != null
       ? sistemaServicios.some((item) => parseInt(item.Valor) === 151)
+      : false);
+
+  const chargeVehicle =
+    (incluye != null
+      ? incluye.some((item) => parseInt(item.Valor) === 166)
       : false);
 
   var images = [];
@@ -76,9 +83,9 @@ const HotelBanner = (props) => {
   const handleClickWhatsapp = () => {
     const message = encodeURIComponent(
       "Descubre las ofertas de " +
-        titulo +
-        " en VisitaEcuador.com ingresando aquí: " +
-        shortUrl
+      titulo +
+      " en VisitaEcuador.com ingresando aquí: " +
+      shortUrl
     );
     const whatsappURL = `https://wa.me/?text=${message}`;
     window.open(whatsappURL);
@@ -159,7 +166,7 @@ const HotelBanner = (props) => {
 
   return (
     <div className="mb-10 mt-3 w-full">
-   
+
 
       {/* Mobile Only Gallery - Desktop usa HotelGallery component */}
       <div className="md:hidden">
@@ -399,11 +406,11 @@ const HotelBanner = (props) => {
       </div>
 
       {/* Desktop: Title and info */}
-      <div className="hidden md:flex justify-end">
+      <div className="hidden md:flex justify-end  ">
         <div className="w-9/12">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 items-center align-center mb-2">
 
-            <h1 className="text-xl font-semibold">{titulo}</h1>   
+            <h1 className="text-xl  font-semibold">{titulo}</h1>
 
             <div className="flex items-center gap-3">
               <div className="flex items-center ">
@@ -427,7 +434,7 @@ const HotelBanner = (props) => {
                     </svg>
                   ))}
               </div>
-              <div>
+              <div className="flex flex-wrap gap-5 -mt-2">
                 {petFriendly == true ? (
                   <div className="flex items-center gap-x-1 bg-greenVE-100 rounded-md w-32 justify-center mt-3 py-1">
                     <div
@@ -436,6 +443,19 @@ const HotelBanner = (props) => {
                     />
                     <label className="text-greenVE-600 text-sm font-medium">
                       Pet Friendly
+                    </label>
+                  </div>
+                ) : (
+                  <></>
+                )}
+                {chargeVehicle == true ? (
+                  <div className="flex items-center gap-x-1 bg-greenVE-100 rounded-md w-44 justify-center mt-3 py-1">
+                    <div
+                      className=""
+                      dangerouslySetInnerHTML={{ __html: icons.Data.ChargeVehicle }}
+                    />
+                    <label className="text-greenVE-600 text-sm font-medium">
+                      Cargador Eléctrico
                     </label>
                   </div>
                 ) : (
@@ -464,14 +484,20 @@ const HotelBanner = (props) => {
                 d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
               />
             </svg>
-            <p className="text-xs">
-              {Establecimiento?.Direccion} {Establecimiento?.Ciudad},{" "}
-              {Establecimiento?.Pais}
-            </p>
+            {ofertaSeleccionada?.type !== "promociones" ? (
+              <p className="text-xs">
+                {Establecimiento?.Direccion} {Establecimiento?.Ciudad},{" "}
+                {Establecimiento?.Pais}
+              </p>
+            ) : (
+              <p className="text-xs">
+                Disponible en todos los Burger King de Ecuador
+              </p>
+            )}
           </div>
           <p className="text-sm text-gray-600 px-4 py-2">{description}</p>
         </div>
-        <div className="w-3/12 flex h-8 items-center justify-between">
+        <div className={`w-3/12 flex h-8 items-center ${ofertaSeleccionada?.type === "promociones" ? "justify-start gap-5" : "justify-between"} px-4`}>
           {nivel !== "visitante" && (
             <>
               {isLoading ? (
@@ -500,13 +526,15 @@ const HotelBanner = (props) => {
               dangerouslySetInnerHTML={{ __html: icons.Data.Share }}
             ></div>
           )}
-
-          <button
-            className="bg-greenVE-600 p-2 text-white"
-            onClick={() => handleClickPreReserva()}
-          >
-            Reservar ahora
-          </button>
+          {ofertaSeleccionada?.type !== "promociones" && (
+            <button
+              className="bg-greenVE-600 p-2 text-white"
+              onClick={() => handleClickPreReserva()}
+            >
+              Reservar ahora
+            </button>
+          )
+          }
         </div>
         {viewShare && (
           <ClickAwayListener onClickAway={handleClickAwayShare}>

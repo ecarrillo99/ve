@@ -219,7 +219,9 @@ const _getResultadoFiltro = async function (filtro) {
         filtro.Habitaciones&&(params.habitaciones=filtro.Habitaciones); 
         filtro.Ordenar&&(params.ordenar=filtro.Ordenar); 
         filtro.Fechas&&(params.fechas=filtro.Fechas); 
-        filtro.Pax&&(params.pax=filtro.Pax); 
+        filtro.Pax&&(params.pax=filtro.Pax);
+        filtro.Pag&&(params.pag=filtro.Pag);
+        filtro.Nitems&&(params.nitems=filtro.Nitems);
         const res = await establecimientoService.filtro(params);
        
         if (res.estado && res.codigo === 0) {
@@ -254,6 +256,7 @@ const _getResultadoFiltro = async function (filtro) {
                 listadoOrdenes,
                 listadoBeneficios
             );
+            resultadoBusqueda.Paginacion = res.data.paginacion;
             return resultadoBusqueda;
         }
         if(res.codigo==401){
@@ -321,6 +324,7 @@ const _getResultadoRFiltro = async function (filtro) {
                 listadoOrdenes,
                 listadoBeneficios
             );
+            resultadoBusqueda.Paginacion = res.data.paginacion;
             return resultadoBusqueda;
         }
         if(res.codigo==401){

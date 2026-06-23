@@ -101,6 +101,7 @@ const Restaurants = () => {
         const establishment = offer.establishment || {};
         const offerEstName = (establishment.name || '').toLowerCase().trim();
         const offerCity = (establishment.city || '').toLowerCase().trim();
+        const offertsSubType = offer.type || '';
 
         if (offerEstName === normalizedName) return true;
 
@@ -111,7 +112,6 @@ const Restaurants = () => {
 
         return false;
       });
-
       if (matchedOffers.length > 0) {
         // Mapear todas las ofertas al formato esperado
         const mappedOffers = matchedOffers.map(matchedOffer => ({
@@ -511,28 +511,31 @@ const Restaurants = () => {
         <div className="md:w-9/12">
           <Suspense><HotelGallery Galeria={establecimiento.Galeria} /></Suspense> 
         </div>
-        <div className="md:w-3/12 ml-5 mb-5">
-          <Suspense>
-            <WineSearchBar 
-              type={3} 
-              onFilterChange={handleFilterChange}
-              initialFilters={wineFilters}
-              navigateTo="/busqueda-beneficios"
-            />
-          </Suspense>
-          <Suspense>
-            <HotelAdress Establecimiento={establecimiento} openMap={openMap} />
-          </Suspense>
-        </div>
+      {!wineOffersForEstablishment.some(o => o.type === 'promociones') && (
+
+          <div className="md:w-3/12 ml-5 mb-5">
+            <Suspense>
+              <WineSearchBar 
+                type={3} 
+                onFilterChange={handleFilterChange}
+                initialFilters={wineFilters}
+                navigateTo="/busqueda-beneficios"
+              />
+            </Suspense>
+            <Suspense>
+              <HotelAdress Establecimiento={establecimiento} openMap={openMap} />
+            </Suspense>
+          </div>
+        )}
       </div>
 
      <div className="flex mx-auto max-w-6xl py-0 sm:px-6 lg:px-8">
-        <Suspense><HotelBanner Establecimiento={establecimiento} /></Suspense>
+        <Suspense><HotelBanner Establecimiento={establecimiento} offer={ofertaSeleccionada} /></Suspense>
       </div>
 
       {/* Wine Offer Recomendada Desktop */}
       {ofertaSeleccionada && (
-        <div className="flex justify-center w-full mx-auto max-w-6xl py-0 sm:px-6 lg:px-8">
+        <div className="flex justify-center w-full mx-auto max-w-6xl py-0 sm:px-6 lg:px-8 pb-5">
           <Suspense fallback={<div className="h-32 bg-gray-100 animate-pulse rounded-xl w-full"></div>}>
             <WineOfferRecommended
               ofertaSeleccionada={ofertaSeleccionada}
@@ -553,23 +556,24 @@ const Restaurants = () => {
         </div>
       )}
 
-      <div className="flex flex-col md:flex-row mx-auto max-w-6xl py-0 sm:px-6 lg:px-8">
+     {nivel === "suscriptor" && !wineOffersForEstablishment.some(o => o.type === 'promociones') && (
+            <div className="flex flex-col md:flex-row mx-auto max-w-6xl py-0 sm:px-6 lg:px-8">
         <div className="md:w-9/12 mt-5 mb-5">
           <Suspense><HotelDetails Establecimiento={establecimiento} /></Suspense>
         </div>
         <div className="flex flex-col md:w-3/12">
-          {nivel === "suscriptor" && (
-            <Suspense>
+           <Suspense>
               <HotelContacts
                 Contactos={establecimiento.Contactos}
                 ContactosCentral={establecimiento.ContactosCentral}
               />
             </Suspense>
-          )}
+       
         </div>
-      </div>
+      </div>   )}
 
       {/* Tabla de ofertas de vino - RestaurantOfertas */}
+      {!wineOffersForEstablishment.some(o => o.type === 'promociones') && (
       <div ref={ofertasRef} className="flex mx-auto max-w-6xl py-0 sm:px-6 lg:px-8 mb-20">
         <Suspense>
           <RestaurantOfertas
@@ -582,7 +586,7 @@ const Restaurants = () => {
           />
         </Suspense>
       </div>
-
+)}
       <Suspense><Footer /></Suspense>
     </div>
   );

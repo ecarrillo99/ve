@@ -329,8 +329,12 @@ const Hotel = () => {
     initializeAndFetch();
   }, []);
 
+  const dateCorrected = useRef(false);
+
   useEffect(() => {
+    if (dateCorrected.current) return;
     if (date?.[0]?.startDate && new Date(date[0].startDate) < new Date()) {
+      dateCorrected.current = true;
       const fechaActual = new Date();
       const fechaNueva = new Date(fechaActual);
       fechaNueva.setDate(fechaActual.getDate() + (noches || 1));

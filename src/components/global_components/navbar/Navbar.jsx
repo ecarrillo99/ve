@@ -40,6 +40,14 @@ const Navbar = ({ activo, isExposed = false }) => {
   const [openMobileProfile, setOpenMobileProfile] = useState(false);
   const [beneficiosOpen, setBeneficiosOpen] = useState(false);
   const beneficiosRef = useRef(null);
+  const [scrolled, setScrolled] = useState(false);
+
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 300);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -60,6 +68,7 @@ const Navbar = ({ activo, isExposed = false }) => {
   const handleClickYaGanaste = () => { navigate("/yaganaste"); };
   const handleClickVinos = () => { navigate("/vinos"); setOpenMenu(false); };
   const handleClickTours = () => { navigate("/Tours"); setOpenMenu(false); };
+  const handleClickPromociones = () => { navigate("/Promociones"); setOpenMenu(false); };
   const handleClickDashboard = () => { window.open("/dashboard"); };
   const handleClickPack = () => { navigate("/pack"); };
   const handleClickLogo = () => { navigate("/"); setOpenMenu(false); };
@@ -123,10 +132,10 @@ const Navbar = ({ activo, isExposed = false }) => {
             setisLoadingGoogle(false);
             if (result) { window.location.reload(); }
             else { setisLoadingGoogle(false); alert("Ha ocurrido un error, intente nuevamente"); }
-          }).catch(() => {});
+          }).catch(() => { });
         } catch (error) { setisLoadingGoogle(false); console.error("Error:", error); }
-      } catch (e) {}
-    }).catch(() => {});
+      } catch (e) { }
+    }).catch(() => { });
   };
 
   const handleClickFacebook = () => {
@@ -148,9 +157,9 @@ const Navbar = ({ activo, isExposed = false }) => {
               setIsLoadingFB(false);
               if (result) { navigate(-1); }
               else { setIsLoadingFB(false); alert("Ha ocurrido un error, intente nuevamente"); }
-            }).catch(() => {});
+            }).catch(() => { });
           } catch (error) { setIsLoadingFB(false); console.error("Error:", error); }
-        } catch (e) {}
+        } catch (e) { }
       }).catch((error) => {
         const credential = FacebookAuthProvider.credentialFromError(error);
       });
@@ -158,108 +167,108 @@ const Navbar = ({ activo, isExposed = false }) => {
   };
 
   const isSmall = window.innerWidth < 470;
-  const router = location.pathname === "/vinos" || location.pathname === "/Tours";
+  const router = location.pathname === "/vinos" || location.pathname === "/Tours" || location.pathname === "/Promociones";
   const route = location.pathname === "/";
 
   return (
-    <header className="bg-[#8eb934]">
+    <header className="sticky top-0 z-50 bg-[#8AB600]">
 
-        <div className="bg-[#8eb934] flex justify-center lg:justify-between xl:justify-between md:justify-center xs:justify-center sm:justify-center xl:px-28 lg:px-5 flex-wrap sm:flex-row">
-          <a className="p-2" href="/"><img src="https://visitaecuador.com/img/web/ve_logo.svg" title="nosotros" style={{ width: "70px", height: "auto" }} /></a>
-          {!isExposedRoute && (  <div className="flex flex-center items-center gap-4 py-2">
-            <div className="flex sm:justify-end gap-3 align-start py-3 lg:px-6 p-2 ">
-              {!codigo && <MarcaPais />}
-              <div className={`mt-1 flex flex-row gap-2 ${isSmall ? "hidden" : ""} `}>
-                <a className="w-6 h-6 rounded-full flex items-center justify-center" href="https://www.facebook.com/visitaecuadorcom" target="_blank"><span className="icon-[iconoir--facebook] text-white h-4 w-4"></span></a>
-                <a className="w-6 h-6 rounded-full flex items-center justify-center" href="https://www.instagram.com/visitaecuadorcom/" target="_blank"><span className="icon-[mdi--instagram] text-white h-4 w-4"></span></a>
-                <a className="w-6 h-6 rounded-full flex items-center justify-center" href="https://walink.co/99db0b" target="_blank"><span className="icon-[mdi--whatsapp] text-white h-4 w-4"></span></a>
-                <a className="w-6 h-6 rounded-full flex items-center justify-center" href="https://www.tiktok.com/@visitaecuador.com" target="_blank"><span className="icon-[ph--tiktok-logo] text-white h-4 w-4"></span></a>
-                <a className="w-6 h-6 rounded-full flex items-center justify-center" href="https://www.youtube.com/@VisitaEcuador-com" target="_blank"><span className="icon-[ph--youtube-logo-bold] text-white h-4 w-4"></span></a>
-                <a className="w-6 h-6 rounded-full flex items-center justify-center" href="https://www.linkedin.com/in/visita-ecuador-44411353" target="_blank"><span className="icon-[uil--linkedin-alt] h-4 w-4 text-white"></span></a>
-                <a className="w-6 h-6 rounded-full flex items-center justify-center" href="https://x.com/clubvisita" target="_blank"><span className="icon-[flowbite--x-company-solid] text-white h-3 w-3"></span></a>
-              </div>
+      <div className="bg-[#8AB600] flex justify-center lg:justify-between xl:justify-between md:justify-center xs:justify-center sm:justify-center xl:px-28 lg:px-5 flex-wrap sm:flex-row">
+        <a className="p-2" href="/"><img src="https://visitaecuador.com/img/web/ve_logo.svg" title="nosotros" style={{ width: "70px", height: "auto" }} /></a>
+        {!isExposedRoute && (<div className="flex flex-center items-center gap-4 py-2">
+          <div className="flex sm:justify-end gap-3 align-start py-3 lg:px-6 p-2 ">
+            {!codigo && <MarcaPais />}
+            <div className={`mt-1 flex flex-row gap-2 ${isSmall ? "hidden" : ""} `}>
+              <a className="w-6 h-6 rounded-full flex items-center justify-center" href="https://www.facebook.com/visitaecuadorcom" target="_blank"><span className="icon-[iconoir--facebook] text-white h-4 w-4"></span></a>
+              <a className="w-6 h-6 rounded-full flex items-center justify-center" href="https://www.instagram.com/visitaecuadorcom/" target="_blank"><span className="icon-[mdi--instagram] text-white h-4 w-4"></span></a>
+              <a className="w-6 h-6 rounded-full flex items-center justify-center" href="https://walink.co/99db0b" target="_blank"><span className="icon-[mdi--whatsapp] text-white h-4 w-4"></span></a>
+              <a className="w-6 h-6 rounded-full flex items-center justify-center" href="https://www.tiktok.com/@visitaecuador.com" target="_blank"><span className="icon-[ph--tiktok-logo] text-white h-4 w-4"></span></a>
+              <a className="w-6 h-6 rounded-full flex items-center justify-center" href="https://www.youtube.com/@VisitaEcuador-com" target="_blank"><span className="icon-[ph--youtube-logo-bold] text-white h-4 w-4"></span></a>
+              <a className="w-6 h-6 rounded-full flex items-center justify-center" href="https://www.linkedin.com/in/visita-ecuador-44411353" target="_blank"><span className="icon-[uil--linkedin-alt] h-4 w-4 text-white"></span></a>
+              <a className="w-6 h-6 rounded-full flex items-center justify-center" href="https://x.com/clubvisita" target="_blank"><span className="icon-[flowbite--x-company-solid] text-white h-3 w-3"></span></a>
             </div>
-          
-              <div className="flex gap-2 justify-end sm:justify-start items-center">
-                <div className="sr-only sm:not-sr-only md:flex gap-2">
-                  <a className="flex gap-1 text-white border-white rounded-md border-2 px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-300" href="/smart/">Registrar Establecimiento</a>
-                  <div className="flex justify-center relative">
-                    <button className="flex gap-1 text-greenVE-600 bg-white rounded-md px-5 py-1 text-xs hover:border-gray-300 hover:text-gray-500" onClick={handleClickSuscribing}>Suscribirse</button>
-                    {openSuscription && (
-                      <ClickAwayListener onClickAway={handleClickSuscribing}>
-                        <div className="absolute z-50 bg-white flex flex-col items-start py-2 top-12 gap-2 shadow-2xl rounded-md">
-                          <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickSuscription}>
-                            <div dangerouslySetInnerHTML={{ __html: icons.Data.Buy }} />Comprar suscripción
-                          </button>
-                          <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickPack}>
-                            <div dangerouslySetInnerHTML={{ __html: icons.Data.Gift }} />Activar VisitaPack
-                          </button>
-                          <label className="text-xs font-medium text-center w-full">Prueba gratis con:</label>
-                          <div className="flex justify-center items-center w-full gap-2 pb-3">
-                            {isLoadingGoogle ? <Spinner color="blue" className="text-greenVE-300" /> : (
-                              <a dangerouslySetInnerHTML={{ __html: icons.Data["LoginGoogleSM"] }} className="border p-2 rounded-md hover:border-greenVE-500" onClick={() => handleClickGoogle()} />
-                            )}
-                            {isLoadingFB ? <Spinner color="blue" className="text-greenVE-300" /> : (
-                              <a dangerouslySetInnerHTML={{ __html: icons.Data["LoginFacebookSM"] }} className="border p-2 rounded-md hover:border-greenVE-500" onClick={() => handleClickFacebook()} />
-                            )}
-                          </div>
-                        </div>
-                      </ClickAwayListener>
-                    )}
-                  </div>
-                  {nivel === "visitante" && (
-                    <button className="flex gap-1 text-greenVE-600 bg-white rounded-md px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-500" onClick={() => (activo != 6 ? handleClickLogin() : {})}>Iniciar Sesión</button>
-                  )}
-                </div>
-                <div className="flex md:hidden gap-2 ml-auto items-center">
-                  {nivel !== "visitante" && <img src={foto} onClick={handleClickMobileProfile} className="rounded-full h-8 w-8 border-2 border-white cursor-pointer" alt="Profile" />}
-                  {nivel === "visitante" ? (
-                    <button onClick={handleClickMenu} className="text-white p-2">
-                      {openMenu
-                        ? <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                        : <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
-                      }
-                    </button>
-                  ) : <></>}
-                </div>
-                <div className="hidden md:flex items-end justify-end">
-                  {foto !== "" && nivel !== "visitante" && (
-                    <div className="flex gap-2 items-center cursor-pointer hover:bg-white hover:bg-opacity-20 hover:rounded-md p-1" onClick={() => handleClickProfile()}>
-                      <img src={foto} className="rounded-full h-10 w-10 border-2 hidden md:block" />
-                      <div className="flex flex-col">
-                        <label className="font-semibold text-white cursor-pointer">{nombre}</label>
-                        <label className="capitalize text-xs text-white cursor-pointer">{nivel}</label>
+          </div>
+
+          <div className="flex gap-2 justify-end sm:justify-start items-center">
+            <div className="sr-only sm:not-sr-only md:flex gap-2">
+              <a className="flex gap-1 text-white border-white rounded-md border-2 px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-300" href="/smart/">Registrar Establecimiento</a>
+              <div className="flex justify-center relative">
+                <button className="flex gap-1 text-greenVE-600 bg-white rounded-md px-5 py-1 text-xs hover:border-gray-300 hover:text-gray-500" onClick={handleClickSuscribing}>Suscribirse</button>
+                {openSuscription && (
+                  <ClickAwayListener onClickAway={handleClickSuscribing}>
+                    <div className="absolute z-50 bg-white flex flex-col items-start py-2 top-12 gap-2 shadow-2xl rounded-md">
+                      <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickSuscription}>
+                        <div dangerouslySetInnerHTML={{ __html: icons.Data.Buy }} />Comprar suscripción
+                      </button>
+                      <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickPack}>
+                        <div dangerouslySetInnerHTML={{ __html: icons.Data.Gift }} />Activar VisitaPack
+                      </button>
+                      <label className="text-xs font-medium text-center w-full">Prueba gratis con:</label>
+                      <div className="flex justify-center items-center w-full gap-2 pb-3">
+                        {isLoadingGoogle ? <Spinner color="blue" className="text-greenVE-300" /> : (
+                          <a dangerouslySetInnerHTML={{ __html: icons.Data["LoginGoogleSM"] }} className="border p-2 rounded-md hover:border-greenVE-500" onClick={() => handleClickGoogle()} />
+                        )}
+                        {isLoadingFB ? <Spinner color="blue" className="text-greenVE-300" /> : (
+                          <a dangerouslySetInnerHTML={{ __html: icons.Data["LoginFacebookSM"] }} className="border p-2 rounded-md hover:border-greenVE-500" onClick={() => handleClickFacebook()} />
+                        )}
                       </div>
                     </div>
-                  )}
-                  {nivel !== "visitante" && openProfile && (
-                    <ClickAwayListener onClickAway={handleClickProfile}>
-                      <div className="md:absolute z-50 bg-white flex flex-col items-start py-2 top-14 gap-2 shadow-2xl rounded-md">
-                        <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickProfileSet}><div dangerouslySetInnerHTML={{ __html: icons.Data.Account }} /> Mi perfil</button>
-                        <button onClick={handleClickBookHistory} className="hover:bg-greenVE-200 w-full px-4 text-xs py-1 text-start flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.HistorialReservas }} />Historial de reservas</button>
-                        <button onClick={handleClickFavorites} className="hover:bg-greenVE-200 w-full px-4 text-xs py-1 text-start flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Favoritos }} />Favoritos</button>
-                        <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickAdministrador}><div dangerouslySetInnerHTML={{ __html: icons.Data.Administrador }} />Administrador{isLoadingAdmin && <Spinner className="h-4 w-4" color="white" />}</button>
-                        {beta && <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickAdministradorBeta}><div dangerouslySetInnerHTML={{ __html: icons.Data.Administrador }} />Administrador (Beta){isLoadingAdminBeta && <Spinner className="h-4 w-4" color="white" />}</button>}
-                        {yaGanaste && <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickYaGanaste}><div dangerouslySetInnerHTML={{ __html: icons.Data.CrearUsuario }} />Crear Suscripción</button>}
-                        {dashboard && <button onClick={() => handleClickDashboard()} className="hover:bg-greenVE-200 w-full px-4 text-xs py-1 flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Dashboard }} />Dashboard</button>}
-                        <button onClick={() => handleClickLogOut()} className="hover:bg-greenVE-200 w-full px-4 text-xs py-1 flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Logout }} />Cerrar sesión{isLoagingLogOut && <Spinner className="h-4 w-4" color="white" />}</button>
-                      </div>
-                    </ClickAwayListener>
-                  )}
-                </div>
+                  </ClickAwayListener>
+                )}
               </div>
-          
-          </div>  )}
-        </div>
-      
+              {nivel === "visitante" && (
+                <button className="flex gap-1 text-greenVE-600 bg-white rounded-md px-3 py-1 text-xs hover:border-gray-300 hover:text-gray-500" onClick={() => (activo != 6 ? handleClickLogin() : {})}>Iniciar Sesión</button>
+              )}
+            </div>
+            <div className="flex md:hidden gap-2 ml-auto items-center">
+              {nivel !== "visitante" && <img src={foto} onClick={handleClickMobileProfile} className="rounded-full h-8 w-8 border-2 border-white cursor-pointer" alt="Profile" />}
+              {nivel === "visitante" ? (
+                <button onClick={handleClickMenu} className="text-white p-2">
+                  {openMenu
+                    ? <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                    : <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+                  }
+                </button>
+              ) : <></>}
+            </div>
+            <div className="hidden md:flex items-end justify-end">
+              {foto !== "" && nivel !== "visitante" && (
+                <div className="flex gap-2 items-center cursor-pointer hover:bg-white hover:bg-opacity-20 hover:rounded-md p-1" onClick={() => handleClickProfile()}>
+                  <img src={foto} className="rounded-full h-10 w-10 border-2 hidden md:block" />
+                  <div className="flex flex-col">
+                    <label className="font-semibold text-white cursor-pointer">{nombre}</label>
+                    <label className="capitalize text-xs text-white cursor-pointer">{nivel}</label>
+                  </div>
+                </div>
+              )}
+              {nivel !== "visitante" && openProfile && (
+                <ClickAwayListener onClickAway={handleClickProfile}>
+                  <div className="md:absolute z-50 bg-white flex flex-col items-start py-2 top-14 gap-2 shadow-2xl rounded-md">
+                    <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickProfileSet}><div dangerouslySetInnerHTML={{ __html: icons.Data.Account }} /> Mi perfil</button>
+                    <button onClick={handleClickBookHistory} className="hover:bg-greenVE-200 w-full px-4 text-xs py-1 text-start flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.HistorialReservas }} />Historial de reservas</button>
+                    <button onClick={handleClickFavorites} className="hover:bg-greenVE-200 w-full px-4 text-xs py-1 text-start flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Favorito }} />Favoritos</button>
+                    <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickAdministrador}><div dangerouslySetInnerHTML={{ __html: icons.Data.Administrador }} />Administrador{isLoadingAdmin && <Spinner className="h-4 w-4" color="white" />}</button>
+                    {beta && <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickAdministradorBeta}><div dangerouslySetInnerHTML={{ __html: icons.Data.Administrador }} />Administrador (Beta){isLoadingAdminBeta && <Spinner className="h-4 w-4" color="white" />}</button>}
+                    {yaGanaste && <button className="hover:bg-greenVE-200 px-4 text-xs py-1 w-full text-start flex items-center gap-2" onClick={handleClickYaGanaste}><div dangerouslySetInnerHTML={{ __html: icons.Data.CrearUsuario }} />Crear Suscripción</button>}
+                    {dashboard && <button onClick={() => handleClickDashboard()} className="hover:bg-greenVE-200 w-full px-4 text-xs py-1 flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Dashboard }} />Dashboard</button>}
+                    <button onClick={() => handleClickLogOut()} className="hover:bg-greenVE-200 w-full px-4 text-xs py-1 flex items-center gap-2"><div dangerouslySetInnerHTML={{ __html: icons.Data.Logout }} />Cerrar sesión{isLoagingLogOut && <Spinner className="h-4 w-4" color="white" />}</button>
+                  </div>
+                </ClickAwayListener>
+              )}
+            </div>
+          </div>
 
-      <div className={`flex mx-auto max-w-7xl py-2 px-4 sm:px-6 lg:px-8 ${router ? "hidden" : ""} ${route ? "hidden" : ""} ${isExposedRoute ? "-mt-14" : ""}`}>
+        </div>)}
+      </div>
+
+
+      <div className={`flex mx-auto max-w-7xl py-2 px-4 sm:px-6 lg:px-8 ${router && !scrolled ? "hidden" : ""} ${route && !scrolled ? "hidden" : ""} ${isExposedRoute ? "-mt-14" : ""}`}>
         <div className={`flex flex-col align-center align-middle items-center ${codigo ? "w-full" : "w-10/12"} justify-between`}>
           <div className="relative z-40 w-full flex justify-center">
             <div className="flex w-full max-w-7xl items-center justify-between px-4">
-           
-              {(activo > 0 || location.pathname === "/suscripcion ||" || location.pathname.includes("/busqueda")) && (
-               <div className="hidden md:flex gap-0.5 items-end mt-4 sm:mt-0 flex-wrap">
+
+              {(activo > 0 || location.pathname === "/suscripcion" || location.pathname.includes("/busqueda")) && (
+                <div className="hidden md:flex gap-0.5 items-end mt-4 sm:mt-0 flex-wrap">
                   {/* Hospedaje */}
                   <a
                     href="https://visitaecuador.com/"
@@ -297,7 +306,7 @@ const Navbar = ({ activo, isExposed = false }) => {
                       className={`flex gap-2 ${activo == 4 ? "bg-white text-gray-800" : "bg-white/20 text-white hover:bg-white/40"} rounded-t-lg px-4 py-2 text-sm items-center transition-all cursor-pointer`}
                     >
                       <div className="rounded-full bg-white p-0.5" style={{ height: "22px", width: "22px" }}>
-                        <img src="https://visitaecuador.com/img/web/benefit.svg" className="rounded-full" style={{ height: "100%", width: "100%" }} />
+                        <img src="https://visitaecuador.com/img/web/Beneficios-Icon01_VE_1-8.png" className="" style={{ height: "100%", width: "100%" }} />
                       </div>
                       <span className="hidden md:flex font-medium">Beneficios</span>
                       <svg
@@ -315,13 +324,19 @@ const Navbar = ({ activo, isExposed = false }) => {
                           onClick={() => { handleClickVinos(); setBeneficiosOpen(false); }}
                           className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-[#ACCD7B] hover:text-white transition-colors font-medium"
                         >
-                          Ruta del Vino
+                          Rutas
                         </button>
                         <button
                           onClick={() => { handleClickTours(); setBeneficiosOpen(false); }}
                           className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-[#ACCD7B] hover:text-white transition-colors font-medium"
                         >
                           Tours
+                        </button>
+                        <button
+                          onClick={() => { handleClickPromociones(); setBeneficiosOpen(false); }}
+                          className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-[#ACCD7B] hover:text-white transition-colors font-medium"
+                        >
+                          Promociones
                         </button>
                       </div>
                     )}
@@ -345,7 +360,7 @@ const Navbar = ({ activo, isExposed = false }) => {
                     onClick={(e) => { e.preventDefault(); handleClickNosotros(); }}
                     className={`flex gap-2 ${activo == 6 ? "bg-white text-gray-800" : "bg-white/20 text-white hover:bg-white/40"} rounded-t-lg px-4 py-2 text-sm items-center transition-all`}
                   >
-                    <div className="rounded-full bg-white p-0.5" style={{ height: "22px", width: "22px" }}>
+                    <div className="rounded-full bg-white " style={{ height: "22px", width: "22px" }}>
                       <img src="https://visitaecuador.com/img/web/nosotrosMenu.svg" className="rounded-full" style={{ height: "100%", width: "100%" }} />
                     </div>
                     <label className="hidden md:flex cursor-pointer font-medium">Nosotros</label>
@@ -357,7 +372,7 @@ const Navbar = ({ activo, isExposed = false }) => {
                     onClick={(e) => { e.preventDefault(); handleClickContactanos(); }}
                     className={`flex gap-1 ${activo == 7 ? "bg-white text-gray-800" : "bg-white/20 text-white hover:bg-white/40"} rounded-t-lg px-4 py-2 text-sm items-center transition-all`}
                   >
-                    <div className="rounded-full bg-white p-1" style={{ height: "22px", width: "22px" }}>
+                    <div className="rounded-full bg-white p-0.5" style={{ height: "22px", width: "22px" }}>
                       <img src="https://visitaecuador.com/img/web/contacto.svg" className="rounded-full" style={{ height: "100%", width: "100%" }} />
                     </div>
                     <label className="hidden md:flex cursor-pointer">Contactanos</label>

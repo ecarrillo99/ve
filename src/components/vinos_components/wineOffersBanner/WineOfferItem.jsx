@@ -258,21 +258,43 @@ const WineOfferItem = ({ offer }) => {
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-greenVE-600" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                 </svg>
+                {offer.establishment.city ? (
                 <span className="text-xs font-semibold text-gray-700">
                   {offer.establishment.city}
                 </span>
+                ): (
+               <span className="text-xs font-semibold text-gray-700">
+                  {offer.establishment.country}
+                </span>
+                )}
               </div>
             </div>
           )}
 
           {/* Badge de precio en la esquina superior derecha */}
-          {offer.price && (
-            <div className="absolute top-3 right-3">
-              <div className={`${typeConfig.badgeBg} text-white px-3 py-1.5 rounded-full shadow-lg`}>
-                <span className="text-xs font-bold">{typeConfig.reserveLabel} ${offer.price}</span>
+          {offer.subType !== "burgerKing" ? (
+            offer.price ? (
+              <div className="absolute top-3 right-3">
+                <div className={`${typeConfig.badgeBg} text-white px-3 py-1.5 rounded-full shadow-lg`}>
+                  <span className="text-xs font-bold">{typeConfig.reserveLabel} ${offer.price}</span>
+                </div>
               </div>
-            </div>
-          )}
+            ) : null
+          ) : offer.subType === "burgerKing" ? (
+            offer.price > 0 ? (
+              <div className="absolute top-3 right-3">
+                <div className={`${typeConfig.badgeBg} text-white px-3 py-1.5 rounded-full shadow-lg`}>
+                  <span className="text-xs font-bold">15% de Descuento</span>
+                </div>
+              </div>
+            ) : offer.price < 1 ? (
+              <div className="absolute top-3 right-3">
+                <div className={`${typeConfig.badgeBg} text-white px-3 py-1.5 rounded-full shadow-lg`}>
+                  <span className="text-xs font-bold">Agrandado Gratis</span>
+                </div>
+              </div>
+            ) : null
+          ) : null}
 
           {/* Botón de editar admin */}
           {isAdmin() && (
@@ -366,7 +388,8 @@ const WineOfferItem = ({ offer }) => {
               )}
             </div>
           )}
-
+  { offer.subType != "burgerKing" && (
+    <>
           {/* Schedules */}
           {offer.schedules && offer.schedules.length > 0 ? (
             <div className="mt-2 flex flex-wrap gap-2.5">
@@ -396,7 +419,7 @@ const WineOfferItem = ({ offer }) => {
               <span>{formatDate(offer.date_st)} - {formatDate(offer.date_ed)}</span>
             </div>
           )}
-
+      </>  )}
           {/* Separador sutil */}
           <div className="border-t border-gray-100 pt-3 mt-3">
             <div className="flex items-center justify-between relative">

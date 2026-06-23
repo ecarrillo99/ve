@@ -6,7 +6,7 @@ import {
     useLoadScript,
 } from "@react-google-maps/api";
 import { useNavigate } from "react-router-dom";
-import BingMapsReact from "bingmaps-react";
+import LeafletMap from "../global_components/maps/LeafletMap";
 
 
 const MapScreen = ({ isOpen, onClose, data, destination, date, options }) => {
@@ -54,8 +54,7 @@ const MapScreen = ({ isOpen, onClose, data, destination, date, options }) => {
                     <Fragment>
                         <div>
                             <div>
-                                <BingMapsReact
-                                    bingMapsKey="AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z"
+                                <LeafletMap
                                     height="500px"
                                     //pushPins={pinsList}
                                     pushPinsWithInfoboxes={pinsList}

@@ -86,6 +86,7 @@ const WineOfferRecommended = ({ ofertaSeleccionada, establecimiento, includeInRe
       return;
     }
 
+ 
     // Si no, navegar a la página del establecimiento (comportamiento original)
     const wineEst = offer.wineEstablishment || {};
     const establishmentName = wineEst.name || establecimiento?.Titulo || offer.TituloOferta;
@@ -135,6 +136,13 @@ const WineOfferRecommended = ({ ofertaSeleccionada, establecimiento, includeInRe
 
   // Obtener el label legible del subType usando el mapa inline
   const subTypeLabel = ofertSubType ? (SUBTYPE_LABELS[ofertSubType] || ofertSubType) : '';
+ const handleClickApple = () => {
+     window.open("https://apps.apple.com/ec/app/visitaecuador-com/id1385161516")
+  }
+
+   const handleClickGoogle = () => {
+     window.open("https://play.google.com/store/apps/details?id=com.visitaEcuador&hl=es")
+  }
 
   return (
     <div className="rounded-xl w-full bg-white shadow-sm border border-gray-100 overflow-hidden">
@@ -230,7 +238,8 @@ const WineOfferRecommended = ({ ofertaSeleccionada, establecimiento, includeInRe
                 )}
               </div>
             )}
-
+{ ofertType !== "promociones" ? (
+  <>
             {/* Horarios / Fechas */}
             {schedules.length > 0 ? (
               <div className="flex flex-col gap-1 mt-1">
@@ -257,7 +266,9 @@ const WineOfferRecommended = ({ ofertaSeleccionada, establecimiento, includeInRe
                 <span>{formatDate(offer.date_st)} - {formatDate(offer.date_ed)}</span>
               </div>
             ) : null}
-
+     </>     ): <div>
+                    <p className="text-xs font-bold text-gray-500 leading-relaxed">Puedes acceder al beneficio desde nuestra app móvil</p>
+                </div>}
             {/* Inventarios / Regalos detallados */}
             {inventories.length > 0 && (
               <div className="mt-1">
@@ -280,24 +291,45 @@ const WineOfferRecommended = ({ ofertaSeleccionada, establecimiento, includeInRe
         {/* Panel de precio y reserva */}
         <div className="border-b lg:border-b-0 lg:border-l border-gray-100 w-full lg:w-3/12 flex flex-row lg:flex-col p-5 items-center justify-center gap-3 bg-gradient-to-b from-gray-50 to-white">
           <div className="text-center">
-            {price > 0 ? (
+            {price > 0 && ofertType !== "promociones" ? (
               <>
                 <span className="font-bold text-3xl text-gray-900">${price}</span>
              {ofertSubType === "tour" ? (
-  <p className="text-xs text-gray-400 mt-0.5">precio 2x1</p>
-) : <p className="text-xs text-gray-400 mt-0.5">precio descorche</p>}
+                <p className="text-xs text-gray-400 mt-0.5">precio 2x1</p>
+              ) : ofertSubType === "ruta_del_vino" ? (<p className="text-xs text-gray-400 mt-0.5">precio descorche</p>
+              ) : ofertSubType === "burgerKing" ? (<p className="text-xs text-gray-400 mt-0.5">precio burger king</p>) : null}
                 
               </>
-            ) : (
+            ) :  ofertType === "promociones" ? (
+              <span className="font-bold text-lg text-greenVE-600 ">Accede al Beneficio</span>
+            )  : (
               <span className="font-semibold text-lg text-gray-600">Consultar precio</span>
             )}
           </div>
+           {ofertType !== "promociones" ? (
           <button
             className="bg-greenVE-500 hover:bg-greenVE-600 transition-colors text-white font-medium py-2 px-6 rounded-full shadow-sm hover:shadow-md"
             onClick={handleClickReservar}
           >
             Reservar
           </button>
+            ) : (
+              <div className='flex flex-col gap-1'>
+                <button
+                className='h-16 w-40'
+                  onClick={handleClickGoogle}
+                >
+                  <img src="https://visitaecuador.com/img/web/google_store.png" className='h-16 w-40'/>
+                </button>
+                
+                <button
+                className='h-16 w-40'
+                  onClick={handleClickApple}
+                >
+                  <img src="https://visitaecuador.com/img/web/apple_store.png" className='h-16 w-40'/>
+                </button>
+                </div>
+             ) }
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { DateRange } from "react-date-range";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { es, is } from "react-date-range/dist/locale/";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
@@ -14,7 +14,14 @@ const SearchBar = (props) => {
   const [inputValue, setInputValue] = useState("");
   const icons = new Icons();
   const location = useLocation();
+  const inputRef = useRef(null);
 
+
+  const handleContainerClick = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
 
   const handleClickAway = () => {
     if (openOptions) {
@@ -186,21 +193,24 @@ const SearchBar = (props) => {
       <MenuTabs/>
       </div>
       <>
-        <div className={`bottom-[0px] bg-white relative rounded-lg rounded-tl-none w-full mt-1 border-2 border-amber-400 shadow-lg ${isbusqueda ? `mt-10` : ""} `}>
+        <div className={`bottom-[0px] bg-white relative rounded-lg  w-full mt-1 border-2 border-amber-400 shadow-lg ${isbusqueda ? `mt-10` : ""} `}>
           <div className="grid lg:grid-cols-12 md:grid-cols-12 grid-flow-row">
-            <div className="gap-3 col-span-4 max-sm:col-span-1 bg-white flex items-center justify-center m-0 rounded-l-lg pl-4 relative border-r border-gray-200">
-              <div dangerouslySetInnerHTML={{ __html: icons.Data.Bed }} />
-              <input
-                type="text"
-                placeholder=" ¿A dónde vas?"
-                className="w-full max-w-full overflow-hidden placeholder-gray-600 mr-4 focus:outline-none"
-                onChange={(e) => handleChange(e.target.value)}
-                onClick={() => setOpenSearch(true)}
-                value={
-                  destination.Titulo.charAt(0).toUpperCase() +
-                  destination.Titulo.slice(1)
-                }
-              />
+            <div className="gap-3 col-span-4 max-sm:col-span-1 bg-white flex items-center justify-center m-0 rounded-l-lg pl-4 relative border-r border-gray-200 cursor-text" onClick={handleContainerClick}>
+              <div className="flex items-center gap-3 w-full">
+                <div dangerouslySetInnerHTML={{ __html: icons.Data.Bed }} />
+                <input
+                  ref={inputRef}
+                  type="text"
+                  placeholder=" ¿A dónde vas?"
+                  className="w-full max-w-full overflow-hidden placeholder-gray-600 mr-4 focus:outline-none"
+                  onChange={(e) => handleChange(e.target.value)}
+                  onClick={() => setOpenSearch(true)}
+                  value={
+                    destination.Titulo.charAt(0).toUpperCase() +
+                    destination.Titulo.slice(1)
+                  }
+                />
+              </div>
               {suggestion && (
                 <ClickAwayListener onClickAway={handleClickAway}>
                   <div className=" absolute top-12 max-h-[17rem] w-[24rem] bg-white z-50 shadow-2xl p-2 overflow-y-auto  rounded-lg">
@@ -244,7 +254,7 @@ const SearchBar = (props) => {
                 </ClickAwayListener>
               )}
             </div>
-            <div className="col-span-3  border-r border-gray-200 px-4 py-2 flex flex-col items-start">
+            <div className="col-span-3  border-r border-gray-200 px-4 py-2 flex flex-col items-start cursor-pointer" onClick={() => setOpenDate(!openDate)}>
                 <div className="flex flex-row items-center gap-3">
 
                 <span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16"><path fill="#929292" d="M14 1v3h-3V1H5v3H2V1H0v15h16V1h-2zM3 15H1v-2h2v2zm0-3H1v-2h2v2zm0-3H1V7h2v2zm3 6H4v-2h2v2zm0-3H4v-2h2v2zm0-3H4V7h2v2zm3 6H7v-2h2v2zm0-3H7v-2h2v2zm0-3H7V7h2v2zm3 6h-2v-2h2v2zm0-3h-2v-2h2v2zm0-3h-2V7h2v2zm3 6h-2v-2h2v2zm0-3h-2v-2h2v2zm0-3h-2V7h2v2z"/><path fill="#929292" d="M3 0h1v3H3V0zm9 0h1v3h-1V0z"/></svg></span>
@@ -253,8 +263,7 @@ const SearchBar = (props) => {
                       Fecha de entrada y salida
                     </label>
                     <div
-                      onClick={() => setOpenDate(!openDate)}
-                      className="flex items-center text-xs cursor-pointer text-gray-800 font-medium"
+                      className="flex items-center text-xs text-gray-800 font-medium"
                     >
                       {`${formatDate(new Date(date[0].startDate))} - ${formatDate(
                         new Date(date[0].endDate)
@@ -298,16 +307,15 @@ const SearchBar = (props) => {
   </div>
 )}
             </div>
-            <div className="col-span-3 border-r border-gray-200 px-4 py-2 flex flex-col items-start">
-              <div className="flex flex-row items-center gap-5">
+            <div className="col-span-3 border-r border-gray-200 px-4 py-2 flex flex-col items-start cursor-pointer" onClick={() => setOpenOptions(!openOptions)}>
+              <div className="flex flex-row items-center gap-5 w-full">
                 <span><svg width="22" height="22" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#929292"><g fill="none" stroke="#929292" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"><path d="m20.5 23.5l-2-7L12 15l-6.5 1.5l-2 7zM8.625 5.812L12 7.5h4.5"/><path d="M16.5 12.25L12 14l-4.5-1.75v-6L12 4.5l4.5 1.75zm-6-2.25v-.5m3 .5v-.5m.953 6.066L12 19.5l-2.453-3.934"/></g></svg></span>
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col items-center flex-1">
                   <label className="text-sm font-normal mb-1">
                     Personas y habitaciones
                   </label>
                   <span
-                    className="text-xs cursor-pointer"
-                    onClick={() => setOpenOptions(!openOptions)}
+                    className="text-xs"
                   >{`${options.adult} ${options.adult > 1 ? "adultos" : "adulto"} · 
                         ${options.children} ${
                     options.children != 1 ? "niños" : "niño"
@@ -450,9 +458,10 @@ const SearchBar = (props) => {
       <div className="bg-white rounded-lg shadow-lg border-2 border-amber-400 overflow-hidden">
         {/* Campo de búsqueda - Destino */}
         <div className="relative border-b border-gray-200">
-          <div className="flex items-center gap-3 px-4 py-3">
+          <div className="flex items-center gap-3 px-4 py-3 cursor-text" onClick={handleContainerClick}>
             <div dangerouslySetInnerHTML={{ __html: icons.Data.Bed }} className="text-gray-500" />
             <input
+              ref={inputRef}
               type="text"
               placeholder="¿A dónde vas?"
               className="w-full placeholder-gray-600 focus:outline-none text-sm"

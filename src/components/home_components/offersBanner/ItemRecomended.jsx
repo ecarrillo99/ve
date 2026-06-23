@@ -149,7 +149,7 @@ const ItemRecomended = ({ oferta }) => {
           </div>
 
           {/* Zona de altura fija — solo crece al expandir */}
-          <div className="mt-1.5">
+          <div className="">
             {oferta.Descripcion && (
               <>
                 <p className="text-xs text-gray-500 leading-relaxed">

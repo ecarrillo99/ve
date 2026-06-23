@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import {
   PDFViewer,
   Document,
@@ -258,15 +258,15 @@ const styles = StyleSheet.create({
   // ── Footer ──
   footerDivider: { borderTopWidth: 1, borderTopColor: C.greenBorder, marginTop: 6, paddingTop: 6 },
   footer: { flexDirection: "row", alignItems: "center" },
-  footerLeft: { flex: 2.5 },
+  footerLeft: { flex: 2.5, },
   footerCenter: { flex: 1.5, alignItems: "center" },
   footerRight: { flex: 1, alignItems: "flex-end" },
-  footerLabel: { fontSize: 5.5, color: C.lightGray, fontFamily: "Helvetica-Bold", textTransform: "uppercase", marginBottom: 1.5 },
+  footerLabel: { fontSize: 6, color: C.lightGray, fontFamily: "Helvetica-Bold", textTransform: "uppercase", marginBottom: 1.5 },
   footerText: { fontSize: 6, color: C.gray },
   footerBold: { fontSize: 6.5, color: C.dark, fontFamily: "Helvetica-Bold" },
   footerPhone: { fontSize: 7, color: C.greenDark, fontFamily: "Helvetica-Bold" },
   whatsappImg: { height: 26, width: 26, objectFit: "contain" },
-  patrocinadores: { height: 16, width: 110, objectFit: "contain" },
+  patrocinadores: { height: 50, width: 210, objectFit: "contain" },
 });
 
 // ─── Helpers ──────────────────────────────────────────────────────
@@ -626,18 +626,16 @@ const CertificadoDoc = ({ reserva, nombreSuscriptorPDF, wineOffer, hasWineOffer,
                 <Text style={styles.footerBold}>VisitaEcuador.com</Text>
                 <Text style={styles.footerText}>PBX: +593 7 413 4500</Text>
                 <Text style={styles.footerText}>Calle del Batán 5-317 y Esmeraldas :: Cuenca :: Ecuador</Text>
-              </View>
-              <View style={styles.footerCenter}>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+                 <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                   <Image src="https://visitaecuador.com/img/web/whatsapp_cert.png" style={styles.whatsappImg} />
                   <View>
                     <Text style={{ ...styles.footerBold, marginBottom: 2 }}>CENTRAL DE RESERVAS:</Text>
-                    <Text style={styles.footerPhone}>+593 98 064 4467</Text>
                     <Text style={styles.footerPhone}>+593 98 185 0436</Text>
                     <Text style={styles.footerPhone}>+593 98 626 3432</Text>
                   </View>
                 </View>
               </View>
+              
               <View style={styles.footerRight}>
                 <Text style={styles.footerLabel}>Con el auspicio de:</Text>
                 <Image src="https://visitaecuador.com/img/web/patrocinadores.png" style={styles.patrocinadores} />
@@ -655,35 +653,42 @@ const CertificadoDoc = ({ reserva, nombreSuscriptorPDF, wineOffer, hasWineOffer,
 // ─── Página principal ─────────────────────────────────────────────
 const Certificado = () => {
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const reserva = {};
 
-  for (const [key, value] of searchParams) {
-    if (value.startsWith("[") && value.endsWith("]")) {
-      reserva[key] = JSON.parse(value);
-    } else {
-      reserva[key] = value;
+  // ✅ reserva se calcula UNA sola vez por cambio de URL, no en cada render.
+  // Antes se reconstruía en cada keystroke -> invalidaba el useMemo del PDF.
+  const reserva = useMemo(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const r = {};
+    for (const [key, value] of searchParams) {
+      if (value.startsWith("[") && value.endsWith("]")) {
+        r[key] = JSON.parse(value);
+      } else {
+        r[key] = value;
+      }
     }
-  }
+    return r;
+  }, [location.search]);
 
-  const wineOffer = {
+  // ✅ wineOffer estable: solo se reconstruye si cambia reserva.
+  const wineOffer = useMemo(() => ({
     titulo:      reserva.WineOfferTitulo      ? decodeURIComponent(reserva.WineOfferTitulo)      : null,
     precio:      reserva.WineOfferPrecio      ? parseFloat(reserva.WineOfferPrecio)               : 0,
     imagen:      reserva.WineOfferImagen      ? decodeURIComponent(reserva.WineOfferImagen)      : null,
     descripcion: reserva.WineOfferDescripcion ? decodeURIComponent(reserva.WineOfferDescripcion) : null,
     regalos:     reserva.WineOfferRegalos     ? decodeURIComponent(reserva.WineOfferRegalos)     : null,
-  };
+  }), [reserva]);
+
   const hasWineOffer = wineOffer.titulo !== null;
 
-  const latitude  = reserva.LatitudEst;
-  const longitude = reserva.LongitudEst;
-  const staticMapImageUrl = generateStaticMapImageUrl(latitude, longitude);
+  // ✅ staticMapImageUrl estable.
+  const staticMapImageUrl = useMemo(
+    () => generateStaticMapImageUrl(reserva.LatitudEst, reserva.LongitudEst),
+    [reserva.LatitudEst, reserva.LongitudEst]
+  );
 
   const [nombreSuscriptorPDF, setNombreSuscriptorPDF] = useState(reserva.NombreSus || "");
   const [nombreSuscriptorInput, setNombreSuscriptorInput] = useState(reserva.NombreSus || "");
   const [isEditing, setIsEditing] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [hasDownloadedInitial, setHasDownloadedInitial] = useState(false);
 
   const getCodigoFromLocalStorage = () => {
     try {
@@ -692,13 +697,12 @@ const Certificado = () => {
     } catch {}
     return null;
   };
-  const canEditName = ["39579", "77562"].includes(getCodigoFromLocalStorage());
+  const canEditName = ["39579", "77562", "79277", "77424"].includes(getCodigoFromLocalStorage());
 
-  useEffect(() => {
-    setIsMobile(/iphone|ipad|ipod|android/.test(navigator.userAgent.toLowerCase()));
-  }, []);
-
-  const MyDocument = useMemo(() => () => (
+  // ✅ Ahora el useMemo del PDFDocument solo se invalida cuando REALMENTE cambian
+  // datos relevantes (nombre aplicado, reserva, wineOffer). Tipear en el input
+  // ya no lo invalida porque solo modifica `nombreSuscriptorInput`.
+  const pdfDocument = useMemo(() => (
     <CertificadoDoc
       reserva={reserva}
       nombreSuscriptorPDF={nombreSuscriptorPDF}
@@ -706,28 +710,11 @@ const Certificado = () => {
       hasWineOffer={hasWineOffer}
       staticMapImageUrl={staticMapImageUrl}
     />
-  ), [nombreSuscriptorPDF, hasWineOffer, wineOffer]);
+  ), [reserva, nombreSuscriptorPDF, wineOffer, hasWineOffer, staticMapImageUrl]);
 
-  useEffect(() => {
-    if (isMobile && !hasDownloadedInitial) {
-      const run = async () => {
-        const blob = await pdf(<MyDocument />).toBlob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${nombreSuscriptorPDF.replaceAll("-","")}-${reserva.IdSus}-${
-          reserva.IdRes == null || reserva.IdRes === "" ? reserva.fecha_reserva : reserva.IdRes
-        }.pdf`;
-        a.click();
-        URL.revokeObjectURL(url);
-        setHasDownloadedInitial(true);
-      };
-      run();
-    }
-  }, [isMobile, hasDownloadedInitial, nombreSuscriptorPDF]);
-
+  // La descarga SOLO se dispara cuando el usuario presiona el botón "Descargar PDF".
   const handleDownloadPDF = async () => {
-    const blob = await pdf(<MyDocument />).toBlob();
+    const blob = await pdf(pdfDocument).toBlob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -803,7 +790,7 @@ const Certificado = () => {
 
       <div className="flex-1 overflow-hidden">
         <PDFViewer className="w-full h-full">
-          <MyDocument />
+          {pdfDocument}
         </PDFViewer>
       </div>
     </div>

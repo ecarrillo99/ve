@@ -1,7 +1,7 @@
 import { GoogleMap, MarkerF, InfoWindowF, useLoadScript } from "@react-google-maps/api";
 import React, { useState } from 'react';
 import HotelMap from "./HotelMap";
-import BingMapsReact from "bingmaps-react";
+import LeafletMap from "../../global_components/maps/LeafletMap";
 
 
 const containerStyle = {
@@ -40,11 +40,13 @@ const HotelAdress = (props) => {
           item={Establecimiento} />
         {Establecimiento.Latitud != null ? (
           <div className="relative aspect-w-3 aspect-h-2 z-10">
-            <div className="absolute w-full h-full z-10 aspect-w-3 rounded-md bg-gray-400 bg-opacity-20 flex items-center justify-center">
-              <button className="bg-greenVE-600 text-white px-3 py-1 rounded-lg z-20" onClick={openModal}>Ver en el mapa</button>
+            <div
+              className="absolute w-full h-full z-10 aspect-w-3 rounded-md bg-gray-400 bg-opacity-20 flex items-center justify-center cursor-pointer"
+              onClick={openModal}
+            >
+              <span className="bg-greenVE-600 text-white px-3 py-1 rounded-lg z-20 pointer-events-none">Ver en el mapa</span>
             </div>
-            <BingMapsReact
-                      bingMapsKey="AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z"
+            <LeafletMap
                       height="205px"
                       viewOptions={{
                         center: { latitude: Establecimiento.Latitud, longitude: Establecimiento.Longitud },
@@ -61,6 +63,19 @@ const HotelAdress = (props) => {
           </div>
         ) : (
           <></>
+        )}
+        {Establecimiento.Latitud != null && (
+          <div className="flex justify-center mt-3">
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${Establecimiento.Latitud},${Establecimiento.Longitud}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-full transition-colors shadow-md"
+            >
+              <span className="icon-[mdi--google-maps] h-5 w-5"></span>
+              Ver en Google Maps
+            </a>
+          </div>
         )}
       </div>
     );

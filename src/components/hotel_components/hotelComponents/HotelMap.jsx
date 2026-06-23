@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import BingMapsReact from "bingmaps-react";
+import LeafletMap from "../../global_components/maps/LeafletMap";
 
 const HotelMap = (props) => {
   // Props de versión mobile
@@ -65,8 +65,7 @@ const HotelMap = (props) => {
           <div className="bg-white p-2 rounded-md cursor-move">
             <Fragment>
               <div>
-                <BingMapsReact
-                  bingMapsKey="AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z"
+                <LeafletMap
                   height="500px"
                   pushPins={[{
                     center: {
@@ -86,6 +85,17 @@ const HotelMap = (props) => {
                 />
               </div>
             </Fragment>
+            <div className="flex justify-center mt-2">
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-md transition-colors"
+              >
+                <span className="icon-[mdi--google-maps] h-5 w-5"></span>
+                Ver en Google Maps
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -97,8 +107,7 @@ const HotelMap = (props) => {
     <div className="p-3 z-0">
       <div>
         <div className="relative border border-gray-300 z-10">
-          <BingMapsReact
-            bingMapsKey="AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z"
+          <LeafletMap
             height="160px"
             style={{ zIndex: 1 }}
             pushPinsWithInfoboxes={pinsList}
@@ -113,6 +122,17 @@ const HotelMap = (props) => {
       <div className="flex gap-2 items-center pt-3">
         <span className="icon-[ic--outline-place] h-5 w-5"></span>
         <label>{direccion}</label>
+      </div>
+      <div className="flex justify-center mt-3">
+        <a
+          href={`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-full transition-colors shadow-md"
+        >
+          <span className="icon-[mdi--google-maps] h-5 w-5"></span>
+          Ver en Google Maps
+        </a>
       </div>
     </div>
   );

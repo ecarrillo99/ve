@@ -78,6 +78,8 @@ const WineSearchItem = ({ offer, firstElement }) => {
           Impuestos: offer.taxes || 0,
           date_st: offer.date_st,
           date_ed: offer.date_ed,
+            type: offer.type || '',     
+          subType: offer.subType || '', 
           inventories: offer.inventories || [],
           wineEstablishment: { name: establishment.name, city: establishment.city, country: establishment.country },
         },
@@ -190,30 +192,32 @@ const WineSearchItem = ({ offer, firstElement }) => {
                 ))}
               </div>
             </div>
-
-            {/* Schedules o fechas */}
-            {offer.schedules && offer.schedules.length > 0 ? (
-              <div className="flex flex-col gap-1 mt-1">
-                {offer.schedules.map((s, idx) => (
-                  <div key={idx} className="flex items-center gap-2 text-xs text-gray-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-amber-500 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
-                      <path d="M13 7h-2v5.414l3.293 3.293 1.414-1.414L13 11.586z"/>
-                    </svg>
-                    <span className="font-medium text-amber-700">{formatDayRange(s.day_start, s.day_end)}</span>
-                    <span className="text-gray-400">·</span>
-                    <span>{formatTime(s.time_st)} – {formatTime(s.time_ed)}</span>
-                  </div>
-                ))}
-              </div>
-            ) : offer.date_st ? (
-              <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-gray-400" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
-                </svg>
-                <span>{formatDate(offer.date_st)} – {formatDate(offer.date_ed)}</span>
-              </div>
-            ) : null}
+           {offer.type != 'promociones' &&(
+            <>
+              {/* Schedules o fechas */}
+              {offer.schedules && offer.schedules.length > 0 ? (
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {offer.schedules.map((s, idx) => (
+                    <div key={idx} className="flex items-center gap-2 text-xxs text-gray-600">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-amber-500 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
+                        <path d="M13 7h-2v5.414l3.293 3.293 1.414-1.414L13 11.586z"/>
+                      </svg>
+                      <span className="font-medium text-amber-700">{formatDayRange(s.day_start, s.day_end)}</span>
+                      <span className="text-gray-400">·</span>
+                      <span>{formatTime(s.time_st)} – {formatTime(s.time_ed)}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : offer.date_st ? (
+                <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-gray-400" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+                  </svg>
+                  <span>{formatDate(offer.date_st)} – {formatDate(offer.date_ed)}</span>
+                </div>
+              ) : null}
+           </> )}
 
             {/* Descripción */}
             {offer.description && (
@@ -221,7 +225,7 @@ const WineSearchItem = ({ offer, firstElement }) => {
                 <div className="leading-3 flex gap-x-2 relative pb-1">
                   <div className="absolute h-full bg-gray-300 w-0.5" />
                   <div className="flex flex-col ml-3 w-full">
-                    <label className="text-xxs text-gray-600 line-clamp-2">{offer.description}</label>
+                    <label className="text-xs text-gray-600 line-clamp-2">{offer.description}</label>
                   </div>
                 </div>
               </div>
@@ -254,12 +258,29 @@ const WineSearchItem = ({ offer, firstElement }) => {
 
             {/* Precio + botón */}
             <div className="flex flex-col items-end">
-              <label className="text-xs text-end text-gray-500 mb-1">{typeConfig.priceLabel}</label>
-              {offer.price && (
+              {offer.price && offer.type != 'promociones' ?(
+                <>
+                <label className="text-xs text-end text-gray-500 mb-1">{typeConfig.priceLabel}</label>
                 <div className="flex gap-2 justify-center items-center">
                   <label className="text-xl font-semibold">US${parseFloat(offer.price).toFixed(0)}</label>
                 </div>
-              )}
+                </>
+              ) : parseFloat(offer.price) === 0 && offer.subType === 'burgerKing' ? (
+                 <>
+                <label className="text-xs text-end text-gray-500 mb-1">Mucho mas sin costo</label>
+                <div className="flex gap-2 justify-center items-center">
+                  <label className="text-xl font-semibold">Agrandado</label>
+                </div>
+                </>
+              ) : parseFloat(offer.price) > 0 && offer.subType === 'burgerKing' ? (
+                 <>
+                <label className="text-xs text-end text-gray-500 mb-1">{typeConfig.priceLabel}</label>
+                <div className="flex gap-2 justify-center items-center">
+                  <label className="text-xl font-semibold">- 15%</label>
+                </div>
+                </>
+              ) 
+              : null}
               {offer.taxes && (
                 <label className="text-end text-xs text-gray-500">
                   + US${parseFloat(offer.taxes).toFixed(0)} impuestos
@@ -300,7 +321,24 @@ const WineSearchItem = ({ offer, firstElement }) => {
                 className="flex justify-center gap-1 items-center bg-greenVE-500 text-white px-2 py-1.5 rounded-md w-full text-sm font-medium"
                 onClick={handleClickItem}
               >
-                {typeConfig.reserveLabel}
+                {offer.price && offer.type != 'promociones' ?(
+                <>
+                  {typeConfig.reserveLabel}
+
+                </>
+              ) : parseFloat(offer.price) === 0 && offer.subType === 'burgerKing' ? (
+                 <>
+                <div className="flex gap-2 justify-center items-center">
+                  <label className="text-xl font-semibold">Gratis</label>
+                </div>
+                </>
+              ) : parseFloat(offer.price) > 0 && offer.subType === 'burgerKing' ? (
+                 <>
+                                  {typeConfig.reserveLabel}
+
+                </>
+              ) 
+              : null}
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                 </svg>

@@ -155,9 +155,10 @@ export const getBanners  = async function(){
             const infoService= new InfoService();
             const listaBanners=[];
             const params={
-                "token": bd['token']
+                "token": bd['token'],
+                "id_servicio": Config.IDSERVICIO // 1 = visita; fuerza el servicio aunque no haya login
             }
-            
+
             const res= await infoService.obtenerBannersWeb(params)
             if(res['estado']&&res['codigo']==0){
                 for(const destino of res['data']){

@@ -8,7 +8,7 @@ import WineSearchItemSkeleton from "../../components/global_components/Beneffits
 import WineSearchBar from "../../components/vinos_components/wineOffersBanner/WineSearchBar";
 import CreateOfferModal from "../../components/vinos_components/admin/CreateoffertsModal";
 import BenefitsSidebar from "../../components/global_components/Beneffits/BenefitsSideBar";
-import BingMapsReact from "bingmaps-react";
+import LeafletMap from "../../components/global_components/maps/LeafletMap";
 
 const Navbar = lazy(() => import("../../components/global_components/navbar/Navbar"));
 const Footer = lazy(() => import("../../components/global_components/footer/Footer"));
@@ -320,8 +320,7 @@ const WineSearch = () => {
       </div>
       {mapCenter ? (
         <Suspense>
-          <BingMapsReact
-            bingMapsKey="AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z"
+          <LeafletMap
             viewOptions={{ center: mapCenter, zoom: 13, mapTypeId: "aerialWithLabels" }}
             mapOptions={{ showZoomButtons: false, showMapTypeSelector: false, showBreadcrumb: false, showLocateMeButton: false }}
           />
@@ -394,8 +393,10 @@ const WineSearch = () => {
 
         <div className="flex gap-8">
           {/* ── Columna izquierda: Mapa + Sidebar ── */}
+          
           <div className="w-64 shrink-0">
-            <MiniMap />
+            {filteredData?.some(o => o.type !== 'promociones') && (
+            <MiniMap /> )}
             <BenefitsSidebar
               offers={data || []}
               activeType={offerType}
@@ -404,7 +405,7 @@ const WineSearch = () => {
               onSubTypeChange={handleSubTypeChange}
             />
           </div>
-
+         
           {/* ── Resultados ── */}
           <div className="flex-1 min-w-0">
             <SortBar />

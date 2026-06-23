@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import BingMapsReact from "bingmaps-react";
+import LeafletMap from "../../global_components/maps/LeafletMap";
 
 
 const HotelMap = ({Latitud, Longitud, Direccion, Titulo, PrecioSinImpuestos}) => {
@@ -28,8 +28,7 @@ const HotelMap = ({Latitud, Longitud, Direccion, Titulo, PrecioSinImpuestos}) =>
         <div className='p-3 z-0 abs'>
                    <div >
                        <div className="relative border border-gray-300 z-10">
-                           <BingMapsReact
-                               bingMapsKey="AuSqEteaBOw8m-3YvPjgvgjh9XysayCKT5xj4GmKONe5aNQZHbtTgAccVtsjf45Z"
+                           <LeafletMap
                                height="160px"
                                style={{ zIndex: 1 }}
                                //pushPins={pinsList}

@@ -10,7 +10,7 @@ const MenuTabs = () => {
 
   const getActiveTab = () => {
     if (pathname === "/" || pathname.startsWith("/busqueda") || pathname.startsWith("/hotel/")) return 1;
-    if (pathname === "/vinos" || pathname === "/Tours") return 4;
+    if (pathname === "/vinos" || pathname === "/Tours" || pathname === "/Promociones") return 4;
     if (pathname.startsWith("/disney")) return 3;
     if (pathname.startsWith("/visas-concierge")) return 5;
     if (pathname.startsWith("/nosotros")) return 6;
@@ -92,8 +92,8 @@ const MenuTabs = () => {
           >
             <div className="rounded-full bg-white p-0.5" style={{ height: "22px", width: "22px" }}>
               <img
-                src="https://visitaecuador.com/img/web/benefit.svg"
-                className="rounded-full"
+                src="https://visitaecuador.com/img/web/Beneficios-Icon01_VE_1-8.png"
+                className=""
                 style={{ height: "100%", width: "100%" }}
                 alt="Beneficios"
               />
@@ -121,13 +121,19 @@ const MenuTabs = () => {
                 onClick={() => { navigate("/vinos"); setBeneficiosOpen(false); }}
                 className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-[#ACCD7B] hover:text-white transition-colors font-medium"
               >
-                Ruta del Vino
+                Rutas
               </button>
               <button
                 onClick={() => { navigate("/Tours"); setBeneficiosOpen(false); }}
                 className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-[#ACCD7B] hover:text-white transition-colors font-medium"
               >
                 Tours
+              </button>
+              <button
+                onClick={() => { navigate("/Promociones"); setBeneficiosOpen(false); }}
+                className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-[#ACCD7B] hover:text-white transition-colors font-medium"
+              >
+                Promociones
               </button>
             </div>
           )}
@@ -142,7 +148,7 @@ const MenuTabs = () => {
             className={renderTabClass(item.id)}
           >
             {item.rounded ? (
-              <div className="rounded-full bg-white p-0.5" style={{ height: "22px", width: "22px" }}>
+              <div className={`rounded-full bg-white ${item.id === 6 ? "" : "p-0.5"} `}  style={{ height: "22px", width: "22px" }}>
                 <img src={item.icon} className="rounded-full" style={{ height: "100%", width: "100%" }} alt={item.label} />
               </div>
             ) : (

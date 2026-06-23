@@ -135,6 +135,14 @@ function App() {
                 <WineRouteContent isMobile={isMobile} offerType="tours" />
               }
             />
+
+            {/* Ruta de Promociones */}
+            <Route
+              path="Promociones"
+              element={
+                <WineRouteContent isMobile={isMobile} offerType="promociones" />
+              }
+            />
           </Route>
 
           <Route
@@ -426,7 +434,7 @@ const HomeIndexContent = ({ isMobile }) => {
 };
 
 // Componente separado para la ruta de vinos con estado de filtros
-const WineRouteContent = ({ isMobile, offerType = 'vinos' }) => {
+const WineRouteContent = ({ isMobile, offerType }) => {
   const [wineFilters, setWineFilters] = useState({
     country: "",
     city: "",

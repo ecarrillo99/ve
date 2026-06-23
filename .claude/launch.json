@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "santa-galleta",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "/Users/aracnocia.ltda./Documents/Proyectos React/santa-galleta", "start"],
+      "port": 3000
+    },
+    {
+      "name": "ve-next",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "/Users/aracnocia.ltda./Documents/Proyectos React/ve-next", "run", "dev"],
+      "port": 5174
+    }
+  ]
+}

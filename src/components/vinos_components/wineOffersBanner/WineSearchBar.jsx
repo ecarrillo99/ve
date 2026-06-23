@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ClickAwayListener } from "@mui/material";
 import MenuTabs from "../../global_components/menu_tabs/MenuTabs";
@@ -80,6 +80,8 @@ const CountryIcon = () => (
 // Si se definiera adentro, React lo destruiría y recrearía en cada render,
 // haciendo que el input pierda el foco cada vez que el usuario escribe.
 const LocationField = ({ inputClassName = "", externalFilters, onSelect }) => {
+  const inputRef = useRef(null);
+
   const getDisplayValue = () => {
     if (externalFilters.city && externalFilters.country)
       return `${externalFilters.city}, ${externalFilters.country}`;
@@ -130,32 +132,42 @@ const LocationField = ({ inputClassName = "", externalFilters, onSelect }) => {
     );
   };
 
+  const handleContainerClick = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
   return (
     <ClickAwayListener onClickAway={() => setOpen(false)}>
       <div className="relative w-full">
-        {/* Label + icono */}
-        <div className="flex items-center gap-1.5 mb-0.5">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <g stroke="#929292" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
-              <path d="M14.5 9a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0m3.722 8c1.395 1.988 2.062 3.047 1.665 3.9a2 2 0 0 1-.14.247c-.575.853-2.06.853-5.03.853H9.283c-2.97 0-4.454 0-5.029-.853a2 2 0 0 1-.14-.247C3.717 20.047 4.384 18.988 5.778 17"/>
-              <path d="M13.257 17.494a1.813 1.813 0 0 1-2.514 0C7.654 14.501 3.515 11.158 5.533 6.304 6.626 3.679 9.246 2 12 2s5.375 1.68 6.467 4.304c2.016 4.847-2.113 8.207-5.21 11.19"/>
-            </g>
-          </svg>
-          <label className="text-sm font-normal text-gray-600 cursor-text select-none">
-            Ciudad o País
-          </label>
-        </div>
+        {/* Container clickable - activa el input sin importar donde se toque */}
+        <div onClick={handleContainerClick} className="cursor-text">
+          {/* Label + icono */}
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <g stroke="#929292" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
+                <path d="M14.5 9a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0m3.722 8c1.395 1.988 2.062 3.047 1.665 3.9a2 2 0 0 1-.14.247c-.575.853-2.06.853-5.03.853H9.283c-2.97 0-4.454 0-5.029-.853a2 2 0 0 1-.14-.247C3.717 20.047 4.384 18.988 5.778 17"/>
+                <path d="M13.257 17.494a1.813 1.813 0 0 1-2.514 0C7.654 14.501 3.515 11.158 5.533 6.304 6.626 3.679 9.246 2 12 2s5.375 1.68 6.467 4.304c2.016 4.847-2.113 8.207-5.21 11.19"/>
+              </g>
+            </svg>
+            <label className="text-sm font-normal text-gray-600 cursor-text select-none">
+              Ciudad o País
+            </label>
+          </div>
 
-        {/* Input */}
-        <input
-          type="text"
-          autoComplete="off"
-          placeholder="¿A dónde vas?"
-          className={`w-full focus:outline-none placeholder-gray-400 bg-transparent ${inputClassName}`}
-          value={inputValue}
-          onChange={handleChange}
-          onFocus={handleFocus}
-        />
+          {/* Input */}
+          <input
+            ref={inputRef}
+            type="text"
+            autoComplete="off"
+            placeholder="¿A dónde vas?"
+            className={`w-full focus:outline-none placeholder-gray-400 bg-transparent ${inputClassName}`}
+            value={inputValue}
+            onChange={handleChange}
+            onFocus={handleFocus}
+          />
+        </div>
 
         {/* Dropdown */}
         {open && suggestions.length > 0 && (
@@ -261,7 +273,7 @@ const WineSearchBar = ({ type = 0, onFilterChange, initialFilters, offerType = "
     return (
       <div className={`${busqueda ? "mt-[50px]" : "-mt-3"} relative`}>
         {!busqueda && !isMobile && <MenuTabs />}
-        <div className="bg-white relative rounded-lg rounded-tl-none w-full mt-1 shadow-lg border-2 border-amber-400">
+        <div className="bg-white relative rounded-lg  w-full mt-1 shadow-lg border-2 border-amber-400">
           <div className="grid lg:grid-cols-12 md:grid-cols-12 grid-flow-row border-b border-gray-200">
 
             {/* Campo unificado Ciudad / País */}

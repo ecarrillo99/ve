@@ -21,7 +21,7 @@ const Suscripciones = ({
   var secondProducts = productos.slice(4, productos.length);
 
   var paquetes = productos.filter(
-    (map) => map.IdProducto == "13538" || map.IdProducto == "13540"
+    (map) => map.IdProducto == "13538" || map.IdProducto == "13540" || map.IdProducto == "17522" || map.IdProducto == "17527"
   );
 
   console.log("codigo", codigo);

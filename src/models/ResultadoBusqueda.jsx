@@ -21,6 +21,7 @@ class ResultadoBusqueda{
         this.Incluye=Incluye;
         this.Ordenes=Ordenes;
         this.Beneficios=Beneficios;
+        this.Paginacion=null;
     }
 }
 
