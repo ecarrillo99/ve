@@ -64,7 +64,7 @@ const HotelBanner = (props) => {
     (incluye != null
       ? incluye.some((item) => parseInt(item.Valor) === 166)
       : false);
-
+  //
   var images = [];
   galeria?.forEach((item) => {
     images.push({
