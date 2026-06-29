@@ -6,6 +6,7 @@ import {
   changeFavoritoStatus,
   shareHotel,
 } from "../../../controllers/establecimiento/establecimientoController";
+import Icons from "../../../global/icons";
 
 const HotelBanner = ({
   Titulo,
@@ -27,6 +28,22 @@ const HotelBanner = ({
   const [shortUrl, setShortUrl] = useState();
   const [isCopied, setIsCopied] = useState(false);
   const [loadingShare, setLoadingShare] = useState(false);
+
+  const icons = new Icons();
+
+  const petFriendly =
+    (Incluye != null
+      ? Incluye.some((item) => parseInt(item.Valor) === 112)
+      : false) ||
+    (SistemaServicios != null
+      ? SistemaServicios.some((item) => parseInt(item.Valor) === 151)
+      : false);
+
+  const chargeVehicle =
+    (Incluye != null
+      ? Incluye.some((item) => parseInt(item.Valor) === 166)
+      : false);
+
   var images = [];
   Galeria.forEach((item) => {
     images.push({
@@ -175,6 +192,8 @@ const HotelBanner = ({
                 <span className="icon-[material-symbols--park-outline] h-7 w-7"></span>
               ) : item.Titulo.toLowerCase().includes("wireless") ? (
                 <span className="icon-[material-symbols--wifi] h-7 w-7"></span>
+              ) : item.Titulo.toLowerCase().includes("cargador") ? (
+                <span className="icon-[mdi--ev-station] h-7 w-7"></span>
               ) : (
                 <span className="icon-[fluent--service-bell-16-regular] h-7 w-7"></span>
               )}
@@ -207,14 +226,36 @@ const HotelBanner = ({
         <></>
       )}
 
-      <div className="border-y py-1 mt-4 px-3 flex  justify-between items-center">
+      <div className="border-y py-1 mt-4 px-3 flex  justify-between items-start">
         <div>
           <div className="text-lg font-semibold">{Titulo}</div>
           {Array(parseInt(Catalogacion))
             .fill(null)
             .map((item, index) => (
-              <span className="icon-[fluent--star-16-filled] text-amber-500 h-5 w-5"></span>
+              <span key={index} className="icon-[fluent--star-16-filled] text-amber-500 h-5 w-5"></span>
             ))}
+          <div className="flex flex-wrap gap-2 mt-1">
+            {petFriendly == true && (
+              <div className="flex items-center gap-x-1 bg-greenVE-100 rounded-md w-32 justify-center py-1">
+                <div
+                  dangerouslySetInnerHTML={{ __html: icons.Data.PetFriendly }}
+                />
+                <label className="text-greenVE-600 text-sm font-medium">
+                  Pet Friendly
+                </label>
+              </div>
+            )}
+            {chargeVehicle == true && (
+              <div className="flex items-center gap-x-1 bg-greenVE-100 rounded-md w-44 justify-center py-1">
+                <div
+                  dangerouslySetInnerHTML={{ __html: icons.Data.ChargeVehicle }}
+                />
+                <label className="text-greenVE-600 text-sm font-medium">
+                  Cargador Eléctrico
+                </label>
+              </div>
+            )}
+          </div>
         </div>
         <div className="pt-1 flex gap-2">
           {nivel !== "visitante" && (

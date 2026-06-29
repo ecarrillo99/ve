@@ -227,6 +227,8 @@ const HotelBanner = (props) => {
                 <span className="icon-[material-symbols--park-outline] h-7 w-7"></span>
               ) : item.Titulo.toLowerCase().includes("wireless") ? (
                 <span className="icon-[material-symbols--wifi] h-7 w-7"></span>
+              ) : item.Titulo.toLowerCase().includes("cargador") ? (
+                <span className="icon-[mdi--ev-station] h-7 w-7"></span>
               ) : (
                 <span className="icon-[fluent--service-bell-16-regular] h-7 w-7"></span>
               )}
@@ -262,7 +264,7 @@ const HotelBanner = (props) => {
       )}
 
       {/* Mobile: Title bar */}
-      <div className="border-y py-1 mt-4 px-3 flex justify-between items-center md:hidden">
+      <div className="border-y py-1 mt-4 px-3 flex justify-between items-start md:hidden">
         <div>
           <div className="text-lg font-semibold">{titulo}</div>
           {Array(parseInt(catalogacion))
@@ -270,6 +272,28 @@ const HotelBanner = (props) => {
             .map((item, index) => (
               <span key={index} className="icon-[fluent--star-16-filled] text-amber-500 h-5 w-5"></span>
             ))}
+          <div className="flex flex-wrap gap-2 mt-1">
+            {petFriendly == true && (
+              <div className="flex items-center gap-x-1 bg-greenVE-100 rounded-md w-32 justify-center py-1">
+                <div
+                  dangerouslySetInnerHTML={{ __html: icons.Data.PetFriendly }}
+                />
+                <label className="text-greenVE-600 text-sm font-medium">
+                  Pet Friendly
+                </label>
+              </div>
+            )}
+            {chargeVehicle == true && (
+              <div className="flex items-center gap-x-1 bg-greenVE-100 rounded-md w-44 justify-center py-1">
+                <div
+                  dangerouslySetInnerHTML={{ __html: icons.Data.ChargeVehicle }}
+                />
+                <label className="text-greenVE-600 text-sm font-medium">
+                  Cargador Eléctrico
+                </label>
+              </div>
+            )}
+          </div>
         </div>
         <div className="pt-1 flex gap-2">
           {nivel !== "visitante" && (
